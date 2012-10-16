@@ -1,0 +1,18 @@
+Olá {firstname} {lastname},
+
+Seu pedido #{id_order} foi recebido com sucesso, lembre-se de que você escolheu pagar através do MercadoPago:
+
+Total Pedido: {total_paid}
+
+Lhe será enviado um e-mail com os detalhes de sua compra.
+
+Opcionalmente o botão abaixo pode ser usado para pagar o eseu pedido.
+{button}
+Pode revisar seu pedido e descarregar a fatura em sua conta emn nossa loja em (histórico dos pedidos).
+
+Obrigado por comprar em {shop_name}.
+
+{shop_name} - {shop_url}
+
+
+
