@@ -34,4 +34,4 @@ Brazil: https://www.mercadopago.com/mlb/ferramentas/aplicacoes<br />
 1. Go to **MercadoPago IPN admin page**:<br />
 Argentina: https://www.mercadopago.com/mla/herramientas/notificaciones<br />
 Brazil: https://www.mercadopago.com/mlb/ferramentas/notificacoes
-2. Enter the URL as follow **[yourstoreadress.com]**/modules/mercadopago/includes/retorno.php
+2. Enter the URL as follow **[yourstoreaddress.com]**/modules/mercadopago/includes/retorno.php
