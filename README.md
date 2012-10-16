@@ -2,7 +2,7 @@
 
 * [Installation instructions](#usage)
 * [Set up MercadoPago PrestaShop plugin](#prestaplugin)
-* [Sync your backoffice with MercadoPago (IPN) t](#IPN)
+* [Sync your backoffice with MercadoPago (IPN)](#IPN)
 
 <a name="usage"></a>
 ## Installation instructions:
@@ -11,7 +11,7 @@
 <a name="prestaplugin"></a>
 ## Set up MercadoPago PrestaShop plugin
 1. On your store administration,  go to Modules > Payment & Gateways* <br />
-*** * Depending on PrestaShop Version, the module can be inside the <b>Other Modules</b>***<br />
+***Depending on PrestaShop Version, the module can be inside the <b>Other Modules</b>***<br />
 ![module](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/module.png)<br />
 
 2. Again in Modules > Click on MercadoPago Install and then Click on MercadoPago Configure<br />
