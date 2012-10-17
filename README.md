@@ -28,8 +28,11 @@
 	* Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
 	* Brasil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
 
-##Sync your backoffice with MercadoPago (IPN) 
-1. Go to MercadoPago IPN admin page:<br />
-Argentina: https://www.mercadopago.com/mla/herramientas/notificaciones<br />
-Brazil: https://www.mercadopago.com/mlb/ferramentas/notificacoes
-2. Enter the URL as follow [yourstoreadress.com]/modules/mercadopago/includes/retorno.php
+---
+### Sync your backoffice with Mercadopago (IPN) 
+
+1. Go to **Mercadopago IPN configuration**:
+    * Argentina: [https://www.mercadopago.com/mla/herramientas/notificaciones](https://www.mercadopago.com/mla/herramientas/notificaciones)
+    * Brasil: [https://www.mercadopago.com/mlb/ferramentas/notificacoes](https://www.mercadopago.com/mlb/ferramentas/notificacoes)
+
+2. Enter the URL as follow: ***[yourstoreadress.com]***/modules/mercadopago/includes/retorno.php
