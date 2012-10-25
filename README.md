@@ -1,33 +1,38 @@
-# MercadoPago – PrestaShop (1.3.6 to 1.4.7.3x)
+# PrestaShop - Mercadopago Module (v1.3.6 - 1.4.7.3x)
 ---
 
 ## Installation:
 
-1. Copy **mercadopago** folder to modules folder
+1. Copy mercadopago folder to modules folder
 
 ---
+## Setup MercadoPago
 
-## Setup Mercadopago
+1. On your store administration,  go to **Modules > Payment & Gateways**
 
-1. On your store administration,  go to **Modules > Payment & Gateways** <br />
-**NOTE:** <i>Depending on PrestaShop Version, the module can be inside the **Other Modules**</i><br />
-![module](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/module.png)<br />
+	***NOTE:*** *Depending on PrestaShop Version, the module can be inside **Other Modules***
 
-2. Again in **Modules > Click** on MercadoPago Install and then Click on **MercadoPago Configure**<br />
-![configure](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/configure.png)<br />
+	![module](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/module.png)
 
-3. Set your Country where your account was created and Update.<br />
-***Note:*** *If you change the Country where your account was created you need update first to refresh the excluded payment methods.*
+2. Again in **Modules**, click on **MercadoPago Install** and then click on **MercadoPago Configure**
 
-4. Set your **Client id** and **Client Secret**. You could get in<br />
-Argentina: https://www.mercadopago.com/mla/herramientas/aplicaciones<br />
-Brazil: https://www.mercadopago.com/mlb/ferramentas/aplicacoes<br />
+	![configure](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/configure.png)<br />
+
+3. Set your Country to the same where your account was created on, and **Update**.
+
+	***Note:*** *If you change the Country where your account was created you need update  first to refresh the excluded payment methods.*
+
+4. Set your **CLIENT_ID** and **CLIENT_SECRET**.
+
+	Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
+	* Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
+	* Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
 
 ---
+## Sync your backoffice with Mercadopago (IPN) 
 
-## Sync your backoffice with MercadoPago (IPN)
+1. Go to **Mercadopago IPN configuration**:
+    * Argentina: [https://www.mercadopago.com/mla/herramientas/notificaciones](https://www.mercadopago.com/mla/herramientas/notificaciones)
+    * Brazil: [https://www.mercadopago.com/mlb/ferramentas/notificacoes](https://www.mercadopago.com/mlb/ferramentas/notificacoes)
 
-1. Go to **MercadoPago IPN admin page**:<br />
-Argentina: https://www.mercadopago.com/mla/herramientas/notificaciones<br />
-Brazil: https://www.mercadopago.com/mlb/ferramentas/notificacoes
-2. Enter the URL as follow **[yourstoreaddress.com]**/modules/mercadopago/includes/retorno.php
+2. Enter the URL as follow: ***[yourstoreaddress.com]***/modules/mercadopago/includes/retorno.php
