@@ -1,12 +1,12 @@
 # PrestaShop - Mercadopago Module (v1.3.6 - 1.4.7.3x)
 ---
 
-### Installation:
+## Installation:
 
 1. Copy mercadopago folder to modules folder
 
 ---
-### Setup MercadoPago
+## Setup MercadoPago
 
 1. On your store administration,  go to **Modules > Payment & Gateways**
 
@@ -22,17 +22,17 @@
 
 	***Note:*** *If you change the Country where your account was created you need update  first to refresh the excluded payment methods.*
 
-4. Set your ***CLIENT_ID*** and ***CLIENT_SECRET***.
+4. Set your **CLIENT_ID** and **CLIENT_SECRET**.
 
-	Get your ***CLIENT_ID*** and ***CLIENT_SECRET*** in the following address:
+	Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
 	* Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
-	* Brasil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
+	* Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
 
 ---
-### Sync your backoffice with Mercadopago (IPN) 
+## Sync your backoffice with Mercadopago (IPN) 
 
 1. Go to **Mercadopago IPN configuration**:
     * Argentina: [https://www.mercadopago.com/mla/herramientas/notificaciones](https://www.mercadopago.com/mla/herramientas/notificaciones)
-    * Brasil: [https://www.mercadopago.com/mlb/ferramentas/notificacoes](https://www.mercadopago.com/mlb/ferramentas/notificacoes)
+    * Brazil: [https://www.mercadopago.com/mlb/ferramentas/notificacoes](https://www.mercadopago.com/mlb/ferramentas/notificacoes)
 
-2. Enter the URL as follow: ***[yourstoreadress.com]***/modules/mercadopago/includes/retorno.php
+2. Enter the URL as follow: ***[yourstoreaddress.com]***/modules/mercadopago/includes/retorno.php
