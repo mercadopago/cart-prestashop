@@ -1,6 +1,6 @@
 # PrestaShop - Mercadopago Module (v1.3.6 - 1.4.7.3x)
 ---
-*Available for Argentina and Brazil*
+*Available for Argentina, Brazil, Mexico and Venezuela*
 
 
 ## Installation:
@@ -27,14 +27,19 @@
 4. Set your **CLIENT_ID** and **CLIENT_SECRET**.
 
 	Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
+
 	* Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
 	* Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
-
+        * Mexico: [https://www.mercadopago.com/mlm/herramientas/aplicaciones](https://www.mercadopago.com/mlm/herramientas/aplicaciones)
+        * Venezuela: [https://www.mercadopago.com/mlv/herramientas/aplicaciones](https://www.mercadopago.com/mlv/herramientas/aplicaciones)
 ---
 ## Sync your backoffice with Mercadopago (IPN) 
 
 1. Go to **Mercadopago IPN configuration**:
+
     * Argentina: [https://www.mercadopago.com/mla/herramientas/notificaciones](https://www.mercadopago.com/mla/herramientas/notificaciones)
     * Brazil: [https://www.mercadopago.com/mlb/ferramentas/notificacoes](https://www.mercadopago.com/mlb/ferramentas/notificacoes)
+    * Mexico: [https://www.mercadopago.com/mlm/herramientas/notificaciones](https://www.mercadopago.com/mlm/herramientas/notificaciones)
+    * Venezuela: [https://www.mercadopago.com/mlv/ferramentas/notificacoes](https://www.mercadopago.com/mlv/ferramentas/notificacoes)
 
 2. Enter the URL as follow: ***[yourstoreaddress.com]***/modules/mercadopago/includes/retorno.php
