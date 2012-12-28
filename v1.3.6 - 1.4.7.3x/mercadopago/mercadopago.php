@@ -29,8 +29,8 @@ class MercadoPago extends PaymentModule
         $this->page 			= basename(__file__, '.php');
         $this->displayName 		= $this->l('MercadoPago');
         $this->description 		= $this->l('Receive Payments throw MercadoPago');
-		$this->confirmUninstall = $this->l('Are you sure that want to delete your datas?');
-		$this->textshowemail 	= $this->l('You must follow MercadoPago rules to your shop be valid');
+	$this->confirmUninstall = $this->l('Are you sure that want to delete your datas?');
+	$this->textshowemail 	= $this->l('You must follow MercadoPago rules to your shop be valid');
 	}
 	
 	public function install()
@@ -60,10 +60,10 @@ class MercadoPago extends PaymentModule
 	{
 		
 		$this->order_state = array(
-		array( 'ccfbff', '00100', 'MercadoPago - Transa?§??o em Andamento',''),
-		array( 'c9fecd', '11110', 'MercadoPago - Transa?§??o Conclu?­da','payment' ),
-		array( 'fec9c9', '11110', 'MercadoPago - Transa?§??o Cancelada', 'order_canceled'),
-                array( 'fec9c9', '11110', 'MercadoPago - Transa?§??o Rejeitada', 'payment_error')
+		array( 'ccfbff', '00100', 'MercadoPago - Transa?ï¿½??o em Andamento',''),
+		array( 'c9fecd', '11110', 'MercadoPago - Transa?ï¿½??o Conclu?ï¿½da','payment' ),
+		array( 'fec9c9', '11110', 'MercadoPago - Transa?ï¿½??o Cancelada', 'order_canceled'),
+                array( 'fec9c9', '11110', 'MercadoPago - Transa?ï¿½??o Rejeitada', 'payment_error')
 		);
 		
 	
@@ -197,7 +197,7 @@ class MercadoPago extends PaymentModule
 		$this->_html .= '
 		<div class="conf confirm">
 			<img src="../img/admin/ok.gif" alt="'.$this->l('Confirmation').'" />
-			'.$this->l('Configura?§?µes atualizadas').'
+			'.$this->l('Configura?ï¿½?ï¿½es atualizadas').'
 		</div>';
 	}
 	
@@ -225,7 +225,7 @@ class MercadoPago extends PaymentModule
                 '.$this->l('<b>Important:</b> If change the country, update the page before to chose the exclude payment methods. <br /><br />').'	
                    
                  '.$this->l('<b>IPN - Instant Payment Notification</b></br> Setup in MercadoPago the url to receive, should be like [yourstoreadress.com]<b>/modules/mercadopago/includes/retorno.php</b>').'<br >
-                 -><a href="https://www.mercadopago.com/mlb/ferramentas/notificacoes" target="_blank">Brasil</a>|<a href="https://www.mercadopago.com/mla/herramientas/notificaciones" target="_blank">Argentina</a>
+                 -><a href="https://www.mercadopago.com/mlb/ferramentas/notificacoes" target="_blank">Brasil</a>|<a href="https://www.mercadopago.com/mla/herramientas/notificaciones" target="_blank">Argentina</a>|<a href="https://www.mercadopago.com/mlm/herramientas/notificaciones" target="_blank">Mexico</a>|<a href="https://www.mercadopago.com/mlv/herramientas/notificaciones" target="_blank">Venezuela</a>
                  <br /><br /><br />';
 	}
 
@@ -294,14 +294,14 @@ class MercadoPago extends PaymentModule
 		$this->_html .= '
 		<form action="'.$_SERVER['REQUEST_URI'].'" method="post">
 		<fieldset>
-			<legend><img src="../img/admin/contact.gif" />'.$this->l('Configura?§?µes').'</legend>
+			<legend><img src="../img/admin/contact.gif" />'.$this->l('Configura?ï¿½?ï¿½es').'</legend>
 			<label>'.$this->l('Client ID').':</label>
-			<div class="margin-form"><input type="text" size="33" name="mercadopago_CLIENT_ID" value="'.htmlentities($client_id, ENT_COMPAT, 'UTF-8').'" /> <a href="https://www.mercadopago.com/mlb/ferramentas/aplicacoes" target="_blank" ><b>BRA</b></a>|<a href="http://www.mercadopago.com/mla/herramientas/aplicaciones" target="_blank" ><b>ARG</b></a></div>
+			<div class="margin-form"><input type="text" size="33" name="mercadopago_CLIENT_ID" value="'.htmlentities($client_id, ENT_COMPAT, 'UTF-8').'" /><a href="https://www.mercadopago.com/mlb/ferramentas/aplicacoes" target="_blank" > <b>Bra</b></a>|<a href="http://www.mercadopago.com/mla/herramientas/aplicaciones" target="_blank" ><b>Arg</b></a>|<a href="http://www.mercadopago.com/mlm/herramientas/aplicaciones" target="_blank" ><b>Mex</b></a>|<a href="http://www.mercadopago.com/mlv/herramientas/aplicaciones" target="_blank" ><b>Ven</b></a></div>
 			
                         <br />
 			
 			<label>'.$this->l('Client Secret').':</label>
-			<div class="margin-form"><input type="text" size="33" name="mercadopago_CLIENT_SECRET" value="'.$client_secret.'" /><a href="https://www.mercadopago.com/mlb/ferramentas/aplicacoes" target="_blank" > <b>BRA</b></a>|<a href="http://www.mercadopago.com/mla/herramientas/aplicaciones" target="_blank" ><b>ARG</b></a></div>
+			<div class="margin-form"><input type="text" size="33" name="mercadopago_CLIENT_SECRET" value="'.$client_secret.'" /><a href="https://www.mercadopago.com/mlb/ferramentas/aplicacoes" target="_blank" > <b>Bra</b></a>|<a href="http://www.mercadopago.com/mla/herramientas/aplicaciones" target="_blank" ><b>Arg</b></a>|<a href="http://www.mercadopago.com/mlm/herramientas/aplicaciones" target="_blank" ><b>Mex</b></a>|<a href="http://www.mercadopago.com/mlv/herramientas/aplicaciones" target="_blank" ><b>Ven</b></a></div>
 			<br />
                         
                         <label>'.$this->l('Country').':</label>
@@ -359,6 +359,7 @@ class MercadoPago extends PaymentModule
         $currencies 		= Currency::getCurrencies();
        
         $country = Configuration::get('mercadopago_COUNTRY');
+        
         switch ($country):
         CASE ('MLA'):
         $banner = 'imagens/mercadopagoar.jpg';
@@ -366,10 +367,16 @@ class MercadoPago extends PaymentModule
         CASE ('MLB'):
         $banner = 'imagens/mercadopagobr.jpg';   
         break;    
+        CASE ('MLV'):
+        $banner = 'imagens/mercadopagov.jpg';   
+        break;  
+        CASE ('MLM'):
+        $banner = 'imagens/mercadopagomx.jpg';   
+        break; 
         default :
         $banner = 'imagens/mercadopagobr.jpg';   
         endswitch;
-        
+
         foreach ($currencies as $key => $currency)
             $smarty->assign(array(
 	    'currency_default' => new Currency(Configuration::get('PS_CURRENCY_DEFAULT')),
@@ -412,10 +419,10 @@ class MercadoPago extends PaymentModule
         $DadosOrder 		= new Order($params['objOrder']->id);
         $ArrayListaProdutos =   $DadosOrder->getProducts();
         
-        // gera descriç?o
+        // gera descriï¿½?o
         foreach($ArrayListaProdutos as $info) {
 			$item = array (
-				// Cria um Array com a descri?§?µes dos produtos
+				// Cria um Array com a descri?ï¿½?ï¿½es dos produtos
 				$zb[]= $info['product_name'] . ' * '. $info['product_quantity']
                         );
         }
@@ -425,7 +432,7 @@ class MercadoPago extends PaymentModule
 
         $dados = array(
                   "external_reference" => $params['objOrder']->id ,// seu codigo de referencia, i.e. Numero do pedido da sua loja 
-                  "currency" => $currency->iso_code ,// string Argentina: ARS (peso argentino) ó USD (Dólar estadounidense); Brasil: BRL (Real).
+                  "currency" => $currency->iso_code ,// string Argentina: ARS (peso argentino) ï¿½ USD (Dï¿½lar estadounidense); Brasil: BRL (Real).
                   "title" => $descricao, //string
                   "description" => $descricao, // string
                   'quantity' => 1,// int 
@@ -451,7 +458,13 @@ class MercadoPago extends PaymentModule
         break;
         CASE ('MLB'):
         $banner = 'modules/mercadopago/imagens/mercadopagobr.jpg';   
-        break;    
+        break;
+        CASE ('MLM'):
+        $banner = 'modules/mercadopago/imagens/mercadopagomx.jpg';   
+        break; 
+        CASE ('MLV'):
+        $banner = 'modules/mercadopago/imagens/mercadopagov.jpg';   
+        break; 
         default :
         $banner = 'modules/mercadopago/imagens/mercadopagobr.jpg';   
         endswitch;
