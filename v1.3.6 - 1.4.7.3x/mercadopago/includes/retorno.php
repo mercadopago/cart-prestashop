@@ -10,7 +10,7 @@ include_once('Shop.php');
         $client_id = Db::getInstance()->getRow("SELECT value FROM "._DB_PREFIX_."configuration WHERE name = 'mercadopago_CLIENT_ID'");
         $client_secret = Db::getInstance()->getRow("SELECT value FROM "._DB_PREFIX_."configuration WHERE name = 'mercadopago_CLIENT_SECRET'");
   
-        $checkdata = New Shop($client_id['value'],$client_secret['value']);
+        $checkdata = New MPShop($client_id['value'],$client_secret['value']);
 
         $dados = $checkdata->GetStatus($id);
         
@@ -47,7 +47,7 @@ include_once('Shop.php');
 		$result = Db::getInstance()->getRow("SELECT value FROM "._DB_PREFIX_."configuration WHERE name = '".$nomestatus."'");
 		$state = $result['value'];
            
-           // ´Update order
+           // ï¿½Update order
             Db::getInstance()->ExecuteS("INSERT INTO "._DB_PREFIX_."order_history (`id_employee`, `id_order`, `id_order_state`, `date_add`) VALUES ('0', '".$order_id."', '". $state . "', NOW())");
 
 
