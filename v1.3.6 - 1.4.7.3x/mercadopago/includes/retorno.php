@@ -28,7 +28,7 @@ include_once('Shop.php');
                  case 'in_process':
                  $nomestatus = "mercadopago_STATUS_0";   
                  break;    
-                 case 'reject':
+                 case 'rejected':
                  $nomestatus = "mercadopago_STATUS_2"; 
                  break;    
                  case 'refunded':
