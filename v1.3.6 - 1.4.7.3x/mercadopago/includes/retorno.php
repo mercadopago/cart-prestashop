@@ -48,7 +48,7 @@ include_once('Shop.php');
 		$state = $result['value'];
            
            // �Update order
-            Db::getInstance()->ExecuteS("INSERT INTO "._DB_PREFIX_."order_history (`id_employee`, `id_order`, `id_order_state`, `date_add`) VALUES ('0', '".$order_id."', '". $state . "', NOW())");
+            // Db::getInstance()->ExecuteS("INSERT INTO "._DB_PREFIX_."order_history (`id_employee`, `id_order`, `id_order_state`, `date_add`) VALUES ('0', '".$order_id."', '". $state . "', NOW())");
 
 
             // Send email
