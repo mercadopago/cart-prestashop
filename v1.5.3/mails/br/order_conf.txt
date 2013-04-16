@@ -1,0 +1,28 @@
+﻿Hi {firstname} {lastname},
+
+Thank you for your order on {shop_name}!
+
+	Order: {order_name} placed on {date}
+	Payment: {payment}
+
+	Products: {total_products}
+	Discounts: {total_discounts}
+	Shipping: {total_shipping}
+	Gift-wrapping: {total_wrapping}
+	Total paid: {total_paid}
+
+	Carrier: {carrier}
+
+	Delivery address:
+
+	{delivery_block_txt}
+
+	Billing address:
+
+	{invoice_block_txt}
+
+You can review your order and download your invoice from the "Order history" section of your customer account by clicking "My account" on our shop.
+
+If you have guest account, you can follow your order using this link: {guest_tracking_url}
+
+{shop_url} powered by PrestaShop™
