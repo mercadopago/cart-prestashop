@@ -1,0 +1,11 @@
+Dear merchant,
+
+You have received a message from a customer via your shop: {shop_name}
+
+Customer e-mail address: {email}
+
+Customer message:
+
+{message}
+
+{shop_url} powered by PrestaShop™

@@ -1,0 +1,5 @@
+{reply}
+
+Please do not reply to this message, we will not receive it.
+
+In order to reply, please use the following link: {link}
