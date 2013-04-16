@@ -16,7 +16,7 @@ You will receive the following message: " Module(s) installed successfully."
 	![Installation](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Installation.JPG)<br />
 
 
-**Note**:  For modules in the previous version is not necessary to make the first step. Besides the installation path to be different ** Modules> Payment Gateways & **.
+**Note**:  For modules in the previous version is not necessary to make the first step. Besides the installation path to be different **Modules> Payment Gateways**.
 
 ## Configuration:
 
