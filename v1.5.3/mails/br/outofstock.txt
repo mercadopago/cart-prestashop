@@ -1,0 +1,15 @@
+Hi {firstname} {lastname},
+
+Thanks for your order with the reference {order_name} from {shop_name}.
+
+Unfortunately, one or more items are currently out of stock.
+This may cause a slight delay in your delivery.
+Please accept our apologies and rest assured that we are working hard to rectify this.
+
+You can review your order and download your invoice from the "Order history" section of your customer account by clicking "My account" on our shop.
+
+If you have guest account, you can follow your order using this link: {guest_tracking_url}
+
+{shop_name} - {shop_url}
+
+{shop_url} powered by PrestaShop&trade;
