@@ -10,12 +10,15 @@
 3. On your store administration, go to **Modules > Modules**.
 4. Search by **MercadoPago** and click install.
 You will receive the following message: " Module(s) installed successfully."
-	![Installation](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Installation.JPG)
+	![Installation](https://raw.github.com/gmatsuoka/cart-prestashop/master/README.img/Installation.JPG)
 
 ## Configuration:
 1. On your store administration, go to Modules > Modules
+	![Configuration-1](https://raw.github.com/gmatsuoka/cart-prestashop/master/README.img/Configuration-1.JPG)
 2. Search by **MercadoPago**
+	![Configuration-2](https://raw.github.com/gmatsuoka/cart-prestashop/master/README.img/Configuration-2.JPG)
 3. Click in **Configure**. Will open the page following:
+	![Configuration-3](https://raw.github.com/gmatsuoka/cart-prestashop/master/README.img/Configuration-3.JPG)
 4. Set your **CLIENT_ID**, **CLIENT_SECRET** and **COUNTRY**. 
 Get your **CLIENT_ID** and **CLIENT_SECRET** of according to his country:
 
