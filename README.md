@@ -3,8 +3,6 @@
 ---
 *Available for Argentina, Brazil, Mexico and Venezuela*
 
----
-
 ## Installation:
 
 1. Copy mails to the Prestashop root installation. Make sure to keep the Prestashop folders structure.
@@ -12,9 +10,7 @@
 3. On your store administration, go to **Modules > Modules**.
 4. Search by **MercadoPago** and click install.
 You will receive the following message: " Module(s) installed successfully."
-	![Installation-1](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Installation-1.png)
-
----	
+	![installation](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/installation.JPG)
 
 ## Configuration:
 1. On your store administration, go to Modules > Modules
@@ -29,8 +25,6 @@ Get your **CLIENT_ID** and **CLIENT_SECRET** of according to his country:
 	* Venezuela: [https://www.mercadopago.com/mlv/herramientas/aplicaciones](https://www.mercadopago.com/mlv/herramientas/aplicaciones)
 
 **Note**:  If you change the Country where your account was created you need update first to refresh the excluded payment methods.
-
----
 
 ## Sync your backoffice with Mercadopago (IPN) 
 
