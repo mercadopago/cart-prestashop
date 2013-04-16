@@ -39,39 +39,3 @@ Get your **CLIENT_ID** and **CLIENT_SECRET** of according to his country:
     * Venezuela: [https://www.mercadopago.com/mlv/ferramentas/notificacoes](https://www.mercadopago.com/mlv/ferramentas/notificacoes)
 
 2. Enter the URL as follow: ***[yourstoreaddress.com]***/modules/mercadopago/includes/retorno.php
-
-
-
-
-
-
-
-
-
-
-
----
-## Setup MercadoPago
-
-1. On your store administration,  go to **Modules > Payment & Gateways**
-
-	***NOTE:*** *Depending on PrestaShop Version, the module can be inside **Other Modules***
-
-	![module](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/module.png)
-
-2. Again in **Modules**, click on **MercadoPago Install** and then click on **MercadoPago Configure**
-
-	![configure](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/configure.png)<br />
-
-3. Set your Country to the same where your account was created on, and **Update**.
-
-	***Note:*** *If you change the Country where your account was created you need update  first to refresh the excluded payment methods.*
-
-4. Set your **CLIENT_ID** and **CLIENT_SECRET**.
-
-	Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
-
-	* Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
-	* Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
-	* Mexico: [https://www.mercadopago.com/mlm/herramientas/aplicaciones](https://www.mercadopago.com/mlm/herramientas/aplicaciones)
-	* Venezuela: [https://www.mercadopago.com/mlv/herramientas/aplicaciones](https://www.mercadopago.com/mlv/herramientas/aplicaciones)
