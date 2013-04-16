@@ -10,7 +10,7 @@
 3. On your store administration, go to **Modules > Modules**.
 4. Search by **MercadoPago** and click install.
 You will receive the following message: " Module(s) installed successfully."
-	![installation](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/installation.JPG)
+	![Installation](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Installation.JPG)
 
 ## Configuration:
 1. On your store administration, go to Modules > Modules
