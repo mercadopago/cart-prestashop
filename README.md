@@ -54,12 +54,12 @@ Enter the URL as follow: ***[yourstoreaddress.com]***/modules/mercadopago/includ
 
 The moment finalizing the purchase to make payment is displayed the error: "invalid_items: currency_id invalid"?
 		
-	During the installation of Prestashop always use the regional settings of your country.
-    If at the time of installation is selected settings of USA, later to correct it, failures may occur during the upgrade, causing the error referred above.
+During the installation of Prestashop always use the regional settings of your country.
+If at the time of installation is selected settings of USA, later to correct it, failures may occur during the upgrade, causing the error referred above.
 	
 How to customize the text displayed in the checkout?
 
-	Open the following files with notepad and change the information you want:
+Open the following files with notepad and change the information you want:
 
 	Prestashop folder ... \ modules \ MercadoPago
 		> confirm.tpl
