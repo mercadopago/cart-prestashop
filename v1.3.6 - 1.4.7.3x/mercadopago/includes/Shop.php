@@ -247,7 +247,7 @@ Class MPShop extends Basic {
             } 
             $this->getAccessToken(); 
             $url = 'https://api.mercadolibre.com/checkout/preferences?access_token=' . $this->accesstoken;
-            $header = array('Content-Type:application/json','Accept: application/json');
+	    $header = array('Content-Type:application/json', 'User-Agent:MercadoPago PrestaShop-1.3.6to1.4.7.3 Cart v1.0.0', 'Accept: application/json');
             $dados = $this->DoPost($opt,$url,$header,'201','json','post');
             $link = $dados['init_point'];
             $bt = '<a href="'.$link.'" name="MP-payButton" class="blue-l-rn-ar">Comprar</a>
