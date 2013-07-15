@@ -46,7 +46,7 @@ Go to **Mercadopago IPN configuration**:
     * Argentina: https://www.mercadopago.com/mla/herramientas/notificaciones
     * Brazil: https://www.mercadopago.com/mlb/ferramentas/notificacoes
     * Mexico: https://www.mercadopago.com/mlm/herramientas/notificaciones
-    * Venezuela: https://www.mercadopago.com/mlv/ferramentas/notificacoes
+    * Venezuela: https://www.mercadopago.com/mlv/herramientas/notificaciones
 
 Enter the URL as follow: ***[yourstoreaddress.com]***/modules/mercadopago/includes/retorno.php
 
