@@ -20,23 +20,22 @@
 	{l s='Valor total do pedido:' mod='mercadopago'}
 	{if $currencies|@count > 1}
 		{foreach from=$currencies item=currency}
-			<span id="amount_{$currency.id_currency}" class="price" style="display:none;">R$ {$total}</span>
+			<span id="amount_{$currency.id_currency}" class="price" style="display:none;">AR$ {$total}</span>
 		{/foreach}
 	{else}
-			<span id="amount_{$currencies.0.id_currency}" class="price">R$ {$total}</span>
+			<span id="amount_{$currencies.0.id_currency}" class="price">AR$ {$total}</span>
 	{/if}
 </p>
 <p>
-	<b>{l s='Por favor confira as formas de pagamento aceitas pelo MercadoPago e 
-	confirme sua compra clicando em \'Confirmar Compra\'' mod='mercadopago'}.</b>
+	<b>{l s='Por favor, compruebe los métodos de pago aceptados por MercadoPago y Por favor haciendo clic \'Confirmar Compra\'' mod='mercadopago'}.</b>
 </p>
 
 <p>
-	<center><img src="{$imgBnr}" alt="{l s='Formas de Pagamento MercadoPago' mod='mercadopago'}"></center>
+	<center><img src="{$imgBnr}" alt="{l s='Formas de Pago MercadoPago' mod='mercadopago'}"></center>
 </p>
 
 <p class="cart_navigation">
-	<a href="{$base_dir_ssl}order.php?step=3" class="button_large">{l s='Outras formas de pagamento' mod='mercadopago'}</a>
+	<a href="{$base_dir_ssl}order.php?step=3" class="button_large">{l s='Otras formas de pago' mod='mercadopago'}</a>
 	<input type="submit" name="submit" value="{l s='Confirmar Compra' mod='mercadopago'}" class="exclusive_large" />
 </p>
 </form>

@@ -53,10 +53,10 @@ class MercadoPago extends PaymentModule {
     public function create_states() {
 
         $this->order_state = array(
-            array('ccfbff', '00100', 'MercadoPago - Transa?�??o em Andamento', ''),
-            array('c9fecd', '11110', 'MercadoPago - Transa?�??o Conclu?�da', 'payment'),
-            array('fec9c9', '11110', 'MercadoPago - Transa?�??o Cancelada', 'order_canceled'),
-            array('fec9c9', '11110', 'MercadoPago - Transa?�??o Rejeitada', 'payment_error')
+            array('ccfbff', '00100', 'MercadoPago - Transacción en Proceso', ''),
+            array('c9fecd', '11110', 'MercadoPago - Transacción Concluída', 'payment'),
+            array('fec9c9', '11110', 'MercadoPago - Transacción Cancelada', 'order_canceled'),
+            array('fec9c9', '11110', 'MercadoPago - Transacción Rechazada', 'payment_error')
         );
 
 
