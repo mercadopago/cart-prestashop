@@ -20,10 +20,10 @@
 	{l s='Valor total del Pedido:' mod='mercadopago'}
 	{if $currencies|@count > 1}
 		{foreach from=$currencies item=currency}
-			<span id="amount_{$currency.id_currency}" class="price" style="display:none;">R$ {$total}</span>
+			<span id="amount_{$currency.id_currency}" class="price" style="display:none;">AR$ {$total}</span>
 		{/foreach}
 	{else}
-			<span id="amount_{$currencies.0.id_currency}" class="price">R$ {$total}</span>
+			<span id="amount_{$currencies.0.id_currency}" class="price">AR$ {$total}</span>
 	{/if}
 </p>
 <p>
