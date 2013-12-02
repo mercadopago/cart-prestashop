@@ -512,6 +512,11 @@ class MercadoPago extends PaymentModule {
         //Force format YYYY-DD-MMTH:i:s
         $date_creation_user = date('Y-m-d', strtotime($ArrayCliente['date_add'])) . "T" . date('H:i:s',strtotime($ArrayCliente['date_add']));
 	$address_invoice = new Address(intval($params['cart']->id_address_invoice));
+	
+	$phone = $address_invoice->phone;
+	$phone .= $phone == "" ? "" : "|";
+	$phone .= $address_invoice->phone_mobile;
+	
         $payer = array(
             "name" => $ArrayCliente['firstname'],
             "surname" => $ArrayCliente['lastname'],
@@ -519,7 +524,7 @@ class MercadoPago extends PaymentModule {
             "date_created" => $date_creation_user,
             "phone" => array(
                 "area_code" => "-",
-                "number" => $address_invoice->phone . " | " . $address_invoice->phone_mobile
+                "number" => $phone
             ),
             "address" => array(
                 "zip_code" => $address_invoice->postcode,
