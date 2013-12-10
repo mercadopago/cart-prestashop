@@ -9,12 +9,6 @@
 <h3>{l s='Pagamento via MercadoPago' mod='mercadopago'}</h3>
 
 
-<p>
-	<img src="{$imgBtn}" alt="{l s='mercadopago' mod='mercadopago'}" style="float:left; margin: 0px 10px 5px 0px;" />
-	<br /><br />
-	<br /><br />
-</p>
-
 <form action="{$this_path_ssl}validation.php" method="post">
 <p style="margin-top:20px;">
 	{l s='Valor total do pedido:' mod='mercadopago'}
@@ -32,7 +26,7 @@
 </p>
 
 <p>
-	<center><img src="{$imgBnr}" alt="{l s='Formas de Pagamento MercadoPago' mod='mercadopago'}"></center>
+	<center>{$imgBanner}</center>
 </p>
 
 <p class="cart_navigation">
