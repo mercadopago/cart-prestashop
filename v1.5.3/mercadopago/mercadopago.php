@@ -42,6 +42,7 @@ class MercadoPago extends PaymentModule {
 		OR !Configuration::updateValue('mercadopago_CATEGORY', 'others')
 		OR !Configuration::updateValue('mercadopago_TYPECHECKOUT', 'Lightbox')
 		OR !Configuration::updateValue('mercadopago_SANDBOX', "Deactivate")
+		OR !Configuration::updateValue('mercadopago_AUTO_RETURN', "Deactivate")
                 OR !Configuration::updateValue('mercadopago_COUNTRY', '')
                 OR !Configuration::updateValue('mercadopago_METHODS', '')
 		OR !Configuration::updateValue('mercadopago_INSTALLMENTS', "inst-24")
@@ -117,6 +118,7 @@ class MercadoPago extends PaymentModule {
 		OR !Configuration::deleteByName('mercadopago_CATEGORY')
 		OR !Configuration::deleteByName('mercadopago_TYPECHECKOUT')
                 OR !Configuration::deleteByName('mercadopago_SANDBOX')
+		OR !Configuration::deleteByName('mercadopago_AUTO_RETURN')
                 OR !Configuration::deleteByName('mercadopago_URLPROCESS')
                 OR !Configuration::deleteByName('mercadopago_URLSUCCESFULL')
                 OR !Configuration::deleteByName('mercadopago_BTN')
@@ -154,6 +156,10 @@ class MercadoPago extends PaymentModule {
                 }
 		if (!empty($_POST['mercadopago_SANDBOX'])) {
                     Configuration::updateValue('mercadopago_SANDBOX', $_POST['mercadopago_SANDBOX']);
+                }
+		
+		if (!empty($_POST['mercadopago_AUTO_RETURN'])) {
+                    Configuration::updateValue('mercadopago_AUTO_RETURN', $_POST['mercadopago_AUTO_RETURN']);
                 }
 		
                 if (!empty($_POST['mercadopago_COUNTRY'])) {
@@ -250,6 +256,7 @@ class MercadoPago extends PaymentModule {
 		'mercadopago_CATEGORY',
 		'mercadopago_TYPECHECKOUT',
 		'mercadopago_SANDBOX',
+		'mercadopago_AUTO_RETURN',
 		'mercadopago_COUNTRY',
 		'mercadopago_METHODS',
 		'mercadopago_INSTALLMENTS',
@@ -265,6 +272,7 @@ class MercadoPago extends PaymentModule {
 	$category =  array_key_exists('mercadopago_CATEGORY', $_POST) ? $_POST['mercadopago_CATEGORY'] : (array_key_exists('mercadopago_CATEGORY', $conf) ? $conf['mercadopago_CATEGORY'] : '');
 	$type_checkout = array_key_exists('mercadopago_TYPECHECKOUT', $_POST) ? $_POST['mercadopago_TYPECHECKOUT'] : (array_key_exists('mercadopago_TYPECHECKOUT', $conf) ? $conf['mercadopago_TYPECHECKOUT'] : '');
 	$sandbox = array_key_exists('mercadopago_SANDBOX', $_POST) ? $_POST['mercadopago_SANDBOX'] : (array_key_exists('mercadopago_SANDBOX', $conf) ? $conf['mercadopago_SANDBOX'] : '');
+	$auto_return = array_key_exists('mercadopago_AUTO_RETURN', $_POST) ? $_POST['mercadopago_AUTO_RETURN'] : (array_key_exists('mercadopago_AUTO_RETURN', $conf) ? $conf['mercadopago_AUTO_RETURN'] : '');
         $mercado_pago_country = array_key_exists('mercadopago_COUNTRY', $_POST) ? $_POST['mercadopago_COUNTRY'] : (array_key_exists('mercadopago_COUNTRY', $conf) ? $conf['mercadopago_COUNTRY'] : '');
         $mercadopago_method = array_key_exists('mercadopago_METHODS', $_POST) ? $_POST['mercadopago_METHODS'] : (array_key_exists('mercadopago_METHODS', $conf) ? preg_split("/[\s,]+/", $conf['mercadopago_METHODS']) : '');
 	$installments = array_key_exists('mercadopago_INSTALLMENTS', $_POST) ? $_POST['mercadopago_INSTALLMENTS'] : (array_key_exists('mercadopago_INSTALLMENTS', $conf) ? $conf['mercadopago_INSTALLMENTS'] : '');
@@ -327,6 +335,25 @@ class MercadoPago extends PaymentModule {
 	    $select_sandbox .= '<option value="' . $op_sandbox['value'] . '" id="sandbox-' . $op_sandbox['value'] . '" ' . $selected . '>' . $op_sandbox['text'] . '</option>';
 	endforeach;
 	$select_sandbox .= "</select>";
+	
+	
+	//AUTO RETURN
+	$auto_return_options = array(
+		array("value" => "active", "text" => "Active"),
+		array("value" => "deactivate", "text" => "Deactivate")
+	);
+	
+	$select_auto_return = '<select name="mercadopago_AUTO_RETURN" id="auto_return">';
+	foreach($auto_return_options as $op_auto_return):
+	
+	    $selected = "";
+	    if($op_auto_return['value'] == $auto_return):
+		$selected = 'selected="selected"';
+	    endif;
+	    
+	    $select_auto_return .= '<option value="' . $op_auto_return['value'] . '" id="sandbox-' . $op_auto_return['value'] . '" ' . $selected . '>' . $op_auto_return['text'] . '</option>';
+	endforeach;
+	$select_auto_return .= "</select>";
 	
 	
 	//Get countries
@@ -409,6 +436,10 @@ class MercadoPago extends PaymentModule {
 			<div class="margin-form">' . $select_sandbox . '</div>
 			<br />
 			
+			<label>' . $this->l('Auto Return') . ':</label>
+			<div class="margin-form">' . $select_auto_return . '</div>
+			<br />
+			
                         <label>' . $this->l('Country') . ':</label>
 			<div class="margin-form">' . $showcountries . '</div>
 			<br />
@@ -465,20 +496,14 @@ class MercadoPago extends PaymentModule {
         $invoiceAddress = new Address(intval($cart->id_address_invoice));
         $customerPag = new Customer(intval($cart->id_customer));
         $currencies = Currency::getCurrencies();
-        $currencies_used = array();
         $currency = $this->getCurrency();
-        $currencies = Currency::getCurrencies();
 	
         foreach ($currencies as $key => $currency)
             $smarty->assign(
 		array(
-                'currency_default' => new Currency(Configuration::get('PS_CURRENCY_DEFAULT')),
-                'currencies' => $currencies_used,
-                'imgBanner' => $this->getBanner(),
-                'currency_default' => new Currency(Configuration::get('PS_CURRENCY_DEFAULT')),
-                'currencies' => $currencies_used,
-                'total' => number_format(Tools::convertPrice($cart->getOrderTotal(true, 3), $currency), 2, '.', ''),
-                'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://') . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8') . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
+		    'imgBanner' => $this->getBanner(),
+		    'total' => number_format(Tools::convertPrice($cart->getOrderTotal(true, 3), $currency), 2, '.', ''),
+		    'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://') . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8') . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
 		)
 	    );
 
@@ -617,6 +642,11 @@ class MercadoPago extends PaymentModule {
         $pref['back_urls'] = $back_urls;
         $pref['payment_methods'] = $payment_methods;
 	
+	//auto return
+	if(Configuration::get('mercadopago_AUTO_RETURN') == "active"){
+	    $pref['auto_return'] = "approved";
+	}
+	
         $client_id = Configuration::get('mercadopago_CLIENT_ID');
         $client_secret = Configuration::get('mercadopago_CLIENT_SECRET');
 
@@ -628,6 +658,11 @@ class MercadoPago extends PaymentModule {
 	$url = "";
 	if($sandbox):
 	    $url = $preferenceResult['response']['sandbox_init_point'];
+	    
+	    //is null? add init_point for production :D
+	    if(is_null($preferenceResult['response']['sandbox_init_point'])):
+		$url = $preferenceResult['response']['init_point'];    
+	    endif;
 	else:
 	    $url = $preferenceResult['response']['init_point'];
 	endif;
@@ -733,8 +768,10 @@ class MercadoPago extends PaymentModule {
                 $banner = '<img src="http://imgmp.mlstatic.com/org-img/banners/ve/medios/125X125.jpg" title="MercadoPago - Medios de pago" alt="MercadoPago - Medios de pago" width="125" height="125"/>';
                 break;
 	    CASE ('MLB'):
+		$banner = '<img src="http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_125X125.jpg" alt="MercadoPago - Meios de pagamento" title="MercadoPago - Meios de pagamento" width="125" height="125"/>';
+		break;
             default :
-                $banner = '<img src="http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_125X125.jpg" alt="MercadoPago - Meios de pagamento" title="MercadoPago - Meios de pagamento" width="125" height="125"/>';
+                $banner = '<img src="https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png" />';
                 break;
         endswitch;
 	
@@ -755,8 +792,10 @@ class MercadoPago extends PaymentModule {
                 $banner = '<img src="http://imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg" title="MercadoPago - Medios de pago" alt="MercadoPago - Medios de pago" width="468" height="60"/>';
                 break;
 	    CASE ('MLB'):
+		$banner = '<img src="http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg" alt="MercadoPago - Meios de pagamento" title="MercadoPago - Meios de pagamento" width="468" height="60"/>';
+                break;
             default :
-                $banner = '<img src="http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg" alt="MercadoPago - Meios de pagamento" title="MercadoPago - Meios de pagamento" width="468" height="60"/>';
+                $banner = '<img src="https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png" />';
                 break;
         endswitch;
 	
