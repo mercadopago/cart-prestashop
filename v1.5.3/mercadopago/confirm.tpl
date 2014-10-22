@@ -11,14 +11,9 @@
 
 <form action="{$this_path_ssl}validation.php" method="post">
 <p style="margin-top:20px;">
-	{l s='Valor total do pedido:' mod='mercadopago'}
-	{if $currencies|@count > 1}
-		{foreach from=$currencies item=currency}
-			<span id="amount_{$currency.id_currency}" class="price" style="display:none;">R$ {$total}</span>
-		{/foreach}
-	{else}
-			<span id="amount_{$currencies.0.id_currency}" class="price">R$ {$total}</span>
-	{/if}
+    
+    {l s='Valor total do pedido:' mod='mercadopago'}
+    {$total}
 </p>
 <p>
 	<b>{l s='Por favor confira as formas de pagamento aceitas pelo MercadoPago e 
