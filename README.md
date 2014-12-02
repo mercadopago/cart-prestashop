@@ -1,4 +1,4 @@
-# PrestaShop - Mercadopago Module (v1.3.6 - 1.4.7.3x - 1.5.2 - 1.5.3)
+# PrestaShop - Mercadopago Module (v1.3.6 - 1.4.7.3x | 1.5.3 -  1.6.x)
 
 ---
 *Available for Argentina, Brazil, Mexico and Venezuela*
