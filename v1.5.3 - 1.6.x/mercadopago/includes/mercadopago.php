@@ -245,7 +245,7 @@ class MPRestClient {
     private static function get_connect($uri, $method, $content_type) {
         $connect = curl_init(self::API_BASE_URL . $uri);
 
-        curl_setopt($connect, CURLOPT_USERAGENT, "MercadoPago PHP SDK v" . MP::version);
+        curl_setopt($connect, CURLOPT_USERAGENT, "MercadoPago Prestashop-v1.5.3-1.6.x Cart v1.0.1");
         curl_setopt($connect, CURLOPT_CAINFO, $GLOBALS["LIB_LOCATION"] . "/cacert.pem");
         curl_setopt($connect, CURLOPT_SSLVERSION, 3);
         curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);

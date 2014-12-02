@@ -107,6 +107,9 @@ class mercadopago {
   
                 // do a curl call
                 $call = curl_init();
+
+                curl_setopt($connect, CURLOPT_USERAGENT, "MercadoPago Prestashop-v1.3.6-1.4.7.3x Cart v1.0.1");
+
                 curl_setopt_array($call,$options);
                 // execute the curl call
                 $dados = curl_exec($call);
