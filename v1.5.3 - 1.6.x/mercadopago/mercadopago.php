@@ -84,7 +84,7 @@ class MercadoPago extends PaymentModule {
 
 
             $sql = 'SELECT MAX(id_order_state) FROM ' . _DB_PREFIX_ . 'order_state';
-            $this->figura = Db::getInstance()->getValue($sql);
+            $id_order_state = Db::getInstance()->getValue($sql);
 
             foreach ($languages as $language_atual) {
 
@@ -97,15 +97,7 @@ class MercadoPago extends PaymentModule {
 		        ');
             }
 
-
-
-            $file = (dirname(__file__) . "/icons/$key.gif");
-            $newfile = (dirname(dirname(dirname(__file__))) . "/img/os/$this->figura.gif");
-            if (!copy($file, $newfile)) {
-                return false;
-            }
-
-            Configuration::updateValue("mercadopago_STATUS_$key", $this->figura);
+            Configuration::updateValue("mercadopago_STATUS_$key", $id_order_state);
         }
 
         return true;
@@ -126,6 +118,12 @@ class MercadoPago extends PaymentModule {
                 OR !Configuration::deleteByName('mercadopago_METHODS')
 		OR !Configuration::deleteByName('mercadopago_INSTALLMENTS')
                 OR !Configuration::deleteByName('mercadopago_COUNTRY')
+		
+		OR !Configuration::deleteByName('mercadopago_STATUS_0')
+		OR !Configuration::deleteByName('mercadopago_STATUS_1')
+		OR !Configuration::deleteByName('mercadopago_STATUS_2')
+		OR !Configuration::deleteByName('mercadopago_STATUS_3')
+		
                 OR !parent::uninstall()
         ){
             return false;
@@ -783,7 +781,7 @@ class MercadoPago extends PaymentModule {
 
         switch ($country):
             CASE ('MLA'):
-                $banner = '<img src="http://imgmp.mlstatic.com/org-img/banners/ar/medios/468X60.jpg" title="MercadoPago - Medios de pago" alt="MercadoPago - Medios de pago" width="468" height="60"/>" />';
+                $banner = '<img src="http://imgmp.mlstatic.com/org-img/banners/ar/medios/468X60.jpg" title="MercadoPago - Medios de pago" alt="MercadoPago - Medios de pago" width="468" height="60"/>';
                 break;
             CASE ('MLM'):
                 $banner = '<img src="http://imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG" title="MercadoPago - Medios de pago" alt="MercadoPago - Medios de pago" width="468" height="60"/>';
