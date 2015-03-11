@@ -58,49 +58,41 @@ class MercadoPago extends PaymentModule {
     }
 
     public function create_states() {
+        $order_states = array(
+			array('#ccfbff', $this->l('MercadoPago - Transação em Andamento'), '', '000010000'),
+			array('#c9fecd', $this->l('MercadoPago - Transação Concluída'), 'payment', '110010010'),
+			array('#fec9c9', $this->l('MercadoPago - Transação Cancelada'), 'order_canceled', '010010000'),
+			array('#fec9c9', $this->l('MercadoPago - Transação Rejeitada'), 'payment_error', '010010000')
+		);
 
-        $this->order_state = array(
-            array('ccfbff', '00100', 'MercadoPago - Transação em Andamento', ''),
-            array('c9fecd', '11110', 'MercadoPago - Transação Concluída', 'payment'),
-            array('fec9c9', '11110', 'MercadoPago - Transação Cancelada', 'order_canceled'),
-            array('fec9c9', '11110', 'MercadoPago - Transação Rejeitada', 'payment_error')
-        );
-
-
-        $languages = Db::getInstance()->ExecuteS('
-		SELECT `id_lang`, `iso_code`
-		FROM `' . _DB_PREFIX_ . 'lang`
-		');
-
-        foreach ($this->order_state as $key => $value) {
-
-            Db::getInstance()->Execute
-                    ('
-			INSERT INTO `' . _DB_PREFIX_ . 'order_state` 
-			( `invoice`, `send_email`, `color`, `unremovable`, `logable`, `delivery`) 
-			VALUES
-			(' . $value[1][0] . ', ' . $value[1][1] . ', \'#' . $value[0] . '\', ' . $value[1][2] . ', ' . $value[1][3] . ', ' . $value[1][4] . ');
-		    ');
-
-
-            $sql = 'SELECT MAX(id_order_state) FROM ' . _DB_PREFIX_ . 'order_state';
-            $id_order_state = Db::getInstance()->getValue($sql);
-
-            foreach ($languages as $language_atual) {
-
-                Db::getInstance()->Execute
-                        ('
-			    INSERT INTO `' . _DB_PREFIX_ . 'order_state_lang` 
-			    (`id_order_state`, `id_lang`, `name`, `template`)
-			    VALUES
-			    (' . $this->figura . ', ' . $language_atual['id_lang'] . ', \'' . $value[2] . '\', \'' . $value[3] . '\');
-		        ');
-            }
-
-            Configuration::updateValue("mercadopago_STATUS_$key", $id_order_state);
-        }
-
-        return true;
+		$languages = Language::getLanguages();
+		foreach ($order_states as $key => $value)
+		{
+			$order_state = new OrderState();
+			$order_state->invoice = $value[3][0];
+			$order_state->send_email = $value[3][1];
+			$order_state->module_name = 'mercadopago';
+			$order_state->color = $value[0];
+			$order_state->unremovable = $value[3][2];
+			$order_state->hidden = $value[3][3];
+			$order_state->logable = $value[3][4];
+			$order_state->delivery = $value[3][5];
+			$order_state->shipped = $value[3][6];
+			$order_state->paid = $value[3][7];
+			$order_state->deleted = $value[3][8];
+			$order_state->name = array();
+			$order_state->template = array();
+			foreach (Language::getLanguages(false) as $language)
+			{
+				$order_state->name[(int)$language['id_lang']] = $value[1];
+				$order_state->template[(int)$language['id_lang']] = $value[2];
+			}
+			$order_state->add();
+			$file = _PS_ROOT_DIR_.'/img/os/'.(int)$order_state->id.'.gif';
+			copy((dirname(__file__).'/imagens/mp_icon.gif'), $file);
+			Configuration::updateValue('mercadopago_STATUS_'.$key, $order_state->id);
+		}
+		return true;
     }
 
     public function uninstall() {
