@@ -29,7 +29,7 @@ You will receive the following message: " Module(s) installed successfully."
 3. Click in **Configure**. Will open the page following:
 	![Configuration-3](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Configuration-3.JPG)<br />
 
-4. Set your **CLIENT_ID**, **CLIENT_SECRET** and **COUNTRY**. 
+4. Set your **CLIENT_ID**, **CLIENT_SECRET**.
 Get your **CLIENT_ID** and **CLIENT_SECRET** of according to his country:
 
 	* Argentina: https://www.mercadopago.com/mla/herramientas/aplicaciones
