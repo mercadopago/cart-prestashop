@@ -1,0 +1,193 @@
+/**
+* 2007-2015 PrestaShop
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Open Software License (OSL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/osl-3.0.php
+* If you did not receive a copy of the license and are unable to
+* obtain it through the world-wide-web, please send an email
+* to license@prestashop.com so we can send you a copy immediately.
+*
+* DISCLAIMER
+*
+* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+* versions in the future. If you wish to customize PrestaShop for your
+* needs please refer to http://www.prestashop.com for more information.
+*
+*  @author    ricardobrito
+*  @copyright Copyright (c) MercadoPago [http://www.mercadopago.com]
+*  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*  International Registered Trademark & Property of MercadoPago
+*/
+
+.mp-form input[type="text"] {
+	padding-left: 5px;
+	padding-top: 2px;
+}
+
+.mp-form {
+	margin-bottom: 40px;
+	width: auto;
+}
+
+.col label {
+	float: left;
+	font-size: 11px;
+}
+
+#form-pagar-mp {
+	margin-left: 45px;
+}
+
+.col-bottom {
+	width: 100%;
+}
+
+.mp-creditcard-banner {
+	width: 280px;
+	float: right !important;
+	margin-top: -20px;
+	margin-right: 0px !important;
+}
+
+.payment-label {
+	font-weight: bold;
+	font-size: 15px;
+	color: #333333;
+}
+.row {
+	clear: both;
+	margin-bottom: 40px;
+}
+.col {
+	width: 34.5%;
+}
+
+.col-expiration {
+	width: 13%;
+}
+
+.col-security {
+	width: 25%;
+}
+
+.col-cpf {
+	width: 26%;
+	margin-left: 66px;
+}
+
+.mp-form .logo {
+	width: 80px;
+	height: 20px;
+}
+
+.poweredby {
+	float: left;
+	color: black;
+	font-size: 6px;
+	font-weight: bold;
+	margin-left: 1px;
+}
+
+.small-select {
+	width: 83px;
+	height: 25px;
+	background: white;
+	font-size: 11px;
+}
+
+#id-card-number {
+	width: 169px;
+	padding-right: 50px;
+}
+
+#id-card-holder-name {
+	width: 220px;
+}
+
+#id-installments {
+	width: 225px;
+	height: 25px;
+	background: white;
+	font-size: 11px;
+}
+
+#id-doc-number {
+	width: 160px;
+}
+
+#id-boleto {
+	display: block;
+	position: relative;
+	top: 21px;
+	right: 120px;
+}
+
+#id-create-boleto {
+	display: none;
+}
+
+#form-boleto-mp {
+	margin-left: 30px;
+}
+
+.boleto {
+	background: url('../img/boleto.png') 77% no-repeat;
+	background-size: 137px 61px;
+	height: 61px;
+}
+
+.standard {
+	display: inline;
+	float: left;
+	margin: 0px;
+}
+
+.mp-standard-banner {
+	width: 320px;
+	display: inline;
+	margin-left: 18px;
+	margin-right: 0px !important;
+}
+
+.mp-boleto-banner {
+	height: 60px;
+	width: 270px;
+	margin-top: -10px;
+	margin-left: 110px;
+	margin-top: -5px;
+}
+
+.col input {
+	height: 20px;
+	font-size: 11px;
+}
+
+#id-security-code {
+	width: 50px;
+	float: left;
+}
+
+.status {
+	color: rgb(215, 5, 5);
+	font-weight: bold;
+	font-size: 9px;
+	height: 0px;
+	display: block;
+	float: left;
+}
+ 
+.ch-btn-big, .ch-btn-big:focus {
+	font-size: 16px;
+	text-align: center;
+	line-height: 1.25em;
+	padding: 6px 33px;
+	outline: 0;
+	float: right;
+	margin-right: 42px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
