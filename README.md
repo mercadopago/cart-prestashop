@@ -1,7 +1,7 @@
 # PrestaShop - Mercadopago Module (v1.3.6 - 1.4.7.3x | 1.5.3 -  1.6.x)
 
 ---
-*Available for Argentina, Brazil, Mexico and Venezuela*
+*Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
 
 ## Installation:
 
@@ -34,33 +34,6 @@ Get your **CLIENT_ID** and **CLIENT_SECRET** of according to his country:
 
 	* Argentina: https://www.mercadopago.com/mla/herramientas/aplicaciones
 	* Brazil: https://www.mercadopago.com/mlb/ferramentas/aplicacoes
+	* Colombia: https://www.mercadopago.com/mco/herramientas/aplicaciones
 	* Mexico: https://www.mercadopago.com/mlm/herramientas/aplicaciones
 	* Venezuela: https://www.mercadopago.com/mlv/herramientas/aplicaciones
-
-**Note**:  If you change the Country where your account was created you need update first to refresh the excluded payment methods.
-
-## Sync your backoffice with Mercadopago (IPN) 
-
-Go to **Mercadopago IPN configuration**:
-
-    * Argentina: https://www.mercadopago.com/mla/herramientas/notificaciones
-    * Brazil: https://www.mercadopago.com/mlb/ferramentas/notificacoes
-    * Mexico: https://www.mercadopago.com/mlm/herramientas/notificaciones
-    * Venezuela: https://www.mercadopago.com/mlv/herramientas/notificaciones
-
-Enter the URL as follow: ***[yourstoreaddress.com]***/modules/mercadopago/includes/retorno.php
-
-## FAQ
-
-The moment finalizing the purchase to make payment is displayed the error: "invalid_items: currency_id invalid"?
-		
-During the installation of Prestashop always use the regional settings of your country.
-If at the time of installation is selected settings of USA, later to correct it, failures may occur during the upgrade, causing the error referred above.
-	
-How to customize the text displayed in the checkout?
-
-Open the following files with notepad and change the information you want:
-
-	Prestashop folder ... \ modules \ MercadoPago
-		> confirm.tpl
-		> payment_return.tpl
