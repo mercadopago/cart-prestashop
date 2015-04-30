@@ -36,7 +36,7 @@
 			{l s='Card holder name: ' mod='mercadopago'}
 			{$card_holder_name|escape:'htmlall'}</br>
 			{l s='Credit card: ' mod='mercadopago'}
-			**** **** **** {$four_digits|escape:'htmlall'}</br>
+			{$four_digits|escape:'htmlall'}</br>
 			{l s='Payment method: ' mod='mercadopago'}
 			{$payment_method_id|escape:'htmlall'}</br>
 			{if $expiration_date != null}

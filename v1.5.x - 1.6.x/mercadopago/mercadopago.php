@@ -165,7 +165,7 @@ class MercadoPago extends PaymentModule {
 			|| !Configuration::updateValue('MERCADOPAGO_COUNTRY', '')
 			|| !$this->registerHook('payment')
 			|| !$this->registerHook('paymentReturn')
-			|| !$this->registerHook('displayPaymentTop'))
+			|| !$this->registerHook('displayHeader'))
 
 			return false;
 
@@ -408,7 +408,7 @@ class MercadoPago extends PaymentModule {
 		return $mp->validatePublicKey($public_key);
 	}
 
-	public function hookDisplayPaymentTop()
+	public function hookDisplayHeader()
 	{
 		if (!$this->active)
 			return;
@@ -420,10 +420,9 @@ class MercadoPago extends PaymentModule {
 
 		$this->context->controller->addCss($this->_path.'views/css/mercadopago_core.css', 'all');
 		$this->context->controller->addCss($this->_path.'views/css/mercadopago_v'.$this->getPrestashopVersion().'.css', 'all');
-
 		$this->context->smarty->assign($data);
 
-		return $this->display(__file__, '/views/templates/hook/payment_top.tpl');
+		return $this->display(__file__, '/views/templates/hook/header.tpl');
 	}
 
 	public function hookPayment($params)
@@ -449,7 +448,7 @@ class MercadoPago extends PaymentModule {
 				'statement_descriptor' => Tools::getValue('statement_descriptor'),
 				'window_type' => Configuration::get('MERCADOPAGO_WINDOW_TYPE'),
 				'iframe_width' => Configuration::get('MERCADOPAGO_IFRAME_WIDTH'),
-				'iframe_height' => Configuration::get('MERCADOPAGO_IFRAME_HEIGHT'),
+				'iframe_height' => Configuration::get('MERCADOPAGO_IFRAME_HEIGHT')
 			);
 
 			// send credit card configurations only activated
@@ -457,7 +456,7 @@ class MercadoPago extends PaymentModule {
 			{
 				$data['public_key'] = Configuration::get('MERCADOPAGO_PUBLIC_KEY');
 				$data['creditcard_banner'] = Configuration::get('MERCADOPAGO_CREDITCARD_BANNER');
-				$data['amount'] = (Float)number_format($params['cart']->getOrderTotal(true, 3), 2, '.', '');
+				$data['amount'] = (Float)number_format($params['cart']->getOrderTotal(true, Cart::BOTH), 2, '.', '');
 			}
 
 			// send standard configurations only activated
@@ -504,7 +503,7 @@ class MercadoPago extends PaymentModule {
 		else if (Tools::getValue('checkout') == 'standard')
 		{
 			$data = array();
-			$data['amount'] = Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false);
+			$data['amount'] = Tools::displayPrice(Tools::getValue('amount'), $params['currencyObj'], false);
 			$data['preferences_url'] = Tools::getValue('preferences_url');
 			$data['window_type'] = Tools::getValue('window_type');
 			$data['standard_banner'] = Tools::getValue('standard_banner');
@@ -539,7 +538,7 @@ class MercadoPago extends PaymentModule {
 					'transaction_amount' => Tools::displayPrice(Tools::getValue('transaction_amount'), $params['currencyObj'], false),
 					'statement_descriptor' => Tools::getValue('statement_descriptor'),
 					'payment_id' => Tools::getValue('payment_id'),
-					'amount' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
+					'amount' => Tools::displayPrice(Tools::getValue('amount'), $params['currencyObj'], false),
 					'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
 									.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__
 				)
@@ -630,13 +629,26 @@ class MercadoPago extends PaymentModule {
 			$items[] = $item;
 		}
 
+		// include shipping cost
+		$carrier = new Carrier($cart->id_carrier);
+		$item = array (
+				'id' => $carrier->id,
+				'title' => 'Frete Prestashop',
+				'description' => $carrier->name,
+				'quantity' => 1,
+				'unit_price' => $cart->getPackageShippingCost($cart->id_carrier),
+				'category_id'=> Configuration::get('MERCADOPAGO_CATEGORY')
+			);
+
+		$items[] = $item;
+
 		$data = array(
 			'external_reference' => $cart->id,
 			'customer' => $customer_data,
 			'items' => $items,
 			'shipments' => $shipments,
-			'notification_url' => $this->link->getModuleLink('mercadopago', 'notification', array(), Configuration::get('PS_SSL_ENABLED'), null, null, false)
 		);
+
 
 		if ($post != null && (array_key_exists('card_token_id', $post) ||
 			(array_key_exists('payment_method_id', $post) && $post['payment_method_id'] == 'bolbradesco')))
@@ -644,8 +656,9 @@ class MercadoPago extends PaymentModule {
 			$cart = Context::getContext()->cart;
 
 			$data['reason'] = 'Prestashop via MercadoPago';
-			$data['amount'] = (Float)number_format($cart->getOrderTotal(true, 3), 2, '.', '');
+			$data['amount'] = (Float)number_format($cart->getOrderTotal(true, Cart::BOTH), 2, '.', '');
 			$data['payer_email'] = $customer_fields['email'];
+			$data['notification_url'] = $this->link->getModuleLink('mercadopago', 'notification', array(), Configuration::get('PS_SSL_ENABLED'), null, null, false).'?checkout=custom&';
 
 			// add only for creditcard
 			if (array_key_exists('card_token_id', $post))
@@ -666,6 +679,7 @@ class MercadoPago extends PaymentModule {
 			$data['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentMethods();
 			$data['payment_methods']['excluded_payment_types'] = array();
 			$data['payment_methods']['installments'] = (Integer)Configuration::get('MERCADOPAGO_INSTALLMENTS');
+			$data['notification_url'] = $this->link->getModuleLink('mercadopago', 'notification', array(), Configuration::get('PS_SSL_ENABLED'), null, null, false).'?checkout=standard&';
 
 			// swap to payer index since customer is only for transparent
 			$data['customer']['name'] = $data['customer']['first_name'];
@@ -705,15 +719,74 @@ class MercadoPago extends PaymentModule {
 		return $excluded_payment_methods;
 	}
 
-	public function updateOrder($topic, $id)
+	public function listenIPN($checkout, $topic, $id)
 	{
-		if ($topic == 'payment' && $id > 0)
+		$payment_method_ids = array();
+		$payment_ids = array();
+		$payment_statuses = array();
+		$payment_types = array();
+		$credit_cards = array();
+		$transaction_amounts = 0;
+		$cardholders = array();
+		$external_reference = '';
+
+		if ($checkout == "standard" && $topic == 'merchant_order' && $id > 0)
 		{
-			// get payment info
+			// get merchant order info
+			$result = $this->mercadopago->getMerchantOrder($id);
+			$merchant_order_info = $result['response'];
+			$payments = $merchant_order_info['payments'];
+			$external_reference = $merchant_order_info['external_reference'];
+
+			foreach($payments as $payment)
+			{
+				// get payment info
+				$result = $this->mercadopago->getPayment($payment['id']);
+				$payment_info = $result['response']['collection'];
+
+				// colect payment details
+				$payment_ids[] = $payment_info['id'];
+				$payment_statuses[] = $payment_info['status'];
+				$payment_types[] = $payment_info['payment_type'];
+				$transaction_amounts += $payment_info['transaction_amount'];
+				if ($payment_info['payment_type'] == 'credit_card')
+				{
+					$payment_method_ids[] = $payment_info['payment_method_id'];
+					$credit_cards[] = 'xxxx xxxx xxxx '.$payment_info['last_four_digits'];
+					$cardholders[] = $payment_info['cardholder']['name'];
+				}	
+			}
+			$this->updateOrder($payment_ids, $payment_statuses, $payment_method_ids, $payment_types, $credit_cards, $cardholders, $transaction_amounts, $external_reference);
+		} 
+		else if ($checkout == "custom" && $topic == 'payment' && $id > 0)
+		{
 			$result = $this->mercadopago->getPayment($id);
 			$payment_info = $result['response']['collection'];
-			$payment_status = $payment_info['status'];
-			$order_status = '';
+			$external_reference = $payment_info['external_reference'];
+			// colect payment details
+			$payment_ids[] = $payment_info['id'];
+			$payment_statuses[] = $payment_info['status'];
+			$payment_types[] = $payment_info['payment_type'];
+			$transaction_amounts += $payment_info['transaction_amount'];
+			if ($payment_info['payment_type'] == 'credit_card')
+			{
+				$payment_method_ids[] = $payment_info['payment_method_id'];
+				$credit_cards[] = 'xxxx xxxx xxxx '.$payment_info['last_four_digits'];
+				$cardholders[] = $payment_info['cardholder']['name'];
+			}
+			$this->updateOrder($payment_ids, $payment_statuses, $payment_method_ids, $payment_types, $credit_cards, $cardholders, $transaction_amounts, $external_reference);
+		}
+
+	}
+
+	private function updateOrder($payment_ids, $payment_statuses, $payment_method_ids, $payment_types, $credit_cards, $cardholders, $transaction_amounts, $external_reference)
+	{
+		// if has two creditcard validate whether payment has same status in order to continue validating order
+		if (count($payment_statuses) == 1 || (count($payment_statuses) == 2 && $payment_statuses[0] == $payment_statuses[1])) {
+			$order;
+			$order_status = null;
+			$payment_status = $payment_statuses[0];
+			$payment_type = $payment_types[0];
 			switch ($payment_status)
 			{
 				case 'in_process':
@@ -741,57 +814,82 @@ class MercadoPago extends PaymentModule {
 					$order_status = 'MERCADOPAGO_STATUS_3';
 					break;
 			}
-
-			$id_cart = $payment_info['external_reference'];
-			$id_order = Order::getOrderByCartId($id_cart);
-
-			// If order wasn't created yet and payment is approved or pending or in_process, create it. 
-			// This can happen when user closes checkout standard
-			if (!$id_order && ($payment_status == 'in_process' || $payment_status == 'approved' || $payment_status == 'pending'))
+			// just change if there is an order status
+			if($order_status)
 			{
-				$cart = new Cart($id_cart);
-				$total = (Float)number_format($payment_info['transaction_amount'], 2, '.', '');
-				$extra_vars = array (
-						'{bankwire_owner}' => $this->textshowemail,
-						'{bankwire_details}' => '',
-						'{bankwire_address}' => ''
-						);
-				$this->validateOrder($id_cart, Configuration::get($order_status),
-											$total,
-											$this->displayName,
-											null,
-											$extra_vars, $cart->id_currency);
-			}
+				$id_cart = $external_reference;
+				error_log('cart_id='.$id_cart);
+				$id_order = Order::getOrderByCartId($id_cart);
+				if ($id_order)
+				{
+					error_log('getOrderByCartId method='.$id_order);
+					$order = new Order($id_order);
+				}
 
-			$id_order  = !$id_order ? Order::getOrderByCartId($id_cart) : $id_order;
-			$order = new Order($id_order);
-			// Only update if previous state is different from new state
-			if ($order->current_state != null && $order->current_state != Configuration::get($order_status))
-			{
-				$this->updateOrderHistory($order->id, Configuration::get($order_status));
+				// If order wasn't created yet and payment is approved or pending or in_process, create it. 
+				// This can happen when user closes checkout standard
+				if (empty($id_order) && ($payment_status == 'in_process' || $payment_status == 'approved' || $payment_status == 'pending'))
+				{
+					error_log('#### inicio if ####');
+					error_log('payment id='.$payment_ids[0]);
+					error_log('payment status='.$payment_status);
+					$cart = new Cart($id_cart);
+					$total = (Float)number_format($transaction_amounts, 2, '.', '');
+					$extra_vars = array (
+							'{bankwire_owner}' => $this->textshowemail,
+							'{bankwire_details}' => '',
+							'{bankwire_address}' => ''
+							);
+					error_log('validateOrder');
+					$this->validateOrder($id_cart, Configuration::get($order_status),
+												$total,
+												$this->displayName,
+												null,
+												$extra_vars, $cart->id_currency);
+					$id_order = !$id_order ? Order::getOrderByCartId($id_cart) : $id_order;
+					$order = new Order($id_order);
+					error_log('#### fim if ####');
+				}
+				else if ($order->current_state != null && $order->current_state != Configuration::get($order_status))
+				{
+					error_log('#### inicio else ####');
+					error_log('payment id='.$payment_ids[0]);
+					error_log('payment status='.$payment_status);
+					$id_order = !$id_order ? Order::getOrderByCartId($id_cart) : $id_order;
+					error_log($id_order);
+					$order = new Order($id_order);
+					error_log('updating history='.$order_status);
+					$this->updateOrderHistory($order->id, Configuration::get($order_status));
+
+					// Cancel the order to force products to go to stock.
+					switch ($payment_status)
+					{
+						case 'cancelled':
+						case 'refunded':
+						case 'rejected':
+							$this->updateOrderHistory($id_order, Configuration::get('PS_OS_CANCELED'), false);
+						break;
+					}
+
+					error_log('#### fim else ####');
+				}
 
 				// update order payment information
 				$order_payments = $order->getOrderPayments();
-				$order_payments[0]->transaction_id = $payment_info['id'];
-				if ($payment_info['payment_type'] == 'credit_card')
+				foreach($order_payments as $order_payment)
 				{
-					$order_payments[0]->card_number = 'xxxx xxxx xxxx '.$payment_info['last_four_digits'];
-					$order_payments[0]->card_brand = Tools::ucfirst($payment_info['payment_method_id']);
-					$order_payments[0]->card_holder = $payment_info['cardholder']['name'];
-					//card_expiration just custom checkout has it. Can't fecht it thru collections
+					$order_payment->transaction_id = join(" / ", $payment_ids);
+				
+					if ($payment_type == "credit_card")
+					{
+						$order_payment->card_number = join(" / ", $credit_cards);
+						$order_payment->card_brand = join(" / ", $payment_method_ids);
+						$order_payment->card_holder = join(" / ", $cardholders);
+						//card_expiration just custom checkout has it. Can't fecht it thru collections
+					}
+					$order_payment->save();
 				}
-				$order_payments[0]->save();
-
-				// Cancel the order to force products to go to stock.
-				switch ($payment_status)
-				{
-					case 'cancelled':
-					case 'refunded':
-					case 'rejected':
-						$this->updateOrderHistory($id_order, Configuration::get('PS_OS_CANCELED'), false);
-					break;
-				}
-			}
+			}	
 		}
 	}
 
