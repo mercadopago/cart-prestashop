@@ -87,11 +87,11 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 			else
 			{
 				// get credit card last 4 digits
-				$four_digits = Tools::substr(Tools::getValue('cardNumber'), -4);
+				$four_digits = '**** **** **** '.Tools::substr(Tools::getValue('cardNumber'), -4);
 				// expiration date
 				$expiration_date = Tools::getValue('cardExpirationMonth').'/20'.Tools::getValue('cardExpirationYear');
 
-				$order_payments[0]->card_number = 'xxxx xxxx xxxx '.$four_digits;
+				$order_payments[0]->card_number = $four_digits;
 				$order_payments[0]->card_brand = Tools::ucfirst(Tools::getValue('payment_method_id'));
 				$order_payments[0]->card_expiration = $expiration_date;
 				$order_payments[0]->card_holder = Tools::getValue('cardholderName');
