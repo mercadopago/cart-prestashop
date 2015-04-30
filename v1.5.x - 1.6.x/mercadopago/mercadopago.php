@@ -818,11 +818,9 @@ class MercadoPago extends PaymentModule {
 			if($order_status)
 			{
 				$id_cart = $external_reference;
-				error_log('cart_id='.$id_cart);
 				$id_order = Order::getOrderByCartId($id_cart);
 				if ($id_order)
 				{
-					error_log('getOrderByCartId method='.$id_order);
 					$order = new Order($id_order);
 				}
 
@@ -830,9 +828,6 @@ class MercadoPago extends PaymentModule {
 				// This can happen when user closes checkout standard
 				if (empty($id_order) && ($payment_status == 'in_process' || $payment_status == 'approved' || $payment_status == 'pending'))
 				{
-					error_log('#### inicio if ####');
-					error_log('payment id='.$payment_ids[0]);
-					error_log('payment status='.$payment_status);
 					$cart = new Cart($id_cart);
 					$total = (Float)number_format($transaction_amounts, 2, '.', '');
 					$extra_vars = array (
@@ -840,7 +835,6 @@ class MercadoPago extends PaymentModule {
 							'{bankwire_details}' => '',
 							'{bankwire_address}' => ''
 							);
-					error_log('validateOrder');
 					$this->validateOrder($id_cart, Configuration::get($order_status),
 												$total,
 												$this->displayName,
@@ -848,17 +842,11 @@ class MercadoPago extends PaymentModule {
 												$extra_vars, $cart->id_currency);
 					$id_order = !$id_order ? Order::getOrderByCartId($id_cart) : $id_order;
 					$order = new Order($id_order);
-					error_log('#### fim if ####');
 				}
 				else if ($order->current_state != null && $order->current_state != Configuration::get($order_status))
 				{
-					error_log('#### inicio else ####');
-					error_log('payment id='.$payment_ids[0]);
-					error_log('payment status='.$payment_status);
 					$id_order = !$id_order ? Order::getOrderByCartId($id_cart) : $id_order;
-					error_log($id_order);
 					$order = new Order($id_order);
-					error_log('updating history='.$order_status);
 					$this->updateOrderHistory($order->id, Configuration::get($order_status));
 
 					// Cancel the order to force products to go to stock.
@@ -870,8 +858,6 @@ class MercadoPago extends PaymentModule {
 							$this->updateOrderHistory($id_order, Configuration::get('PS_OS_CANCELED'), false);
 						break;
 					}
-
-					error_log('#### fim else ####');
 				}
 
 				// update order payment information
