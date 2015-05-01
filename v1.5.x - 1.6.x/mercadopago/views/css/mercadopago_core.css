@@ -56,7 +56,7 @@
 	font-weight: normal;
 }
 
-.mp-module h4 {
+.mp-module .mp-form h4 {
 	font-weight: bold;
 	font-size: 22px;
 	color: #333333;
@@ -199,12 +199,12 @@
 	margin-top: -2px;
 	}
 
-.mp-module .lightbox:target {
+.lightbox:target {
 		display: block;
 		outline: none;
 }
 
-.mp-module .lightbox .box {
+.lightbox .box {
 	width: 100%;
 	height: 100%;
 	padding: 20px;
@@ -214,7 +214,7 @@
 }
 
 
-.mp-module .lightbox .content {
+.lightbox .content {
 	display: block;
 	font-size: 18px;
 	line-height: 22px;
@@ -228,7 +228,7 @@
 	border-radius: 10px;
 }
 
-.mp-module .lightbox .processing {
+.lightbox .processing {
 	color: black;
 	height: 40px;
 	padding-top: 8px;
@@ -239,7 +239,7 @@
 	font-weight: 100;
 }
 
-.mp-module .lightbox .logo {
+.lightbox .logo {
 	height: 23px;
 	width: 90px;
 	position: relative;

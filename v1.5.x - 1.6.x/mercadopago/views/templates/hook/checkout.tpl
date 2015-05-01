@@ -22,16 +22,16 @@
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of MercadoPago
 *}
-<div class="mp-module">
-	<div class="lightbox" id="text">
-	  <div class="box">
-	    <div class="content">
-	    	<div class="processing">
-		  		<span>{l s='Processing...' mod='mercadopago'}</span>
-		  	</div>
+<div class="lightbox" id="text">
+  <div class="box">
+    <div class="content">
+    	<div class="processing">
+	  		<span>{l s='Processing...' mod='mercadopago'}</span>
 	  	</div>
-	  </div>
-	</div>
+  	</div>
+  </div>
+</div>
+<div class="mp-module">
 	{if $creditcard_active == 'true' && $public_key != ''}
 		{if $version == 5}
 			<div class="payment_module mp-form"> 
