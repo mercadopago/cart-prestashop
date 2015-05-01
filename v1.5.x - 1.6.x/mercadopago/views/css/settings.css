@@ -23,46 +23,46 @@
 *  International Registered Trademark & Property of MercadoPago
 */
 
-fieldset {
+.mp-module fieldset {
     background-color: #FCFCFC !important;
     color: #2D3277 !important;
     margin-top: 40px !important;
 }
-legend {
+.mp-module legend {
     background-color: #D9DADB !important;
     font-size: 14px !important;
 }
-label {
+.mp-module label {
     color: #2D3277 !important; 
 }
-select {
+.mp-module select {
     width: 215px;
     color: black;
     background: white;
 }
-h4,h3 {
+.mp-module h4, .mp-module h3 {
     color: #2D3277 !important;
     margin-left: 10px;
 }
-#settings a {
+.mp-module #settings a {
     color: #05A3DF !important;
 }
-#settings {
+.mp-module #settings {
     display: none;
 }
-.logo {
+.mp-module .logo {
     margin-top: 30px;
     margin-left: 10px;
 }
 
-.payment-methods {
+.mp-module .payment-methods {
     position: relative;
     left: 260px;
     top: -18px;
     height: 154px;
 }
 
-.ch-btn-big, .ch-btn-big:focus {
+.mp-module .ch-btn-big, .ch-btn-big:focus {
     font-size: 17px !important;
     text-align: center !important;
     line-height: 1.25em !important;
@@ -73,7 +73,7 @@ h4,h3 {
     margin-bottom: 5px !important;
 }
 
-.ch-btn, .ch-btn:focus, .ch-btn:visited {
+.mp-module .ch-btn, .ch-btn:focus, .ch-btn:visited {
     font-family: 'Lato', sans-serif !important;
     font-weight: 400 !important;
     background-color: #36A1F1 !important;
@@ -91,7 +91,7 @@ h4,h3 {
     display: inline-block !important;
     margin-top: 20px !important;
 }
-.ch-btn:hover {
+.mp-module .ch-btn:hover {
     background-color: #4CBFF8 !important;
     background-image: linear-gradient(#4CBFF8, #1699DF) !important;
     box-shadow: 0 1px #B6EBFF inset !important;
@@ -106,7 +106,7 @@ h4,h3 {
     text-decoration: none !important;
     outline: 0
 }
-.ch-btn:active {
+.mp-module .ch-btn:active {
     background-color: #1473CD !important;
     background-image: linear-gradient(#1473CD, #0B66BC) !important;
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1473CD), color-stop(100%, #0B66BC)) !important;
@@ -122,7 +122,7 @@ h4,h3 {
     outline: 0
 }
 
-.ch-btn-big-orange, .ch-btn-big-orange:focus {
+.mp-module .ch-btn-big-orange, .ch-btn-big-orange:focus {
     font-size: 17px !important;
     text-align: center !important;
     line-height: 1.25em !important;
@@ -133,7 +133,7 @@ h4,h3 {
     margin-bottom: 5px !important;
 }
 
-.ch-btn-orange, .ch-btn-orange:focus, .ch-btn-orange:visited {
+.mp-module .ch-btn-orange, .ch-btn-orange:focus, .ch-btn-orange:visited {
     font-family: 'Lato', sans-serif !important;
     font-weight: 400 !important;
     background-color: rgb(255, 155, 0) !important;
@@ -151,7 +151,7 @@ h4,h3 {
     display: inline-block !important;
     margin-top: 20px !important;
 }
-.ch-btn-orange:hover {
+.mp-module .ch-btn-orange:hover {
     background-color: rgb(255, 213, 0) !important;
     background-image: linear-gradient(rgb(255, 213, 0), rgb(255, 165, 0)) !important;
     box-shadow: 0 1px #FFD608 inset !important;
@@ -166,7 +166,7 @@ h4,h3 {
     text-decoration: none !important;
     outline: 0
 }
-.ch-btn-orange:active {
+.mp-module .ch-btn-orange:active {
     background-color: rgb(255, 107, 1) !important;
     background-image: llinear-gradient(rgb(255, 107, 1), rgb(228, 89, 17)) !important;
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1473CD), color-stop(100%, rgb(228, 89, 17))) !important;
