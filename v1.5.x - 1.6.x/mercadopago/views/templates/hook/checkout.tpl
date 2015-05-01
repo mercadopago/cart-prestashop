@@ -22,233 +22,235 @@
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of MercadoPago
 *}
-<div class="lightbox" id="text">
-  <div class="box">
-    <div class="content">
-    	<div class="processing">
-	  		<span>{l s='Processing...' mod='mercadopago'}</span>
+<div class="mp-module">
+	<div class="lightbox" id="text">
+	  <div class="box">
+	    <div class="content">
+	    	<div class="processing">
+		  		<span>{l s='Processing...' mod='mercadopago'}</span>
+		  	</div>
 	  	</div>
-  	</div>
-  </div>
-</div>
-{if $creditcard_active == 'true' && $public_key != ''}
-	{if $version == 5}
-		<div class="payment_module mp-form"> 
-			<div class="row">
-				<span class="payment-label">{l s='CREDIT CARD' mod='mercadopago'} </span>
-				</br>
-				<span class="poweredby">{l s='Powered by' mod='mercadopago'}</span>
-				<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png"/>
-				{if !empty($creditcard_banner)}
-				<img src="{$creditcard_banner|escape:'htmlall'}" class="mp-creditcard-banner"/>
-				{/if}
-			</div>
-			<form action="{$custom_action_url|escape:'htmlall'}" method="post" id="form-pagar-mp">
-		    	<div class="row">
-			    	<div class="col">
-				    	<label for="id-card-number">{l s='Card number: ' mod='mercadopago'}</label>
-				    	<input id="id-card-number" data-checkout="cardNumber" type="text" name="cardNumber"/>
-				    	<div id="id-card-number-status" class="status"></div>
-			    	</div>
-			    	<div class="col col-expiration">
-				    	<label for="id-card-expiration-month">{l s='Month Exp: ' mod='mercadopago'}</label>
-				    	<select id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text" name="cardExpirationMonth"></select>
-				    </div>
-				    <div class="col col-expiration">
-				    	<label for="id-card-expiration-month">{l s='Year Exp: ' mod='mercadopago'}</label>
-				    	<select id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text" name="cardExpirationYear"></select>
-			    		<div id="id-card-expiration-year-status" class="status"></div>
-			    	</div>
-			    	<div class="col">
-				    	<label for="id-card-holder-name">{l s='Card Holder Name: ' mod='mercadopago'}</label>
-				    	<input id="id-card-holder-name" name="cardholderName" data-checkout="cardholderName" type="text"/>
-			    		<div id="id-card-holder-name-status" class="status"></div>
-			    	</div>
-			    </div>
-			    <div class="row">
-			    	<div class="col col-security">
-				    	<label for="id-security-code">{l s='Security Code: ' mod='mercadopago'}</label>
-				    	<input id="id-security-code" data-checkout="securityCode" type="text" maxlength="4"//>
-				    	<img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/cvv.png" class="cvv"/>
-				    	<div id="id-security-code-status" class="status"></div>
-			    	</div>
-				    	<div class="col col-cpf">
-				    	<label for="id-doc-number">{l s='CPF: ' mod='mercadopago'}</label>
-				    	<input id="id-doc-number" name="docNumber" data-checkout="docNumber" type="text" maxlength="11"/>
-				    	<div id="id-doc-number-status" class="status"></div>
-			    	</div>
-			    	<div class="col">
-				    	<label for="id-installments">{l s='Installments: ' mod='mercadopago'}</label>
-				    	<select id="id-installments" name="installments" type="text>"></select>
-			    	</div>
-			    </div>
-			    <input name="docType"  data-checkout="docType" type="hidden" value="CPF"/>
-			    <input id="amount" type="hidden" value="{$amount|escape:'htmlall'}"/>
-			    <div class="row">
-			   		<div class="col-bottom">
-		    			<input type="submit" value="{l s='Confirm payment' mod='mercadopago'}" class="ch-btn ch-btn-big" />
-					</div>
-		    	</div>
-			</form>
-		</p>
-		</div>
-	{elseif $version == 6}
-		<div class="row">
-			<div class="col-xs-12 col-md-6">
-					<div class="mp-form"> 
-						<div class="row">
-							<div class="col title">
-								<span class="payment-label">{l s='CREDIT CARD' mod='mercadopago'} </span>
-								</br>
-								<span class="poweredby">{l s='Powered by' mod='mercadopago'}</span>
-								<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png">
-							</div>
-							{if !empty($creditcard_banner)}
-							<div class="col title">
-								<img src="{$creditcard_banner|escape:'htmlall'}" class="mp-creditcard-banner"/>
-							</div>
-							{/if}
-						</div>
-						<form action="{$custom_action_url|escape:'htmlall'}" method="post" id="form-pagar-mp">
-						    <div class="row">
-						    	<div class="col">
-							    	<label for="id-card-number">{l s='Card number: ' mod='mercadopago'}</label>
-							    	<input id="id-card-number" data-checkout="cardNumber" type="text" name="cardNumber"/>
-							    	<div id="id-card-number-status" class="status"></div>
-							    </div>
-						    </div>
-						   	 <div class="row">
-							   	<div class="col">
-							    	<label for="id-card-expiration-month">{l s='Expiration: ' mod='mercadopago'}</label>
-							    	<select id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text" name="cardExpirationMonth"></select>
-							    </div>
-							    <div class="col">
-							    	<select id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text" name="cardExpirationYear"></select>
-							    	<div id="id-card-expiration-year-status" class="status"></div>
-							    </div>
-							</div>
-							<div class="row">
-								<div class="col">
-							    	<label for="id-card-holder-name">{l s='Card Holder Name: ' mod='mercadopago'}</label>
-							    	<input id="id-card-holder-name" name="cardholderName" data-checkout="cardholderName" type="text"/>
-							    	<div id="id-card-holder-name-status" class="status"></div>
-						    	</div>
-						    </div>
-							<div class="row">
-						    	<div class="col">
-							    	<label for="id-security-code">{l s='Security Code: ' mod='mercadopago'}</label>
-							    	<input id="id-security-code" data-checkout="securityCode" type="text" maxlength="4"//>
-							    	<img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/cvv.png" class="cvv"/>
-							    	<div id="id-security-code-status" class="status"></div>
-							    </div> 
-					    	</div>
-						 	<div class="row">
-						    	<div class="col">
-							    	<label for="id-doc-number">{l s='CPF: ' mod='mercadopago'}</label>
-							    	<input id="id-doc-number" name="docNumber" data-checkout="docNumber" type="text" maxlength="11"/>
-							    	<div id="id-doc-number-status" class="status"></div>
-							    </div>
-						    </div>
-							<div class="row">
-							    <div class="col">
-							    	<label for="id-installments">{l s='Installments: ' mod='mercadopago'}</label>
-							    	<select id="id-installments" name="installments" type="text>"></select>
-							    </div>
-						 	</div>
-						    <input name="docType"  data-checkout="docType" type="hidden" value="CPF"/>
-						    <input id="amount" type="hidden" value="{$amount|escape:'htmlall'}"/>
-						    <div class="row">
-					    		<div class="col-bottom">
-							    	<input type="submit" value="{l s=' Confirm payment' mod='mercadopago'}" class="ch-btn ch-btn-big" />
-						    	</div>
-						    </div>
-						</form>
-					</div>
-				</p>
-			</div>
-		</div>
-	{/if}
-{/if}
-{if $boleto_active eq 'true'}
-	{if $version == 5}
-		<div class="payment_module mp-form"> 
-			<div class="row">
-				<div class="row boleto">
-					<div class="col">
-						<span class="payment-label">{l s='TICKET' mod='mercadopago'}</span></br>
-						<span class="poweredby">{l s=' Powered by ' mod='mercadopago'}</span>
-						<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png">
-					</div>
-					<a href="javascript:void(0);" id="id-boleto">{l s='Pay through ticket via MercadoPago' mod='mercadopago'}
-						<form action="{$custom_action_url|escape:'htmlall'}" method="post" id="form-boleto-mp">
-					    	<input name="payment_method_id" type="hidden" value="bolbradesco"/>
-					    	<input type="submit" id="id-create-boleto">
-						</form>	
-					</a>
+	  </div>
+	</div>
+	{if $creditcard_active == 'true' && $public_key != ''}
+		{if $version == 5}
+			<div class="payment_module mp-form"> 
+				<div class="row">
+					<span class="payment-label">{l s='CREDIT CARD' mod='mercadopago'} </span>
+					</br>
+					<span class="poweredby">{l s='Powered by' mod='mercadopago'}</span>
+					<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png"/>
+					{if !empty($creditcard_banner)}
+					<img src="{$creditcard_banner|escape:'htmlall'}" class="mp-creditcard-banner"/>
+					{/if}
 				</div>
+				<form action="{$custom_action_url|escape:'htmlall'}" method="post" id="form-pagar-mp">
+			    	<div class="row">
+				    	<div class="col">
+					    	<label for="id-card-number">{l s='Card number: ' mod='mercadopago'}</label>
+					    	<input id="id-card-number" data-checkout="cardNumber" type="text" name="cardNumber"/>
+					    	<div id="id-card-number-status" class="status"></div>
+				    	</div>
+				    	<div class="col col-expiration">
+					    	<label for="id-card-expiration-month">{l s='Month Exp: ' mod='mercadopago'}</label>
+					    	<select id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text" name="cardExpirationMonth"></select>
+					    </div>
+					    <div class="col col-expiration">
+					    	<label for="id-card-expiration-month">{l s='Year Exp: ' mod='mercadopago'}</label>
+					    	<select id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text" name="cardExpirationYear"></select>
+				    		<div id="id-card-expiration-year-status" class="status"></div>
+				    	</div>
+				    	<div class="col">
+					    	<label for="id-card-holder-name">{l s='Card Holder Name: ' mod='mercadopago'}</label>
+					    	<input id="id-card-holder-name" name="cardholderName" data-checkout="cardholderName" type="text"/>
+				    		<div id="id-card-holder-name-status" class="status"></div>
+				    	</div>
+				    </div>
+				    <div class="row">
+				    	<div class="col col-security">
+					    	<label for="id-security-code">{l s='Security Code: ' mod='mercadopago'}</label>
+					    	<input id="id-security-code" data-checkout="securityCode" type="text" maxlength="4"//>
+					    	<img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/cvv.png" class="cvv"/>
+					    	<div id="id-security-code-status" class="status"></div>
+				    	</div>
+					    	<div class="col col-cpf">
+					    	<label for="id-doc-number">{l s='CPF: ' mod='mercadopago'}</label>
+					    	<input id="id-doc-number" name="docNumber" data-checkout="docNumber" type="text" maxlength="11"/>
+					    	<div id="id-doc-number-status" class="status"></div>
+				    	</div>
+				    	<div class="col">
+					    	<label for="id-installments">{l s='Installments: ' mod='mercadopago'}</label>
+					    	<select id="id-installments" name="installments" type="text>"></select>
+				    	</div>
+				    </div>
+				    <input name="docType"  data-checkout="docType" type="hidden" value="CPF"/>
+				    <input id="amount" type="hidden" value="{$amount|escape:'htmlall'}"/>
+				    <div class="row">
+				   		<div class="col-bottom">
+			    			<input type="submit" value="{l s='Confirm payment' mod='mercadopago'}" class="ch-btn ch-btn-big" />
+						</div>
+			    	</div>
+				</form>
+			</p>
 			</div>
-		</div>
-	{elseif $version == 6}
-		<div class="row">
-			<div class="col-xs-12 col-md-6">
-					<a href="javascript:void(0);" id="id-boleto">
-						<div class="mp-form hover"> 
-							<div class="row boleto">
-								<div class="col">
-									<span class="payment-label">{l s='TICKET' mod='mercadopago'} </span></br>
+		{elseif $version == 6}
+			<div class="row">
+				<div class="col-xs-12 col-md-6">
+						<div class="mp-form"> 
+							<div class="row">
+								<div class="col title">
+									<span class="payment-label">{l s='CREDIT CARD' mod='mercadopago'} </span>
+									</br>
 									<span class="poweredby">{l s='Powered by' mod='mercadopago'}</span>
 									<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png">
 								</div>
-								<form action="{$custom_action_url|escape:'htmlall'}" method="post" id="form-boleto-mp">
-							    	<input name="payment_method_id" type="hidden" value="bolbradesco"/>
-							    	<input type="submit" id="id-create-boleto">
-								</form>	
+								{if !empty($creditcard_banner)}
+								<div class="col title">
+									<img src="{$creditcard_banner|escape:'htmlall'}" class="mp-creditcard-banner"/>
+								</div>
+								{/if}
 							</div>
-						</div>
-					</a>
-			</div>
-		</div>
-	{/if}
-{/if}
-{if $standard_active eq 'true' && $preferences_url != null}
-	{if $version == 5}
-		{if $window_type != 'iframe'}
-		<div class="payment_module mp-form"> 
-				<img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo_120_31.png" id="id-standard-logo">
-				<a class="standard" href="{$preferences_url|escape:'htmlall'}" mp-mode="{$window_type|escape:'htmlall'}" id="id-standard" name="MP-Checkout">{l s='Pay via MercadoPago and split into ' mod='mercadopago'}</br>{l s=' up to 24 times' mod='mercadopago'}</a>
-				<img src="{$standard_banner|escape:'htmlall'}" class="mp-standard-banner"/>
-		</div>
-		{else}
-			<div class="mp-form"> 
-				<iframe src="{$preferences_url|escape:'htmlall'}" name="MP-Checkout" width="{$iframe_width|escape:'htmlall'}" height="{$iframe_height|escape:'htmlall'}" frameborder="0">
-				</iframe>
-			</div>
-		{/if}
-	{elseif $version == 6}
-		<div class="row">
-			<div class="col-xs-12 col-md-6">
-					{if $window_type != 'iframe'}
-						<a href="{$preferences_url|escape:'htmlall'}" id="id-standard" mp-mode="{$window_type|escape:'htmlall'}" name="MP-Checkout">
-							<div class="mp-form hover"> 
+							<form action="{$custom_action_url|escape:'htmlall'}" method="post" id="form-pagar-mp">
+							    <div class="row">
+							    	<div class="col">
+								    	<label for="id-card-number">{l s='Card number: ' mod='mercadopago'}</label>
+								    	<input id="id-card-number" data-checkout="cardNumber" type="text" name="cardNumber"/>
+								    	<div id="id-card-number-status" class="status"></div>
+								    </div>
+							    </div>
+							   	 <div class="row">
+								   	<div class="col">
+								    	<label for="id-card-expiration-month">{l s='Expiration: ' mod='mercadopago'}</label>
+								    	<select id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text" name="cardExpirationMonth"></select>
+								    </div>
+								    <div class="col">
+								    	<select id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text" name="cardExpirationYear"></select>
+								    	<div id="id-card-expiration-year-status" class="status"></div>
+								    </div>
+								</div>
 								<div class="row">
 									<div class="col">
-									<img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo_120_31.png" id="id-standard-logo">
-									<img src="{$standard_banner|escape:'htmlall'}" class="mp-standard-banner"/>
-									<span class="payment-label standard">{l s='Pay via MercadoPago and split into up to 24 times' mod='mercadopago'}</span>
+								    	<label for="id-card-holder-name">{l s='Card Holder Name: ' mod='mercadopago'}</label>
+								    	<input id="id-card-holder-name" name="cardholderName" data-checkout="cardholderName" type="text"/>
+								    	<div id="id-card-holder-name-status" class="status"></div>
+							    	</div>
+							    </div>
+								<div class="row">
+							    	<div class="col">
+								    	<label for="id-security-code">{l s='Security Code: ' mod='mercadopago'}</label>
+								    	<input id="id-security-code" data-checkout="securityCode" type="text" maxlength="4"//>
+								    	<img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/cvv.png" class="cvv"/>
+								    	<div id="id-security-code-status" class="status"></div>
+								    </div> 
+						    	</div>
+							 	<div class="row">
+							    	<div class="col">
+								    	<label for="id-doc-number">{l s='CPF: ' mod='mercadopago'}</label>
+								    	<input id="id-doc-number" name="docNumber" data-checkout="docNumber" type="text" maxlength="11"/>
+								    	<div id="id-doc-number-status" class="status"></div>
+								    </div>
+							    </div>
+								<div class="row">
+								    <div class="col">
+								    	<label for="id-installments">{l s='Installments: ' mod='mercadopago'}</label>
+								    	<select id="id-installments" name="installments" type="text>"></select>
+								    </div>
+							 	</div>
+							    <input name="docType"  data-checkout="docType" type="hidden" value="CPF"/>
+							    <input id="amount" type="hidden" value="{$amount|escape:'htmlall'}"/>
+							    <div class="row">
+						    		<div class="col-bottom">
+								    	<input type="submit" value="{l s=' Confirm payment' mod='mercadopago'}" class="ch-btn ch-btn-big" />
+							    	</div>
+							    </div>
+							</form>
+						</div>
+					</p>
+				</div>
+			</div>
+		{/if}
+	{/if}
+	{if $boleto_active eq 'true'}
+		{if $version == 5}
+			<div class="payment_module mp-form"> 
+				<div class="row">
+					<div class="row boleto">
+						<div class="col">
+							<span class="payment-label">{l s='TICKET' mod='mercadopago'}</span></br>
+							<span class="poweredby">{l s=' Powered by ' mod='mercadopago'}</span>
+							<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png">
+						</div>
+						<a href="javascript:void(0);" id="id-boleto">{l s='Pay through ticket via MercadoPago' mod='mercadopago'}
+							<form action="{$custom_action_url|escape:'htmlall'}" method="post" id="form-boleto-mp">
+						    	<input name="payment_method_id" type="hidden" value="bolbradesco"/>
+						    	<input type="submit" id="id-create-boleto">
+							</form>	
+						</a>
+					</div>
+				</div>
+			</div>
+		{elseif $version == 6}
+			<div class="row">
+				<div class="col-xs-12 col-md-6">
+						<a href="javascript:void(0);" id="id-boleto">
+							<div class="mp-form hover"> 
+								<div class="row boleto">
+									<div class="col">
+										<span class="payment-label">{l s='TICKET' mod='mercadopago'} </span></br>
+										<span class="poweredby">{l s='Powered by' mod='mercadopago'}</span>
+										<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png">
 									</div>
+									<form action="{$custom_action_url|escape:'htmlall'}" method="post" id="form-boleto-mp">
+								    	<input name="payment_method_id" type="hidden" value="bolbradesco"/>
+								    	<input type="submit" id="id-create-boleto">
+									</form>	
 								</div>
 							</div>
 						</a>
-					{else}
-						<div class="mp-form"> 
-							<iframe src="{$preferences_url|escape:'htmlall'}" name="MP-Checkout" width="{$iframe_width|escape:'htmlall'}" height="{$iframe_height|escape:'htmlall'}" frameborder="0">
-							</iframe>
-						</div>
-					{/if}
+				</div>
 			</div>
-		</div>
+		{/if}
 	{/if}
-{/if}
+	{if $standard_active eq 'true' && $preferences_url != null}
+		{if $version == 5}
+			{if $window_type != 'iframe'}
+			<div class="payment_module mp-form"> 
+					<img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo_120_31.png" id="id-standard-logo">
+					<a class="standard" href="{$preferences_url|escape:'htmlall'}" mp-mode="{$window_type|escape:'htmlall'}" id="id-standard" name="MP-Checkout">{l s='Pay via MercadoPago and split into ' mod='mercadopago'}</br>{l s=' up to 24 times' mod='mercadopago'}</a>
+					<img src="{$standard_banner|escape:'htmlall'}" class="mp-standard-banner"/>
+			</div>
+			{else}
+				<div class="mp-form"> 
+					<iframe src="{$preferences_url|escape:'htmlall'}" name="MP-Checkout" width="{$iframe_width|escape:'htmlall'}" height="{$iframe_height|escape:'htmlall'}" frameborder="0">
+					</iframe>
+				</div>
+			{/if}
+		{elseif $version == 6}
+			<div class="row">
+				<div class="col-xs-12 col-md-6">
+						{if $window_type != 'iframe'}
+							<a href="{$preferences_url|escape:'htmlall'}" id="id-standard" mp-mode="{$window_type|escape:'htmlall'}" name="MP-Checkout">
+								<div class="mp-form hover"> 
+									<div class="row">
+										<div class="col">
+										<img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo_120_31.png" id="id-standard-logo">
+										<img src="{$standard_banner|escape:'htmlall'}" class="mp-standard-banner"/>
+										<span class="payment-label standard">{l s='Pay via MercadoPago and split into up to 24 times' mod='mercadopago'}</span>
+										</div>
+									</div>
+								</div>
+							</a>
+						{else}
+							<div class="mp-form"> 
+								<iframe src="{$preferences_url|escape:'htmlall'}" name="MP-Checkout" width="{$iframe_width|escape:'htmlall'}" height="{$iframe_height|escape:'htmlall'}" frameborder="0">
+								</iframe>
+							</div>
+						{/if}
+				</div>
+			</div>
+		{/if}
+	{/if}
+</div>
 <script type="text/javascript">
 	// first load force to clear all fields
 	$("#id-card-number").val("");

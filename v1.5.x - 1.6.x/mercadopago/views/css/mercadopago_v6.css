@@ -33,23 +33,23 @@
 		margin-bottom: 20px;
 	}
 
-	.col label {
+	.mp-form .col label {
 		width: 180px;
 		text-align: right;
 		font: 600 12px/16px "Open Sans", sans-serif;
 	}
 
-	#form-pagar-mp {
+	.mp-form #form-pagar-mp {
 		margin-left: 30px;
 	}
 
-	.ch-btn-big, .ch-btn-big:focus {
+	.mp-module .ch-btn-big, .mp-module .ch-btn-big:focus {
 		float: right;
 		margin-right: 165px;
 		padding: 6px 12px;
 	}
 
-	.col-bottom {
+	.mp-module .col-bottom {
 		width: 100%;
 		margin-right: 5px;
 		margin-top: 20px;
@@ -57,71 +57,71 @@
 		margin-bottom: -10px;
 	}
 
-	.title {
+	.mp-module .title {
 		width: 47%;
 		margin-bottom: 20px;
 	}
 
-	.mp-creditcard-banner {
+	.mp-module .mp-creditcard-banner {
 		width: 280px;
 		margin-left: -30px;
 	}
 
-	.payment-label {
+	.mp-module .payment-label {
 		font: bolder 20px/24px "Open Sans", sans-serif;
 		color: #333333;
 		margin-left: 28px;
 	}
 
-	.col {
+	.mp-module .col {
 		margin-left: 15px;
 	}
 
-	.mp-form .logo {
+	.mp-module .logo {
 		width: 80px;
 		height: 20px;
 	}
 
-	.poweredby {
+	.mp-module .poweredby {
 		margin-left: 30px;
 		color: black;
 		font: 600 10px/14px "Open Sans", sans-serif;
 	}
 
-	.small-select {
+	.mp-module .small-select {
 		width: 88px;
 		height: 30px;
 		background: white;
 		font: 600 12px/16px "Open Sans", sans-serif;
 	}
 
-	#id-card-number {
+	.mp-module #id-card-number {
 		width: 190px;
 		padding-right: 35px;
 	}
 
-	#id-card-holder-name {
+	.mp-module #id-card-holder-name {
 		width: 190px;
 	}
 
-	#id-installments {
+	.mp-module #id-installments {
 		width: 190px;
 		height: 30px;
 		background: white;
 		font: 600 12px/16px "Open Sans", sans-serif;
 	}
 
-	#id-doc-number {
+	.mp-module #id-doc-number {
 		width: 120px;
 	}
 
-	.boleto {
+	.mp-module .boleto {
 		background: url('../img/boleto.png') 60% no-repeat;
 		background-size: 137px 61px;
 		height: 61px;
 	}
 
-	.boleto::after {
+	.mp-module .boleto::after {
 		display: block;
 		content: "\f054";
 		position: relative;
@@ -132,13 +132,13 @@
 		left: 545px;
 	}
 
-	.standard {
+	.mp-module .standard {
 		font: 600 13px/15px "Open Sans", sans-serif;
 		margin-left: 174px;
 		display: block;
 	}
 
-	.standard::after {
+	.mp-module .standard::after {
 		display: block;
 		content: "\f054";
 		position: relative;
@@ -149,7 +149,7 @@
 		top: -35px;
 	}
 
-	.mp-standard-banner {
+	.mp-module .mp-standard-banner {
 		width: 320px;
 		display: inline;
 		margin-top: 10px;
@@ -157,14 +157,14 @@
 		margin-bottom: 10px;
 	}
 
-	#id-standard-logo {
+	.mp-module #id-standard-logo {
 		margin-left: 30px;
 	}
 
 }
 
 @media all and (max-width: 599px) {
-	.mp-form input {
+	.mp-module input {
 		font: 600 8px/12px "Open Sans", sans-serif;
 	}
 
@@ -177,13 +177,13 @@
 		margin-bottom: 20px;
 	}
 
-	.col label {
+	.mp-module .col label {
 		min-width: 105px;
 		text-align: right;
 		font: 600 10px/14px "Open Sans", sans-serif;
 	}
 
-	.ch-btn-big, .ch-btn-big:focus {
+	.mp-module .ch-btn-big, .mp-module .ch-btn-big:focus {
 		font-size: 14px !important;
 		min-width: 125px;
 		text-align: right;
@@ -191,7 +191,7 @@
 		padding: 7px 15px !important;
 	}
 
-	.col-bottom {
+	.mp-module .col-bottom {
 		margin-right: 5px;
 		margin-top: 20px;
 		margin-left: 71px;
@@ -199,7 +199,7 @@
 		float: left;
 	}
 
-	.title {
+	.mp-module .title {
 		margin-bottom: 20px;
 	}
 
@@ -208,137 +208,117 @@
 		margin-left: -10px;
 	}
 
-	.payment-label {
+	.mp-module .payment-label {
 		float: center;
 		font: bolder 14px/18px "Open Sans", sans-serif;
 		color: #333333;
 	}
 
-	.col {
+	.mp-module .col {
 		margin-left: 10px;
 	}
 
-	.mp-form .logo {
+	.mp-module .logo {
 		width: 50px;
 		height: 14px;
 	}
 
-	.poweredby {
+	.mp-module .poweredby {
 		color: black;
 		font: 600 7px/11px "Open Sans", sans-serif;
 		margin-left: 1px;
 	}
 
-	#id-card-number {
+	.mp-module #id-card-number {
 		width: 120px;
 		padding-right: 50px;
 	}
 
-	.small-select {
+	.mp-module .small-select {
 		width: 55px;
 		height: 30px;
 		background: white;
 		font: 600 8px/12px "Open Sans", sans-serif;
 	}
 
-	#id-card-holder-name {
+	.mp-module #id-card-holder-name {
 		width: 120px;
 	}
 
-	#id-installments {
+	.mp-module #id-installments {
 		width: 120px;
 		height: 30px;
 		background: white;
 		font: 600 8px/12px "Open Sans", sans-serif;
 	}
 
-	#id-doc-number {
+	.mp-module #id-doc-number {
 		width: 90px;
 	}
 
-	.status {
+	.mp-module .status {
 		font-size: 7px !important;
 	}
 
-	.boleto {
+	.mp-module .boleto {
 		background-size: 109px 51px;
 		height: 51px;
 	}
 
-	.standard {
+	.mp-module .standard {
 		margin-top: 10px;
 		margin-left: 4px;
 		font: 600 11px/13px "Open Sans", sans-serif;
 		display: block;
 	}
 
-	.mp-standard-banner {
+	.mp-module .mp-standard-banner {
 		width: 203px;
 		display: inline;
 	}
 
-	#id-standard-logo {
+	.mp-module #id-standard-logo {
 		width: 70px;
 	}
 }
 
-.mp-form input[type="text"] {
+.mp-module input[type="text"] {
 	padding-left: 5px;
 	padding-top: 2px;
 }
 
-.mp-boleto-banner {
+.mp-module .mp-boleto-banner {
 	height: 60px;
 	width: 270px;
 	margin-top: -10px;
 	margin-left: 110px;
 }
 
-.col input {
+.mp-module .col input {
 	height: 30px;
 }
 
-.left {
-	width: 28%;
-}
-
-.hover:hover {
+.mp-module .hover:hover {
 	background: 60% no-repeat whitesmoke;
 }
 
-.50 {
-	width: 48%;
-}
-
-.mid {
-	width: 22%;
-}
-
-.right {
-	width: 22%;
-}
-
-.col-11 {
-	width: 15.5%;
-}
-
-#id-security-code {
+.mp-module #id-security-code {
 	width: 50px;
 }
 
-#id-create-boleto {
+.mp-module #id-create-boleto {
 	display: none;
 }
 
-#form-boleto-mp {
+.mp-module #form-boleto-mp {
 	margin-left: 30px;
 }
 
-#id-standard {
+.mp-module #id-standard {
 	float: left;
 }
 
-.status {
+.mp-module .status {
 	color: rgb(215, 5, 5);
 	font-weight: bold;
 	font-size: 10px;
