@@ -28,7 +28,7 @@ $GLOBALS['LIB_LOCATION'] = dirname(__FILE__);
 
 class MP {
 
-	const VERSION = '0.2.1';
+	const VERSION = '3.0.1';
 
 	private $client_id;
 	private $client_secret;
@@ -164,7 +164,7 @@ class MPRestClient {
 	{
 		$connect = curl_init(self::API_BASE_URL.$uri);
 
-		curl_setopt($connect, CURLOPT_USERAGENT, 'MercadoPago Prestashop v3.0.0');
+		curl_setopt($connect, CURLOPT_USERAGENT, 'MercadoPago Prestashop v'.MP::VERSION);
 		curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);
 		curl_setopt($connect, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: '.$content_type));
