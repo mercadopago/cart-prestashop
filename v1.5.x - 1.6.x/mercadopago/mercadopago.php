@@ -630,17 +630,49 @@ class MercadoPago extends PaymentModule {
 		}
 
 		// include shipping cost
-		$carrier = new Carrier($cart->id_carrier);
-		$item = array (
-				'id' => $carrier->id,
-				'title' => 'Frete Prestashop',
-				'description' => $carrier->name,
+		$shipping_cost = (Float)$cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
+		if ($shipping_cost > 0)
+		{
+			$item = array (
+				'title' => 'Shipping',
+				'description' => 'Shipping service used by store',
 				'quantity' => 1,
-				'unit_price' => $cart->getPackageShippingCost($cart->id_carrier),
+				'unit_price' => $shipping_cost,
 				'category_id'=> Configuration::get('MERCADOPAGO_CATEGORY')
 			);
 
-		$items[] = $item;
+			$items[] = $item;
+		}
+
+		// include wrapping cost
+		$wrapping_cost = (Float)$cart->getOrderTotal(true, Cart::ONLY_WRAPPING);
+		if ($wrapping_cost > 0)
+		{
+			$item = array (
+				'title' => 'Wrapping',
+				'description' => 'Wrapping service used by store',
+				'quantity' => 1,
+				'unit_price' => $wrapping_cost,
+				'category_id'=> Configuration::get('MERCADOPAGO_CATEGORY')
+			);
+
+			$items[] = $item;
+		}
+
+		// include discounts
+		$discounts = (Float)$cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS);
+		if ($discounts > 0)
+		{
+			$item = array (
+				'title' => 'Discount',
+				'description' => 'Discount provided by store',
+				'quantity' => 1,
+				'unit_price' => -$discounts,
+				'category_id'=> Configuration::get('MERCADOPAGO_CATEGORY')
+			);
+
+			$items[] = $item;
+		}
 
 		$data = array(
 			'external_reference' => $cart->id,
