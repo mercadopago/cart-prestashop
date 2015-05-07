@@ -790,7 +790,8 @@ class MercadoPago extends PaymentModule {
 			}
 			$this->updateOrder($payment_ids, $payment_statuses, $payment_method_ids, $payment_types, $credit_cards, $cardholders, $transaction_amounts, $external_reference);
 		} 
-		else if ($checkout == "custom" && $topic == 'payment' && $id > 0)
+		else if (($checkout == "custom" && $topic == 'payment' && $id > 0) 
+				|| ($checkout != "standard" && $topic != 'merchant_order'))
 		{
 			$result = $this->mercadopago->getPayment($id);
 			$payment_info = $result['response']['collection'];
