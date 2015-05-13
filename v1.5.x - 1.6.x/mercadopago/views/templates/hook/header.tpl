@@ -25,10 +25,10 @@
 
 {if $creditcard_active == 'true' && $public_key != ''}
 	<script type="text/javascript">
-		if (window.Checkout === undefined) {
-			$.getScript("https://secure.mlstatic.com/org-img/checkout/custom/1.0/checkout.js")
+		if (window.Mercadopago === undefined) {
+			$.getScript("https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js")
 				.done(function( script, textStatus ) {
-					Checkout.setPublishableKey("{$public_key|escape:'javascript'}");
+					Mercadopago.setPublishableKey("{$public_key|escape:'javascript'}");
 				});
 		}
 	</script>

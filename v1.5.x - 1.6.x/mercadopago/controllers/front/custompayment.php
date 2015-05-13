@@ -40,7 +40,6 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 		$mercadopago = $this->module;
 		$response = $mercadopago->execPayment($_POST);
 		$order_status = null;
-
 		if (array_key_exists('status', $response))
 		{
 			switch ($response['status'])
@@ -82,12 +81,10 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 				'&id_order='.$mercadopago->currentOrder.'&key='.$order->secure_key.'&payment_id='.$response['payment_id'].
 				'&payment_status='.$response['status'];
 
-			if (Tools::getValue('payment_method_id') == 'bolbradesco')
-				$uri .= '&payment_method_id='.Tools::getValue('payment_method_id').'&boleto_url='.urlencode($response['activation_uri']);
-			else
+			if (Tools::getIsset('card_token_id'))
 			{
 				// get credit card last 4 digits
-				$four_digits = Tools::getValue('lastFourDigits');
+				$four_digits = '**** **** **** '.Tools::substr(Tools::getValue('cardNumber'), -4);
 				// expiration date
 				$expiration_date = Tools::getValue('cardExpirationMonth').'/20'.Tools::getValue('cardExpirationYear');
 
@@ -102,6 +99,8 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 				'&statement_descriptor='.$response['statement_descriptor'].'&status_detail='.$response['status_detail'].
 				'&amount='.$response['amount'];
 			}
+			else			
+				$uri .= '&payment_method_id='.Tools::getValue('payment_method_id').'&boleto_url='.urlencode($response['activation_uri']);
 
 			$order_payments[0]->save();
 			Tools::redirectLink($uri);
@@ -124,7 +123,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 				$data['version'] = $mercadopago->getPrestashopVersion();
 				$data['status_detail'] = $response['status_detail'];
 				$data['card_holder_name'] = Tools::getValue('cardholderName');
-				$data['four_digits'] = Tools::getValue('lastFourDigits');
+				$data['four_digits'] = Tools::substr(Tools::getValue('cardNumber'), -4);
 				$data['payment_method_id'] = Tools::getValue('payment_method_id');
 				$data['expiration_date'] = Tools::getValue('cardExpirationMonth').'/20'.Tools::getValue('cardExpirationYear');
 				$data['installments'] = $response['installments'];

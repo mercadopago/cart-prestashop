@@ -82,6 +82,9 @@
 	{if $country eq "MLB"}
 		<h4> {l s='- To obtain your public key please send an email to developers@mercadopago.com.br with subject "Prestashop Public key" informing your Client Id' mod='mercadopago'}</h4>
 	{/if}
+	{if $country eq "MLM"}
+		<h4> {l s='- To obtain your public key please send an email to developers@mercadopago.com with subject "Prestashop Public key" informing your Client Id' mod='mercadopago'}</h4>
+	{/if}
 	<form action="{$uri|escape:'htmlall'}" method="post">
 		<fieldset>
 			<legend>
@@ -128,7 +131,7 @@
 				</div>
 			{/if}
 		</fieldset>
-		{if $country == 'MLB'}
+		{if $country == 'MLB' || $country == 'MLM'}
 			<fieldset>
 				<legend>
 					<img src="../img/admin/contact.gif" />{l s='Settings - Custom Credit Card' mod='mercadopago'}
@@ -192,7 +195,7 @@
 					</select>
 				</div>
 				<br />
-				<label>{l s='Exclude payment methods:' mod='mercadopago'}</label>
+				<!-- <label>{l s='Exclude payment methods:' mod='mercadopago'}</label>
 				<div class="payment-methods">
 					<br />
 					<br />
@@ -212,7 +215,7 @@
 					<br />
 					<input type="checkbox" name="MERCADOPAGO_BOLBRADESCO" id="bolbradesco" value="{$bolbradesco|escape:'htmlall'}">{l s='Ticket' mod='mercadopago'}</input>
 				</div>
-				<br />
+				<br /> -->
 				<label>{l s='iFrame width:' mod='mercadopago'}</label>
 				<div class="">
 					<input type="text" size="33" name="MERCADOPAGO_IFRAME_WIDTH" value="{$iframe_width|escape:'htmlall'}" />
@@ -276,29 +279,29 @@
 		if (document.getElementById("auto_return"))
 			document.getElementById("auto_return").value = "{$auto_return|escape:'javascript'}";
 
-		if (document.getElementById("visa"))
-			document.getElementById("visa").checked = "{$visa|escape:'javascript'}";
+		// if (document.getElementById("visa"))
+		// 	document.getElementById("visa").checked = "{$visa|escape:'javascript'}";
 
-		if (document.getElementById("mastercard"))
-			document.getElementById("mastercard").checked = "{$mastercard|escape:'javascript'}";
+		// if (document.getElementById("mastercard"))
+		// 	document.getElementById("mastercard").checked = "{$mastercard|escape:'javascript'}";
 
-		if (document.getElementById("hipercard"))
-			document.getElementById("hipercard").checked = "{$hipercard|escape:'javascript'}";
+		// if (document.getElementById("hipercard"))
+		// 	document.getElementById("hipercard").checked = "{$hipercard|escape:'javascript'}";
 
-		if (document.getElementById("amex"))
-			document.getElementById("amex").checked = "{$amex|escape:'javascript'}";
+		// if (document.getElementById("amex"))
+		// 	document.getElementById("amex").checked = "{$amex|escape:'javascript'}";
 
-		if (document.getElementById("meli"))
-			document.getElementById("meli").checked = "{$meli|escape:'javascript'}";
+		// if (document.getElementById("meli"))
+		// 	document.getElementById("meli").checked = "{$meli|escape:'javascript'}";
 
-		if (document.getElementById("bolbradesco"))
-			document.getElementById("bolbradesco").checked = "{$bolbradesco|escape:'javascript'}";
+		// if (document.getElementById("bolbradesco"))
+		// 	document.getElementById("bolbradesco").checked = "{$bolbradesco|escape:'javascript'}";
 
-		if (document.getElementById("diners"))
-			document.getElementById("diners").checked = "{$diners|escape:'javascript'}";
+		// if (document.getElementById("diners"))
+		// 	document.getElementById("diners").checked = "{$diners|escape:'javascript'}";
 
-		if (document.getElementById("elo"))
-			document.getElementById("elo").checked = "{$elo|escape:'javascript'}";
+		// if (document.getElementById("elo"))
+		// 	document.getElementById("elo").checked = "{$elo|escape:'javascript'}";
 	}
 
 	$("input[type='checkbox']").click(function (e) {

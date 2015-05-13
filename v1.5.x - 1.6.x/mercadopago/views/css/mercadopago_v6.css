@@ -40,13 +40,17 @@
 	}
 
 	.mp-form #form-pagar-mp {
-		margin-left: 30px;
+		margin-left: 20px;
 	}
 
 	.mp-module .ch-btn-big, .mp-module .ch-btn-big:focus {
 		float: right;
-		margin-right: 165px;
-		padding: 6px 12px;
+		margin-right: 152px;
+		padding: 6px 24px;
+	}
+
+	.mp-module .es-button {
+		padding: 6px 48px!important;
 	}
 
 	.mp-module .col-bottom {
@@ -89,23 +93,23 @@
 	}
 
 	.mp-module .small-select {
-		width: 88px;
+		width: 97px;
 		height: 30px;
 		background: white;
 		font: 600 12px/16px "Open Sans", sans-serif;
 	}
 
 	.mp-module #id-card-number {
-		width: 190px;
+		width: 210px;
 		padding-right: 35px;
 	}
 
 	.mp-module #id-card-holder-name {
-		width: 190px;
+		width: 210px;
 	}
 
-	.mp-module #id-installments {
-		width: 190px;
+	.mp-module #id-installments, .mp-module #id-issuers-options {
+		width: 210px;
 		height: 30px;
 		background: white;
 		font: 600 12px/16px "Open Sans", sans-serif;

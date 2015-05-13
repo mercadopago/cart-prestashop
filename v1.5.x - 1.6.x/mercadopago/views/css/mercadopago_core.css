@@ -50,6 +50,11 @@
 	height: 845px;
 }
 
+.mp-module .MLM {
+	width: 670px; 
+	height: 600px;
+}
+
 .mp-module p {
 	color: black;
 	font-size: 15px;	

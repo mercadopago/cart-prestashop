@@ -255,13 +255,7 @@ class MercadoPago extends PaymentModule {
 				$success = true;
 
 				if ($creditcard_active == 'true' && !empty($public_key))
-					if (!$this->validatePublicKey($client_id, $client_secret, $public_key))
-					{
-						$errors[] = $this->l('Public Key invalid.');
-						$success = false;
-					}
-					else
-						Configuration::updateValue('MERCADOPAGO_PUBLIC_KEY', $public_key);
+					Configuration::updateValue('MERCADOPAGO_PUBLIC_KEY', $public_key);
 			}
 
 			$category = Tools::getValue('MERCADOPAGO_CATEGORY');
@@ -376,10 +370,10 @@ class MercadoPago extends PaymentModule {
 		Configuration::updateValue('MERCADOPAGO_INSTALLMENTS', '12');
 		Configuration::updateValue('MERCADOPAGO_AUTO_RETURN', 'approved');
 
-		if ($country == "MLB")
+		if ($country == "MLB" || $country == "MLM")
 		{
 			Configuration::updateValue('MERCADOPAGO_CREDITCARD_BANNER', (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').
-																			__PS_BASE_URI__.'modules/mercadopago/views/img/credit_card.png');
+																			__PS_BASE_URI__.'modules/mercadopago/views/img/'.$country.'/credit_card.png');
 			Configuration::updateValue('MERCADOPAGO_CREDITCARD_ACTIVE', 'true');
 			Configuration::updateValue('MERCADOPAGO_BOLETO_ACTIVE', 'true');
 			Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', 'false');
@@ -400,12 +394,6 @@ class MercadoPago extends PaymentModule {
 	{
 		$mp = new MP($client_id, $client_secret);
 		return $mp->getAccessToken() ? true : false;
-	}
-
-	private function validatePublicKey($client_id, $client_secret, $public_key)
-	{
-		$mp = new MP($client_id, $client_secret);
-		return $mp->validatePublicKey($public_key);
 	}
 
 	public function hookDisplayHeader()
@@ -448,7 +436,8 @@ class MercadoPago extends PaymentModule {
 				'statement_descriptor' => Tools::getValue('statement_descriptor'),
 				'window_type' => Configuration::get('MERCADOPAGO_WINDOW_TYPE'),
 				'iframe_width' => Configuration::get('MERCADOPAGO_IFRAME_WIDTH'),
-				'iframe_height' => Configuration::get('MERCADOPAGO_IFRAME_HEIGHT')
+				'iframe_height' => Configuration::get('MERCADOPAGO_IFRAME_HEIGHT'),
+				'country' => Configuration::get('MERCADOPAGO_COUNTRY')
 			);
 
 			// send credit card configurations only activated
@@ -486,21 +475,8 @@ class MercadoPago extends PaymentModule {
 		if (!$this->active)
 			return;
 
-		if (Tools::getValue('payment_type') == 'ticket' || Tools::getValue('payment_method_id') == 'bolbradesco')
-		{
-			$this->context->controller->addCss($this->_path.'views/css/mercadopago_core.css', 'all');
-
-			$this->context->smarty->assign(
-				array(
-					'payment_id' => Tools::getValue('payment_id'),
-					'boleto_url' => Tools::getValue('boleto_url'),
-					'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
-									.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__
-				)
-			);
-			return $this->display(__file__, '/views/templates/hook/boleto_payment_return.tpl');
-		}
-		else if (Tools::getValue('checkout') == 'standard')
+		
+		if (Tools::getValue('checkout') == 'standard')
 		{
 			$data = array();
 			$data['amount'] = Tools::displayPrice(Tools::getValue('amount'), $params['currencyObj'], false);
@@ -522,7 +498,7 @@ class MercadoPago extends PaymentModule {
 
 			return $this->display(__file__, '/views/templates/hook/standard_checkout.tpl');
 		}
-		else
+		elseif (Tools::getIsset('card_token'))
 		{
 			$this->context->controller->addCss($this->_path.'views/css/mercadopago_core.css', 'all');
 
@@ -545,6 +521,21 @@ class MercadoPago extends PaymentModule {
 			);
 
 			return $this->display(__file__, '/views/templates/hook/creditcard_payment_return.tpl');
+		}
+		else
+		{
+			$this->context->controller->addCss($this->_path.'views/css/mercadopago_core.css', 'all');
+
+			$this->context->smarty->assign(
+				array(
+					'payment_id' => Tools::getValue('payment_id'),
+					'boleto_url' => Tools::getValue('boleto_url'),
+					'country' => Configuration::get('MERCADOPAGO_COUNTRY'),
+					'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
+									.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__
+				)
+			);
+			return $this->display(__file__, '/views/templates/hook/boleto_payment_return.tpl');
 		}
 	}
 
@@ -681,9 +672,7 @@ class MercadoPago extends PaymentModule {
 			'shipments' => $shipments,
 		);
 
-
-		if ($post != null && (array_key_exists('card_token_id', $post) ||
-			(array_key_exists('payment_method_id', $post) && $post['payment_method_id'] == 'bolbradesco')))
+		if ($post != null)
 		{
 			$cart = Context::getContext()->cart;
 
@@ -697,10 +686,12 @@ class MercadoPago extends PaymentModule {
 			{
 				$data['card_token_id'] = $post['card_token_id'];
 				$data['installments'] = (Integer)$post['installments'];
+
+				// add only it has issuer id
+				if (array_key_exists('issuersOptions', $post))
+					$data['card_issuer_id'] = (Integer)$post['issuersOptions'];
 			}
-			// add only for boleto
-			else
-				$data['payment_method_id'] = $post['payment_method_id'];
+			$data['payment_method_id'] = $post['payment_method_id'];
 		}
 		else
 		{
@@ -790,8 +781,7 @@ class MercadoPago extends PaymentModule {
 			}
 			$this->updateOrder($payment_ids, $payment_statuses, $payment_method_ids, $payment_types, $credit_cards, $cardholders, $transaction_amounts, $external_reference);
 		} 
-		else if (($checkout == "custom" && $topic == 'payment' && $id > 0) 
-				|| ($checkout != "standard" && $topic != 'merchant_order'))
+		else if ($checkout == "custom" && $topic == 'payment' && $id > 0)
 		{
 			$result = $this->mercadopago->getPayment($id);
 			$payment_info = $result['response']['collection'];
