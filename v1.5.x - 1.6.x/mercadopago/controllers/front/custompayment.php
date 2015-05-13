@@ -87,7 +87,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 			else
 			{
 				// get credit card last 4 digits
-				$four_digits = '**** **** **** '.Tools::substr(Tools::getValue('cardNumber'), -4);
+				$four_digits = Tools::getValue('lastFourDigits');
 				// expiration date
 				$expiration_date = Tools::getValue('cardExpirationMonth').'/20'.Tools::getValue('cardExpirationYear');
 
@@ -124,7 +124,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 				$data['version'] = $mercadopago->getPrestashopVersion();
 				$data['status_detail'] = $response['status_detail'];
 				$data['card_holder_name'] = Tools::getValue('cardholderName');
-				$data['four_digits'] = Tools::substr(Tools::getValue('cardNumber'), -4);
+				$data['four_digits'] = Tools::getValue('lastFourDigits');
 				$data['payment_method_id'] = Tools::getValue('payment_method_id');
 				$data['expiration_date'] = Tools::getValue('cardExpirationMonth').'/20'.Tools::getValue('cardExpirationYear');
 				$data['installments'] = $response['installments'];

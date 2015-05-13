@@ -48,7 +48,7 @@
 			    	<div class="row">
 				    	<div class="col">
 					    	<label for="id-card-number">{l s='Card number: ' mod='mercadopago'}</label>
-					    	<input id="id-card-number" data-checkout="cardNumber" type="text" name="cardNumber"/>
+					    	<input id="id-card-number" data-checkout="cardNumber" type="text"/>
 					    	<div id="id-card-number-status" class="status"></div>
 				    	</div>
 				    	<div class="col col-expiration">
@@ -114,7 +114,7 @@
 							    <div class="row">
 							    	<div class="col">
 								    	<label for="id-card-number">{l s='Card number: ' mod='mercadopago'}</label>
-								    	<input id="id-card-number" data-checkout="cardNumber" type="text" name="cardNumber"/>
+								    	<input id="id-card-number" data-checkout="cardNumber" type="text"/>
 								    	<div id="id-card-number-status" class="status"></div>
 								    </div>
 							    </div>
@@ -349,6 +349,10 @@
 		} else {
 			var card_token_id = response.id;
 			$form.append($('<input type="hidden" id="card_token_id" name="card_token_id"/>').val(card_token_id));
+
+			var cardNumber = $("#id-card-number").val();
+			var lastFourDigits = cardNumber.substring(cardNumber.length - 4);
+			$form.append($('<input name="lastFourDigits" type="hidden" value="' + lastFourDigits + '"/>'));
 			$form.get(0).submit();
 			
 			$(".lightbox").show();
