@@ -36,7 +36,7 @@
 			</h5>
 			</br>
 			{if $boleto_url != null}
-				<iframe src="{$boleto_url|escape}" class="boleto-frame">
+				<iframe src="{$boleto_url|escape}" class="boleto-frame {$country|escape:'html'}">
 				</iframe>
 				</br>
 			{/if}

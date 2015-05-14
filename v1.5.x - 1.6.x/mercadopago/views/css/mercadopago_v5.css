@@ -46,6 +46,13 @@
 	width: 100%;
 }
 
+.mp-module #div-card-type {
+	margin-top: 15px;
+	float: left;
+	font-size: 11px;
+}
+
+
 .mp-module .mp-creditcard-banner {
 	width: 280px;
 	float: right !important;
@@ -74,7 +81,7 @@
 	width: 25%;
 }
 
-.mp-module .col-cpf {
+.mp-module .col-cpf, .mp-module .col-bank {
 	width: 26%;
 	margin-left: 66px;
 }
@@ -115,8 +122,15 @@
 	font-size: 11px;
 }
 
+.mp-module #id-issuers-options {
+	width: 170px;
+	height: 25px;
+	background: white;
+	font-size: 11px;
+}
+
 .mp-module #id-doc-number {
-	width: 160px;
+	width: 165px;
 }
 
 .mp-module #id-boleto {

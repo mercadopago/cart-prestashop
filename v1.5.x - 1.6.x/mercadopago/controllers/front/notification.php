@@ -35,7 +35,7 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
 
 	public function displayAjax()
 	{
-		if (Tools::getValue('topic') && Tools::getValue('id'))
+		if (Tools::getValue('checkout') && Tools::getValue('topic') && Tools::getValue('id'))
 		{
 			$mercadopago = new MercadoPago();
 			$mercadopago->listenIPN(Tools::getValue('checkout'), Tools::getValue('topic'), Tools::getValue('id'));
