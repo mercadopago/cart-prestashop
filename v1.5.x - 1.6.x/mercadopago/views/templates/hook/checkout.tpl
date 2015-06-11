@@ -335,7 +335,7 @@
 		  Mercadopago.getIssuers(payment_method.id, showIssuers);
 
 		  $("#id-card-number").css("background", "url(" + payment_method.secure_thumbnail + ") 98% 50% no-repeat");
-		  $("#payment_method_id").val($("input[name=card-types]:checked").val() + payment_method.id);
+		  $("#payment_method_id").val($("input[name=card-types]:checked").val() ? $("input[name=card-types]:checked").val() + payment_method.id : payment_method.id);
     };
 
     //Mostre as parcelas disponíveis no div 'installmentsOption'

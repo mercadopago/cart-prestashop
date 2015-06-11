@@ -28,7 +28,7 @@ $GLOBALS['LIB_LOCATION'] = dirname(__FILE__);
 
 class MP {
 
-	const VERSION = '3.0.1';
+	const VERSION = '3.0.3';
 
 	private $client_id;
 	private $client_secret;
@@ -101,6 +101,25 @@ class MP {
 		$uri_prefix = $this->sandbox ? '/sandbox' : '';
 		$merchant_order = MPRestClient::get($uri_prefix.'/merchant_orders/'.$id.'?access_token='.$access_token);
 		return $merchant_order;
+	}
+
+	/**
+	 * Get all payment methods for merchant country
+	 * @param int $id
+	 * @return array(json)
+	 */
+	public function getPaymentMethods()
+	{
+		$result = MPRestClient::get('/sites/'.$this->getCountry().'/payment_methods/');
+		$result = $result['response'];
+
+		// remove account_money
+		foreach($result as $key => $value)
+		{	
+			if($value['payment_type_id'] == 'account_money')
+				unset($result[$key]);
+		}
+		return $result;
 	}
 
 	/**
