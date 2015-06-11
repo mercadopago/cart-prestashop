@@ -27,6 +27,7 @@
     background-color: #FCFCFC !important;
     color: #2D3277 !important;
     margin-top: 40px !important;
+    width: 700px;
 }
 .mp-module legend {
     background-color: #D9DADB !important;
@@ -59,7 +60,6 @@
     position: relative;
     left: 260px;
     top: -18px;
-    height: 154px;
 }
 
 .mp-module .ch-btn-big, .ch-btn-big:focus {
@@ -90,6 +90,7 @@
     cursor: pointer !important;
     display: inline-block !important;
     margin-top: 20px !important;
+    margin-left: 300px;
 }
 .mp-module .ch-btn:hover {
     background-color: #4CBFF8 !important;

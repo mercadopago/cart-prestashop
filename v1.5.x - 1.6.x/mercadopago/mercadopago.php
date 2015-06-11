@@ -36,7 +36,7 @@ class MercadoPago extends PaymentModule {
 	{
 		$this->name = 'mercadopago';
 		$this->tab = 'payments_gateways';
-		$this->version = '3.0.1';
+		$this->version = '3.0.3';
 		$this->currencies = true;
 		$this->currencies_mode = 'radio';
 		$this->need_instance = 0;
@@ -154,14 +154,6 @@ class MercadoPago extends PaymentModule {
 			|| !Configuration::updateValue('MERCADOPAGO_IFRAME_HEIGHT', '')
 			|| !Configuration::updateValue('MERCADOPAGO_INSTALLMENTS', '')
 			|| !Configuration::updateValue('MERCADOPAGO_AUTO_RETURN', '')
-			|| !Configuration::updateValue('MERCADOPAGO_VISA', '')
-			|| !Configuration::updateValue('MERCADOPAGO_MASTERCARD', '')
-			|| !Configuration::updateValue('MERCADOPAGO_HIPERCARD', '')
-			|| !Configuration::updateValue('MERCADOPAGO_AMEX', '')
-			|| !Configuration::updateValue('MERCADOPAGO_DINERS', '')
-			|| !Configuration::updateValue('MERCADOPAGO_ELO', '')
-			|| !Configuration::updateValue('MERCADOPAGO_MELI', '')
-			|| !Configuration::updateValue('MERCADOPAGO_BOLBRADESCO', '')
 			|| !Configuration::updateValue('MERCADOPAGO_COUNTRY', '')
 			|| !$this->registerHook('payment')
 			|| !$this->registerHook('paymentReturn')
@@ -189,14 +181,6 @@ class MercadoPago extends PaymentModule {
 			|| !Configuration::deleteByName('MERCADOPAGO_IFRAME_HEIGHT')
 			|| !Configuration::deleteByName('MERCADOPAGO_INSTALLMENTS')
 			|| !Configuration::deleteByName('MERCADOPAGO_AUTO_RETURN')
-			|| !Configuration::deleteByName('MERCADOPAGO_VISA')
-			|| !Configuration::deleteByName('MERCADOPAGO_MASTERCARD')
-			|| !Configuration::deleteByName('MERCADOPAGO_HIPERCARD')
-			|| !Configuration::deleteByName('MERCADOPAGO_AMEX')
-			|| !Configuration::deleteByName('MERCADOPAGO_DINERS')
-			|| !Configuration::deleteByName('MERCADOPAGO_ELO')
-			|| !Configuration::deleteByName('MERCADOPAGO_MELI')
-			|| !Configuration::deleteByName('MERCADOPAGO_BOLBRADESCO')
 			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_0')
 			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_1')
 			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_2')
@@ -215,6 +199,8 @@ class MercadoPago extends PaymentModule {
 	{
 		$errors = array();
 		$success = false;
+		$payment_methods = null;
+		$payment_methods_settings = null;
 
 		if (Tools::getValue('login'))
 		{
@@ -228,7 +214,11 @@ class MercadoPago extends PaymentModule {
 			}
 			else
 			{
-				$this->setDefaultValues($client_id, $client_secret);	
+				$this->setDefaultValues($client_id, $client_secret);
+
+				// populate all payments accoring to country
+				$this->mercadopago = new MP(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
+				$payment_methods = $this->mercadopago->getPaymentMethods();
 			}
 		}
 		else if (Tools::getValue('submitmercadopago'))
@@ -240,6 +230,7 @@ class MercadoPago extends PaymentModule {
 			$creditcard_active = Tools::getValue('MERCADOPAGO_CREDITCARD_ACTIVE');
 			$boleto_active = Tools::getValue('MERCADOPAGO_BOLETO_ACTIVE');
 			$standard_active = Tools::getValue('MERCADOPAGO_STANDARD_ACTIVE');
+			$new_country;
 
 			if (!$this->validateCredential($client_id, $client_secret))
 			{
@@ -248,6 +239,10 @@ class MercadoPago extends PaymentModule {
 			}
 			else
 			{
+				$previous_country = $this->getCountry(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
+				$current_country = $this->getCountry($client_id, $client_secret);
+				$new_country = $previous_country == $current_country ? false : true;
+
 				Configuration::updateValue('MERCADOPAGO_CLIENT_ID', $client_id);
 				Configuration::updateValue('MERCADOPAGO_CLIENT_SECRET', $client_secret);
 				Configuration::updateValue('MERCADOPAGO_COUNTRY', $this->getCountry($client_id, $client_secret));
@@ -256,6 +251,10 @@ class MercadoPago extends PaymentModule {
 
 				if ($creditcard_active == 'true' && !empty($public_key))
 					Configuration::updateValue('MERCADOPAGO_PUBLIC_KEY', $public_key);
+
+				// populate all payments accoring to country
+				$this->mercadopago = new MP(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
+				$payment_methods = $this->mercadopago->getPaymentMethods();
 			}
 
 			$category = Tools::getValue('MERCADOPAGO_CATEGORY');
@@ -286,39 +285,58 @@ class MercadoPago extends PaymentModule {
 			$auto_return = Tools::getValue('MERCADOPAGO_AUTO_RETURN');
 			Configuration::updateValue('MERCADOPAGO_AUTO_RETURN', $auto_return);
 
-			$visa = Tools::getValue('MERCADOPAGO_VISA');
-			$mastercard = Tools::getValue('MERCADOPAGO_MASTERCARD');
-			$hipercard = Tools::getValue('MERCADOPAGO_HIPERCARD');
-			$amex = Tools::getValue('MERCADOPAGO_AMEX');
-			$diners = Tools::getValue('MERCADOPAGO_DINERS');
-			$elo = Tools::getValue('MERCADOPAGO_ELO');
-			$meli = Tools::getValue('MERCADOPAGO_MELI');
-			$bolbradesco = Tools::getValue('MERCADOPAGO_BOLBRADESCO');
-
-			if (!($visa == 'checked' && $mastercard == 'checked' && $hipercard == 'checked' && $amex == 'checked'
-				&& $diners == 'checked' && $elo == 'checked' && $meli == 'checked' && $bolbradesco == 'checked'))
+			$exclude_all = true;
+			foreach ($payment_methods as $payment_method)
 			{
-				Configuration::updateValue('MERCADOPAGO_VISA', $visa);
-				Configuration::updateValue('MERCADOPAGO_MASTERCARD', $mastercard);
-				Configuration::updateValue('MERCADOPAGO_HIPERCARD', $hipercard);
-				Configuration::updateValue('MERCADOPAGO_AMEX', $amex);
-				Configuration::updateValue('MERCADOPAGO_DINERS', $diners);
-				Configuration::updateValue('MERCADOPAGO_ELO', $elo);
-				Configuration::updateValue('MERCADOPAGO_MELI', $meli);
-				Configuration::updateValue('MERCADOPAGO_BOLBRADESCO', $bolbradesco);
+				$pm_variable_name = 'MERCADOPAGO_'.strtoupper($payment_method['id']);
+				$value = Tools::getValue($pm_variable_name);
+
+				if ($value != 'on')
+					$exclude_all = false;
+
+				// current settings
+				$payment_methods_settings[$payment_method['id']] = Configuration::get($pm_variable_name);
+				
+			}
+
+			if (!$exclude_all)
+			{
+				$payment_methods_settings = array();
+				foreach ($payment_methods as $payment_method)
+				{
+					$pm_variable_name = 'MERCADOPAGO_'.strtoupper($payment_method['id']);
+					$value = Tools::getValue($pm_variable_name);
+					//save setting per payment_method
+					Configuration::updateValue($pm_variable_name, $value);
+
+					$payment_methods_settings[$payment_method['id']] = Configuration::get($pm_variable_name);
+				}
 			}
 			else
 			{
-				$errors[] = $this->l('Enable at least one payment method.');
-				$success = false;
+				$errors[] = $this->l('Cannnot exclude all payment methods.');
+				$success = false;	
+			}
+
+			// if it is new country, reset values
+			if ($new_country)
+				$this->setBanners($this->getCountry($client_id, $client_secret));
+		}
+		else //it's not a post
+		{
+			// populate all payments according to country
+			if (Configuration::get('MERCADOPAGO_CLIENT_ID') != '' && Configuration::get('MERCADOPAGO_CLIENT_SECRET') != '')
+			{
+				$this->mercadopago = new MP(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
+				$payment_methods = $this->mercadopago->getPaymentMethods();
 			}
 		}
 
 		$this->context->controller->addCss($this->_path.'views/css/settings.css', 'all');
 		$this->context->controller->addCss($this->_path.'views/css/bootstrap.css', 'all');
 		$this->context->controller->addCss($this->_path.'views/css/style.css', 'all');
-
-		$this->context->smarty->assign(
+		
+		$settings = 
 			array(
 				'public_key' => htmlentities(Configuration::get('MERCADOPAGO_PUBLIC_KEY'), ENT_COMPAT, 'UTF-8'),
 				'client_id' => htmlentities(Configuration::get('MERCADOPAGO_CLIENT_ID'), ENT_COMPAT, 'UTF-8'),
@@ -335,23 +353,17 @@ class MercadoPago extends PaymentModule {
 				'iframe_height' => htmlentities(Configuration::get('MERCADOPAGO_IFRAME_HEIGHT'), ENT_COMPAT, 'UTF-8'),
 				'installments' => htmlentities(Configuration::get('MERCADOPAGO_INSTALLMENTS'), ENT_COMPAT, 'UTF-8'),
 				'auto_return' => htmlentities(Configuration::get('MERCADOPAGO_AUTO_RETURN'), ENT_COMPAT, 'UTF-8'),
-				'visa' => htmlentities(Configuration::get('MERCADOPAGO_VISA'), ENT_COMPAT, 'UTF-8'),
-				'mastercard' => htmlentities(Configuration::get('MERCADOPAGO_MASTERCARD'), ENT_COMPAT, 'UTF-8'),
-				'hipercard' => htmlentities(Configuration::get('MERCADOPAGO_HIPERCARD'), ENT_COMPAT, 'UTF-8'),
-				'amex' => htmlentities(Configuration::get('MERCADOPAGO_AMEX'), ENT_COMPAT, 'UTF-8'),
-				'diners' => htmlentities(Configuration::get('MERCADOPAGO_DINERS'), ENT_COMPAT, 'UTF-8'),
-				'elo' => htmlentities(Configuration::get('MERCADOPAGO_ELO'), ENT_COMPAT, 'UTF-8'),
-				'meli' => htmlentities(Configuration::get('MERCADOPAGO_MELI'), ENT_COMPAT, 'UTF-8'),
-				'bolbradesco' => htmlentities(Configuration::get('MERCADOPAGO_BOLBRADESCO'), ENT_COMPAT, 'UTF-8'),
 				'uri' => $_SERVER['REQUEST_URI'],
+				'payment_methods' => $payment_methods ? $payment_methods : null,
+				'payment_methods_settings' => $payment_methods_settings ? $payment_methods_settings : null,
 				'errors' => $errors,
 				'success' => $success,
 				'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
 									.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__,
 				'version' => $this->getPrestashopVersion()
+			);
 
-			)
-		);
+		$this->context->smarty->assign($settings);
 
 		return $this->display(__file__, '/views/templates/admin/settings.tpl');
 	}
@@ -362,14 +374,17 @@ class MercadoPago extends PaymentModule {
 		Configuration::updateValue('MERCADOPAGO_CLIENT_ID', $client_id);
 		Configuration::updateValue('MERCADOPAGO_CLIENT_SECRET', $client_secret);
 		Configuration::updateValue('MERCADOPAGO_COUNTRY', $country);
-		Configuration::updateValue('MERCADOPAGO_STANDARD_BANNER', (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').
-																	__PS_BASE_URI__.'modules/mercadopago/views/img/'.$country.'/banner_all_methods.png');
 		Configuration::updateValue('MERCADOPAGO_WINDOW_TYPE', 'redirect');
 		Configuration::updateValue('MERCADOPAGO_IFRAME_WIDTH', '725');
 		Configuration::updateValue('MERCADOPAGO_IFRAME_HEIGHT', '570');
 		Configuration::updateValue('MERCADOPAGO_INSTALLMENTS', '12');
 		Configuration::updateValue('MERCADOPAGO_AUTO_RETURN', 'approved');
 
+		$this->setBanners($country);
+	}
+
+	private function setBanners($country)
+	{
 		if ($country == "MLB" || $country == "MLM")
 		{
 			Configuration::updateValue('MERCADOPAGO_CREDITCARD_BANNER', (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').
@@ -382,6 +397,9 @@ class MercadoPago extends PaymentModule {
 		{
 			Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', 'true');
 		}
+
+		Configuration::updateValue('MERCADOPAGO_STANDARD_BANNER', (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').
+																	__PS_BASE_URI__.'modules/mercadopago/views/img/'.$country.'/banner_all_methods.png');
 	}
 
 	private function getCountry($client_id, $client_secret)
@@ -720,24 +738,17 @@ class MercadoPago extends PaymentModule {
 
 	private function getExcludedPaymentMethods()
 	{
+		$payment_methods = $this->mercadopago->getPaymentMethods();
 		$excluded_payment_methods = array();
 
-		if (Configuration::get('MERCADOPAGO_VISA') == 'checked')
-			$excluded_payment_methods[] = array('id' => 'visa');
-		if (Configuration::get('MERCADOPAGO_MASTERCARD') == 'checked')
-			$excluded_payment_methods[] = array('id' => 'master');
-		if (Configuration::get('MERCADOPAGO_HIPERCARD') == 'checked')
-			$excluded_payment_methods[] = array('id' => 'hipercard');
-		if (Configuration::get('MERCADOPAGO_AMEX') == 'checked')
-			$excluded_payment_methods[] = array('id' => 'amex');
-		if (Configuration::get('MERCADOPAGO_DINERS') == 'checked')
-			$excluded_payment_methods[] = array('id' => 'diners');
-		if (Configuration::get('MERCADOPAGO_ELO') == 'checked')
-			$excluded_payment_methods[] = array('id' => 'elo');
-		if (Configuration::get('MERCADOPAGO_MELI') == 'checked')
-			$excluded_payment_methods[] = array('id' => 'melicard');
-		if (Configuration::get('MERCADOPAGO_BOLBRADESCO') == 'checked')
-			$excluded_payment_methods[] = array('id' => 'bolbradesco');
+		foreach ($payment_methods as $payment_method)
+		{
+			$pm_variable_name = 'MERCADOPAGO_'.strtoupper($payment_method['id']);
+			$value = Configuration::get($pm_variable_name);
+
+			if ($value == 'on')
+				$excluded_payment_methods[] = array('id' => $payment_method['id']);
+		}
 
 		return $excluded_payment_methods;
 	}

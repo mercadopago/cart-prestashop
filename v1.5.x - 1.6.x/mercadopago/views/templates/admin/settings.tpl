@@ -190,32 +190,18 @@
 				<div class="">
 					<select name="MERCADOPAGO_WINDOW_TYPE" id="window_type">
 						<option value="iframe">{l s='iFrame' mod='mercadopago'} </option>
-						<!-- <option value="modal">{l s='Lightbox' mod='mercadopago'} </option> -->
 						<option value="redirect">{l s='Redirect' mod='mercadopago'} </option>
 					</select>
 				</div>
 				<br />
-				<!-- <label>{l s='Exclude payment methods:' mod='mercadopago'}</label>
+				<label>{l s='Exclude payment methods:' mod='mercadopago'}</label>
 				<div class="payment-methods">
+				<br />
+				{foreach from=$payment_methods item=payment_method}
 					<br />
-					<br />
-					<input type="checkbox" name="MERCADOPAGO_VISA" id="visa" value="{$visa|escape:'htmlall'}">{l s='Visa' mod='mercadopago'}</input>
-					<br />
-					<input type="checkbox" name="MERCADOPAGO_MASTERCARD" id="mastercard" value="{$mastercard|escape:'htmlall'}">{l s='Mastercard' mod='mercadopago'}</input>
-					<br />
-					<input type="checkbox" name="MERCADOPAGO_HIPERCARD" id="hipercard" value="{$hipercard|escape:'htmlall'}">{l s='Hipercard' mod='mercadopago'}</input>
-					<br />
-					<input type="checkbox" name="MERCADOPAGO_AMEX" id="amex" value="{$amex|escape:'htmlall'}">{l s='American Express' mod='mercadopago'}</input>
-					<br />
-					<input type="checkbox" name="MERCADOPAGO_DINERS" id="diners" value="{$diners|escape:'htmlall'}">{l s='Diners' mod='mercadopago'}</input>
-					<br />
-					<input type="checkbox" name="MERCADOPAGO_ELO" id="elo" value="{$elo|escape:'htmlall'}">{l s='Elo' mod='mercadopago'}</input>
-					<br />
-					<input type="checkbox" name="MERCADOPAGO_MELI" id="meli" value="{$meli|escape:'htmlall'}">{l s='MercadoLibre Card' mod='mercadopago'}</input>
-					<br />
-					<input type="checkbox" name="MERCADOPAGO_BOLBRADESCO" id="bolbradesco" value="{$bolbradesco|escape:'htmlall'}">{l s='Ticket' mod='mercadopago'}</input>
+					<input type="checkbox" name="MERCADOPAGO_{$payment_method.id|upper}" id="{$payment_method.id}">{$payment_method.name}</input>
+				{/foreach}
 				</div>
-				<br /> -->
 				<label>{l s='iFrame width:' mod='mercadopago'}</label>
 				<div class="">
 					<input type="text" size="33" name="MERCADOPAGO_IFRAME_WIDTH" value="{$iframe_width|escape:'htmlall'}" />
@@ -240,14 +226,12 @@
 				</div>
 			</fieldset>
 		{/if}
-		<center>
 		{if empty($country)}
 			<input type="submit" name="login" value="{l s='Login' mod='mercadopago'}" class="ch-btn ch-btn-big"/>
 		{else}
 			<input type="submit" name="submitmercadopago" value="{l s='Save' mod='mercadopago'}" class="ch-btn ch-btn-big"/>
 		{/if}
 			<!-- <input type="button" id="back" value="{l s='Back' mod='mercadopago'}" class="ch-btn-orange ch-btn-big-orange"/> -->
-		</center>
 	</form>
 </div>
 <script type="text/javascript">
@@ -279,36 +263,9 @@
 		if (document.getElementById("auto_return"))
 			document.getElementById("auto_return").value = "{$auto_return|escape:'javascript'}";
 
-		// if (document.getElementById("visa"))
-		// 	document.getElementById("visa").checked = "{$visa|escape:'javascript'}";
-
-		// if (document.getElementById("mastercard"))
-		// 	document.getElementById("mastercard").checked = "{$mastercard|escape:'javascript'}";
-
-		// if (document.getElementById("hipercard"))
-		// 	document.getElementById("hipercard").checked = "{$hipercard|escape:'javascript'}";
-
-		// if (document.getElementById("amex"))
-		// 	document.getElementById("amex").checked = "{$amex|escape:'javascript'}";
-
-		// if (document.getElementById("meli"))
-		// 	document.getElementById("meli").checked = "{$meli|escape:'javascript'}";
-
-		// if (document.getElementById("bolbradesco"))
-		// 	document.getElementById("bolbradesco").checked = "{$bolbradesco|escape:'javascript'}";
-
-		// if (document.getElementById("diners"))
-		// 	document.getElementById("diners").checked = "{$diners|escape:'javascript'}";
-
-		// if (document.getElementById("elo"))
-		// 	document.getElementById("elo").checked = "{$elo|escape:'javascript'}";
+		{foreach from=$payment_methods_settings key=payment_method item=value}
+			document.getElementById("{$payment_method|escape:'javascript'}").checked = "{$value|escape:'javascript'}";
+		{/foreach}
+		
 	}
-
-	$("input[type='checkbox']").click(function (e) {
-		if ($("#" + e.target.id).attr("checked") !== undefined) {
-			$("#" + e.target.id).val("checked");
-		} else {
-			$("#" + e.target.id).val("")
-		}
-	});
 </script>
