@@ -67,6 +67,58 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
 					$statement_descriptors[] = $payment_info['statement_descriptor'];
 					$status_details[] = $payment_info['status_detail'];
 				}
+
+				if (isset($result['response']['collection'])) {
+					$response = $result['response']['collection'];
+					$order_status = null;
+					if (array_key_exists('status', $response))
+					{
+						switch ($response['status'])
+						{
+							case 'in_process':
+								$order_status = 'MERCADOPAGO_STATUS_0';
+								break;
+							case 'approved':
+								$order_status = 'MERCADOPAGO_STATUS_1';
+								break;
+							case 'cancelled':
+								$order_status = 'MERCADOPAGO_STATUS_2';
+								break;
+							case 'refunded':
+								$order_status = 'MERCADOPAGO_STATUS_4';
+								break;
+							case 'charged_back':
+								$order_status = 'MERCADOPAGO_STATUS_5';
+								break;
+							case 'in_mediation':
+								$order_status = 'MERCADOPAGO_STATUS_6';
+								break;
+							case 'pending':
+								$order_status = 'MERCADOPAGO_STATUS_7';
+								break;
+							case 'rejected':
+								$order_status = 'MERCADOPAGO_STATUS_3';
+								break;
+						}
+					}
+
+					if ($order_status != null && array_key_exists('transaction_amount', $response))
+					{
+						$total = (Float)number_format($response['transaction_amount'], 2, '.', '');
+
+						$extra_vars = array (
+									'{bankwire_owner}' => $mercadopago->textshowemail,
+									'{bankwire_details}' => '',
+									'{bankwire_address}' => ''
+									);
+
+						$mercadopago->validateOrder($cart->id, Configuration::get($order_status),
+													$total,
+													$mercadopago->displayName,
+													null,
+													$extra_vars, $cart->id_currency);
+					}
+				}
 			}
 
 			if (Validate::isLoadedObject($cart))
