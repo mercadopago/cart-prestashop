@@ -52,6 +52,7 @@ class MercadoPago extends PaymentModule {
 		$this->author = $this->l('MERCADOPAGO.COM REPRESENTAÇÕES LTDA.');
 		$this->link = new Link();
 		$this->mercadopago = new MP(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
+		$this->mercadopago->setSandbox(Configuration::get('MERCADOPAGO_SANDBOX'));
 	}
 
 	public function createStates()
@@ -149,6 +150,7 @@ class MercadoPago extends PaymentModule {
 			|| !Configuration::updateValue('MERCADOPAGO_BOLETO_ACTIVE', '')
 			|| !Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', '')
 			|| !Configuration::updateValue('MERCADOPAGO_STANDARD_BANNER', '')
+			|| !Configuration::updateValue('MERCADOPAGO_SANDBOX', '')
 			|| !Configuration::updateValue('MERCADOPAGO_WINDOW_TYPE', '')
 			|| !Configuration::updateValue('MERCADOPAGO_IFRAME_WIDTH', '')
 			|| !Configuration::updateValue('MERCADOPAGO_IFRAME_HEIGHT', '')
@@ -176,6 +178,7 @@ class MercadoPago extends PaymentModule {
 			|| !Configuration::deleteByName('MERCADOPAGO_BOLETO_ACTIVE')
 			|| !Configuration::deleteByName('MERCADOPAGO_STANDARD_ACTIVE')
 			|| !Configuration::deleteByName('MERCADOPAGO_STANDARD_BANNER')
+			|| !Configuration::deleteByName('MERCADOPAGO_SANDBOX')
 			|| !Configuration::deleteByName('MERCADOPAGO_WINDOW_TYPE')
 			|| !Configuration::deleteByName('MERCADOPAGO_IFRAME_WIDTH')
 			|| !Configuration::deleteByName('MERCADOPAGO_IFRAME_HEIGHT')
@@ -270,6 +273,9 @@ class MercadoPago extends PaymentModule {
 			$standard_banner = Tools::getValue('MERCADOPAGO_STANDARD_BANNER');
 			Configuration::updateValue('MERCADOPAGO_STANDARD_BANNER', $standard_banner);
 
+			$sandbox = Tools::getValue('MERCADOPAGO_SANDBOX');
+			Configuration::updateValue('MERCADOPAGO_SANDBOX', $sandbox);
+
 			$window_type = Tools::getValue('MERCADOPAGO_WINDOW_TYPE');
 			Configuration::updateValue('MERCADOPAGO_WINDOW_TYPE', $window_type);
 
@@ -348,6 +354,7 @@ class MercadoPago extends PaymentModule {
 				'boleto_active' => htmlentities(Configuration::get('MERCADOPAGO_BOLETO_ACTIVE'), ENT_COMPAT, 'UTF-8'),
 				'standard_active' => htmlentities(Configuration::get('MERCADOPAGO_STANDARD_ACTIVE'), ENT_COMPAT, 'UTF-8'),
 				'standard_banner' => htmlentities(Configuration::get('MERCADOPAGO_STANDARD_BANNER'), ENT_COMPAT, 'UTF-8'),
+				'sandbox' => htmlentities(Configuration::get('MERCADOPAGO_SANDBOX'), ENT_COMPAT, 'UTF-8'),
 				'window_type' => htmlentities(Configuration::get('MERCADOPAGO_WINDOW_TYPE'), ENT_COMPAT, 'UTF-8'),
 				'iframe_width' => htmlentities(Configuration::get('MERCADOPAGO_IFRAME_WIDTH'), ENT_COMPAT, 'UTF-8'),
 				'iframe_height' => htmlentities(Configuration::get('MERCADOPAGO_IFRAME_HEIGHT'), ENT_COMPAT, 'UTF-8'),
@@ -379,6 +386,7 @@ class MercadoPago extends PaymentModule {
 		Configuration::updateValue('MERCADOPAGO_IFRAME_HEIGHT', '570');
 		Configuration::updateValue('MERCADOPAGO_INSTALLMENTS', '12');
 		Configuration::updateValue('MERCADOPAGO_AUTO_RETURN', 'approved');
+		Configuration::updateValue('MERCADOPAGO_SANDBOX', 'false');
 
 		$this->setBanners($country);
 	}
@@ -473,7 +481,7 @@ class MercadoPago extends PaymentModule {
 				if (array_key_exists('init_point', $result['response']))
 				{
 					$data['standard_banner'] = Configuration::get('MERCADOPAGO_STANDARD_BANNER');
-					$data['preferences_url'] = $result['response']['init_point'];
+					$data['preferences_url'] = Configuration::get('MERCADOPAGO_SANDBOX') == 'true' ? $result['response']['sandbox_init_point'] : $result['response']['init_point'];
 				}
 				else
 				{
