@@ -162,6 +162,10 @@ class MP {
 		}
 	}
 
+	public function setSandbox($value){
+		$this->sandbox = (bool)$value;
+	}
+
 }
 
 /**
