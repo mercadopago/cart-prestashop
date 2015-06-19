@@ -173,6 +173,14 @@
 				<legend>
 					<img src="../img/admin/contact.gif" />{l s='Settings - MercadoPago Standard' mod='mercadopago'}
 				</legend>
+				<label>{l s='Sandbox: ' mod='mercadopago'}</label>
+				<div class="">
+					<select name="MERCADOPAGO_SANDBOX" id="sandbox" value="{$sandbox}">
+						<option value="true" {if $sandbox=='true'}selected{/if}>{l s='Yes' mod='mercadopago'} </option>
+						<option value="false" {if $sandbox!='true'}selected{/if}>{l s='No' mod='mercadopago'} </option>
+					</select>
+				</div>
+				<br />
 				<label>{l s='Active: ' mod='mercadopago'}</label>
 				<div class="">
 					<select name="MERCADOPAGO_STANDARD_ACTIVE" id="standard_active">
