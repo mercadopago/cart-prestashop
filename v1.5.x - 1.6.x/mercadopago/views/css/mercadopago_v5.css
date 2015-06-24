@@ -140,18 +140,12 @@
 	right: 120px;
 }
 
-.mp-module #id-create-boleto {
+.mp-module .create-boleto {
 	display: none;
 }
 
 .mp-module #form-boleto-mp {
 	margin-left: 30px;
-}
-
-.mp-module .boleto {
-	background: url('../img/boleto.png') 77% no-repeat;
-	background-size: 137px 61px;
-	height: 61px;
 }
 
 .mp-module .standard {
@@ -173,6 +167,14 @@
 	margin-top: -10px;
 	margin-left: 110px;
 	margin-top: -5px;
+}
+
+.mp-module .mp-offline-banner {
+	margin-top: -3px;
+}
+
+.mp-module .offline {
+	margin-top: 0;
 }
 
 .mp-module .col input {

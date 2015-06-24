@@ -153,20 +153,27 @@
 				<div class="">
 					<input type="text" size="33" name="MERCADOPAGO_CREDITCARD_BANNER" value="{$creditcard_banner|escape:'htmlall'}" />
 				</div>
+			</fieldset>
+			{foreach from=$offline_payment_settings key=offline_payment item=value}
+				<fieldset>
+					<legend>
+						<img src="../img/admin/contact.gif" />{l s='Settings - ' mod='mercadopago'}{$value.name|ucfirst}{l s=' Custom' mod='mercadopago'}
+					</legend>
+					<label>{l s='Active: ' mod='mercadopago'}</label>
+					<div class="">
+						<select name="MERCADOPAGO_{$offline_payment|upper}_ACTIVE" id="{$offline_payment}_active">
+							<option value="true">{l s='Yes' mod='mercadopago'} </option>
+							<option value="false">{l s='No' mod='mercadopago'} </option>
+						</select>
+					</div>
+					<br />
+					<label>{l s='Banner:' mod='mercadopago'}</label>
+					<div class="">
+						<input type="text" size="33" name="MERCADOPAGO_{$offline_payment|upper}_BANNER" value="{$value.banner|escape:'htmlall'}" />
+					</div>
+				</fieldset>
 				<br />
-			</fieldset>
-			<fieldset>
-				<legend>
-					<img src="../img/admin/contact.gif" />{l s='Settings - Custom Ticket' mod='mercadopago'}
-				</legend>
-				<label>{l s='Active: ' mod='mercadopago'}</label>
-				<div class="">
-					<select name="MERCADOPAGO_BOLETO_ACTIVE" id="boleto_active">
-						<option value="true">{l s='Yes' mod='mercadopago'} </option>
-						<option value="false">{l s='No' mod='mercadopago'} </option>
-					</select>
-				</div>
-			</fieldset>
+			{/foreach}
 		{/if}
 		{if $country != ''}
 			<fieldset>
@@ -250,9 +257,6 @@
 
 		if (document.getElementById("creditcard_active"))
 			document.getElementById("creditcard_active").value = "{$creditcard_active|escape:'javascript'}";
-		
-		if (document.getElementById("boleto_active"))
-			document.getElementById("boleto_active").value = "{$boleto_active|escape:'javascript'}";
 
 		if (document.getElementById("standard_active"))
 			document.getElementById("standard_active").value = "{$standard_active|escape:'javascript'}";
@@ -267,5 +271,8 @@
 			document.getElementById("{$payment_method|escape:'javascript'}").checked = "{$value|escape:'javascript'}";
 		{/foreach}
 		
+		{foreach from=$offline_payment_settings key=offline_payment item=value}
+			document.getElementById("{$offline_payment}_active").value = "{$value.active|escape:'javascript'}";
+		{/foreach}
 	}
 </script>

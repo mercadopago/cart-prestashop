@@ -23,7 +23,6 @@
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of MercadoPago
 */
-
 if (!defined('_PS_VERSION_'))
 	exit;
 
@@ -140,21 +139,6 @@ class MercadoPago extends PaymentModule {
 	{
 		if (!parent::install()
 			|| !$this->createStates()
-			|| !Configuration::updateValue('MERCADOPAGO_PUBLIC_KEY', '')
-			|| !Configuration::updateValue('MERCADOPAGO_CLIENT_ID', '')
-			|| !Configuration::updateValue('MERCADOPAGO_CLIENT_SECRET', '')
-			|| !Configuration::updateValue('MERCADOPAGO_CATEGORY', 'others')
-			|| !Configuration::updateValue('MERCADOPAGO_CREDITCARD_BANNER', '')
-			|| !Configuration::updateValue('MERCADOPAGO_CREDITCARD_ACTIVE', '')
-			|| !Configuration::updateValue('MERCADOPAGO_BOLETO_ACTIVE', '')
-			|| !Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', '')
-			|| !Configuration::updateValue('MERCADOPAGO_STANDARD_BANNER', '')
-			|| !Configuration::updateValue('MERCADOPAGO_WINDOW_TYPE', '')
-			|| !Configuration::updateValue('MERCADOPAGO_IFRAME_WIDTH', '')
-			|| !Configuration::updateValue('MERCADOPAGO_IFRAME_HEIGHT', '')
-			|| !Configuration::updateValue('MERCADOPAGO_INSTALLMENTS', '')
-			|| !Configuration::updateValue('MERCADOPAGO_AUTO_RETURN', '')
-			|| !Configuration::updateValue('MERCADOPAGO_COUNTRY', '')
 			|| !$this->registerHook('payment')
 			|| !$this->registerHook('paymentReturn')
 			|| !$this->registerHook('displayHeader'))
@@ -167,13 +151,13 @@ class MercadoPago extends PaymentModule {
 	public function uninstall()
 	{
 		if (!$this->deleteStates()
+			|| !$this->uninstallPaymentSettings()
 			|| !Configuration::deleteByName('MERCADOPAGO_PUBLIC_KEY')
 			|| !Configuration::deleteByName('MERCADOPAGO_CLIENT_ID')
 			|| !Configuration::deleteByName('MERCADOPAGO_CLIENT_SECRET')
 			|| !Configuration::deleteByName('MERCADOPAGO_CATEGORY')
 			|| !Configuration::deleteByName('MERCADOPAGO_CREDITCARD_BANNER')
 			|| !Configuration::deleteByName('MERCADOPAGO_CREDITCARD_ACTIVE')
-			|| !Configuration::deleteByName('MERCADOPAGO_BOLETO_ACTIVE')
 			|| !Configuration::deleteByName('MERCADOPAGO_STANDARD_ACTIVE')
 			|| !Configuration::deleteByName('MERCADOPAGO_STANDARD_BANNER')
 			|| !Configuration::deleteByName('MERCADOPAGO_WINDOW_TYPE')
@@ -195,12 +179,41 @@ class MercadoPago extends PaymentModule {
 		return true;
 	}
 
+	public function uninstallPaymentSettings() {
+		$client_id = Configuration::get('MERCADOPAGO_CLIENT_ID');
+		$client_secret = Configuration::get('MERCADOPAGO_CLIENT_SECRET');
+
+		if ($client_id != '' && $client_secret != '')
+		{
+			$payment_methods = $this->mercadopago->getPaymentMethods();
+			foreach ($payment_methods as $payment_method)
+			{
+				$pm_variable_name = 'MERCADOPAGO_'.strtoupper($payment_method['id']);
+				if (!Configuration::deleteByName($pm_variable_name))
+					return false;
+			}
+
+			$offline_methods_payments = $this->mercadopago->getOfflinePaymentMethods();
+			foreach ($offline_methods_payments as $offline_payment)
+			{
+				$op_banner_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_BANNER');
+				$op_active_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_ACTIVE');
+				if (!Configuration::deleteByName($op_banner_variable) || !Configuration::deleteByName($op_active_variable))
+					return false;
+			}
+		}
+
+		return true;
+	}
+
 	public function getContent()
 	{
 		$errors = array();
 		$success = false;
 		$payment_methods = null;
 		$payment_methods_settings = null;
+		$offline_payment_settings = null;
+		$offline_methods_payments = null;
 
 		if (Tools::getValue('login'))
 		{
@@ -217,12 +230,27 @@ class MercadoPago extends PaymentModule {
 				$this->setDefaultValues($client_id, $client_secret);
 
 				// populate all payments accoring to country
-				$this->mercadopago = new MP(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
-				$payment_methods = $this->mercadopago->getPaymentMethods();
+				$mp = new MP($client_id, $client_secret);
+				$payment_methods = $mp->getPaymentMethods();
+
+				// load all offline payment method settings
+				$offline_methods_payments = $mp->getOfflinePaymentMethods();
+				$offline_payment_settings = array();
+				foreach ($offline_methods_payments as $offline_payment)
+				{
+					$op_banner_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_BANNER');
+					$op_active_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_ACTIVE');
+
+					$offline_payment_settings[$offline_payment['id']] = array(
+																				'name' => $offline_payment['name'], 
+																				'banner' => Configuration::get($op_banner_variable),
+																				'active' => Configuration::get($op_active_variable)
+																			);
+				}
 			}
 		}
 		else if (Tools::getValue('submitmercadopago'))
-		{
+		{	
 			$client_id = Tools::getValue('MERCADOPAGO_CLIENT_ID');
 			$client_secret = Tools::getValue('MERCADOPAGO_CLIENT_SECRET');
 			$public_key = Tools::getValue('MERCADOPAGO_PUBLIC_KEY');
@@ -230,7 +258,7 @@ class MercadoPago extends PaymentModule {
 			$creditcard_active = Tools::getValue('MERCADOPAGO_CREDITCARD_ACTIVE');
 			$boleto_active = Tools::getValue('MERCADOPAGO_BOLETO_ACTIVE');
 			$standard_active = Tools::getValue('MERCADOPAGO_STANDARD_ACTIVE');
-			$new_country;
+			$new_country = false;
 
 			if (!$this->validateCredential($client_id, $client_secret))
 			{
@@ -320,7 +348,52 @@ class MercadoPago extends PaymentModule {
 
 			// if it is new country, reset values
 			if ($new_country)
-				$this->setBanners($this->getCountry($client_id, $client_secret));
+			{
+				$this->setCustomSettings($client_id, $client_secret, $this->getCountry($client_id, $client_secret));
+
+				$offline_methods_payments = $this->mercadopago->getOfflinePaymentMethods();
+				$offline_payment_settings = array();
+				foreach ($offline_methods_payments as $offline_payment)
+				{
+					$op_banner_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_BANNER');
+					$op_active_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_ACTIVE');
+
+					$op_banner = Configuration::get($op_banner_variable);
+					$op_active = Configuration::get($op_banner_variable);
+
+					$offline_payment_settings[$offline_payment['id']] = array(
+																				'name' => $offline_payment['name'], 
+																				'banner' => Configuration::get($op_banner_variable),
+																				'active' => Configuration::get($op_active_variable)
+																			);
+				}
+			}
+			else
+			{
+				// save offline payment settings
+				$offline_methods_payments = $this->mercadopago->getOfflinePaymentMethods();
+				$offline_payment_settings = array();
+				foreach ($offline_methods_payments as $offline_payment)
+				{
+					$op_banner_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_BANNER');
+					$op_active_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_ACTIVE');
+
+					$op_banner = Tools::getValue($op_banner_variable);
+					//save setting per payment_method
+					Configuration::updateValue($op_banner_variable, $op_banner);
+
+					$op_active = Tools::getValue($op_active_variable);
+					//save setting per payment_method
+					Configuration::updateValue($op_active_variable, $op_active);
+
+					$offline_payment_settings[$offline_payment['id']] = array(
+																				'name' => $offline_payment['name'], 
+																				'banner' => Configuration::get($op_banner_variable),
+																				'active' => Configuration::get($op_active_variable)
+																			);
+				}
+			}
+			
 		}
 		else //it's not a post
 		{
@@ -328,7 +401,32 @@ class MercadoPago extends PaymentModule {
 			if (Configuration::get('MERCADOPAGO_CLIENT_ID') != '' && Configuration::get('MERCADOPAGO_CLIENT_SECRET') != '')
 			{
 				$this->mercadopago = new MP(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
+				
+				// load payment method settings for standard
 				$payment_methods = $this->mercadopago->getPaymentMethods();
+				$payment_methods_settings = array();
+				foreach ($payment_methods as $payment_method)
+				{
+					$pm_variable_name = 'MERCADOPAGO_'.strtoupper($payment_method['id']);
+					$value = Configuration::get($pm_variable_name);
+
+					$payment_methods_settings[$payment_method['id']] = Configuration::get($pm_variable_name);
+				}
+
+				// load all offline payment method settings
+				$offline_methods_payments = $this->mercadopago->getOfflinePaymentMethods();
+				$offline_payment_settings = array();
+				foreach ($offline_methods_payments as $offline_payment)
+				{
+					$op_banner_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_BANNER');
+					$op_active_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_ACTIVE');
+
+					$offline_payment_settings[$offline_payment['id']] = array(
+																				'name' => $offline_payment['name'], 
+																				'banner' => Configuration::get($op_banner_variable),
+																				'active' => Configuration::get($op_active_variable)
+																			);
+				}
 			}
 		}
 
@@ -356,6 +454,8 @@ class MercadoPago extends PaymentModule {
 				'uri' => $_SERVER['REQUEST_URI'],
 				'payment_methods' => $payment_methods ? $payment_methods : null,
 				'payment_methods_settings' => $payment_methods_settings ? $payment_methods_settings : null,
+				'offline_methods_payments' => $offline_methods_payments ? $offline_methods_payments : null,
+				'offline_payment_settings' => $offline_payment_settings ? $offline_payment_settings : null,
 				'errors' => $errors,
 				'success' => $success,
 				'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
@@ -380,18 +480,30 @@ class MercadoPago extends PaymentModule {
 		Configuration::updateValue('MERCADOPAGO_INSTALLMENTS', '12');
 		Configuration::updateValue('MERCADOPAGO_AUTO_RETURN', 'approved');
 
-		$this->setBanners($country);
+		$this->setCustomSettings($client_id, $client_secret, $country);
 	}
 
-	private function setBanners($country)
+	private function setCustomSettings($client_id, $client_secret, $country)
 	{
 		if ($country == "MLB" || $country == "MLM")
 		{
 			Configuration::updateValue('MERCADOPAGO_CREDITCARD_BANNER', (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').
 																			__PS_BASE_URI__.'modules/mercadopago/views/img/'.$country.'/credit_card.png');
 			Configuration::updateValue('MERCADOPAGO_CREDITCARD_ACTIVE', 'true');
-			Configuration::updateValue('MERCADOPAGO_BOLETO_ACTIVE', 'true');
 			Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', 'false');
+
+			// set all offline payment settings
+			$mp = new MP($client_id, $client_secret);
+			$offline_methods_payments = $mp->getOfflinePaymentMethods();
+			foreach ($offline_methods_payments as $offline_payment)
+			{
+				$op_banner_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_BANNER');
+				Configuration::updateValue($op_banner_variable, $offline_payment['secure_thumbnail']);
+
+				$op_active_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_ACTIVE');
+				Configuration::updateValue($op_active_variable, 'true');
+			}
+
 		}
 		else
 		{
@@ -482,6 +594,23 @@ class MercadoPago extends PaymentModule {
 				}
 			}
 
+			// send offline settings
+			$offline_methods_payments = $this->mercadopago->getOfflinePaymentMethods();
+			$offline_payment_settings = array();
+			foreach ($offline_methods_payments as $offline_payment)
+			{
+				$op_banner_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_BANNER');
+				$op_active_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_ACTIVE');
+
+				$offline_payment_settings[$offline_payment['id']] = array(
+																			'name' => $offline_payment['name'], 
+																			'banner' => Configuration::get($op_banner_variable),
+																			'active' => Configuration::get($op_active_variable)
+																		);
+			}
+
+			$data['offline_payment_settings'] = $offline_payment_settings;
+
 			$this->context->smarty->assign($data);
 
 			return $this->display(__file__, '/views/templates/hook/checkout.tpl');
@@ -546,9 +675,10 @@ class MercadoPago extends PaymentModule {
 
 			$this->context->smarty->assign(
 				array(
+					'country' => Configuration::get('MERCADOPAGO_COUNTRY'),
+					'version' => $this->getPrestashopVersion(),
 					'payment_id' => Tools::getValue('payment_id'),
 					'boleto_url' => Tools::getValue('boleto_url'),
-					'country' => Configuration::get('MERCADOPAGO_COUNTRY'),
 					'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
 									.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__
 				)
