@@ -44,5 +44,4 @@ Get your **CLIENT_ID** and **CLIENT_SECRET** at:
 
 To generate a **PUBLIC_KEY**:
 
-	Send an email to developers@mercadopago.com.br passing your CLIENT_ID asking for a PUBLIC_KEY 
-	for Prestashop
+	Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials

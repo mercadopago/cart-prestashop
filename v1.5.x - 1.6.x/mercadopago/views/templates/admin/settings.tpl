@@ -80,10 +80,10 @@
 		<a href="https://www.mercadopago.com/mco/herramientas/aplicaciones"><u>{l s='Colombia' mod='mercadopago'}</u></a>
 	</h4>
 	{if $country eq "MLB"}
-		<h4> {l s='- To obtain your public key please send an email to developers@mercadopago.com.br with subject "Prestashop Public key" informing your Client Id' mod='mercadopago'}</h4>
+		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials' mod='mercadopago'}</h4>
 	{/if}
 	{if $country eq "MLM"}
-		<h4> {l s='- To obtain your public key please send an email to developers@mercadopago.com with subject "Prestashop Public key" informing your Client Id' mod='mercadopago'}</h4>
+		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlm/account/credentials' mod='mercadopago'}</h4>
 	{/if}
 	<form action="{$uri|escape:'htmlall'}" method="post">
 		<fieldset>
