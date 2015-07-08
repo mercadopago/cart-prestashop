@@ -35,7 +35,7 @@ class MercadoPago extends PaymentModule {
 	{
 		$this->name = 'mercadopago';
 		$this->tab = 'payments_gateways';
-		$this->version = '3.0.3';
+		$this->version = '3.0.4';
 		$this->currencies = true;
 		$this->currencies_mode = 'radio';
 		$this->need_instance = 0;
@@ -744,8 +744,9 @@ class MercadoPago extends PaymentModule {
 		$image_url = '';
 		$products = $cart->getProducts();
 		$items = array();
+		$summary = '';
 
-		foreach ($products as $product)
+		foreach ($products as $key=>$product)
 		{
 			$image_url = '';
 			// get image URL
@@ -757,13 +758,18 @@ class MercadoPago extends PaymentModule {
 
 			$item = array (
 				'id' => $product['id_product'],
-				'title' => utf8_encode($product['description_short']),
-				'description' => utf8_encode($product['description_short']),
+				'title' => $product['name'],
+				'description' => $product['description_short'],
 				'quantity' => $product['quantity'],
 				'unit_price' => $product['price_wt'],
 				'picture_url'=> $image_url,
 				'category_id'=> Configuration::get('MERCADOPAGO_CATEGORY')
 			);
+
+			if ($key == 0)
+				$summary .= $product['name'];
+			else 
+				$summary .= ', '.$product['name'];
 
 			$items[] = $item;
 		}
@@ -824,7 +830,7 @@ class MercadoPago extends PaymentModule {
 		{
 			$cart = Context::getContext()->cart;
 
-			$data['reason'] = 'Prestashop via MercadoPago';
+			$data['reason'] = $summary;
 			$data['amount'] = (Float)number_format($cart->getOrderTotal(true, Cart::BOTH), 2, '.', '');
 			$data['payer_email'] = $customer_fields['email'];
 			$data['notification_url'] = $this->link->getModuleLink('mercadopago', 'notification', array(), Configuration::get('PS_SSL_ENABLED'), null, null, false).'?checkout=custom&';
