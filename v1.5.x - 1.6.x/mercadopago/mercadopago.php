@@ -51,6 +51,7 @@ class MercadoPago extends PaymentModule {
 		$this->author = $this->l('MERCADOPAGO.COM REPRESENTAÇÕES LTDA.');
 		$this->link = new Link();
 		$this->mercadopago = new MP(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
+		$this->mercadopago->setSandbox(Configuration::get('MERCADOPAGO_SANDBOX', 'false'));
 	}
 
 	public function createStates()
@@ -89,7 +90,7 @@ class MercadoPago extends PaymentModule {
 			{
 				$order_state->name[(int)$language['id_lang']] = $value[1];
 				$order_state->template[$language['id_lang']] = $value[2];
-				
+
 				if ($value[2] == 'in_process' || $value[2] == 'pending' ||
 					$value[2] == 'charged_back' || $value[2] == 'in_mediation')
 				{
@@ -174,6 +175,7 @@ class MercadoPago extends PaymentModule {
 			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_6')
 			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_7')
 			|| !Configuration::deleteByName('MERCADOPAGO_COUNTRY')
+			|| !Configuration::deleteByName('MERCADOPAGO_SANDBOX')
 			|| !parent::uninstall())
 			return false;
 		return true;
@@ -242,7 +244,7 @@ class MercadoPago extends PaymentModule {
 					$op_active_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_ACTIVE');
 
 					$offline_payment_settings[$offline_payment['id']] = array(
-																				'name' => $offline_payment['name'], 
+																				'name' => $offline_payment['name'],
 																				'banner' => Configuration::get($op_banner_variable),
 																				'active' => Configuration::get($op_active_variable)
 																			);
@@ -250,7 +252,7 @@ class MercadoPago extends PaymentModule {
 			}
 		}
 		else if (Tools::getValue('submitmercadopago'))
-		{	
+		{
 			$client_id = Tools::getValue('MERCADOPAGO_CLIENT_ID');
 			$client_secret = Tools::getValue('MERCADOPAGO_CLIENT_SECRET');
 			$public_key = Tools::getValue('MERCADOPAGO_PUBLIC_KEY');
@@ -298,6 +300,9 @@ class MercadoPago extends PaymentModule {
 			$standard_banner = Tools::getValue('MERCADOPAGO_STANDARD_BANNER');
 			Configuration::updateValue('MERCADOPAGO_STANDARD_BANNER', $standard_banner);
 
+			$sandbox = Tools::getValue('MERCADOPAGO_SANDBOX');
+			Configuration::updateValue('MERCADOPAGO_SANDBOX', $sandbox);
+
 			$window_type = Tools::getValue('MERCADOPAGO_WINDOW_TYPE');
 			Configuration::updateValue('MERCADOPAGO_WINDOW_TYPE', $window_type);
 
@@ -324,7 +329,7 @@ class MercadoPago extends PaymentModule {
 
 				// current settings
 				$payment_methods_settings[$payment_method['id']] = Configuration::get($pm_variable_name);
-				
+
 			}
 
 			if (!$exclude_all)
@@ -343,7 +348,7 @@ class MercadoPago extends PaymentModule {
 			else
 			{
 				$errors[] = $this->l('Cannnot exclude all payment methods.');
-				$success = false;	
+				$success = false;
 			}
 
 			// if it is new country, reset values
@@ -362,7 +367,7 @@ class MercadoPago extends PaymentModule {
 					$op_active = Configuration::get($op_banner_variable);
 
 					$offline_payment_settings[$offline_payment['id']] = array(
-																				'name' => $offline_payment['name'], 
+																				'name' => $offline_payment['name'],
 																				'banner' => Configuration::get($op_banner_variable),
 																				'active' => Configuration::get($op_active_variable)
 																			);
@@ -387,13 +392,13 @@ class MercadoPago extends PaymentModule {
 					Configuration::updateValue($op_active_variable, $op_active);
 
 					$offline_payment_settings[$offline_payment['id']] = array(
-																				'name' => $offline_payment['name'], 
+																				'name' => $offline_payment['name'],
 																				'banner' => Configuration::get($op_banner_variable),
 																				'active' => Configuration::get($op_active_variable)
 																			);
 				}
 			}
-			
+
 		}
 		else //it's not a post
 		{
@@ -401,7 +406,7 @@ class MercadoPago extends PaymentModule {
 			if (Configuration::get('MERCADOPAGO_CLIENT_ID') != '' && Configuration::get('MERCADOPAGO_CLIENT_SECRET') != '')
 			{
 				$this->mercadopago = new MP(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
-				
+
 				// load payment method settings for standard
 				$payment_methods = $this->mercadopago->getPaymentMethods();
 				$payment_methods_settings = array();
@@ -422,7 +427,7 @@ class MercadoPago extends PaymentModule {
 					$op_active_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_ACTIVE');
 
 					$offline_payment_settings[$offline_payment['id']] = array(
-																				'name' => $offline_payment['name'], 
+																				'name' => $offline_payment['name'],
 																				'banner' => Configuration::get($op_banner_variable),
 																				'active' => Configuration::get($op_active_variable)
 																			);
@@ -433,8 +438,8 @@ class MercadoPago extends PaymentModule {
 		$this->context->controller->addCss($this->_path.'views/css/settings.css', 'all');
 		$this->context->controller->addCss($this->_path.'views/css/bootstrap.css', 'all');
 		$this->context->controller->addCss($this->_path.'views/css/style.css', 'all');
-		
-		$settings = 
+
+		$settings =
 			array(
 				'public_key' => htmlentities(Configuration::get('MERCADOPAGO_PUBLIC_KEY'), ENT_COMPAT, 'UTF-8'),
 				'client_id' => htmlentities(Configuration::get('MERCADOPAGO_CLIENT_ID'), ENT_COMPAT, 'UTF-8'),
@@ -446,6 +451,7 @@ class MercadoPago extends PaymentModule {
 				'boleto_active' => htmlentities(Configuration::get('MERCADOPAGO_BOLETO_ACTIVE'), ENT_COMPAT, 'UTF-8'),
 				'standard_active' => htmlentities(Configuration::get('MERCADOPAGO_STANDARD_ACTIVE'), ENT_COMPAT, 'UTF-8'),
 				'standard_banner' => htmlentities(Configuration::get('MERCADOPAGO_STANDARD_BANNER'), ENT_COMPAT, 'UTF-8'),
+				'sandbox' => htmlentities(Configuration::get('MERCADOPAGO_SANDBOX'), ENT_COMPAT, 'UTF-8'),
 				'window_type' => htmlentities(Configuration::get('MERCADOPAGO_WINDOW_TYPE'), ENT_COMPAT, 'UTF-8'),
 				'iframe_width' => htmlentities(Configuration::get('MERCADOPAGO_IFRAME_WIDTH'), ENT_COMPAT, 'UTF-8'),
 				'iframe_height' => htmlentities(Configuration::get('MERCADOPAGO_IFRAME_HEIGHT'), ENT_COMPAT, 'UTF-8'),
@@ -475,6 +481,7 @@ class MercadoPago extends PaymentModule {
 		Configuration::updateValue('MERCADOPAGO_CLIENT_SECRET', $client_secret);
 		Configuration::updateValue('MERCADOPAGO_COUNTRY', $country);
 		Configuration::updateValue('MERCADOPAGO_WINDOW_TYPE', 'redirect');
+		Configuration::updateValue('MERCADOPAGO_SANDBOX', 'false');
 		Configuration::updateValue('MERCADOPAGO_IFRAME_WIDTH', '725');
 		Configuration::updateValue('MERCADOPAGO_IFRAME_HEIGHT', '570');
 		Configuration::updateValue('MERCADOPAGO_INSTALLMENTS', '12');
@@ -549,7 +556,7 @@ class MercadoPago extends PaymentModule {
 			return;
 
 		if ($this->hasCredential())
-		{   
+		{
 			$this_path_ssl = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
 									.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__;
 			$data = array(
@@ -585,7 +592,7 @@ class MercadoPago extends PaymentModule {
 				if (array_key_exists('init_point', $result['response']))
 				{
 					$data['standard_banner'] = Configuration::get('MERCADOPAGO_STANDARD_BANNER');
-					$data['preferences_url'] = $result['response']['init_point'];
+					$data['preferences_url'] = Configuration::get('MERCADOPAGO_SANDBOX') == 'true' ? $result['response']['sandbox_init_point'] : $result['response']['init_point'];
 				}
 				else
 				{
@@ -603,7 +610,7 @@ class MercadoPago extends PaymentModule {
 				$op_active_variable = 'MERCADOPAGO_'.strtoupper($offline_payment['id'].'_ACTIVE');
 
 				$offline_payment_settings[$offline_payment['id']] = array(
-																			'name' => $offline_payment['name'], 
+																			'name' => $offline_payment['name'],
 																			'banner' => Configuration::get($op_banner_variable),
 																			'active' => Configuration::get($op_active_variable)
 																		);
@@ -622,7 +629,7 @@ class MercadoPago extends PaymentModule {
 		if (!$this->active)
 			return;
 
-		
+
 		if (Tools::getValue('checkout') == 'standard')
 		{
 			$data = array();
@@ -768,7 +775,7 @@ class MercadoPago extends PaymentModule {
 
 			if ($key == 0)
 				$summary .= $product['name'];
-			else 
+			else
 				$summary .= ', '.$product['name'];
 
 			$items[] = $item;
@@ -924,11 +931,11 @@ class MercadoPago extends PaymentModule {
 					$payment_method_ids[] = $payment_info['payment_method_id'];
 					$credit_cards[] = 'xxxx xxxx xxxx '.$payment_info['last_four_digits'];
 					$cardholders[] = $payment_info['cardholder']['name'];
-				}	
+				}
 			}
 			$this->updateOrder($payment_ids, $payment_statuses, $payment_method_ids, $payment_types, $credit_cards, $cardholders, $transaction_amounts, $external_reference);
-		} 
-		else if (($checkout == "custom" && $topic == 'payment' && $id > 0) 
+		}
+		else if (($checkout == "custom" && $topic == 'payment' && $id > 0)
 				|| ($checkout != "standard" && $topic != 'merchant_order'))
 		{
 			$result = $this->mercadopago->getPayment($id);
@@ -995,7 +1002,7 @@ class MercadoPago extends PaymentModule {
 					$order = new Order($id_order);
 				}
 
-				// If order wasn't created yet and payment is approved or pending or in_process, create it. 
+				// If order wasn't created yet and payment is approved or pending or in_process, create it.
 				// This can happen when user closes checkout standard
 				if (empty($id_order) && ($payment_status == 'in_process' || $payment_status == 'approved' || $payment_status == 'pending'))
 				{
@@ -1036,7 +1043,7 @@ class MercadoPago extends PaymentModule {
 				foreach($order_payments as $order_payment)
 				{
 					$order_payment->transaction_id = join(" / ", $payment_ids);
-				
+
 					if ($payment_type == "credit_card")
 					{
 						$order_payment->card_number = join(" / ", $credit_cards);
@@ -1046,7 +1053,7 @@ class MercadoPago extends PaymentModule {
 					}
 					$order_payment->save();
 				}
-			}	
+			}
 		}
 	}
 

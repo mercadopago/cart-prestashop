@@ -61,7 +61,7 @@
 			</div>
 			{foreach from=$errors item=error}
 			<div class="error">
-				{$error|escape:'htmlall'}	
+				{$error|escape:'htmlall'}
 			</div>
 			{/foreach}
 		{/if}
@@ -75,7 +75,7 @@
 	<h4> {l s='- To obtain your Client Id and Client Secret please click on your country: ' mod='mercadopago'}
 		<a href="https://www.mercadopago.com/mlb/ferramentas/aplicacoes"><u>{l s='Brazil' mod='mercadopago'}</u></a> |
 		<a href="https://www.mercadopago.com/mla/herramientas/aplicaciones"><u>{l s='Argentina' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mlm/herramientas/aplicaciones"><u>{l s='Mexico' mod='mercadopago'}</u></a> | 
+		<a href="https://www.mercadopago.com/mlm/herramientas/aplicaciones"><u>{l s='Mexico' mod='mercadopago'}</u></a> |
 		<a href="https://www.mercadopago.com/mlv/herramientas/aplicaciones"><u>{l s='Venezuela' mod='mercadopago'}</u></a> |
 		<a href="https://www.mercadopago.com/mco/herramientas/aplicaciones"><u>{l s='Colombia' mod='mercadopago'}</u></a>
 	</h4>
@@ -102,7 +102,7 @@
 			<br />
 			{if !empty($country)}
 			<label>{l s='Category:' mod='mercadopago'}</label>
-				<div class=""> 
+				<div class="">
 					<select name="MERCADOPAGO_CATEGORY" id="category">
 						 <option value="art">{l s='Collectibles & Art' mod='mercadopago'}</option>
 						 <option value="baby">{l s='Toys for Baby, Stroller, Stroller Accessories, Car Safety Seats' mod='mercadopago'}</option>
@@ -127,7 +127,7 @@
 						 <option value="travels">{l s='Plane tickets, Hotel vouchers, Travel vouchers' mod='mercadopago'}</option>
 						 <option value="virtual_goods">{l s='E-books, Music Files, Software, Digital Images,  PDF Files and any item which can be electronically stored in a file, Mobile Recharge, DTH Recharge and any Online Recharge' mod='mercadopago'}</option>
 						 <option value="others" selected="selected">{l s='Other categories' mod='mercadopago'}</option>
-					</select>	
+					</select>
 				</div>
 			{/if}
 		</fieldset>
@@ -180,6 +180,14 @@
 				<legend>
 					<img src="../img/admin/contact.gif" />{l s='Settings - MercadoPago Standard' mod='mercadopago'}
 				</legend>
+				<label>{l s='Sandbox: ' mod='mercadopago'}</label>
+				<div class="">
+					<select name="MERCADOPAGO_SANDBOX" id="sandbox" value="{$sandbox|escape:'htmlall'}">
+						<option value="true" {if $sandbox == 'true'}selected{/if}>{l s='Yes' mod='mercadopago'} </option>
+						<option value="false" {if $sandbox != 'true'}selected{/if}>{l s='No' mod='mercadopago'} </option>
+					</select>
+				</div>
+				<br />
 				<label>{l s='Active: ' mod='mercadopago'}</label>
 				<div class="">
 					<select name="MERCADOPAGO_STANDARD_ACTIVE" id="standard_active">
@@ -250,7 +258,7 @@
 			$.scrollTo(0, 0);
 		}
 	})
-	
+
 	window.onload = function() {
 		if (document.getElementById("category"))
 			document.getElementById("category").value = "{$category|escape:'javascript'}";
@@ -261,6 +269,9 @@
 		if (document.getElementById("standard_active"))
 			document.getElementById("standard_active").value = "{$standard_active|escape:'javascript'}";
 
+		if (document.getElementById("sandbox"))
+			document.getElementById("sandbox").value = "{$sandbox|escape:'javascript'}";
+
 		if (document.getElementById("window_type"))
 			document.getElementById("window_type").value = "{$window_type|escape:'javascript'}";
 
@@ -270,7 +281,7 @@
 		{foreach from=$payment_methods_settings key=payment_method item=value}
 			document.getElementById("{$payment_method|escape:'javascript'}").checked = "{$value|escape:'javascript'}";
 		{/foreach}
-		
+
 		{foreach from=$offline_payment_settings key=offline_payment item=value}
 			document.getElementById("{$offline_payment}_active").value = "{$value.active|escape:'javascript'}";
 		{/foreach}

@@ -114,7 +114,7 @@ class MP {
 
 		// remove account_money
 		foreach($result as $key => $value)
-		{	
+		{
 			if($value['payment_type_id'] == 'account_money')
 				unset($result[$key]);
 		}
@@ -133,8 +133,8 @@ class MP {
 
 		// remove account_money
 		foreach($result as $key => $value)
-		{	
-			if($value['payment_type_id'] == 'account_money' || $value['payment_type_id'] == 'credit_card' 
+		{
+			if($value['payment_type_id'] == 'account_money' || $value['payment_type_id'] == 'credit_card'
 				|| $value['payment_type_id'] == 'debit_card' || $value['payment_type_id'] == 'prepaid_card')
 				unset($result[$key]);
 		}
@@ -179,6 +179,10 @@ class MP {
 				$elements[] = '{$name}='.urlencode($value);
 			return implode('&', $elements);
 		}
+	}
+
+	public function setSandbox($value){
+		$this->sandbox = (bool)$value;
 	}
 
 }
