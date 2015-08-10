@@ -71,54 +71,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
 
 			if (Validate::isLoadedObject($cart))
 			{
-				// Crea el pedido y elimina el carrito.
-				$order_status = null;
-				switch ($payment_statuses[0])
-				{
-					case 'in_process':
-					$order_status = 'MERCADOPAGO_STATUS_0';
-					break;
-					case 'approved':
-					$order_status = 'MERCADOPAGO_STATUS_1';
-					break;
-					case 'cancelled':
-					$order_status = 'MERCADOPAGO_STATUS_2';
-					break;
-					case 'refunded':
-					$order_status = 'MERCADOPAGO_STATUS_4';
-					break;
-					case 'charged_back':
-					$order_status = 'MERCADOPAGO_STATUS_5';
-					break;
-					case 'in_mediation':
-					$order_status = 'MERCADOPAGO_STATUS_6';
-					break;
-					case 'pending':
-					$order_status = 'MERCADOPAGO_STATUS_7';
-					break;
-					case 'rejected':
-					$order_status = 'MERCADOPAGO_STATUS_3';
-					break;
-				}
-
-				if ($order_status != null && $transaction_amounts > 0)
-				{
-					$total = (Float)number_format($transaction_amounts, 2, '.', '');
-
-					$extra_vars = array (
-						'{bankwire_owner}' => $mercadopago->textshowemail,
-						'{bankwire_details}' => '',
-						'{bankwire_address}' => ''
-						);
-
-					$mercadopago->validateOrder($cart->id, Configuration::get($order_status),
-						$total,
-						$mercadopago->displayName,
-						null,
-						$extra_vars, $cart->id_currency);
-				}
-
-
 				$order_id = Order::getOrderByCartId($cart->id);
 				$order = new Order($order_id);
 				$uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$order->id_cart.'&id_module='.$mercadopago->id.
