@@ -37,6 +37,15 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
 	{
 		if (Tools::getValue('topic') && Tools::getValue('id'))
 		{
+			$logger = new FileLogger(0);
+    		$logger->setFilename(_PS_ROOT_DIR_.'/log/'.date('Ymd').'_MERCADOPAGO_IPN.log');
+
+    		$msg .= "\ntopic: ".Tools::getValue('topic');
+    		$msg .= "\nid: ".Tools::getValue('id');
+    		$msg .= "\nPOST: ".print_r($_REQUEST, true);
+
+    		$logger->logDebug($msg);
+
 			$mercadopago = new MercadoPago();
 			$mercadopago->listenIPN(Tools::getValue('checkout'), Tools::getValue('topic'), Tools::getValue('id'));
 		}
