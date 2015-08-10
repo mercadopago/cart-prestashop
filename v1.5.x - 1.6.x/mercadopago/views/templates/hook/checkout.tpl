@@ -206,54 +206,53 @@
 			</div>
 		{/if}
 	{/if}
-	{if $boleto_active eq 'true'}
-		{if $version == 5}
-			<div class="payment_module mp-form"> 
-				<div class="row">
-					<div class="row boleto">
-						<div class="col">
-							<span class="payment-label">{l s='TICKET' mod='mercadopago'}</span></br>
-							<span class="poweredby">{l s=' Powered by ' mod='mercadopago'}</span>
-							<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png">
-						</div>
-						<a href="javascript:void(0);" id="id-boleto">{l s='Pay through ticket via MercadoPago' mod='mercadopago'}
-							<form action="{$custom_action_url|escape:'htmlall'}" method="post" id="form-boleto-mp">
-						    	{if $country == 'MLB'}
-							    	<input name="payment_method_id" type="hidden" value="bolbradesco"/>
-							    {elseif $country == 'MLM'}
-							    	<input name="payment_method_id" type="hidden" value="oxxo"/>
-							    {/if}
-						    	<input type="submit" id="id-create-boleto">
-							</form>	
-						</a>
-					</div>
-				</div>
-			</div>
-		{elseif $version == 6}
-			<div class="row">
-				<div class="col-xs-12 col-md-6">
-						<a href="javascript:void(0);" id="id-boleto">
-							<div class="mp-form hover"> 
-								<div class="row boleto">
-									<div class="col">
-										<span class="payment-label">{l s='TICKET' mod='mercadopago'} </span></br>
-										<span class="poweredby">{l s='Powered by' mod='mercadopago'}</span>
-										<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png">
-									</div>
-									<form action="{$custom_action_url|escape:'htmlall'}" method="post" id="form-boleto-mp">
-							    	{if $country == 'MLB'}
-								    	<input name="payment_method_id" type="hidden" value="bolbradesco"/>
-								    {elseif $country == 'MLM'}
-								    	<input name="payment_method_id" type="hidden" value="oxxo"/>
-								    {/if}
-								    <input type="submit" id="id-create-boleto">
-									</form>	
+	{if $country == 'MLB' || $country == 'MLM'}
+		{foreach from=$offline_payment_settings key=offline_payment item=value}
+			{if $value.active == "true"}
+				{if $version == 5}
+					<div class="payment_module mp-form"> 
+						<div class="row">
+							<div class="row">
+								<div class="col offline">
+									<span class="payment-label">{$value.name|upper}</span><br/>
+									<span class="poweredby">{l s=' Powered by ' mod='mercadopago'}</span>
+									<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png">
 								</div>
+								<a href="javascript:void(0);" id="id-{$offline_payment|escape:'htmlall'}" class="offline-payment">
+								<img src="{$value.banner|escape:'htmlall'}" class="mp-offline-banner"/>
+									{l s='Pay through ' mod='mercadopago'}{$value.name|ucfirst}{l s=' via MercadoPago' mod='mercadopago'}
+									<form action="{$custom_action_url|escape:'htmlall'}" method="post">
+								    	<input name="payment_method_id" type="hidden" value="{$offline_payment|escape:'htmlall'}"/>
+								    	<input type="submit" class="create-boleto" id="id-create-{$offline_payment|escape:'htmlall'}">
+									</form>	
+								</a>
 							</div>
-						</a>
-				</div>
-			</div>
-		{/if}
+						</div>
+					</div>
+				{elseif $version == 6}
+					<div class="row">
+						<div class="col-xs-12 col-md-6">
+							<a href="javascript:void(0);" id="id-{$offline_payment|escape:'htmlall'}" class="offline-payment">
+								<div class="mp-form hover"> 
+									<div class="row boleto">
+										<div class="col">
+											<span class="payment-label">{$value.name|upper} </span>
+											<img src="{$value.banner|escape:'htmlall'}" class="mp-offline-banner"/></br>
+											<span class="poweredby">{l s='Powered by' mod='mercadopago'}</span>
+											<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png">
+										</div>
+										<form action="{$custom_action_url|escape:'htmlall'}" method="post">
+										    <input name="payment_method_id" type="hidden" value="{$offline_payment|escape:'htmlall'}"/>
+										    <input type="submit" class="create-boleto" id="id-create-{$offline_payment|escape:'htmlall'}">
+										</form>	
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+				{/if}
+			{/if}
+		{/foreach}
 	{/if}
 	{if $standard_active eq 'true' && $preferences_url != null}
 		{if $version == 5}
@@ -506,11 +505,12 @@
   	setExpirationYear();
   	setExpirationMonth();
 
-  	$("#id-boleto").click(function (e) {
-  		$('#id-create-boleto', this).click();
+
+  	$(".offline-payment").click(function (e) {
+  		$(".create-boleto", this).click();
   	});
 
-  	$("#id-create-boleto").click(function (e) {
+  	$(".create-boleto").click(function (e) {
   		$(".lightbox").show();
   		e.stopImmediatePropagation();
   	});

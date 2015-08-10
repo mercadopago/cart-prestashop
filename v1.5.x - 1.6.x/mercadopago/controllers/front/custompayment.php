@@ -116,7 +116,8 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 						'one_step' => Configuration::get('PS_ORDER_PROCESS_TYPE')
 				);
 
-			if (array_key_exists('message', $response) && strpos($response['message'], 'Invalid users involved') !== false)
+			if (array_key_exists('message', $response) && (strpos($response['message'], 'Invalid users involved') !== false
+				|| (strpos($response['message'], 'users from different countries') !== false)))
 				$data['valid_user'] = false;
 			else
 			{

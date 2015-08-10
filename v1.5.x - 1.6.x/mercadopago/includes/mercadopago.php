@@ -28,7 +28,7 @@ $GLOBALS['LIB_LOCATION'] = dirname(__FILE__);
 
 class MP {
 
-	const VERSION = '3.0.3';
+	const VERSION = '3.0.4';
 
 	private $client_id;
 	private $client_secret;
@@ -105,7 +105,6 @@ class MP {
 
 	/**
 	 * Get all payment methods for merchant country
-	 * @param int $id
 	 * @return array(json)
 	 */
 	public function getPaymentMethods()
@@ -117,6 +116,26 @@ class MP {
 		foreach($result as $key => $value)
 		{	
 			if($value['payment_type_id'] == 'account_money')
+				unset($result[$key]);
+		}
+		return $result;
+	}
+
+
+	/**
+	 * Get all offline payment methods for merchant country
+	 * @return array(json)
+	 */
+	public function getOfflinePaymentMethods()
+	{
+		$result = MPRestClient::get('/sites/'.$this->getCountry().'/payment_methods/');
+		$result = $result['response'];
+
+		// remove account_money
+		foreach($result as $key => $value)
+		{	
+			if($value['payment_type_id'] == 'account_money' || $value['payment_type_id'] == 'credit_card' 
+				|| $value['payment_type_id'] == 'debit_card' || $value['payment_type_id'] == 'prepaid_card')
 				unset($result[$key]);
 		}
 		return $result;
@@ -160,10 +179,6 @@ class MP {
 				$elements[] = '{$name}='.urlencode($value);
 			return implode('&', $elements);
 		}
-	}
-
-	public function setSandbox($value){
-		$this->sandbox = (bool)$value;
 	}
 
 }

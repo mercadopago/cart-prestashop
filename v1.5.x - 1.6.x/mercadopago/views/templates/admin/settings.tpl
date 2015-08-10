@@ -80,10 +80,10 @@
 		<a href="https://www.mercadopago.com/mco/herramientas/aplicaciones"><u>{l s='Colombia' mod='mercadopago'}</u></a>
 	</h4>
 	{if $country eq "MLB"}
-		<h4> {l s='- To obtain your public key please send an email to developers@mercadopago.com.br with subject "Prestashop Public key" informing your Client Id' mod='mercadopago'}</h4>
+		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials' mod='mercadopago'}</h4>
 	{/if}
 	{if $country eq "MLM"}
-		<h4> {l s='- To obtain your public key please send an email to developers@mercadopago.com with subject "Prestashop Public key" informing your Client Id' mod='mercadopago'}</h4>
+		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlm/account/credentials' mod='mercadopago'}</h4>
 	{/if}
 	<form action="{$uri|escape:'htmlall'}" method="post">
 		<fieldset>
@@ -153,34 +153,33 @@
 				<div class="">
 					<input type="text" size="33" name="MERCADOPAGO_CREDITCARD_BANNER" value="{$creditcard_banner|escape:'htmlall'}" />
 				</div>
+			</fieldset>
+			{foreach from=$offline_payment_settings key=offline_payment item=value}
+				<fieldset>
+					<legend>
+						<img src="../img/admin/contact.gif" />{l s='Settings - ' mod='mercadopago'}{$value.name|ucfirst}{l s=' Custom' mod='mercadopago'}
+					</legend>
+					<label>{l s='Active: ' mod='mercadopago'}</label>
+					<div class="">
+						<select name="MERCADOPAGO_{$offline_payment|upper}_ACTIVE" id="{$offline_payment}_active">
+							<option value="true">{l s='Yes' mod='mercadopago'} </option>
+							<option value="false">{l s='No' mod='mercadopago'} </option>
+						</select>
+					</div>
+					<br />
+					<label>{l s='Banner:' mod='mercadopago'}</label>
+					<div class="">
+						<input type="text" size="33" name="MERCADOPAGO_{$offline_payment|upper}_BANNER" value="{$value.banner|escape:'htmlall'}" />
+					</div>
+				</fieldset>
 				<br />
-			</fieldset>
-			<fieldset>
-				<legend>
-					<img src="../img/admin/contact.gif" />{l s='Settings - Custom Ticket' mod='mercadopago'}
-				</legend>
-				<label>{l s='Active: ' mod='mercadopago'}</label>
-				<div class="">
-					<select name="MERCADOPAGO_BOLETO_ACTIVE" id="boleto_active">
-						<option value="true">{l s='Yes' mod='mercadopago'} </option>
-						<option value="false">{l s='No' mod='mercadopago'} </option>
-					</select>
-				</div>
-			</fieldset>
+			{/foreach}
 		{/if}
 		{if $country != ''}
 			<fieldset>
 				<legend>
 					<img src="../img/admin/contact.gif" />{l s='Settings - MercadoPago Standard' mod='mercadopago'}
 				</legend>
-				<label>{l s='Sandbox: ' mod='mercadopago'}</label>
-				<div class="">
-					<select name="MERCADOPAGO_SANDBOX" id="sandbox" value="{$sandbox}">
-						<option value="true" {if $sandbox=='true'}selected{/if}>{l s='Yes' mod='mercadopago'} </option>
-						<option value="false" {if $sandbox!='true'}selected{/if}>{l s='No' mod='mercadopago'} </option>
-					</select>
-				</div>
-				<br />
 				<label>{l s='Active: ' mod='mercadopago'}</label>
 				<div class="">
 					<select name="MERCADOPAGO_STANDARD_ACTIVE" id="standard_active">
@@ -258,9 +257,6 @@
 
 		if (document.getElementById("creditcard_active"))
 			document.getElementById("creditcard_active").value = "{$creditcard_active|escape:'javascript'}";
-		
-		if (document.getElementById("boleto_active"))
-			document.getElementById("boleto_active").value = "{$boleto_active|escape:'javascript'}";
 
 		if (document.getElementById("standard_active"))
 			document.getElementById("standard_active").value = "{$standard_active|escape:'javascript'}";
@@ -275,5 +271,8 @@
 			document.getElementById("{$payment_method|escape:'javascript'}").checked = "{$value|escape:'javascript'}";
 		{/foreach}
 		
+		{foreach from=$offline_payment_settings key=offline_payment item=value}
+			document.getElementById("{$offline_payment}_active").value = "{$value.active|escape:'javascript'}";
+		{/foreach}
 	}
 </script>
