@@ -45,27 +45,27 @@
 					{/if}
 				</div>
 				<form action="{$custom_action_url|escape:'htmlall'}" method="post" id="form-pagar-mp">
-			    	<div class="row">
-				    	<div class="col">
-					    	<label for="id-card-number">{l s='Card number: ' mod='mercadopago'}</label>
-					    	<input id="id-card-number" data-checkout="cardNumber" type="text" name="cardNumber"/>
-					    	<div id="id-card-number-status" class="status"></div>
-				    	</div>
-				    	<div class="col col-expiration">
-					    	<label for="id-card-expiration-month">{l s='Month Exp: ' mod='mercadopago'}</label>
-					    	<select id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text" name="cardExpirationMonth"></select>
-					    </div>
-					    <div class="col col-expiration">
-					    	<label for="id-card-expiration-month">{l s='Year Exp: ' mod='mercadopago'}</label>
-					    	<select id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text" name="cardExpirationYear"></select>
-				    		<div id="id-card-expiration-year-status" class="status"></div>
-				    	</div>
-				    	<div class="col">
-					    	<label for="id-card-holder-name">{l s='Card Holder Name: ' mod='mercadopago'}</label>
-					    	<input id="id-card-holder-name" name="cardholderName" data-checkout="cardholderName" type="text"/>
-				    		<div id="id-card-holder-name-status" class="status"></div>
-				    	</div>
-				    </div>
+				    	 <div class="row">
+					    	 <div class="col">
+						    	 <label for="id-card-number">{l s='Card number: ' mod='mercadopago'}</label>
+						    	 <input id="id-card-number" data-checkout="cardNumber" type="text"/>
+						    	 <div id="id-card-number-status" class="status"></div>
+					    	 </div>
+					    	 <div class="col col-expiration">
+						    	 <label for="id-card-expiration-month">{l s='Month Exp: ' mod='mercadopago'}</label>
+						    	 <select id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text" name="cardExpirationMonth"></select>
+						     </div>
+						     <div class="col col-expiration">
+						    	 <label for="id-card-expiration-month">{l s='Year Exp: ' mod='mercadopago'}</label>
+						    	 <select id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text" name="cardExpirationYear"></select>
+					    		 <div id="id-card-expiration-year-status" class="status"></div>
+					    	 </div>
+					    	 <div class="col">
+						    	 <label for="id-card-holder-name">{l s='Card Holder Name: ' mod='mercadopago'}</label>
+						    	 <input id="id-card-holder-name" name="cardholderName" data-checkout="cardholderName" type="text"/>
+					    		 <div id="id-card-holder-name-status" class="status"></div>
+					    	 </div>
+					     </div>
 				    <div class="row">
 				    	<div class="col col-security">
 					    	<label for="id-security-code">{l s='Security Code: ' mod='mercadopago'}</label>
@@ -80,10 +80,10 @@
 						    	<div id="id-doc-number-status" class="status"></div>
 						    	<input name="docType"  data-checkout="docType" type="hidden" value="CPF"/>
 						    </div>
-					    {else}
+					    {elseif $country == 'MLM' || $country == 'MLA'}
 					    	<div class="col col-bank">
-						    	<label for="id-issuers-options">{l s='Bank: ' mod='mercadopago'}</label>
-								<select id="id-issuers-options" name="issuersOptions" type="text>"></select>
+						    	<label class="issuers-options" for="id-issuers-options">{l s='Bank: ' mod='mercadopago'}</label>
+								<select class="issuers-options" id="id-issuers-options" name="issuersOptions" type="text>"></select>
 				    		</div>
 					    {/if}
 				    	<div class="col">
@@ -95,11 +95,25 @@
 				    <input id="payment_method_id" type="hidden" name="payment_method_id"/>
 				    <div class="row">
 				   		<div class="col-bottom">
-				   			{if $country != 'MLB'}
+				   			{if $country == 'MLM'}
 					   			<div id="div-card-type">
 							    	<label for="card-types">{l s='Card Type: ' mod='mercadopago'}</label>
 							    	<input id="id-credit-card" name="card-types" type="radio" value="" checked>{l s='Credit' mod='mercadopago'}</input>
 							    	<input id="id-debit-card" name="card-types" type="radio" value="deb">{l s='Debit' mod='mercadopago'}</input>
+							    </div>
+							{elseif $country == 'MLA'}
+								<div class="row">
+							    	<div class="col">
+								    	<label for="docType">{l s='Document type: ' mod='mercadopago'}</label>
+								    	<select name="docType"  data-checkout="docType"></select>
+								    </div>
+							    </div>
+							    <div class="row">
+							    	<div class="col">
+								    	<label for="id-doc-number">{l s='Document number: ' mod='mercadopago'}</label>
+								    	<input id="id-doc-number" name="docNumber" data-checkout="docNumber" type="text"/>
+								    	<div id="id-doc-number-status" class="status"></div>
+								    </div>
 							    </div>
 					    	{/if}
 			    			<input type="submit" value="{l s='Confirm payment' mod='mercadopago'}" class="ch-btn ch-btn-big" />
@@ -167,20 +181,36 @@
 									    	<input name="docType"  data-checkout="docType" type="hidden" value="CPF"/>
 									    </div>
 								    </div>
-							    {else}
-						    	<div class="row">
-								    <div class="col">
-								    	<label for="id-issuers-options">{l s='Bank: ' mod='mercadopago'}</label>
-								    	<select id="id-issuers-options" name="issuersOptions" type="text>"></select>
-								    </div>
-							 	</div>
-							 	<div class="row">
-								    <div class="col">
-								    	<label for="card-types">{l s='Card Type: ' mod='mercadopago'}</label>
-								    	<input id="id-credit-card" name="card-types" type="radio" value="" checked>{l s='Credit' mod='mercadopago'}</input>
-								    	<input id="id-debit-card" name="card-types" type="radio" value="deb">{l s='Debit' mod='mercadopago'}</input>
-								    </div>
-							 	</div>
+							    {elseif $country == 'MLM' || $country == 'MLA'}
+							    	<div class="row">
+									    <div class="col">
+									    	<label class="issuers-options" for="id-issuers-options">{l s='Bank: ' mod='mercadopago'}</label>
+									    	<select class="issuers-options" id="id-issuers-options" name="issuersOptions" type="text>"></select>
+									    </div>
+								 	</div>
+								 	{if $country == 'MLM'}
+									 	<div class="row">
+										    <div class="col">
+										    	<label for="card-types">{l s='Card Type: ' mod='mercadopago'}</label>
+										    	<input id="id-credit-card" name="card-types" type="radio" value="" checked>{l s='Credit' mod='mercadopago'}</input>
+										    	<input id="id-debit-card" name="card-types" type="radio" value="deb">{l s='Debit' mod='mercadopago'}</input>
+										    </div>
+									 	</div>
+									 {elseif $country == 'MLA'}
+									 	<div class="row">
+									    	<div class="col">
+										    	<label for="docType">{l s='Document type: ' mod='mercadopago'}</label>
+										    	<select name="docType"  data-checkout="docType"></select>
+										    </div>
+									    </div>
+									    <div class="row">
+									    	<div class="col">
+										    	<label for="id-doc-number">{l s='Document number: ' mod='mercadopago'}</label>
+										    	<input id="id-doc-number" name="docNumber" data-checkout="docNumber" type="text"/>
+										    	<div id="id-doc-number-status" class="status"></div>
+										    </div>
+									    </div>
+									 {/if}
 							 	{/if}
 								<div class="row">
 								    <div class="col">
@@ -206,7 +236,7 @@
 			</div>
 		{/if}
 	{/if}
-	{if $country == 'MLB' || $country == 'MLM'}
+	{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA'}
 		{foreach from=$offline_payment_settings key=offline_payment item=value}
 			{if $value.active == "true"}
 				{if $version == 5}
@@ -308,6 +338,7 @@
       		var json = {}
             json.bin = bin;
       		Mercadopago.getPaymentMethod(json,setPaymentMethodInfo);
+      		Mercadopago.getIdentificationTypes();
       } else if (bin.length < 6) {
 			$("#id-card-number").css('background: none;');
       }
@@ -316,13 +347,12 @@
     function getBin() {
     	var card = $("#id-card-number").val().replace(/ /g, '').replace(/-/g, '').replace(/\./g, '');
         var bin = card.substr(0,6);
+
         return bin;
     }
 
-
     // Estabeleça a informação do meio de pagamento obtido
     function setPaymentMethodInfo(status, result){
-          
           //adiciona a imagem do meio de pagamento
           var payment_method = result[0];
           var amount = $("#amount").val();
@@ -331,11 +361,46 @@
           json.amount = amount;
           json.bin = bin;
 		  Mercadopago.getInstallments(json, setInstallmentInfo);
-		  Mercadopago.getIssuers(payment_method.id, showIssuers);
+
+		  if (country === "MLM" || country === "MLA") {
+			  // check if the issuer is necessary to pay
+				var issuerMandatory = false,
+				    additionalInfo = result[0].additional_info_needed;
+
+				for (var i = 0; i < additionalInfo.length; i++) {
+				    if (additionalInfo[i] == "issuer_id") {
+				        issuerMandatory = true;
+				    }
+				}
+
+				if (issuerMandatory) {
+				    Mercadopago.getIssuers(result[0].id, showCardIssuers);
+				    $("#id-issuers-options").bind("change",function(){ setInstallmentsByIssuerId(status, result) });
+				} else {
+				    document.querySelector("#id-issuers-options").options.length = 0;
+				    document.querySelector("#id-issuers-options").style.display = 'none';
+				    document.querySelector(".issuers-options").style.display = 'none';
+				}
+			}
 
 		  $("#id-card-number").css("background", "url(" + payment_method.secure_thumbnail + ") 98% 50% no-repeat");
 		  $("#payment_method_id").val($("input[name=card-types]:checked").val() ? $("input[name=card-types]:checked").val() + payment_method.id : payment_method.id);
     };
+
+    function setInstallmentsByIssuerId(status, response) {
+	    var issuerId = document.querySelector('#id-issuers-options').value,
+	        amount = document.querySelector('#amount').value;
+
+	    if (issuerId === '-1') {
+	        return;
+	    }
+
+	    Mercadopago.getInstallments({
+	        "bin": getBin(),
+	        "amount": amount,
+	        "issuer_id": issuerId
+	    }, setInstallmentInfo);
+	};
 
     //Mostre as parcelas disponíveis no div 'installmentsOption'
     function setInstallmentInfo(status, installments){
@@ -347,22 +412,44 @@
         $("#id-installments").html(html_options);
 	};
 
-	function showIssuers(status, issuers){
-		var html_options = "";
-		if (issuers.length > 0) {
-			if(issuers.length == 1){
-				html_options += "<option value='"+issuers[0].id+"'>"+issuers[0].name +" </option>";
-				$("#id-issuers-options").hide();
-			} else {
-				for (i=0; issuers && i<issuers.length;i++){
-					html_options += "<option value='"+issuers[i].id+"'>"+issuers[i].name +" </option>";
-				}
-			}
-			$("#id-issuers-options").html(html_options);
-		}
+	// function showIssuers(status, issuers){
+	// 	var html_options = "";
+	// 	if (issuers.length > 0) {
+	// 		if(issuers.length == 1){
+	// 			html_options += "<option value='"+issuers[0].id+"'>"+issuers[0].name +" </option>";
+	// 			$("#id-issuers-options").hide();
+	// 		} else {
+	// 			for (i=0; issuers && i<issuers.length;i++){
+	// 				html_options += "<option value='"+issuers[i].id+"'>"+issuers[i].name +" </option>";
+	// 			}
+	// 		}
+	// 		$("#id-issuers-options").html(html_options);
+	// 	}
+	// };
+
+	function showCardIssuers(status, issuers) {
+	    var issuersSelector = document.querySelector("#id-issuers-options"),
+	        fragment = document.createDocumentFragment();
+
+	    issuersSelector.options.length = 0;
+	    var option = new Option("Choose...", '-1');
+	    fragment.appendChild(option);
+
+	    for (var i = 0; i < issuers.length; i++) {
+	        if (issuers[i].name != "default") {
+	            option = new Option(issuers[i].name, issuers[i].id);
+	        } else {
+	            option = new Option("Otro", issuers[i].id);
+	        }
+	        fragment.appendChild(option);
+	    }
+	    issuersSelector.appendChild(fragment);
+	    issuersSelector.removeAttribute('disabled');
+	    document.querySelector(".issuers-options").removeAttribute('style');
+	    document.querySelector("#id-issuers-options").removeAttribute('style');
 	};
 
-	if (country === "MLM") {
+	if (country === "MLM" || country === "MLA") {
 		$("#id-issuers-options").change(function(){
 		    var issuerId = $('#id-issuers-options').val();
 	        var amount = $("#amount").val()
@@ -374,7 +461,7 @@
 		    Mercadopago.getInstallments(json, setInstallmentInfo);
 		});
 	}
-	
+
 	$("#form-pagar-mp").submit(function( event ) {
     	var $form = $(this);
     	var cpf = $("#id-doc-number").val();

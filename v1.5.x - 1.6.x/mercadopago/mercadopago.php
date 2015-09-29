@@ -35,7 +35,7 @@ class MercadoPago extends PaymentModule {
 	{
 		$this->name = 'mercadopago';
 		$this->tab = 'payments_gateways';
-		$this->version = '3.0.4';
+		$this->version = '3.0.5';
 		$this->currencies = true;
 		$this->currencies_mode = 'radio';
 		$this->need_instance = 0;
@@ -485,7 +485,7 @@ class MercadoPago extends PaymentModule {
 
 	private function setCustomSettings($client_id, $client_secret, $country)
 	{
-		if ($country == "MLB" || $country == "MLM")
+		if ($country == "MLB" || $country == "MLM" || $country == "MLA")
 		{
 			Configuration::updateValue('MERCADOPAGO_CREDITCARD_BANNER', (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').
 																			__PS_BASE_URI__.'modules/mercadopago/views/img/'.$country.'/credit_card.png');
@@ -825,6 +825,32 @@ class MercadoPago extends PaymentModule {
 			'items' => $items,
 			'shipments' => $shipments,
 		);
+
+		if (!$this->mercadopago->isTestUser())
+		{
+			switch(Configuration::getValue('MERCADOPAGO_COUNTRY'))
+			{
+				case 'MLB':
+					$data['sponsor_id'] = 178326379;
+					break;
+				case 'MLM':
+					$data['sponsor_id'] = 187899553;
+					break;
+				case 'MLA':
+					$data['sponsor_id'] = 187899872;
+					break;
+				case 'MCO':
+					$data['sponsor_id'] = 187900060;
+					break;
+				case 'MLV':
+					$data['sponsor_id'] = 187900246;
+					break;
+				case 'MLC':
+					$data['sponsor_id'] = 187900485;
+					break;
+			}
+			
+		}
 
 		if ($post != null)
 		{

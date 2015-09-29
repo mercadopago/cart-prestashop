@@ -77,13 +77,15 @@
 		<a href="https://www.mercadopago.com/mla/herramientas/aplicaciones"><u>{l s='Argentina' mod='mercadopago'}</u></a> |
 		<a href="https://www.mercadopago.com/mlm/herramientas/aplicaciones"><u>{l s='Mexico' mod='mercadopago'}</u></a> | 
 		<a href="https://www.mercadopago.com/mlv/herramientas/aplicaciones"><u>{l s='Venezuela' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mco/herramientas/aplicaciones"><u>{l s='Colombia' mod='mercadopago'}</u></a>
+		<a href="https://www.mercadopago.com/mco/herramientas/aplicaciones"><u>{l s='Colombia' mod='mercadopago'}</u></a> |
+		<a href="https://www.mercadopago.com/mlc/herramientas/aplicaciones"><u>{l s='Chile' mod='mercadopago'}</u></a>
 	</h4>
 	{if $country eq "MLB"}
 		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials' mod='mercadopago'}</h4>
-	{/if}
-	{if $country eq "MLM"}
+	{elseif $country eq "MLM"}
 		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlm/account/credentials' mod='mercadopago'}</h4>
+	{elseif $country eq "MLA"}
+		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mla/account/credentials' mod='mercadopago'}</h4>
 	{/if}
 	<form action="{$uri|escape:'htmlall'}" method="post">
 		<fieldset>
@@ -131,7 +133,7 @@
 				</div>
 			{/if}
 		</fieldset>
-		{if $country == 'MLB' || $country == 'MLM'}
+		{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA'}
 			<fieldset>
 				<legend>
 					<img src="../img/admin/contact.gif" />{l s='Settings - Custom Credit Card' mod='mercadopago'}
@@ -157,7 +159,7 @@
 			{foreach from=$offline_payment_settings key=offline_payment item=value}
 				<fieldset>
 					<legend>
-						<img src="../img/admin/contact.gif" />{l s='Settings - ' mod='mercadopago'}{$value.name|ucfirst}{l s=' Custom' mod='mercadopago'}
+						<img src="../img/admin/contact.gif" />{l s='Settings - ' mod='mercadopago'}{$value.name|ucfirst} {l s=' Custom' mod='mercadopago'}
 					</legend>
 					<label>{l s='Active: ' mod='mercadopago'}</label>
 					<div class="">
