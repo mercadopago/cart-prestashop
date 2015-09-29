@@ -87,6 +87,8 @@
 	{/if}
 	{if $valid_user}
 	</br>
+	{$message|escape:'htmlall'}
+	</br>
 	</br>
 		{l s='Card holder name: ' mod='mercadopago'}
 		{$card_holder_name|escape:'htmlall'}</br>
