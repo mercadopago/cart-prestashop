@@ -828,7 +828,7 @@ class MercadoPago extends PaymentModule {
 
 		if (!$this->mercadopago->isTestUser())
 		{
-			switch(Configuration::getValue('MERCADOPAGO_COUNTRY'))
+			switch(Configuration::get('MERCADOPAGO_COUNTRY'))
 			{
 				case 'MLB':
 					$data['sponsor_id'] = 178326379;
