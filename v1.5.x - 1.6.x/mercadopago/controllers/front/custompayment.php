@@ -132,6 +132,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 				$data['payment_id'] = $response['payment_id'];
 				$data['one_step'] = Configuration::get('PS_ORDER_PROCESS_TYPE');
 				$data['valid_user'] = true;
+				$data['message'] = $response['message'];
 			}
 			
 			$this->context->smarty->assign($data);
