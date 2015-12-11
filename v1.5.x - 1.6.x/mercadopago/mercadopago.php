@@ -53,6 +53,21 @@ class MercadoPago extends PaymentModule {
 		$this->mercadopago = new MP(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
 	}
 
+	/**
+	* Check if the state exist before create another one.
+	*
+	* @param integer $id_order_state State ID
+	* @return boolean availability
+	*/
+	public static function orderStateAvailable($id_order_state)
+	{
+		$result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
+			SELECT `id_order_state` AS ok
+			FROM `'._DB_PREFIX_.'order_state`
+			WHERE `id_order_state` = '.(int)$id_order_state);
+		return $result['ok'];
+	}
+
 	public function createStates()
 	{
 		$order_states = array(
@@ -70,43 +85,46 @@ class MercadoPago extends PaymentModule {
 
 		foreach ($order_states as $key => $value)
 		{
-			$order_state = new OrderState();
-			$order_state->invoice = $value[3][0];
-			$order_state->send_email = $value[3][1];
-			$order_state->module_name = 'mercadopago';
-			$order_state->color = $value[0];
-			$order_state->unremovable = $value[3][2];
-			$order_state->hidden = $value[3][3];
-			$order_state->logable = $value[3][4];
-			$order_state->delivery = $value[3][5];
-			$order_state->shipped = $value[3][6];
-			$order_state->paid = $value[3][7];
-			$order_state->deleted = $value[3][8];
-			$order_state->name = array();
-			$order_state->template = array();
+			if (! is_null($this->orderStateAvailable(Configuration::get('MERCADOPAGO_STATUS_'.$key)))){
+				continue;
+			} else {
+				$order_state = new OrderState();
+				$order_state->invoice = $value[3][0];
+				$order_state->send_email = $value[3][1];
+				$order_state->module_name = 'mercadopago';
+				$order_state->color = $value[0];
+				$order_state->unremovable = $value[3][2];
+				$order_state->hidden = $value[3][3];
+				$order_state->logable = $value[3][4];
+				$order_state->delivery = $value[3][5];
+				$order_state->shipped = $value[3][6];
+				$order_state->paid = $value[3][7];
+				$order_state->deleted = $value[3][8];
+				$order_state->name = array();
+				$order_state->template = array();
 
-			foreach (Language::getLanguages(false) as $language)
-			{
-				$order_state->name[(int)$language['id_lang']] = $value[1];
-				$order_state->template[$language['id_lang']] = $value[2];
-				
-				if ($value[2] == 'in_process' || $value[2] == 'pending' ||
-					$value[2] == 'charged_back' || $value[2] == 'in_mediation')
+				foreach (Language::getLanguages(false) as $language)
 				{
-					$this->populateEmail($language['iso_code'], $value[2], 'html');
-					$this->populateEmail($language['iso_code'], $value[2], 'txt');
+					$order_state->name[(int)$language['id_lang']] = $value[1];
+					$order_state->template[$language['id_lang']] = $value[2];
+					
+					if ($value[2] == 'in_process' || $value[2] == 'pending' ||
+						$value[2] == 'charged_back' || $value[2] == 'in_mediation')
+					{
+						$this->populateEmail($language['iso_code'], $value[2], 'html');
+						$this->populateEmail($language['iso_code'], $value[2], 'txt');
+					}
 				}
+
+				if (!$order_state->add())
+					return false;
+
+				$file = _PS_ROOT_DIR_.'/img/os/'.(int)$order_state->id.'.gif';
+				copy((dirname(__file__).'/views/img/mp_icon.gif'), $file);
+
+				Configuration::updateValue('MERCADOPAGO_STATUS_'.$key, $order_state->id);
 			}
-
-			if (!$order_state->add())
-				return false;
-
-			$file = _PS_ROOT_DIR_.'/img/os/'.(int)$order_state->id.'.gif';
-			copy((dirname(__file__).'/views/img/mp_icon.gif'), $file);
-
-			Configuration::updateValue('MERCADOPAGO_STATUS_'.$key, $order_state->id);
 		}
-
 		return true;
 	}
 
@@ -150,8 +168,8 @@ class MercadoPago extends PaymentModule {
 
 	public function uninstall()
 	{
-		if (!$this->deleteStates()
-			|| !$this->uninstallPaymentSettings()
+		//continue the states
+		if (!$this->uninstallPaymentSettings()
 			|| !Configuration::deleteByName('MERCADOPAGO_PUBLIC_KEY')
 			|| !Configuration::deleteByName('MERCADOPAGO_CLIENT_ID')
 			|| !Configuration::deleteByName('MERCADOPAGO_CLIENT_SECRET')
@@ -165,14 +183,6 @@ class MercadoPago extends PaymentModule {
 			|| !Configuration::deleteByName('MERCADOPAGO_IFRAME_HEIGHT')
 			|| !Configuration::deleteByName('MERCADOPAGO_INSTALLMENTS')
 			|| !Configuration::deleteByName('MERCADOPAGO_AUTO_RETURN')
-			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_0')
-			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_1')
-			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_2')
-			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_3')
-			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_4')
-			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_5')
-			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_6')
-			|| !Configuration::deleteByName('MERCADOPAGO_STATUS_7')
 			|| !Configuration::deleteByName('MERCADOPAGO_COUNTRY')
 			|| !parent::uninstall())
 			return false;
@@ -859,6 +869,7 @@ class MercadoPago extends PaymentModule {
 			$data['reason'] = $summary;
 			$data['amount'] = (Float)number_format($cart->getOrderTotal(true, Cart::BOTH), 2, '.', '');
 			$data['payer_email'] = $customer_fields['email'];
+			
 			$data['notification_url'] = $this->link->getModuleLink('mercadopago', 'notification', array(), Configuration::get('PS_SSL_ENABLED'), null, null, false).'?checkout=custom&';
 
 			// add only for creditcard
@@ -882,6 +893,7 @@ class MercadoPago extends PaymentModule {
 			$data['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentMethods();
 			$data['payment_methods']['excluded_payment_types'] = array();
 			$data['payment_methods']['installments'] = (Integer)Configuration::get('MERCADOPAGO_INSTALLMENTS');
+			
 			$data['notification_url'] = $this->link->getModuleLink('mercadopago', 'notification', array(), Configuration::get('PS_SSL_ENABLED'), null, null, false).'?checkout=standard&';
 
 			// swap to payer index since customer is only for transparent
