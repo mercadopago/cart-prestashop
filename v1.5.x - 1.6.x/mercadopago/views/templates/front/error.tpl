@@ -87,9 +87,6 @@
 	{/if}
 	{if $valid_user}
 	</br>
-	{$message|escape:'htmlall'}
-	</br>
-	</br>
 		{l s='Card holder name: ' mod='mercadopago'}
 		{$card_holder_name|escape:'htmlall'}</br>
 		{l s='Credit card: ' mod='mercadopago'}
@@ -108,6 +105,13 @@
 		{/if}
 		{l s='Payment id (MercadoPago): ' mod='mercadopago'}
 		{$payment_id|escape:'htmlall'}</br>
+
+		<span>Henrique</span>
+		{if $message != null}
+			<span>{l s='Technical Error: ' mod='mercadopago'}</span>
+			{$message|escape:'htmlall'}</br>
+		{/if}	
+
 		{if $version == 6}
 			</div>
 		{/if}
@@ -127,6 +131,7 @@
 		{/if}
 	</div>
 </div>
+
 <script type="text/javascript">
 	$("#go-back").click(function () {
 		if ("{$one_step|escape:'htmlall'}" == 1)

@@ -177,6 +177,7 @@ class MercadoPago extends PaymentModule {
 			|| !Configuration::deleteByName('MERCADOPAGO_CREDITCARD_BANNER')
 			|| !Configuration::deleteByName('MERCADOPAGO_CREDITCARD_ACTIVE')
 			|| !Configuration::deleteByName('MERCADOPAGO_STANDARD_ACTIVE')
+			|| !Configuration::deleteByName('MERCADOPAGO_LOG')
 			|| !Configuration::deleteByName('MERCADOPAGO_STANDARD_BANNER')
 			|| !Configuration::deleteByName('MERCADOPAGO_WINDOW_TYPE')
 			|| !Configuration::deleteByName('MERCADOPAGO_IFRAME_WIDTH')
@@ -225,6 +226,10 @@ class MercadoPago extends PaymentModule {
 		$offline_payment_settings = null;
 		$offline_methods_payments = null;
 
+		$this->context->controller->addCss($this->_path.'views/css/settings.css', 'all');
+		$this->context->controller->addCss($this->_path.'views/css/bootstrap.css', 'all');
+		$this->context->controller->addCss($this->_path.'views/css/style.css', 'all');		
+
 		if (Tools::getValue('login'))
 		{
 			$client_id = Tools::getValue('MERCADOPAGO_CLIENT_ID');
@@ -268,33 +273,40 @@ class MercadoPago extends PaymentModule {
 			$creditcard_active = Tools::getValue('MERCADOPAGO_CREDITCARD_ACTIVE');
 			$boleto_active = Tools::getValue('MERCADOPAGO_BOLETO_ACTIVE');
 			$standard_active = Tools::getValue('MERCADOPAGO_STANDARD_ACTIVE');
+			$mercadopago_log = Tools::getValue('MERCADOPAGO_LOG');
 			$new_country = false;
 
-			if (!$this->validateCredential($client_id, $client_secret))
-			{
-				$errors[] = $this->l('Client Id or Client Secret invalid.');
-				$success = false;
+			try {
+				if (!$this->validateCredential($client_id, $client_secret))
+				{
+					$errors[] = $this->l('Client Id or Client Secret invalid.');
+					$success = false;
+				}
+				else
+				{
+					$previous_country = $this->getCountry(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
+					$current_country = $this->getCountry($client_id, $client_secret);
+					$new_country = $previous_country == $current_country ? false : true;
+
+					Configuration::updateValue('MERCADOPAGO_CLIENT_ID', $client_id);
+					Configuration::updateValue('MERCADOPAGO_CLIENT_SECRET', $client_secret);
+					Configuration::updateValue('MERCADOPAGO_COUNTRY', $this->getCountry($client_id, $client_secret));
+
+					$success = true;
+
+					if ($creditcard_active == 'true' && !empty($public_key))
+						Configuration::updateValue('MERCADOPAGO_PUBLIC_KEY', $public_key);
+
+					// populate all payments accoring to country
+					$this->mercadopago = new MP(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
+					$payment_methods = $this->mercadopago->getPaymentMethods();
+				}
+			} catch (Exception $e) {
+				PrestaShopLogger::addLog('MercadoPago::getContent - Fatal Error: '.$e->getMessage(), MP::FATAL_ERROR , 0);
+				$this->context->smarty->assign(array(
+					'message_error' => $e->getMessage(),'version' => $this->getPrestashopVersion()));
+				return $this->display(__file__, '/views/templates/front/error_admin.tpl');
 			}
-			else
-			{
-				$previous_country = $this->getCountry(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
-				$current_country = $this->getCountry($client_id, $client_secret);
-				$new_country = $previous_country == $current_country ? false : true;
-
-				Configuration::updateValue('MERCADOPAGO_CLIENT_ID', $client_id);
-				Configuration::updateValue('MERCADOPAGO_CLIENT_SECRET', $client_secret);
-				Configuration::updateValue('MERCADOPAGO_COUNTRY', $this->getCountry($client_id, $client_secret));
-
-				$success = true;
-
-				if ($creditcard_active == 'true' && !empty($public_key))
-					Configuration::updateValue('MERCADOPAGO_PUBLIC_KEY', $public_key);
-
-				// populate all payments accoring to country
-				$this->mercadopago = new MP(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
-				$payment_methods = $this->mercadopago->getPaymentMethods();
-			}
-
 			$category = Tools::getValue('MERCADOPAGO_CATEGORY');
 			Configuration::updateValue('MERCADOPAGO_CATEGORY', $category);
 
@@ -302,6 +314,8 @@ class MercadoPago extends PaymentModule {
 			Configuration::updateValue('MERCADOPAGO_CREDITCARD_BANNER', $creditcard_banner);
 
 			Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', $standard_active);
+			Configuration::updateValue('MERCADOPAGO_LOG', $mercadopago_log);
+			
 			Configuration::updateValue('MERCADOPAGO_BOLETO_ACTIVE', $boleto_active);
 			Configuration::updateValue('MERCADOPAGO_CREDITCARD_ACTIVE', $creditcard_active);
 
@@ -439,10 +453,6 @@ class MercadoPago extends PaymentModule {
 				}
 			}
 		}
-
-		$this->context->controller->addCss($this->_path.'views/css/settings.css', 'all');
-		$this->context->controller->addCss($this->_path.'views/css/bootstrap.css', 'all');
-		$this->context->controller->addCss($this->_path.'views/css/style.css', 'all');
 		
 		$settings = 
 			array(
@@ -455,6 +465,7 @@ class MercadoPago extends PaymentModule {
 				'creditcard_active' => htmlentities(Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE'), ENT_COMPAT, 'UTF-8'),
 				'boleto_active' => htmlentities(Configuration::get('MERCADOPAGO_BOLETO_ACTIVE'), ENT_COMPAT, 'UTF-8'),
 				'standard_active' => htmlentities(Configuration::get('MERCADOPAGO_STANDARD_ACTIVE'), ENT_COMPAT, 'UTF-8'),
+				'log_active' => htmlentities(Configuration::get('MERCADOPAGO_LOG'), ENT_COMPAT, 'UTF-8'),
 				'standard_banner' => htmlentities(Configuration::get('MERCADOPAGO_STANDARD_BANNER'), ENT_COMPAT, 'UTF-8'),
 				'window_type' => htmlentities(Configuration::get('MERCADOPAGO_WINDOW_TYPE'), ENT_COMPAT, 'UTF-8'),
 				'iframe_width' => htmlentities(Configuration::get('MERCADOPAGO_IFRAME_WIDTH'), ENT_COMPAT, 'UTF-8'),
@@ -600,7 +611,7 @@ class MercadoPago extends PaymentModule {
 				else
 				{
 					$data['preferences_url'] = null;
-					error_log('An error occurred during preferences creation. Please check your credentials and try again.');
+					PrestaShopLogger::addLog('MercadoPago::hookPayment - An error occurred during preferences creation. Please check your credentials and try again.: ', MP::ERROR , 0);
 				}
 			}
 
@@ -937,7 +948,11 @@ class MercadoPago extends PaymentModule {
 		$transaction_amounts = 0;
 		$cardholders = array();
 		$external_reference = '';
-
+		if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
+			PrestaShopLogger::addLog('MercadoPago :: listenIPN - topic = '.$topic, MP::INFO , 0);			
+			PrestaShopLogger::addLog('MercadoPago :: listenIPN - id = '.$id, MP::INFO , 0);	
+			PrestaShopLogger::addLog('MercadoPago :: listenIPN - checkout = '.$checkout, MP::INFO , 0);		
+		}
 		if ($checkout == "standard" && $topic == 'merchant_order' && $id > 0)
 		{
 			// get merchant order info
@@ -945,7 +960,9 @@ class MercadoPago extends PaymentModule {
 			$merchant_order_info = $result['response'];
 			$payments = $merchant_order_info['payments'];
 			$external_reference = $merchant_order_info['external_reference'];
-
+			if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
+				PrestaShopLogger::addLog('Debug Mode :: listenIPN - payments = '.$payments, MP::INFO , 0);				
+			}
 			foreach($payments as $payment)
 			{
 				// get payment info
