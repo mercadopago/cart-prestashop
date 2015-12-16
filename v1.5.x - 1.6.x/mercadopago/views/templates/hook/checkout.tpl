@@ -353,38 +353,40 @@
 
     // Estabeleça a informação do meio de pagamento obtido
     function setPaymentMethodInfo(status, result){
-          //adiciona a imagem do meio de pagamento
-          var payment_method = result[0];
-          var amount = $("#amount").val();
-          var bin = getBin();
-          var json = {}
-          json.amount = amount;
-          json.bin = bin;
-		  Mercadopago.getInstallments(json, setInstallmentInfo);
+    	if(status != 404 && result != undefined){
+	          //adiciona a imagem do meio de pagamento
+	          var payment_method = result[0];
+	          var amount = $("#amount").val();
+	          var bin = getBin();
+	          var json = {}
+	          json.amount = amount;
+	          json.bin = bin;
+			  Mercadopago.getInstallments(json, setInstallmentInfo);
 
-		  if (country === "MLM" || country === "MLA") {
-			  // check if the issuer is necessary to pay
-				var issuerMandatory = false,
-				    additionalInfo = result[0].additional_info_needed;
+			  if (country === "MLM" || country === "MLA") {
+				  // check if the issuer is necessary to pay
+					var issuerMandatory = false,
+					    additionalInfo = result[0].additional_info_needed;
 
-				for (var i = 0; i < additionalInfo.length; i++) {
-				    if (additionalInfo[i] == "issuer_id") {
-				        issuerMandatory = true;
-				    }
+					for (var i = 0; i < additionalInfo.length; i++) {
+					    if (additionalInfo[i] == "issuer_id") {
+					        issuerMandatory = true;
+					    }
+					}
+
+					if (issuerMandatory) {
+					    Mercadopago.getIssuers(result[0].id, showCardIssuers);
+					    $("#id-issuers-options").bind("change",function(){ setInstallmentsByIssuerId(status, result) });
+					} else {
+					    document.querySelector("#id-issuers-options").options.length = 0;
+					    document.querySelector("#id-issuers-options").style.display = 'none';
+					    document.querySelector(".issuers-options").style.display = 'none';
+					}
 				}
 
-				if (issuerMandatory) {
-				    Mercadopago.getIssuers(result[0].id, showCardIssuers);
-				    $("#id-issuers-options").bind("change",function(){ setInstallmentsByIssuerId(status, result) });
-				} else {
-				    document.querySelector("#id-issuers-options").options.length = 0;
-				    document.querySelector("#id-issuers-options").style.display = 'none';
-				    document.querySelector(".issuers-options").style.display = 'none';
-				}
-			}
-
-		  $("#id-card-number").css("background", "url(" + payment_method.secure_thumbnail + ") 98% 50% no-repeat");
-		  $("#payment_method_id").val($("input[name=card-types]:checked").val() ? $("input[name=card-types]:checked").val() + payment_method.id : payment_method.id);
+			  $("#id-card-number").css("background", "url(" + payment_method.secure_thumbnail + ") 98% 50% no-repeat");
+			  $("#payment_method_id").val($("input[name=card-types]:checked").val() ? $("input[name=card-types]:checked").val() + payment_method.id : payment_method.id);
+		}
     };
 
     function setInstallmentsByIssuerId(status, response) {
@@ -404,12 +406,16 @@
 
     //Mostre as parcelas disponíveis no div 'installmentsOption'
     function setInstallmentInfo(status, installments){
-        var html_options = "";
-        var installments = installments[0].payer_costs;
-        $.each(installments, function(key, value) {
-            html_options += "<option value='"+ value.installments + "'>"+ value.recommended_message + "</option>";
-        });
-        $("#id-installments").html(html_options);
+    	if (status != 404) {
+	        var html_options = "";
+	        var installments = installments[0].payer_costs;
+	        $.each(installments, function(key, value) {
+	            html_options += "<option value='"+ value.installments + "'>"+ value.recommended_message + "</option>";
+	        });
+	        $("#id-installments").html(html_options);
+    	} else {
+    		console.info(installments);
+    	}
 	};
 
 	// function showIssuers(status, issuers){

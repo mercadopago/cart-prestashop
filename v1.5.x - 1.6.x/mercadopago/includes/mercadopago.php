@@ -30,6 +30,15 @@ class MP {
 
 	const VERSION = '3.0.5';
 
+	/*Info*/
+	const INFO = 1;
+	/*Warning*/
+	const WARNING = 2;
+	/*Error*/
+	const ERROR = 3;
+	/*Fatal Error*/
+	const FATAL_ERROR = 4;
+
 	private $client_id;
 	private $client_secret;
 	private $access_data;
@@ -235,9 +244,17 @@ class MPRestClient {
 			'status' => $api_http_code,
 			'response' => Tools::jsonDecode($api_result, true)
 		);
+		if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
+			PrestaShopLogger::addLog('MercadoPago.exec :: data = '.Tools::jsonEncode($data), MP::INFO ,  0, null, null, true);
+			PrestaShopLogger::addLog('MercadoPago.exec :: response = '.$api_result, MP::INFO , $response['status'], null, null, true);
+		}
 
-		if ($response['status'] >= 400)
-			error_log('status: '.$response['status'].' error: '.$response['response']['message']);
+		if ($response['status'] == 0) {
+			$error = 'Can not call the API, status code 0.';
+   			throw new Exception($error);
+		} else if ($response['status'] > 202){
+			PrestaShopLogger::addLog("MercadoPago::exec = ".$response['response']['message'], MP::ERROR , $response['status']);
+		}
 
 		curl_close($connect);
 

@@ -234,6 +234,18 @@
 					</select>
 				</div>
 			</fieldset>
+			<fieldset>
+				<legend>
+					<img src="../img/admin/contact.gif" />{l s='Settings - Active log' mod='mercadopago'}
+				</legend>
+				<label>{l s='Active: ' mod='mercadopago'}</label>
+				<div class="">
+					<select name="MERCADOPAGO_LOG" id="log_active">
+						<option value="true">{l s='Yes' mod='mercadopago'} </option>
+						<option value="false">{l s='No' mod='mercadopago'} </option>
+					</select>
+				</div>
+			</fieldset>			
 		{/if}
 		{if empty($country)}
 			<input type="submit" name="login" value="{l s='Login' mod='mercadopago'}" class="ch-btn ch-btn-big"/>
@@ -254,20 +266,30 @@
 	})
 	
 	window.onload = function() {
-		if (document.getElementById("category"))
+		if (document.getElementById("category")){
 			document.getElementById("category").value = "{$category|escape:'javascript'}";
+		}
 
-		if (document.getElementById("creditcard_active"))
+		if (document.getElementById("creditcard_active")){
 			document.getElementById("creditcard_active").value = "{$creditcard_active|escape:'javascript'}";
+		}
 
-		if (document.getElementById("standard_active"))
+		if (document.getElementById("standard_active")){
 			document.getElementById("standard_active").value = "{$standard_active|escape:'javascript'}";
+		}
 
-		if (document.getElementById("window_type"))
+
+		if (document.getElementById("log_active")){
+			document.getElementById("log_active").value = "{$log_active|escape:'javascript'}";
+		}
+
+		if (document.getElementById("window_type")){
 			document.getElementById("window_type").value = "{$window_type|escape:'javascript'}";
+		}
 
-		if (document.getElementById("auto_return"))
+		if (document.getElementById("auto_return")){
 			document.getElementById("auto_return").value = "{$auto_return|escape:'javascript'}";
+		}
 
 		{foreach from=$payment_methods_settings key=payment_method item=value}
 			document.getElementById("{$payment_method|escape:'javascript'}").checked = "{$value|escape:'javascript'}";
