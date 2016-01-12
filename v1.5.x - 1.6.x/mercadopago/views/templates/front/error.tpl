@@ -106,7 +106,6 @@
 		{l s='Payment id (MercadoPago): ' mod='mercadopago'}
 		{$payment_id|escape:'htmlall'}</br>
 
-		<span>Henrique</span>
 		{if $message != null}
 			<span>{l s='Technical Error: ' mod='mercadopago'}</span>
 			{$message|escape:'htmlall'}</br>

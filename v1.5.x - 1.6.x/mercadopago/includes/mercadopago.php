@@ -28,7 +28,7 @@ $GLOBALS['LIB_LOCATION'] = dirname(__FILE__);
 
 class MP {
 
-	const VERSION = '3.0.5';
+	const VERSION = '3.0.7';
 
 	/*Info*/
 	const INFO = 1;

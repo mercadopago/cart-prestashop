@@ -31,6 +31,7 @@
   	</div>
   </div>
 </div>
+
 <div class="mp-module">
 	{if $creditcard_active == 'true' && $public_key != ''}
 		{if $version == 5}
@@ -48,7 +49,7 @@
 				    	 <div class="row">
 					    	 <div class="col">
 						    	 <label for="id-card-number">{l s='Card number: ' mod='mercadopago'}</label>
-						    	 <input id="id-card-number" data-checkout="cardNumber" type="text"/>
+						    	 <input id="id-card-number" name="cardNumber" data-checkout="cardNumber" type="text"/>
 						    	 <div id="id-card-number-status" class="status"></div>
 					    	 </div>
 					    	 <div class="col col-expiration">
@@ -89,6 +90,7 @@
 				    	<div class="col">
 					    	<label for="id-installments">{l s='Installments: ' mod='mercadopago'}</label>
 					    	<select id="id-installments" name="installments" type="text>"></select>
+					    	<div id="id-installments-status" class="status"></div>
 				    	</div>
 				    </div>
 				    <input id="amount" type="hidden" value="{$amount|escape:'htmlall'}"/>
@@ -150,10 +152,10 @@
 							   	 <div class="row">
 								   	<div class="col">
 								    	<label for="id-card-expiration-month">{l s='Expiration: ' mod='mercadopago'}</label>
-								    	<select id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text"></select>
+								    	<select  name="cardExpirationMonth" id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text"></select>
 								    </div>
 								    <div class="col">
-								    	<select id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text"></select>
+								    	<select name="cardExpirationYear" id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text"></select>
 								    	<div id="id-card-expiration-year-status" class="status"></div>
 								    </div>
 								</div>
@@ -340,7 +342,8 @@
       		Mercadopago.getPaymentMethod(json,setPaymentMethodInfo);
       		Mercadopago.getIdentificationTypes();
       } else if (bin.length < 6) {
-			$("#id-card-number").css('background: none;');
+        	$("#id-card-number").css('background-image', '');
+        	$("#id-installments").html('');
       }
     });
 
@@ -353,7 +356,7 @@
 
     // Estabeleça a informação do meio de pagamento obtido
     function setPaymentMethodInfo(status, result){
-    	if(status != 404 && result != undefined){
+    	if(status != 404 && status != 400 && result != undefined){
 	          //adiciona a imagem do meio de pagamento
 	          var payment_method = result[0];
 	          var amount = $("#amount").val();
@@ -383,9 +386,12 @@
 					    document.querySelector(".issuers-options").style.display = 'none';
 					}
 				}
-
+				console.info(payment_method);
 			  $("#id-card-number").css("background", "url(" + payment_method.secure_thumbnail + ") 98% 50% no-repeat");
 			  $("#payment_method_id").val($("input[name=card-types]:checked").val() ? $("input[name=card-types]:checked").val() + payment_method.id : payment_method.id);
+		} else {
+			$("#id-card-number").css('background-image', '');
+        	$("#id-installments").html('');
 		}
     };
 
@@ -406,32 +412,20 @@
 
     //Mostre as parcelas disponíveis no div 'installmentsOption'
     function setInstallmentInfo(status, installments){
-    	if (status != 404) {
-	        var html_options = "";
+    	console.info(status);
+    	console.info(installments);
+    	var html_options = "";
+        if (status != 404 && status != 400) {
+       	 	html_options += "<option value='' selected>{l s='Choice' mod='mercadopago'}...</option>";
 	        var installments = installments[0].payer_costs;
 	        $.each(installments, function(key, value) {
 	            html_options += "<option value='"+ value.installments + "'>"+ value.recommended_message + "</option>";
 	        });
-	        $("#id-installments").html(html_options);
     	} else {
     		console.info(installments);
     	}
+    	$("#id-installments").html(html_options);
 	};
-
-	// function showIssuers(status, issuers){
-	// 	var html_options = "";
-	// 	if (issuers.length > 0) {
-	// 		if(issuers.length == 1){
-	// 			html_options += "<option value='"+issuers[0].id+"'>"+issuers[0].name +" </option>";
-	// 			$("#id-issuers-options").hide();
-	// 		} else {
-	// 			for (i=0; issuers && i<issuers.length;i++){
-	// 				html_options += "<option value='"+issuers[i].id+"'>"+issuers[i].name +" </option>";
-	// 			}
-	// 		}
-	// 		$("#id-issuers-options").html(html_options);
-	// 	}
-	// };
 
 	function showCardIssuers(status, issuers) {
 	    var issuersSelector = document.querySelector("#id-issuers-options"),
@@ -469,15 +463,56 @@
 	}
 
 	$("#form-pagar-mp").submit(function( event ) {
+		clearErrorStatus();
+
     	var $form = $(this);
     	var cpf = $("#id-doc-number").val();
 
-    	if (country !== "MLB" || (cpf && validateCpf(cpf))) { 
-    		Mercadopago.createToken($form, mpResponseHandler);
+    	if (country == "MLB") {
+	    	if ($("#id-card-number").val().length == 0) {
+				$("#id-card-number-status").html("{l s='Card invalid' mod='mercadopago'}");
+				$("#id-card-number").addClass("form-error");
+	    	} 
+
+
+	    	if ($("#id-card-holder-name").val().length == 0) {
+				$("#id-card-holder-name-status").html("{l s='Name invalid' mod='mercadopago'}");
+				$("#id-card-holder-name").addClass("form-error");
+	    	} 
+
+	    	if ($("#id-security-code").val().length == 0) {
+				$("#id-security-code-status").html("{l s='CVV invalid' mod='mercadopago'}");
+				$("#id-security-code").addClass("form-error");
+	    	}     	
+
+	    	if ($("#id-doc-number").val().length == 0) {
+	    		$("#id-doc-number-status").html("{l s='CPF invalid' mod='mercadopago'}");
+	    		$("#id-doc-number").addClass("form-error");
+	    	} 
+
+	    	if ($("#id-installments").val() == null || $("#id-installments").val().length == 0) {
+	    		$("#id-installments-status").html("{l s='Installments invalid' mod='mercadopago'}");
+	    		$("#id-installments").addClass("form-error");
+	    	} 
+
+	    	if ($("#id-installments").val() == null || $("#id-installments").val().length == 0 || $("#id-security-code").val().length == 0 ||
+				$("#id-card-holder-name").val().length == 0 || $("#id-card-number").val().length == 0 || $("#id-doc-number").val().length == 0
+	    		) {
+
+				    event.preventDefault();
+				    return false;
+			    } else {
+			     	if (validateCpf(cpf)) {
+			    		Mercadopago.createToken($form, mpResponseHandler);
+			    	} else {
+			    		$("#id-doc-number-status").html("{l s='CPF invalid' mod='mercadopago'}");
+			    		$("#id-doc-number").addClass("form-error");
+			    	}  
+	    		}
     	} else {
-    		$("#id-doc-number-status").html("{l s='CPF invalid' mod='mercadopago'}");
-    		$("#id-doc-number").addClass("form-error");
+    		Mercadopago.createToken($form, mpResponseHandler);
     	}
+
 	    event.preventDefault();
 	    return false;
 	});
@@ -513,6 +548,11 @@
 		} else {
 			var card_token_id = response.id;
 			$form.append($('<input type="hidden" id="card_token_id" name="card_token_id"/>').val(card_token_id));
+			
+			var cardNumber = $("#id-card-number").val();
+			var lastFourDigits = cardNumber.substring(cardNumber.length - 4);
+			$form.append($('<input name="lastFourDigits" type="hidden" value="' + lastFourDigits + '"/>'));
+			
 			$form.get(0).submit();
 			
 			$(".lightbox").show();
@@ -526,6 +566,7 @@
 		$("#id-card-expiration-year-status").html("");
 		$("#id-card-holder-name-status").html("");
 		$("#id-doc-number-status").html("");
+		$("#id-installments-status").html("");
 
 		$("#id-card-number").removeClass("form-error");
 		$("#id-security-code").removeClass("form-error");
@@ -533,8 +574,8 @@
 		$("#id-card-expiration-year").removeClass("boxshadow-error");
 		$("#id-card-holder-name").removeClass("form-error");
 		$("#id-doc-number").removeClass("form-error");
+		$("#id-installments").removeClass("form-error");
 	}
-
  	function validateCpf(cpf){
         var soma;
         var resto;

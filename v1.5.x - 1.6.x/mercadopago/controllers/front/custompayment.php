@@ -37,6 +37,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 
 	private function placeOrder()
 	{
+
 		$mercadopago = $this->module;
 		$response = $mercadopago->execPayment($_POST);
 		$order_status = null;
@@ -87,7 +88,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 			if (Tools::getIsset('card_token_id'))
 			{
 				// get credit card last 4 digits
-				$four_digits = '**** **** **** '.Tools::substr(Tools::getValue('cardNumber'), -4);
+				$four_digits = '**** **** **** '.Tools::getValue('lastFourDigits');
 				// expiration date
 				$expiration_date = Tools::getValue('cardExpirationMonth').'/20'.Tools::getValue('cardExpirationYear');
 
@@ -102,9 +103,9 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 				'&statement_descriptor='.$response['statement_descriptor'].'&status_detail='.$response['status_detail'].
 				'&amount='.$response['amount'];
 			}
-			else			
+			else {			
 				$uri .= '&payment_method_id='.Tools::getValue('payment_method_id').'&boleto_url='.urlencode($response['activation_uri']);
-
+			}
 			$order_payments[0]->save();
 			Tools::redirectLink($uri);
 		}
@@ -120,14 +121,16 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 				);
 
 			if (array_key_exists('message', $response) && (strpos($response['message'], 'Invalid users involved') !== false
-				|| (strpos($response['message'], 'users from different countries') !== false)))
+				|| (strpos($response['message'], 'users from different countries') !== false))){
+
 				$data['valid_user'] = false;
+			}
 			else
 			{
 				$data['version'] = $mercadopago->getPrestashopVersion();
 				$data['status_detail'] = $response['status_detail'];
 				$data['card_holder_name'] = Tools::getValue('cardholderName');
-				$data['four_digits'] = Tools::substr(Tools::getValue('cardNumber'), -4);
+				$data['four_digits'] = Tools::getValue('lastFourDigits');
 				$data['payment_method_id'] = Tools::getValue('payment_method_id');
 				$data['expiration_date'] = Tools::getValue('cardExpirationMonth').'/20'.Tools::getValue('cardExpirationYear');
 				$data['installments'] = $response['installments'];

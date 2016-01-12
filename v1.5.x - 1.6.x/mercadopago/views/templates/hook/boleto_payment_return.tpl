@@ -26,7 +26,7 @@
 	<div class="return-div">
 		<h4 id="id-confirmation-boleto">
 			<strong>
-				{l s='Thank you for your purchase! We are awaiting the ticket payment.' mod='mercadopago'}
+				{l s='Thank you for your purchase! We are awaiting the payment.' mod='mercadopago'}
 				</br>
 				</br>
 			</strong>
