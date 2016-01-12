@@ -132,6 +132,11 @@
 					</select>	
 				</div>
 			{/if}
+				<br/>
+				<label>{l s='Notification URL' mod='mercadopago'}:</label>
+				<div>{$notification_url|escape:'javascript'}</div>
+
+				<br />					
 		</fieldset>
 		{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA'}
 			<fieldset>

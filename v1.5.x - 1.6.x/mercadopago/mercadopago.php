@@ -35,7 +35,7 @@ class MercadoPago extends PaymentModule {
 	{
 		$this->name = 'mercadopago';
 		$this->tab = 'payments_gateways';
-		$this->version = '3.0.5';
+		$this->version = '3.0.7';
 		$this->currencies = true;
 		$this->currencies_mode = 'radio';
 		$this->need_instance = 0;
@@ -68,6 +68,10 @@ class MercadoPago extends PaymentModule {
 		return $result['ok'];
 	}
 
+	/**
+	* Create the states, we need to check if doens`t exists.
+	*
+	*/
 	public function createStates()
 	{
 		$order_states = array(
@@ -168,6 +172,7 @@ class MercadoPago extends PaymentModule {
 
 	public function uninstall()
 	{
+
 		//continue the states
 		if (!$this->uninstallPaymentSettings()
 			|| !Configuration::deleteByName('MERCADOPAGO_PUBLIC_KEY')
@@ -453,7 +458,9 @@ class MercadoPago extends PaymentModule {
 				}
 			}
 		}
-		
+
+		$notification_url = $this->link->getModuleLink('mercadopago', 'notification', array(), Configuration::get('PS_SSL_ENABLED'), null, null, false);
+	
 		$settings = 
 			array(
 				'public_key' => htmlentities(Configuration::get('MERCADOPAGO_PUBLIC_KEY'), ENT_COMPAT, 'UTF-8'),
@@ -461,6 +468,7 @@ class MercadoPago extends PaymentModule {
 				'client_secret' => htmlentities(Configuration::get('MERCADOPAGO_CLIENT_SECRET'), ENT_COMPAT, 'UTF-8'),
 				'country' => htmlentities(Configuration::get('MERCADOPAGO_COUNTRY'), ENT_COMPAT, 'UTF-8'),
 				'category' => htmlentities(Configuration::get('MERCADOPAGO_CATEGORY'), ENT_COMPAT, 'UTF-8'),
+				'notification_url' => htmlentities($notification_url, ENT_COMPAT, 'UTF-8'),
 				'creditcard_banner' => htmlentities(Configuration::get('MERCADOPAGO_CREDITCARD_BANNER'), ENT_COMPAT, 'UTF-8'),
 				'creditcard_active' => htmlentities(Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE'), ENT_COMPAT, 'UTF-8'),
 				'boleto_active' => htmlentities(Configuration::get('MERCADOPAGO_BOLETO_ACTIVE'), ENT_COMPAT, 'UTF-8'),
@@ -549,8 +557,9 @@ class MercadoPago extends PaymentModule {
 
 	public function hookDisplayHeader()
 	{
-		if (!$this->active)
+		if (!$this->active){
 			return;
+		}
 
 		$data = array(
 				'creditcard_active' => Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE'),
@@ -566,8 +575,9 @@ class MercadoPago extends PaymentModule {
 
 	public function hookPayment($params)
 	{
-		if (!$this->active)
+		if (!$this->active){
 			return;
+		}
 
 		if ($this->hasCredential())
 		{   
@@ -578,6 +588,7 @@ class MercadoPago extends PaymentModule {
 				'boleto_active' => Configuration::get('MERCADOPAGO_BOLETO_ACTIVE'),
 				'creditcard_active' => Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE'),
 				'standard_active' => Configuration::get('MERCADOPAGO_STANDARD_ACTIVE'),
+				'log_active' => Configuration::get('MERCADOPAGO_LOG'),
 				'version' => $this->getPrestashopVersion(),
 				'custom_action_url' => $this->link->getModuleLink('mercadopago', 'custompayment', array(), Configuration::get('PS_SSL_ENABLED'), null, null, false),
 				'payment_status' => Tools::getValue('payment_status'),
@@ -602,7 +613,7 @@ class MercadoPago extends PaymentModule {
 			// send standard configurations only activated
 			if (Configuration::get('MERCADOPAGO_STANDARD_ACTIVE') == 'true')
 			{
-				$result = $this->createStandardCheckoutPreference();
+				$result = $this->createStandardCheckoutPreference();				
 				if (array_key_exists('init_point', $result['response']))
 				{
 					$data['standard_banner'] = Configuration::get('MERCADOPAGO_STANDARD_BANNER');
@@ -638,75 +649,53 @@ class MercadoPago extends PaymentModule {
 		}
 	}
 
-	public function hookPaymentReturn($params)
-	{
-		if (!$this->active)
-			return;
-
-		
-		if (Tools::getValue('checkout') == 'standard')
-		{
-			$data = array();
-			$data['amount'] = Tools::displayPrice(Tools::getValue('amount'), $params['currencyObj'], false);
-			$data['preferences_url'] = Tools::getValue('preferences_url');
-			$data['window_type'] = Tools::getValue('window_type');
-			$data['standard_banner'] = Tools::getValue('standard_banner');
-			$data['this_path_ssl'] = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
-									.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__;
-
-			if ($data['window_type'] == 'iframe')
-			{
-				$data['iframe_width'] = Tools::getValue('iframe_width');
-				$data['iframe_height'] = Tools::getValue('iframe_height');
-			}
-
-			$this->context->smarty->assign($data);
-
-			$this->context->controller->addCss($this->_path.'views/css/mercadopago_core.css', 'all');
-
-			return $this->display(__file__, '/views/templates/hook/standard_checkout.tpl');
-		}
-		elseif (Tools::getIsset('card_token'))
-		{
-			$this->context->controller->addCss($this->_path.'views/css/mercadopago_core.css', 'all');
-
-			$this->context->smarty->assign(
-				array(
-					'payment_status' => Tools::getValue('payment_status'),
-					'status_detail' => Tools::getValue('status_detail'),
-					'card_holder_name' => Tools::getValue('card_holder_name'),
-					'four_digits' => Tools::getValue('four_digits'),
-					'payment_method_id' => Tools::getValue('payment_method_id'),
-					'expiration_date' => Tools::getValue('expiration_date'),
-					'installments' => Tools::getValue('installments'),
-					'transaction_amount' => Tools::displayPrice(Tools::getValue('transaction_amount'), $params['currencyObj'], false),
-					'statement_descriptor' => Tools::getValue('statement_descriptor'),
-					'payment_id' => Tools::getValue('payment_id'),
-					'amount' => Tools::displayPrice(Tools::getValue('amount'), $params['currencyObj'], false),
-					'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
-									.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__
-				)
-			);
-
-			return $this->display(__file__, '/views/templates/hook/creditcard_payment_return.tpl');
-		}
-		else
-		{
-			$this->context->controller->addCss($this->_path.'views/css/mercadopago_core.css', 'all');
-
-			$this->context->smarty->assign(
-				array(
-					'country' => Configuration::get('MERCADOPAGO_COUNTRY'),
-					'version' => $this->getPrestashopVersion(),
-					'payment_id' => Tools::getValue('payment_id'),
-					'boleto_url' => Tools::getValue('boleto_url'),
-					'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
-									.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__
-				)
-			);
-			return $this->display(__file__, '/views/templates/hook/boleto_payment_return.tpl');
-		}
+public function hookPaymentReturn($params)
+{
+	if (!$this->active){
+		return;
 	}
+
+	if (Tools::getValue('payment_method_id') == 'bolbradesco' || 
+		Tools::getValue('payment_type') == 'bank_transfer' || 
+		Tools::getValue('payment_type') == 'ticket')
+	{
+		$this->context->controller->addCss($this->_path.'views/css/mercadopago_core.css', 'all');
+
+		$this->context->smarty->assign(
+			array(
+				'payment_id' => Tools::getValue('payment_id'),
+				'boleto_url' => Tools::getValue('boleto_url'),
+				'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
+				.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__
+				)
+			);
+		return $this->display(__file__, '/views/templates/hook/boleto_payment_return.tpl');
+	}
+	else
+	{
+		$this->context->controller->addCss($this->_path.'views/css/mercadopago_core.css', 'all');
+
+		$this->context->smarty->assign(
+			array(
+				'payment_status' => Tools::getValue('payment_status'),
+				'status_detail' => Tools::getValue('status_detail'),
+				'card_holder_name' => Tools::getValue('card_holder_name'),
+				'four_digits' => Tools::getValue('four_digits'),
+				'payment_method_id' => Tools::getValue('payment_method_id'),
+				'expiration_date' => Tools::getValue('expiration_date'),
+				'installments' => Tools::getValue('installments'),
+				'transaction_amount' => Tools::displayPrice(Tools::getValue('transaction_amount'), $params['currencyObj'], false),
+				'statement_descriptor' => Tools::getValue('statement_descriptor'),
+				'payment_id' => Tools::getValue('payment_id'),
+				'amount' => Tools::displayPrice(Tools::getValue('amount'), $params['currencyObj'], false),
+				'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
+				.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__
+				)
+			);
+
+		return $this->display(__file__, '/views/templates/hook/creditcard_payment_return.tpl');
+	}
+}
 
 	private function hasCredential()
 	{
@@ -787,10 +776,13 @@ class MercadoPago extends PaymentModule {
 				'category_id'=> Configuration::get('MERCADOPAGO_CATEGORY')
 			);
 
-			if ($key == 0)
+
+			if ($key == 0){
 				$summary .= $product['name'];
-			else 
+			}
+			else {
 				$summary .= ', '.$product['name'];
+			}
 
 			$items[] = $item;
 		}
@@ -881,7 +873,7 @@ class MercadoPago extends PaymentModule {
 			$data['amount'] = (Float)number_format($cart->getOrderTotal(true, Cart::BOTH), 2, '.', '');
 			$data['payer_email'] = $customer_fields['email'];
 			
-			$data['notification_url'] = $this->link->getModuleLink('mercadopago', 'notification', array(), Configuration::get('PS_SSL_ENABLED'), null, null, false).'?checkout=custom&';
+			$data['notification_url'] = $this->link->getModuleLink('mercadopago', 'notification', array(),                 Configuration::get('PS_SSL_ENABLED'), null, null, false).'?checkout=custom&';         
 
 			// add only for creditcard
 			if (array_key_exists('card_token_id', $post))
@@ -940,6 +932,7 @@ class MercadoPago extends PaymentModule {
 
 	public function listenIPN($checkout, $topic, $id)
 	{
+
 		$payment_method_ids = array();
 		$payment_ids = array();
 		$payment_statuses = array();
@@ -960,15 +953,11 @@ class MercadoPago extends PaymentModule {
 			$merchant_order_info = $result['response'];
 			$payments = $merchant_order_info['payments'];
 			$external_reference = $merchant_order_info['external_reference'];
-			if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
-				PrestaShopLogger::addLog('Debug Mode :: listenIPN - payments = '.$payments, MP::INFO , 0);				
-			}
 			foreach($payments as $payment)
 			{
 				// get payment info
 				$result = $this->mercadopago->getPayment($payment['id']);
 				$payment_info = $result['response']['collection'];
-
 				// colect payment details
 				$payment_ids[] = $payment_info['id'];
 				$payment_statuses[] = $payment_info['status'];
@@ -977,7 +966,7 @@ class MercadoPago extends PaymentModule {
 				if ($payment_info['payment_type'] == 'credit_card')
 				{
 					$payment_method_ids[] = $payment_info['payment_method_id'];
-					$credit_cards[] = 'xxxx xxxx xxxx '.$payment_info['last_four_digits'];
+					$credit_cards[] = '**** **** **** '.$payment_info['last_four_digits'];
 					$cardholders[] = $payment_info['cardholder']['name'];
 				}	
 			}
@@ -997,12 +986,24 @@ class MercadoPago extends PaymentModule {
 			if ($payment_info['payment_type'] == 'credit_card')
 			{
 				$payment_method_ids[] = $payment_info['payment_method_id'];
-				$credit_cards[] = 'xxxx xxxx xxxx '.$payment_info['last_four_digits'];
+				$credit_cards[] = '**** **** **** '.$payment_info['last_four_digits'];
 				$cardholders[] = $payment_info['cardholder']['name'];
 			}
 			$this->updateOrder($payment_ids, $payment_statuses, $payment_method_ids, $payment_types, $credit_cards, $cardholders, $transaction_amounts, $external_reference);
 		}
 
+	}
+
+	/**
+	*Verify if there is state approved for order
+	*/
+	public static function getOrderStateApproved($id_order)
+	{
+		return (bool) Db::getInstance()->getValue('
+        SELECT `id_order_state`
+        FROM '._DB_PREFIX_.'order_history
+        WHERE `id_order` = '.(int)$id_order.' 
+        AND `id_order_state` = '.(int)Configuration::get('MERCADOPAGO_STATUS_1'));
 	}
 
 	private function updateOrder($payment_ids, $payment_statuses, $payment_method_ids, $payment_types, $credit_cards, $cardholders, $transaction_amounts, $external_reference)
@@ -1065,12 +1066,22 @@ class MercadoPago extends PaymentModule {
 												$total,
 												$this->displayName,
 												null,
-												$extra_vars, $cart->id_currency);
+												$extra_vars, $cart->id_currency, false,
+												$cart->secure_key);
 					$id_order = !$id_order ? Order::getOrderByCartId($id_cart) : $id_order;
 					$order = new Order($id_order);
 				}
 				else if ($order->current_state != null && $order->current_state != Configuration::get($order_status))
 				{
+					/*this is necessary to ignore the transactions with the same 
+					external reference and states diferents*/
+					if ($payment_status == 'cancelled') {
+						$retorno = $this->getOrderStateApproved($id_order);
+						if ($retorno) {
+							return;
+						}
+					}
+
 					$id_order = !$id_order ? Order::getOrderByCartId($id_cart) : $id_order;
 					$order = new Order($id_order);
 					$this->updateOrderHistory($order->id, Configuration::get($order_status));
