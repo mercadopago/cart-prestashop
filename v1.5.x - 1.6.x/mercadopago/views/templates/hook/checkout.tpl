@@ -49,21 +49,21 @@
 				    	 <div class="row">
 					    	 <div class="col">
 						    	 <label for="id-card-number">{l s='Card number: ' mod='mercadopago'}</label>
-						    	 <input id="id-card-number" name="cardNumber" data-checkout="cardNumber" type="text"/>
+						    	 <input id="id-card-number" data-checkout="cardNumber" type="text"/>
 						    	 <div id="id-card-number-status" class="status"></div>
 					    	 </div>
 					    	 <div class="col col-expiration">
 						    	 <label for="id-card-expiration-month">{l s='Month Exp: ' mod='mercadopago'}</label>
-						    	 <select id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text" name="cardExpirationMonth"></select>
+						    	 <select id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text" ></select>
 						     </div>
 						     <div class="col col-expiration">
 						    	 <label for="id-card-expiration-month">{l s='Year Exp: ' mod='mercadopago'}</label>
-						    	 <select id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text" name="cardExpirationYear"></select>
+						    	 <select id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text" ></select>
 					    		 <div id="id-card-expiration-year-status" class="status"></div>
 					    	 </div>
 					    	 <div class="col">
 						    	 <label for="id-card-holder-name">{l s='Card Holder Name: ' mod='mercadopago'}</label>
-						    	 <input id="id-card-holder-name" name="cardholderName" data-checkout="cardholderName" type="text"/>
+						    	 <input id="id-card-holder-name" data-checkout="cardholderName" type="text"/>
 					    		 <div id="id-card-holder-name-status" class="status"></div>
 					    	 </div>
 					     </div>
@@ -152,17 +152,17 @@
 							   	 <div class="row">
 								   	<div class="col">
 								    	<label for="id-card-expiration-month">{l s='Expiration: ' mod='mercadopago'}</label>
-								    	<select  name="cardExpirationMonth" id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text"></select>
+								    	<select id="id-card-expiration-month" class="small-select" data-checkout="cardExpirationMonth" type="text"></select>
 								    </div>
 								    <div class="col">
-								    	<select name="cardExpirationYear" id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text"></select>
+								    	<select id="id-card-expiration-year" class="small-select"  data-checkout="cardExpirationYear" type="text"></select>
 								    	<div id="id-card-expiration-year-status" class="status"></div>
 								    </div>
 								</div>
 								<div class="row">
 									<div class="col">
 								    	<label for="id-card-holder-name">{l s='Card Holder Name: ' mod='mercadopago'}</label>
-								    	<input id="id-card-holder-name" name="cardholderName" data-checkout="cardholderName" type="text"/>
+								    	<input id="id-card-holder-name" data-checkout="cardholderName" type="text"/>
 								    	<div id="id-card-holder-name-status" class="status"></div>
 							    	</div>
 							    </div>
@@ -178,9 +178,9 @@
 								 	<div class="row">
 								    	<div class="col">
 									    	<label for="id-doc-number">{l s='CPF: ' mod='mercadopago'}</label>
-									    	<input id="id-doc-number" name="docNumber" data-checkout="docNumber" type="text" maxlength="11"/>
+									    	<input id="id-doc-number" data-checkout="docNumber" type="text" maxlength="11"/>
 									    	<div id="id-doc-number-status" class="status"></div>
-									    	<input name="docType"  data-checkout="docType" type="hidden" value="CPF"/>
+									    	<input name="docType" data-checkout="docType" type="hidden" value="CPF"/>
 									    </div>
 								    </div>
 							    {elseif $country == 'MLM' || $country == 'MLA'}
