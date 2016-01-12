@@ -1,7 +1,7 @@
-# PrestaShop - Mercadopago Module (v1.3.6 - 1.4.7.3x | 1.5.x -  1.6.x)
+# PrestaShop - Mercadopago Module (v1.3.6 to 1.6.x)
 
 ---
-*Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
+*Available for Argentina, Brazil, Chile, Colombia, Mexico and Venezuela*
 
 ## Installation:
 
@@ -17,6 +17,7 @@ You will receive the following message: " Module(s) installed successfully."
 
 	* Argentina: https://www.mercadopago.com/mla/herramientas/aplicaciones
 	* Brazil: https://www.mercadopago.com/mlb/ferramentas/aplicacoes
+	* Chile: https://www.mercadopago.com/mlc/herramientas/aplicaciones
 	* Colombia: https://www.mercadopago.com/mco/herramientas/aplicaciones
 	* Mexico: https://www.mercadopago.com/mlm/herramientas/aplicaciones
 	* Venezuela: https://www.mercadopago.com/mlv/herramientas/aplicaciones
