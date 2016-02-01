@@ -28,7 +28,7 @@ $GLOBALS['LIB_LOCATION'] = dirname(__FILE__);
 
 class MP {
 
-	const VERSION = '3.0.7';
+	const VERSION = '3.1.0';
 
 	/*Info*/
 	const INFO = 1;
@@ -68,6 +68,27 @@ class MP {
 		return $this->access_data['access_token'];
 	}
 
+	/**
+	 * Get Access Token for API use
+	 */
+	public function getAccessToken_v1()
+	{
+		$app_client_values = $this->buildQuery(array(
+			'client_id' => $this->client_id,
+			'client_secret' => $this->client_secret,
+			'grant_type' => 'client_credentials'
+				));
+
+		$access_data = MPRestClient::post('/oauth/token', $app_client_values, 'application/x-www-form-urlencoded');
+
+		$this->access_data = $access_data['response'];
+
+		return $this->access_data['access_token'];
+	}
+
+	/* 
+	 v0
+	*/
 	public function isTestUser()
 	{
 		$access_token = $this->getAccessToken();
@@ -118,7 +139,8 @@ class MP {
 	 */
 	public function getPaymentMethods()
 	{
-		$result = MPRestClient::get('/sites/'.$this->getCountry().'/payment_methods/');
+		$access_token = $this->getAccessToken();	
+		$result = MPRestClient::get('/v1/payment_methods/?access_token='.$access_token);
 		$result = $result['response'];
 
 		// remove account_money
@@ -137,7 +159,8 @@ class MP {
 	 */
 	public function getOfflinePaymentMethods()
 	{
-		$result = MPRestClient::get('/sites/'.$this->getCountry().'/payment_methods/');
+		$access_token = $this->getAccessToken();	
+		$result = MPRestClient::get('/v1/payment_methods/?access_token='.$access_token);
 		$result = $result['response'];
 
 		// remove account_money
@@ -163,10 +186,14 @@ class MP {
 		return $preference_result;
 	}
 
+	/*
+		v1
+	*/
 	public function createCustomPayment($info)
 	{
-		$access_token = $this->getAccessToken();
-		$preference_result = MPRestClient::post('/checkout/custom/create_payment?access_token='.$access_token, $info);
+		$access_token = $this->getAccessToken();		
+		$preference_result = MPRestClient::post('/v1/payments?access_token='.$access_token, $info);
+	
 		return $preference_result;
 	}
 
@@ -197,7 +224,7 @@ class MP {
  */
 class MPRestClient {
 
-	const API_BASE_URL = 'https://api.mercadolibre.com';
+	const API_BASE_URL = 'https://api.mercadopago.com';
 
 	private static function getConnect($uri, $method, $content_type)
 	{
@@ -215,10 +242,12 @@ class MPRestClient {
 	{
 		if ($content_type == 'application/json')
 		{
-			if (gettype($data) == 'string')
+			if (gettype($data) == 'string'){
 				Tools::jsonDecode($data, true);
-			else
+			}
+			else{
 				$data = Tools::jsonEncode($data);
+			}
 
 			if (function_exists('json_last_error'))
 			{
@@ -234,8 +263,9 @@ class MPRestClient {
 	private static function exec($method, $uri, $data, $content_type)
 	{
 		$connect = self::getConnect($uri, $method, $content_type);
-		if ($data)
+		if ($data){
 			self::setData($connect, $data, $content_type);
+		}
 
 		$api_result = curl_exec($connect);
 		$api_http_code = curl_getinfo($connect, CURLINFO_HTTP_CODE);
@@ -263,6 +293,7 @@ class MPRestClient {
 
 	public static function get($uri, $content_type = 'application/json')
 	{
+
 		return self::exec('GET', $uri, null, $content_type);
 	}
 

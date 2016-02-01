@@ -43,7 +43,7 @@ public function initContent()
 			$statement_descriptors = array();
 			$status_details = array();
 			$transaction_amounts = 0;
-			$collection_ids = split(',', Tools::getValue('collection_id'));
+			$collection_ids = explode(',', Tools::getValue('collection_id'));
 
 			$mercadopago = $this->module;
 			$mercadopago_sdk = $mercadopago->mercadopago;
@@ -53,15 +53,24 @@ public function initContent()
 				$payment_info = $result['response']['collection'];
 				$id_cart = $payment_info['external_reference'];
 				$cart = new Cart($id_cart);
+
 				$payment_statuses[] = $payment_info['status'];
 				$payment_ids[] = $payment_info['id'];
 				$payment_types[] = $payment_info['payment_type'];
-				$payment_method_ids[] = $payment_info['payment_method_id'];
+
+				if (isset($payment_info['last_four_digits'])) {
+					$payment_method_ids[] = $payment_info['payment_method_id'];
+				}
+
 				$transaction_amounts += $payment_info['transaction_amount'];
-				if ($payment_info['payment_type'] == 'credit_card')
+
+				if (isset($payment_info['payment_type']) && $payment_info['payment_type'] == 'credit_card')
 				{
 					$card_holder_names[] = $payment_info['cardholder']['name'];
-					$four_digits_arr[] = '**** **** **** '.$payment_info['last_four_digits'];
+					if (isset($payment_info['last_four_digits'])) {
+						$four_digits_arr[] = '**** **** **** '.$payment_info['last_four_digits'];
+					}
+					
 					$statement_descriptors[] = $payment_info['statement_descriptor'];
 					$status_details[] = $payment_info['status_detail'];
 				}
@@ -69,8 +78,8 @@ public function initContent()
 			if (Validate::isLoadedObject($cart))
 			{
 
-				$total = (Float)number_format($payment_info['transaction_amount'], 2, '.', '');
-				
+				$total = (Float)number_format($transaction_amounts, 2, '.', '');
+		
 				$extra_vars = array (
 							'{bankwire_owner}' => $mercadopago->textshowemail,
 							'{bankwire_details}' => '',
@@ -104,9 +113,12 @@ public function initContent()
 											$cart->id_currency,
 											false,
 											$cart->secure_key);
+
+
 					}
 					$order_id  = !$order_id ? Order::getOrderByCartId($cart->id) : $order_id;
 					$order = new Order($order_id);
+
 					$uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$order->id_cart.'&id_module='.$mercadopago->id.
 							'&id_order='.$order->id.'&key='.$order->secure_key;
 					$order_payments = $order->getOrderPayments();
@@ -122,9 +134,10 @@ public function initContent()
 						$uri .= '&four_digits='.join(" / ", $four_digits_arr);
 						$uri .= '&statement_descriptor='.$statement_descriptors[0];
 						$uri .= '&status_detail='.$status_details[0];
-						$order_payments[0]->card_number = join(" / ", $four_digits_arr);
-						$order_payments[0]->card_brand = join(" / ", $payment_method_ids);
+						$order_payments[0]->card_number = empty($four_digits_arr) ? "" : join(" / ", $four_digits_arr);
+						$order_payments[0]->card_brand = empty($payment_method_ids) ? "" : join(" / ", $payment_method_ids);
 						$order_payments[0]->card_holder = join(" / ", $card_holder_names);
+												
 					}
 					$order_payments[0]->save();
 					Tools::redirectLink($uri);
