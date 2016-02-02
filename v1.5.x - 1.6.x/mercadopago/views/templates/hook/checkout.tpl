@@ -31,11 +31,10 @@
   	</div>
   </div>
 </div>
-
 <div class="mp-module">
 	{if $creditcard_active == 'true' && $public_key != ''}
 		{if $version == 5}
-			<div class="payment_module mp-form"> 
+			<div class="payment_module mp-form-custom"> 
 				<div class="row">
 					<span class="payment-label">{l s='CREDIT CARD' mod='mercadopago'} </span>
 					</br>
@@ -63,7 +62,7 @@
 					    	 </div>
 					    	 <div class="col">
 						    	 <label for="id-card-holder-name">{l s='Card Holder Name: ' mod='mercadopago'}</label>
-						    	 <input id="id-card-holder-name" data-checkout="cardholderName" type="text"/>
+						    	 <input id="id-card-holder-name" data-checkout="cardholderName" type="text" name="cardholderName"/>
 					    		 <div id="id-card-holder-name-status" class="status"></div>
 					    	 </div>
 					     </div>
@@ -127,7 +126,7 @@
 		{elseif $version == 6}
 			<div class="row">
 				<div class="col-xs-12 col-md-6">
-						<div class="mp-form"> 
+						<div class="mp-form-custom"> 
 							<div class="row">
 								<div class="col title">
 									<span class="payment-label">{l s='CREDIT CARD' mod='mercadopago'} </span>
@@ -162,7 +161,7 @@
 								<div class="row">
 									<div class="col">
 								    	<label for="id-card-holder-name">{l s='Card Holder Name: ' mod='mercadopago'}</label>
-								    	<input id="id-card-holder-name" data-checkout="cardholderName" type="text"/>
+								    	<input id="id-card-holder-name" data-checkout="cardholderName" type="text" name="cardholderName"/>
 								    	<div id="id-card-holder-name-status" class="status"></div>
 							    	</div>
 							    </div>
@@ -247,11 +246,10 @@
 							<div class="row">
 								<div class="col offline">
 									<span class="payment-label">{$value.name|upper}</span><br/>
-									<span class="poweredby">{l s=' Powered by ' mod='mercadopago'}</span>
-									<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png">
+									<span class="poweredby">{l s='Powered by' mod='mercadopago'}</span>
+									<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopagobr/views/img/payment_method_logo.png">
 								</div>
 								<a href="javascript:void(0);" id="id-{$offline_payment|escape:'htmlall'}" class="offline-payment">
-								<img src="{$value.banner|escape:'htmlall'}" class="mp-offline-banner"/>
 									{l s='Pay through ' mod='mercadopago'}{$value.name|ucfirst}{l s=' via MercadoPago' mod='mercadopago'}
 									<form action="{$custom_action_url|escape:'htmlall'}" method="post">
 								    	<input name="payment_method_id" type="hidden" value="{$offline_payment|escape:'htmlall'}"/>
@@ -265,11 +263,10 @@
 					<div class="row">
 						<div class="col-xs-12 col-md-6">
 							<a href="javascript:void(0);" id="id-{$offline_payment|escape:'htmlall'}" class="offline-payment">
-								<div class="mp-form hover"> 
+								<div class="mp-form-boleto"> 
 									<div class="row boleto">
 										<div class="col">
-											<span class="payment-label">{$value.name|upper} </span>
-											<img src="{$value.banner|escape:'htmlall'}" class="mp-offline-banner"/></br>
+											<span class="payment-label">{$value.name|upper} </span></br>
 											<span class="poweredby">{l s='Powered by' mod='mercadopago'}</span>
 											<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo.png">
 										</div>
@@ -550,6 +547,7 @@
 			$form.append($('<input type="hidden" id="card_token_id" name="card_token_id"/>').val(card_token_id));
 			
 			var cardNumber = $("#id-card-number").val();
+
 			var lastFourDigits = cardNumber.substring(cardNumber.length - 4);
 			$form.append($('<input name="lastFourDigits" type="hidden" value="' + lastFourDigits + '"/>'));
 			

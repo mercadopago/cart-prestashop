@@ -36,12 +36,20 @@
 			</h5>
 			</br>
 			{if $boleto_url != null}
-				<iframe src="{$boleto_url|escape}" class="boleto-frame {$country|escape:'html'}">
+				<iframe src="{$boleto_url|escape}" class="boleto-frame {$country|escape:'html'}" id="boletoframe">
+					 <div class="lightbox" id="text">
+					  <div class="box">
+					    <div class="content">
+					    	<div class="processing">
+						  		<span>{l s='Processing...' mod='mercadopago'}</span>
+						  	</div>
+					  	</div>
+					  </div>
+					</div>
 				</iframe>
-				</br>
+
 			{/if}
 			<span class="footer-logo"></span>
 		</h4>
 	</div>
 </div>
-

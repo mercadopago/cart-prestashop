@@ -35,14 +35,17 @@
 			<h5>
 				{l s='Card holder name: ' mod='mercadopago'}
 				{$card_holder_name|escape:'htmlall'}</br>
-				{l s='Credit card: ' mod='mercadopago'}
-				{$four_digits|escape:'htmlall'}</br>
-				{l s='Payment method: ' mod='mercadopago'}
-				{$payment_method_id|escape:'htmlall'}</br>
-				{if $expiration_date != null}
-					{l s='Expiration date: ' mod='mercadopago'}
-					{$expiration_date|escape:'htmlall'}</br>
+
+				{if $four_digits != null}
+					{l s='Credit card: ' mod='mercadopago'}
+					{$four_digits|escape:'htmlall'}</br>
 				{/if}
+
+				{if $payment_method_id != null}
+					{l s='Payment method: ' mod='mercadopago'}
+					{$payment_method_id|escape:'htmlall'}</br>
+				{/if}
+
 				{l s='Amount: ' mod='mercadopago'}
 				{$amount|escape:'htmlall'}</br>
 				{if $installments != null}
