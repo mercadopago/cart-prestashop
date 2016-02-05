@@ -1,0 +1,11 @@
+CHANGELOG:
+V3.1.0 (01/02/2016)
+-Switch calls to API v1
+-Merge of Source Latam and Prestashop
+-Improve view of checkout
+-Bug - Payment with two cards.
+
+V3.1.1 (05/02/2016)
+Custom Checkout Chile
+Custom Checkout Colômbia
+Custom Checkout Argentina

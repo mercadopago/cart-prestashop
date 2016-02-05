@@ -86,7 +86,12 @@
 		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlm/account/credentials' mod='mercadopago'}</h4>
 	{elseif $country eq "MLA"}
 		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mla/account/credentials' mod='mercadopago'}</h4>
+	{elseif $country eq "MLC"}
+		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlc/account/credentials' mod='mercadopago'}</h4>
+	{elseif $country eq "MCO"}
+		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mco/account/credentials' mod='mercadopago'}</h4>
 	{/if}
+
 	<form action="{$uri|escape:'htmlall'}" method="post">
 		<fieldset>
 			<legend>
@@ -138,7 +143,7 @@
 
 				<br />					
 		</fieldset>
-		{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA'}
+		{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO'}
 			<fieldset>
 				<legend>
 					<img src="../img/admin/contact.gif" />{l s='Settings - Custom Credit Card' mod='mercadopago'}
