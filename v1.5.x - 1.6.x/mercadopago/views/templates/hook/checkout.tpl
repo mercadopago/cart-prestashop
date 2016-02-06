@@ -58,8 +58,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 					<div id="id-card-expiration-year-status" class="status"></div>
 				</div>
 				<div class="col">
-					<label for="id-card-holder-name">{l s='Card Holder Name: '
-						mod='mercadopago'}</label> <input id="id-card-holder-name"
+					<label for="id-card-holder-name">{l s='Card Holder Name:' mod='mercadopago'}</label> <input id="id-card-holder-name"
 						data-checkout="cardholderName" type="text" name="cardholderName" />
 					<div id="id-card-holder-name-status" class="status"></div>
 				</div>
@@ -179,8 +178,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 					</div>
 					<div class="row">
 						<div class="col">
-							<label for="id-card-holder-name">{l s='Card Holder Name:
-								' mod='mercadopago'}<em>*</em>
+							<label for="id-card-holder-name">{l s='Card Holder Name:' mod='mercadopago'}<em>*</em>
 							</label> <input id="id-card-holder-name" data-checkout="cardholderName"
 								type="text" name="cardholderName" />
 							<div id="id-card-holder-name-status" class="status"></div>
@@ -641,6 +639,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 					$("#id-card-holder-name").addClass("form-error");
 					break;
 				case "324":
+				case "214":
 					$("#id-doc-number-status").html(
 							"{l s='Document invalid' mod='mercadopago'}");
 					$("#id-doc-number").addClass("form-error");
