@@ -59,11 +59,10 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 $transaction_amounts += $payment_info ['transaction_amount'];
                 
                 if (isset ( $payment_info ['payment_type_id'] ) && $payment_info ['payment_type_id'] == 'credit_card') {
-                    $card_holder_names [] = $payment_info ['card']['cardholder'] ['name'];
+                    $card_holder_names [] = isset($payment_info ['card']['cardholder'] ['name']) ? $payment_info ['card']['cardholder'] ['name'] : "";
                     if (isset ( $payment_info ['card']['last_four_digits'] )) {
                         $four_digits_arr [] = '**** **** **** ' . $payment_info ['card']['last_four_digits'];
                     }
-                    
                     $statement_descriptors [] = $payment_info ['statement_descriptor'];
                     $status_details [] = $payment_info ['status_detail'];
                 }

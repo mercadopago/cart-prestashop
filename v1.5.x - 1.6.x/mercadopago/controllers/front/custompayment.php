@@ -27,11 +27,11 @@ include_once (dirname ( __FILE__ ) . '/../../mercadopago.php');
 class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontController {
     public function initContent() {
         $this->display_column_left = false;
-        
         parent::initContent ();
         $this->placeOrder ();
     }
     private function placeOrder() {
+       // card_token_id
         $mercadopago = $this->module;
         $response = $mercadopago->execPayment ( $_POST );
         $order_status = null;
@@ -52,7 +52,6 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
         if ($order_status != null) {
             $cart = Context::getContext ()->cart;
             $total = ( double ) number_format ( $response ['transaction_amount'], 2, '.', '' );
-            
             $extra_vars = array (
                     '{bankwire_owner}' => $mercadopago->textshowemail,
                     '{bankwire_details}' => '',
@@ -94,6 +93,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 $data ['valid_user'] = false;
             } else {
                 $data ['version'] = $mercadopago->getPrestashopVersion ();
+
                 $data ['status_detail'] = $response ['status_detail'];
                 $data ['card_holder_name'] = Tools::getValue ( 'cardholderName' );
                 $data ['four_digits'] = Tools::getValue ( 'lastFourDigits' );

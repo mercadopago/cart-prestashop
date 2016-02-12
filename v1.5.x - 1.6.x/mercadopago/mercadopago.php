@@ -489,7 +489,7 @@ class MercadoPago extends PaymentModule {
         $this->setCustomSettings ( $client_id, $client_secret, $country );
     }
     private function setCustomSettings($client_id, $client_secret, $country) {
-        if ($country == "MLB" || $country == "MLM" || $country == "MLA" || $country == "MLC" || $country == "MCO") {
+        if ($country == "MLB" || $country == "MLM" || $country == "MLA" || $country == "MLC" || $country == "MCO" || $country == "MLV") {
             Configuration::updateValue ( 'MERCADOPAGO_CREDITCARD_BANNER', (Configuration::get ( 'PS_SSL_ENABLED' ) ? 'https://' : 'http://') . htmlspecialchars ( $_SERVER ['HTTP_HOST'], ENT_COMPAT, 'UTF-8' ) . __PS_BASE_URI__ . 'modules/mercadopago/views/img/' . $country . '/credit_card.png' );
             Configuration::updateValue ( 'MERCADOPAGO_CREDITCARD_ACTIVE', 'true' );
             Configuration::updateValue ( 'MERCADOPAGO_STANDARD_ACTIVE', 'false' );
@@ -539,7 +539,6 @@ class MercadoPago extends PaymentModule {
         if (! $this->active) {
             return;
         }
-        
         if ($this->hasCredential ()) {
             $this_path_ssl = (Configuration::get ( 'PS_SSL_ENABLED' ) ? 'https://' : 'http://') . htmlspecialchars ( $_SERVER ['HTTP_HOST'], ENT_COMPAT, 'UTF-8' ) . __PS_BASE_URI__;
             $data = array (
@@ -560,14 +559,12 @@ class MercadoPago extends PaymentModule {
                     'iframe_height' => Configuration::get ( 'MERCADOPAGO_IFRAME_HEIGHT' ),
                     'country' => Configuration::get ( 'MERCADOPAGO_COUNTRY' ) 
             );
-            
             // send credit card configurations only activated
             if (Configuration::get ( 'MERCADOPAGO_CREDITCARD_ACTIVE' ) == 'true') {
                 $data ['public_key'] = Configuration::get ( 'MERCADOPAGO_PUBLIC_KEY' );
                 $data ['creditcard_banner'] = Configuration::get ( 'MERCADOPAGO_CREDITCARD_BANNER' );
                 $data ['amount'] = ( double ) number_format ( $params ['cart']->getOrderTotal ( true, Cart::BOTH ), 2, '.', '' );
             }
-            
             // send standard configurations only activated
             if (Configuration::get ( 'MERCADOPAGO_STANDARD_ACTIVE' ) == 'true') {
                 $result = $this->createStandardCheckoutPreference ();
@@ -579,10 +576,8 @@ class MercadoPago extends PaymentModule {
                     PrestaShopLogger::addLog ( 'MercadoPago::hookPayment - An error occurred during preferences creation. Please check your credentials and try again.: ', MP_SDK::ERROR, 0 );
                 }
             }
-            
             // send offline settings
             $offline_methods_payments = $this->mercadopago->getOfflinePaymentMethods ();
-            
             $offline_payment_settings = array ();
             foreach ( $offline_methods_payments as $offline_payment ) {
                 $op_banner_variable = 'MERCADOPAGO_' . strtoupper ( $offline_payment ['id'] . '_BANNER' );
@@ -595,7 +590,6 @@ class MercadoPago extends PaymentModule {
                 );
             }
             $data ['offline_payment_settings'] = $offline_payment_settings;
-            
             $this->context->smarty->assign ( $data );
             return $this->display ( __file__, '/views/templates/hook/checkout.tpl' );
         }
@@ -950,7 +944,6 @@ class MercadoPago extends PaymentModule {
                     break;
             }
         }
-        
         $data ['auto_return'] = Configuration::get ( 'MERCADOPAGO_AUTO_RETURN' ) == 'approved' ? 'approved' : '';
         $data ['back_urls'] ['success'] = $this->link->getModuleLink ( 'mercadopago', 'standardreturn', array (), Configuration::get ( 'PS_SSL_ENABLED' ), null, null, false );
         $data ['back_urls'] ['failure'] = $this->link->getPageLink ( 'order-opc', Configuration::get ( 'PS_SSL_ENABLED' ), null, null, false, null );
@@ -958,13 +951,13 @@ class MercadoPago extends PaymentModule {
         $data ['payment_methods'] ['excluded_payment_methods'] = $this->getExcludedPaymentMethods ();
         $data ['payment_methods'] ['excluded_payment_types'] = array ();
         $data ['payment_methods'] ['installments'] = ( integer ) Configuration::get ( 'MERCADOPAGO_INSTALLMENTS' );
-        
         $data ['notification_url'] = $this->link->getModuleLink ( 'mercadopago', 'notification', array (), Configuration::get ( 'PS_SSL_ENABLED' ), null, null, false ) . '?checkout=standard&';
         // swap to payer index since customer is only for transparent
         $data ['customer'] ['name'] = $data ['customer'] ['first_name'];
         $data ['customer'] ['surname'] = $data ['customer'] ['last_name'];
         $data ['payer'] = $data ['customer'];
         unset ( $data ['customer'] );
+        
         
         return $data;
     }
@@ -985,7 +978,6 @@ class MercadoPago extends PaymentModule {
                 );
             }
         }
-        
         return $excluded_payment_methods;
     }
     public function listenIPN($checkout, $topic, $id) {

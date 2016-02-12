@@ -161,12 +161,15 @@
 	}
 	
 	.mp-module .document-type {
-		width: 75px;
+		width: 92 px;
 		height: 30px;
 		background: white;
 		font: 600 12px/16px "Open Sans", sans-serif;
 	}
 	
+	.mp-module #docType {
+		width: 95px;
+	}
 	.mp-module #id-doc-number {
 		width: 120px;
 	}

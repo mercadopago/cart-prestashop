@@ -23,6 +23,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	</div>
 </div>
 <div class="mp-module">
+
 	{if $creditcard_active == 'true' && $public_key != ''} {if $version ==
 	5}
 	<div class="payment_module mp-form-custom">
@@ -58,7 +59,8 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 					<div id="id-card-expiration-year-status" class="status"></div>
 				</div>
 				<div class="col">
-					<label for="id-card-holder-name">{l s='Card Holder Name:' mod='mercadopago'}</label> <input id="id-card-holder-name"
+					<label for="id-card-holder-name">{l s='Card Holder Name:'
+						mod='mercadopago'}</label> <input id="id-card-holder-name"
 						data-checkout="cardholderName" type="text" name="cardholderName" />
 					<div id="id-card-holder-name-status" class="status"></div>
 				</div>
@@ -78,7 +80,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 					<input id="id-doc-number" name="docNumber"
 						data-checkout="docNumber" type="text" maxlength="11" />
 					<div id="id-doc-number-status" class="status"></div>
-					<input name="docType" data-checkout="docType" type="hidden"
+					<input name="docType" data-checkout="docType" type="hidden" id="id-docType"
 						value="CPF" />
 				</div>
 				{elseif $country == 'MLM' || $country == 'MLA'}
@@ -97,6 +99,8 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			</div>
 			<input id="amount" type="hidden" value="{$amount|escape:'htmlall'}" />
 			<input id="payment_method_id" type="hidden" name="payment_method_id" />
+			<input id="payment_type_id" type="hidden" name="payment_type_id" />
+
 			<div class="row">
 				<div class="col-bottom">
 					{if $country == 'MLM'}
@@ -111,7 +115,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 					<div class="row">
 						<div class="col">
 							<label for="docType">{l s='Document type: '
-								mod='mercadopago'}</label> <select name="docType"
+								mod='mercadopago'}</label> <select name="docType" id="id-docType"
 								data-checkout="docType"></select>
 						</div>
 						<div class="col">
@@ -152,8 +156,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 					<label class="ch-form-hint">* {l s='Required fields'
 						mod='mercadopago'}</label>
 				</div>
-				<form action="{$custom_action_url|escape:'htmlall'}" method="post"
-					id="form-pagar-mp">
+				<form action="" method="post" id="form-pagar-mp">
 					<div class="row">
 						<div class="col">
 							<label for="id-card-number">{l s='Card number: '
@@ -178,11 +181,12 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 					</div>
 					<div class="row">
 						<div class="col">
-							<label for="id-card-holder-name">{l s='Card Holder Name:' mod='mercadopago'}<em>*</em>
+							<label for="id-card-holder-name">{l s='Card Holder Name:'
+								mod='mercadopago'}<em>*</em>
 							</label> <input id="id-card-holder-name" data-checkout="cardholderName"
 								type="text" name="cardholderName" />
 							<div id="id-card-holder-name-status" class="status"></div>
-							
+
 						</div>
 
 					</div>
@@ -205,7 +209,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 							</label> <input id="id-doc-number" data-checkout="docNumber" type="text"
 								maxlength="11" />
 							<div id="id-doc-number-status" class="status"></div>
-							<input name="docType" data-checkout="docType" type="hidden"
+							<input name="docType" data-checkout="docType" type="hidden" id="id-docType"
 								value="CPF" />
 						</div>
 					</div>
@@ -218,9 +222,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 								name="issuersOptions" type="text"></select>
 						</div>
 					</div>
-					{/if}
-					
-					{if $country == 'MLM'}
+					{/if} {if $country == 'MLM'}
 					<div class="row">
 						<div class="col">
 							<label for="card-types">{l s='Card Type: '
@@ -230,39 +232,42 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 								type="radio" value="deb">{l s='Debit' mod='mercadopago'}</input>
 						</div>
 					</div>
-					{elseif $country == 'MLA' || $country == 'MCO'}
+					{elseif $country == 'MLA' || $country == 'MCO' || $country ==
+					'MLV'}
 					<div class="row">
 						<div class="col">
 							<label for="docType">{l s='Document type: '
 								mod='mercadopago'}<em>*</em>
-							</label> <select name="docType" type="text" class="document-type"
-								data-checkout="docType"></select>
+							</label> <select name="docType" type="text" class="document-type" id="id-docType"
+								style="width: 92px;" data-checkout="docType"></select>
 						</div>
 						<div class="col">
-							<input id="id-doc-number" name="docNumber"
+							<input id="id-doc-number" name="docNumber" style="width: 102px;"
 								data-checkout="docNumber" type="text" />
 							<div id="id-doc-number-status" class="status"></div>
 						</div>
 					</div>
+
 					<div class="row"></div>
-					{/if}
-						
-					{if $country == 'MLC'}
+					{/if} {if $country == 'MLC'}
 					<div class="row">
 						<div class="col">
 							<label for="id-doc-number">RUT: <em>*</em></label> <input
-								type="hidden" name="docType" id="docType" value="RUT" data-checkout="docType">
-							<input type="text" id="id-doc-number" data-checkout="docNumber" maxlength="10" size="14" placeholder="11111111-1">
+								type="hidden" name="docType" id="docType" value="RUT" id="id-docType"
+								data-checkout="docType"> <input type="text"
+								id="id-doc-number" data-checkout="docNumber" maxlength="10"
+								size="14" placeholder="11111111-1">
 							<div id="id-doc-number-status" class="status"></div>
 						</div>
 					</div>
-   					{/if}	
+					{/if}
 
 					<div class="row">
 						<div class="col">
 							<label for="id-installments">{l s='Installments: '
 								mod='mercadopago'}<em>*</em>
 							</label> <select id="id-installments" name="installments" type="text"></select>
+							<div id="id-installments-status" class="status"></div>
 						</div>
 					</div>
 					<input id="amount" type="hidden" value="{$amount|escape:'htmlall'}" />
@@ -270,11 +275,11 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 						name="payment_method_id" />
 					<div class="row">
 						<div class="col-bottom">
-							{if $country != "MLB"} <input type="submit"
-								value="{l s=' Confirm payment' mod='mercadopago'}"
-								class="ch-btn ch-btn-big es-button" /> {else} <input
-								type="submit" value="{l s=' Confirm payment' mod='mercadopago'}"
-								class="ch-btn ch-btn-big" /> {/if}
+							{if $country != "MLB"} 
+								<button class="ch-btn ch-btn-big" value="{l s=' Confirm payment' mod='mercadopago'}" type="submit">{l s=' Confirm payment' mod='mercadopago'}</button>
+							{else}
+								 <button class="ch-btn ch-btn-big es-button" value="{l s=' Confirm payment' mod='mercadopago'}" type="submit">{l s=' Confirm payment' mod='mercadopago'}</button>
+							 {/if}
 						</div>
 					</div>
 				</form>
@@ -283,9 +288,9 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		</div>
 	</div>
 	{/if} {/if} {if $country == 'MLB' || $country == 'MLM' || $country ==
-	'MLA' || $country == 'MLC' || $country == 'MCO'} {foreach from=$offline_payment_settings
-	key=offline_payment item=value} {if $value.active == "true"} {if
-	$version == 5}
+	'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV'}
+	{foreach from=$offline_payment_settings key=offline_payment item=value}
+	{if $value.active == "true"} {if $version == 5}
 	<div class="payment_module mp-form">
 		<div class="row">
 			<div class="row">
@@ -387,12 +392,34 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 </div>
 <script type="text/javascript">
 	var country = "{$country|escape:'javascript'}";
+	function loadSubDocType(value) {
+		var options = [];
+		var subDocType = $("#subDocType");
+	
+		if (value == "Pasaporte") {
+			subDocType.hide();
+		} else if (value == "CI") {
+			options.push('<option value="V">V</option>');
+			options.push('<option value="E">E</option>');
+			subDocType.show();
+		} else if (value == "RIF") {
+			options.push('<option value="J">J</option>');
+			options.push('<option value="P">P</option>');
+			options.push('<option value="V">V</option>');
+			options.push('<option value="E">E</option>');
+			options.push('<option value="G">G</option>');
+			subDocType.show();
+		}
+	
+		subDocType.html(options.join(''));
+	
+	}
 	// first load force to clear all fields
 	$("#id-card-number").val("");
 	$("#id-security-code").val("");
 	$("#id-card-holder-name").val("");
 	$("#id-doc-number").val("");
-
+	
 	$("input[data-checkout='cardNumber'], input[name='card-types']").bind(
 			"keyup focusout", function() {
 				var bin = getBin()
@@ -406,15 +433,15 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 					$("#id-installments").html('');
 				}
 			});
-
+	
 	function getBin() {
 		var card = $("#id-card-number").val().replace(/ /g, '').replace(/-/g,
 				'').replace(/\./g, '');
 		var bin = card.substr(0, 6);
-
+	
 		return bin;
 	}
-
+	
 	// Estabeleça a informação do meio de pagamento obtido
 	function setPaymentMethodInfo(status, result) {
 		if (status != 404 && status != 400 && result != undefined) {
@@ -426,17 +453,17 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			json.amount = amount;
 			json.bin = bin;
 			Mercadopago.getInstallments(json, setInstallmentInfo);
-
+	
 			if (country === "MLM" || country === "MLA") {
 				// check if the issuer is necessary to pay
 				var issuerMandatory = false, additionalInfo = result[0].additional_info_needed;
-
+	
 				for (var i = 0; i < additionalInfo.length; i++) {
 					if (additionalInfo[i] == "issuer_id") {
 						issuerMandatory = true;
 					}
 				}
-
+	
 				if (issuerMandatory) {
 					Mercadopago.getIssuers(result[0].id, showCardIssuers);
 					$("#id-issuers-options").bind("change", function() {
@@ -457,27 +484,29 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 					$("input[name=card-types]:checked").val() ? $(
 							"input[name=card-types]:checked").val()
 							+ payment_method.id : payment_method.id);
+	
+			$("#payment_type_id").val(payment_method.payment_type_id);
 		} else {
 			$("#id-card-number").css('background-image', '');
 			$("#id-installments").html('');
 		}
 	};
-
+	
 	function setInstallmentsByIssuerId(status, response) {
 		var issuerId = document.querySelector('#id-issuers-options').value, amount = document
 				.querySelector('#amount').value;
-
+	
 		if (issuerId === '-1') {
 			return;
 		}
-
+	
 		Mercadopago.getInstallments({
 			"bin" : getBin(),
 			"amount" : amount,
 			"issuer_id" : issuerId
 		}, setInstallmentInfo);
 	};
-
+	
 	//Mostre as parcelas disponíveis no div 'installmentsOption'
 	function setInstallmentInfo(status, installments) {
 		console.info(status);
@@ -495,15 +524,15 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		}
 		$("#id-installments").html(html_options);
 	};
-
+	
 	function showCardIssuers(status, issuers) {
 		var issuersSelector = document.querySelector("#id-issuers-options"), fragment = document
 				.createDocumentFragment();
-
+	
 		issuersSelector.options.length = 0;
 		var option = new Option("Choose...", '-1');
 		fragment.appendChild(option);
-
+	
 		for (var i = 0; i < issuers.length; i++) {
 			if (issuers[i].name != "default") {
 				option = new Option(issuers[i].name, issuers[i].id);
@@ -517,7 +546,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		document.querySelector(".issuers-options").removeAttribute('style');
 		document.querySelector("#id-issuers-options").removeAttribute('style');
 	};
-
+	
 	if (country === "MLM" || country === "MLA") {
 		$("#id-issuers-options").change(function() {
 			var issuerId = $('#id-issuers-options').val();
@@ -531,141 +560,300 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		});
 	}
 
-	$("#form-pagar-mp")
-			.submit(
-					function(event) {
-						clearErrorStatus();
 
-						var $form = $(this);
-						var cpf = $("#id-doc-number").val();
+	
+	var submit = false;
+	$("#form-pagar-mp").submit(
+			function(event) {
+				event.preventDefault();
+				clearErrorStatus();
+				var $form = $('#form-pagar-mp');
+				if (! validate()) {
+					event.preventDefault();
+					retorno = false;
+				} else {
 
-						if (country == "MLB") {
-							if ($("#id-card-number").val().length == 0) {
-								$("#id-card-number-status")
-										.html(
-												"{l s='Card invalid' mod='mercadopago'}");
-								$("#id-card-number").addClass("form-error");
-							}
-
-							if ($("#id-card-holder-name").val().length == 0) {
-								$("#id-card-holder-name-status")
-										.html(
-												"{l s='Name invalid' mod='mercadopago'}");
-								$("#id-card-holder-name")
-										.addClass("form-error");
-							}
-
-							if ($("#id-security-code").val().length == 0) {
-								$("#id-security-code-status")
-										.html(
-												"{l s='CVV invalid' mod='mercadopago'}");
-								$("#id-security-code").addClass("form-error");
-							}
-
-							if ($("#id-doc-number").val().length == 0) {
-								$("#id-doc-number-status")
-										.html(
-												"{l s='CPF invalid' mod='mercadopago'}");
-								$("#id-doc-number").addClass("form-error");
-							}
-
-							if ($("#id-installments").val() == null
-									|| $("#id-installments").val().length == 0) {
-								$("#id-installments-status")
-										.html(
-												"{l s='Installments invalid' mod='mercadopago'}");
-								$("#id-installments").addClass("form-error");
-							}
-
-							if ($("#id-installments").val() == null
-									|| $("#id-installments").val().length == 0
-									|| $("#id-security-code").val().length == 0
-									|| $("#id-card-holder-name").val().length == 0
-									|| $("#id-card-number").val().length == 0
-									|| $("#id-doc-number").val().length == 0) {
-
-								event.preventDefault();
-								return false;
-							} else {
-								if (validateCpf(cpf)) {
-									Mercadopago.createToken($form,
-											mpResponseHandler);
-								} else {
-									$("#id-doc-number-status")
-											.html(
-													"{l s='CPF invalid' mod='mercadopago'}");
+					Mercadopago.createToken($form, function(status, response){
+						if (response.error) {
+							submit = false;
+							event.preventDefault();
+							$.each(response.cause, function(p, e) {
+								switch (e.code) {
+								case "E301":
+									$("#id-card-number-status").html(
+											"{l s='Card invalid' mod='mercadopago'}");
+									$("#id-card-number").addClass("form-error");
+									break;
+								case "E302":
+									$("#id-security-code-status").html(
+											"{l s='CVV invalid' mod='mercadopago'}");
+									$("#id-security-code").addClass("form-error");
+									break;
+								case "325":
+								case "326":
+									$("#id-card-expiration-year-status").html(
+											"{l s='Date invalid' mod='mercadopago'}");
+									$("#id-card-expiration-month").addClass("boxshadow-error");
+									$("#id-card-expiration-year").addClass("boxshadow-error");
+									break;
+								case "316":
+								case "221":
+									$("#id-card-holder-name-status").html(
+											"{l s='Name invalid' mod='mercadopago'}");
+									$("#id-card-holder-name").addClass("form-error");
+									break;
+								case "324":
+								case "214":
+									$("#id-doc-number-status").html(
+											"{l s='Document invalid' mod='mercadopago'}");
 									$("#id-doc-number").addClass("form-error");
+									break;
 								}
-							}
+							});
 						} else {
-							Mercadopago.createToken($form, mpResponseHandler);
+							submit = true;
+							var card_token_id = response.id;
+							$form
+									.append($(
+											'<input type="hidden" id="card_token_id" name="card_token_id"/>')
+											.val(card_token_id));
+	
+							var cardNumber = $("#id-card-number").val();
+	
+							var lastFourDigits = cardNumber.substring(cardNumber.length - 4);
+							$form
+									.append($('<input name="lastFourDigits" type="hidden" value="' + lastFourDigits + '"/>'));	
+							document.getElementById("form-pagar-mp").action = "{$custom_action_url|escape:'htmlall'}"; 
+							document.getElementById("form-pagar-mp").submit(); 
+							$(".lightbox").show();
 						}
-
-						event.preventDefault();
-						return false;
-					});
-
-	var mpResponseHandler = function(status, response) {
-		clearErrorStatus();
-
-		console.info(response.error);
-
-		var $form = $('#form-pagar-mp');
-
-		if (response.error) {
-			$.each(response.cause, function(p, e) {
-				switch (e.code) {
-				case "E301":
-					$("#id-card-number-status").html(
-							"{l s='Card invalid' mod='mercadopago'}");
-					$("#id-card-number").addClass("form-error");
-					break;
-				case "E302":
-					$("#id-security-code-status").html(
-							"{l s='CVV invalid' mod='mercadopago'}");
-					$("#id-security-code").addClass("form-error");
-					break;
-				case "325":
-				case "326":
-					$("#id-card-expiration-year-status").html(
-							"{l s='Date invalid' mod='mercadopago'}");
-					$("#id-card-expiration-month").addClass("boxshadow-error");
-					$("#id-card-expiration-year").addClass("boxshadow-error");
-					break;
-				case "316":
-				case "221":
-					$("#id-card-holder-name-status").html(
-							"{l s='Name invalid' mod='mercadopago'}");
-					$("#id-card-holder-name").addClass("form-error");
-					break;
-				case "324":
-				case "214":
-					$("#id-doc-number-status").html(
-							"{l s='Document invalid' mod='mercadopago'}");
-					$("#id-doc-number").addClass("form-error");
-					break;
-					
+	
+					})
+				        
 				}
 			});
-		} else {
-			var card_token_id = response.id;
-			$form
-					.append($(
-							'<input type="hidden" id="card_token_id" name="card_token_id"/>')
-							.val(card_token_id));
-
-			var cardNumber = $("#id-card-number").val();
-
-			var lastFourDigits = cardNumber.substring(cardNumber.length - 4);
-			$form
-					.append($('<input name="lastFourDigits" type="hidden" value="' + lastFourDigits + '"/>'));
-
-			$form.get(0).submit();
-
-			$(".lightbox").show();
-		}
+	
+	var submit = false;
+	$("#reere").submit(
+			function(event) {
+				event.preventDefault();
+				clearErrorStatus();
+				var $form = $('#form-pagar-mp');
+				var p1 = new Promise(
+						function(resolve, reject) {
+							if (! validate()) {
+								event.preventDefault();
+								retorno = false;
+							} else {
+								resolve(
+										Mercadopago.createToken($form, function(status, response){
+											if (response.error) {
+												submit = false;
+												event.preventDefault();
+												$.each(response.cause, function(p, e) {
+													switch (e.code) {
+													case "E301":
+														$("#id-card-number-status").html(
+																"{l s='Card invalid' mod='mercadopago'}");
+														$("#id-card-number").addClass("form-error");
+														break;
+													case "E302":
+														$("#id-security-code-status").html(
+																"{l s='CVV invalid' mod='mercadopago'}");
+														$("#id-security-code").addClass("form-error");
+														break;
+													case "325":
+													case "326":
+														$("#id-card-expiration-year-status").html(
+																"{l s='Date invalid' mod='mercadopago'}");
+														$("#id-card-expiration-month").addClass("boxshadow-error");
+														$("#id-card-expiration-year").addClass("boxshadow-error");
+														break;
+													case "316":
+													case "221":
+														$("#id-card-holder-name-status").html(
+																"{l s='Name invalid' mod='mercadopago'}");
+														$("#id-card-holder-name").addClass("form-error");
+														break;
+													case "324":
+													case "214":
+														$("#id-doc-number-status").html(
+																"{l s='Document invalid' mod='mercadopago'}");
+														$("#id-doc-number").addClass("form-error");
+														break;
+													}
+												});
+											} else {
+												var card_token_id = response.id;
+												$form
+														.append($(
+																'<input type="hidden" id="card_token_id" name="card_token_id"/>')
+																.val(card_token_id));
+	
+												var cardNumber = $("#id-card-number").val();
+	
+												var lastFourDigits = cardNumber.substring(cardNumber.length - 4);
+												$form
+														.append($('<input name="lastFourDigits" type="hidden" value="' + lastFourDigits + '"/>'));	
+												document.getElementById("form-pagar-mp").action = "{$custom_action_url|escape:'htmlall'}"; 
+												document.getElementById("form-pagar-mp").submit(); 
+												$(".lightbox").show();
+											}
+										})
+									);
+							}
+				        });
+				
+				/*p1.then(function (a){
+		        	alert("submit ===="+ submit);
+		        	
+		        	if (submit){
+						document.getElementById("form-pagar-mp").action = "{$custom_action_url|escape:'htmlall'}"; 
+						document.getElementById("form-pagar-mp").submit(); 
+						$(".lightbox").show();
+		        	} else {
+		        		event.preventDefault();
+		        	}
+		        });
+				*/
+			});
+	
+	function retornoCardToken(status, response) {
+		alert("status =" + status + "== response == "+ response);
 	}
+	
+	//$("#form-pagar-mp").submit(
+	$("#").submit(
+			function(event) {
+				var retorno = true;
+				clearErrorStatus();
+				var $form = $('#form-pagar-mp');
+				if (! validate()) {
+					event.preventDefault();
+					retorno = false;
+				} else {
+					Mercadopago.createToken($form, function(status, response){
+						if (response.error) {
+							retorno = false;
+							event.preventDefault();
+							$.each(response.cause, function(p, e) {
+								switch (e.code) {
+								case "E301":
+									$("#id-card-number-status").html(
+											"{l s='Card invalid' mod='mercadopago'}");
+									$("#id-card-number").addClass("form-error");
+									break;
+								case "E302":
+									$("#id-security-code-status").html(
+											"{l s='CVV invalid' mod='mercadopago'}");
+									$("#id-security-code").addClass("form-error");
+									break;
+								case "325":
+								case "326":
+									$("#id-card-expiration-year-status").html(
+											"{l s='Date invalid' mod='mercadopago'}");
+									$("#id-card-expiration-month").addClass("boxshadow-error");
+									$("#id-card-expiration-year").addClass("boxshadow-error");
+									break;
+								case "316":
+								case "221":
+									$("#id-card-holder-name-status").html(
+											"{l s='Name invalid' mod='mercadopago'}");
+									$("#id-card-holder-name").addClass("form-error");
+									break;
+								case "324":
+								case "214":
+									$("#id-doc-number-status").html(
+											"{l s='Document invalid' mod='mercadopago'}");
+									$("#id-doc-number").addClass("form-error");
+									break;
+								}
+							});
+						} else {
+							
+							var card_token_id = response.id;
+							$form
+									.append($(
+											'<input type="hidden" id="card_token_id" name="card_token_id"/>')
+											.val(card_token_id));
 
+							var cardNumber = $("#id-card-number").val();
+
+							var lastFourDigits = cardNumber.substring(cardNumber.length - 4);
+							$form
+									.append($('<input name="lastFourDigits" type="hidden" value="' + lastFourDigits + '"/>'));
+											
+							document.getElementById("form-pagar-mp").action = "{$custom_action_url|escape:'htmlall'}"; 
+							document.getElementById("form-pagar-mp").submit(); 
+			
+							$(".lightbox").show();
+						}
+					}).ready();
+				}
+		return retorno;
+	});
+
+	
+	
+	function validate() {
+		if ($("#id-card-number").val().length == 0) {
+			$("#id-card-number-status").html(
+					"{l s='Card invalid' mod='mercadopago'}");
+			$("#id-card-number").addClass("form-error");
+		}
+	
+		if ($("#id-card-holder-name").val().length == 0) {
+			$("#id-card-holder-name-status").html(
+					"{l s='Name invalid' mod='mercadopago'}");
+			$("#id-card-holder-name").addClass("form-error");
+		}
+	
+		if ($("#id-security-code").val().length == 0) {
+			$("#id-security-code-status").html(
+					"{l s='CVV invalid' mod='mercadopago'}");
+			$("#id-security-code").addClass("form-error");
+		}
+		
+		if ($("#id-docType").val() == null
+				||  $("#id-docType").val() == "") {
+			$("#id-docType").addClass("form-error");
+		}
+		
+		if ($("#id-doc-number").val().length == 0) {
+			$("#id-doc-number-status").html(
+					"{l s='Document invalid' mod='mercadopago'}");
+			$("#id-doc-number").addClass("form-error");
+		}
+	
+		if ($("#id-installments").val() == null
+				|| $("#id-installments").val().length == 0) {
+			$("#id-installments-status").html(
+					"{l s='Installments invalid' mod='mercadopago'}");
+			$("#id-installments").addClass("form-error");
+		}
+		
+		if ($("#id-installments").val() == null
+				|| $("#id-installments").val().length == 0
+				|| $("#id-security-code").val().length == 0
+				|| $("#id-card-holder-name").val().length == 0
+				|| $("#id-card-number").val().length == 0
+				|| $("#id-doc-number").val().length == 0) {
+			return false;
+		}
+		
+		if (country == "MLB") {
+			if (!validateCpf(cpf)) {
+				$("#id-doc-number-status").html(
+						"{l s='CPF invalid' mod='mercadopago'}");
+				$("#id-doc-number").addClass("form-error");
+				return false;
+			}
+		}
+		
+		
+		return true;
+	}
+	
 	function clearErrorStatus() {
 		$("#id-card-number-status").html("");
 		$("#id-security-code-status").html("");
@@ -674,7 +862,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		$("#id-card-holder-name-status").html("");
 		$("#id-doc-number-status").html("");
 		$("#id-installments-status").html("");
-
+	
 		$("#id-card-number").removeClass("form-error");
 		$("#id-security-code").removeClass("form-error");
 		$("#id-card-expiration-month").removeClass("boxshadow-error");
@@ -682,6 +870,8 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		$("#id-card-holder-name").removeClass("form-error");
 		$("#id-doc-number").removeClass("form-error");
 		$("#id-installments").removeClass("form-error");
+		$("#id-docType").removeClass("form-error");
+		
 	}
 	function validateCpf(cpf) {
 		var soma;
@@ -689,39 +879,39 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		soma = 0;
 		if (cpf == "00000000000")
 			return false;
-
+	
 		for (i = 1; i <= 9; i++) {
 			soma = soma + parseInt(cpf.substring(i - 1, i)) * (11 - i);
 			resto = (soma * 10) % 11;
 		}
-
+	
 		if ((resto == 10) || (resto == 11))
 			resto = 0;
-
+	
 		if (resto != parseInt(cpf.substring(9, 10)))
 			return false;
-
+	
 		soma = 0;
-
+	
 		for (i = 1; i <= 10; i++) {
 			soma = soma + parseInt(cpf.substring(i - 1, i)) * (12 - i);
 			resto = (soma * 10) % 11;
 		}
-
+	
 		if ((resto == 10) || (resto == 11))
 			resto = 0;
-
+	
 		if (resto != parseInt(cpf.substring(10, 11))) {
 			return false;
 		} else {
 			return true;
 		}
 	}
-
+	
 	function setExpirationYear() {
 		var html_options = "";
 		var currentYear = new Date().getFullYear();
-
+	
 		for (i = 0; i <= 20; i++) {
 			html_options += "<option value='"
 					+ (currentYear + i).toString().substr(2, 2) + "'>"
@@ -730,7 +920,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		;
 		$("#id-card-expiration-year").html(html_options);
 	}
-
+	
 	function setExpirationMonth() {
 		var html_options = "";
 		var currentMonth = new Date().getMonth();
@@ -746,7 +936,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				"{l s='October' mod='mercadopago'}",
 				"{l s='November' mod='mercadopago'}",
 				"{l s='December' mod='mercadopago'}" ];
-
+	
 		for (i = 0; i < 12; i++) {
 			if (currentMonth == i)
 				html_options += "<option value='" + (i + 1) + "' selected>"
@@ -756,28 +946,28 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 						+ "</option>";
 		}
 		;
-
+	
 		$("#id-card-expiration-month").html(html_options);
 	}
-
+	
 	setExpirationYear();
 	setExpirationMonth();
-
+	
 	$(".offline-payment").click(function(e) {
 		$(".create-boleto", this).click();
 	});
-
+	
 	$(".create-boleto").click(function(e) {
 		$(".lightbox").show();
 		e.stopImmediatePropagation();
 	});
-
+	
 	function createModal() {
 		$("body").append($(".lightbox"));
 	}
-
+	
 	createModal();
-
+	
 	// need to set 0 so modal checkout can work
 	$("#header").css("z-index", 0);
 	if ("{$standard_active|escape:'javascript'}" == "true"
@@ -792,4 +982,5 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				parseInt("{$iframe_height|escape:'javascript'}", 10) + 20
 						+ "px");
 	}
+
 </script>

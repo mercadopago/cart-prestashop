@@ -131,7 +131,6 @@ class MP_SDK {
         $access_token = $this->getAccessToken ();
         $result = MPRestCli::get ( '/v1/payment_methods/?access_token=' . $access_token );
         $result = $result ['response'];
-        
         // remove account_money
         foreach ( $result as $key => $value ) {
             if ($value ['payment_type_id'] == 'account_money')
@@ -166,7 +165,6 @@ class MP_SDK {
      */
     public function createPreference($preference) {
         $access_token = $this->getAccessToken ();
-        
         $preference_result = MPRestCli::post ( '/checkout/preferences?access_token=' . $access_token, $preference );
         return $preference_result;
     }
@@ -243,7 +241,7 @@ class MPRestCli {
         
         $response = array (
                 'status' => $api_http_code,
-                'response' => Tools::jsonDecode ( $api_result, true ) 
+                'response' => Tools::jsonDecode ( $api_result, true )                 
         );
         if (Configuration::get ( 'MERCADOPAGO_LOG' ) == 'true') {
             PrestaShopLogger::addLog ( 'MercadoPago.exec :: data = ' . Tools::jsonEncode ( $data ), MP_SDK::INFO, 0, null, null, true );
