@@ -33,9 +33,12 @@
 			</br>
 			</br>
 			<h5>
-				{l s='Card holder name: ' mod='mercadopago'}
-				{$card_holder_name|escape:'htmlall'}</br>
 
+				{if $card_holder_name != null}
+					{l s='Card holder name: ' mod='mercadopago'}
+					{$card_holder_name|escape:'htmlall'}</br>
+				{/if}
+				
 				{if $four_digits != null}
 					{l s='Credit card: ' mod='mercadopago'}
 					{$four_digits|escape:'htmlall'}</br>

@@ -63,19 +63,22 @@
 	.mp-form .col label {
 		width: 180px;
 		text-align: right;
-		font: 600 12px/16px "Open Sans", sans-serif;
+		font: 13px/16px Arial,Helvetica,"Nimbus Sans L",sans-serif;
+		font-weight: 700;
 	}
 
 	.mp-form .col label {
 		width: 180px;
 		text-align: right;
-		font: 600 12px/16px "Open Sans", sans-serif;
+		font:12px/16px "Open Sans", sans-serif;	
+		font-weight: 700;
 	}	
 
 	.mp-form-custom .col label {
 		width: 180px;
 		text-align: right;
-		font: 600 12px/16px "Open Sans", sans-serif;
+		font: 13px/16px Arial,Helvetica,"Nimbus Sans L",sans-serif;
+		font-weight: 700;
 	}
 
 	.mp-form #form-pagar-mp {
@@ -156,7 +159,17 @@
 		background: white;
 		font: 600 12px/16px "Open Sans", sans-serif;
 	}
-
+	
+	.mp-module .document-type {
+		width: 92 px;
+		height: 30px;
+		background: white;
+		font: 600 12px/16px "Open Sans", sans-serif;
+	}
+	
+	.mp-module #docType {
+		width: 95px;
+	}
 	.mp-module #id-doc-number {
 		width: 120px;
 	}
@@ -368,4 +381,11 @@
 	font-weight: bold;
 	font-size: 10px;
 	display: inline;
+}
+
+.ch-form-hint {
+    color: #999;
+    font-size: 12px;
+    line-height: 12px;
+    margin-left: 90px;
 }

@@ -38,7 +38,6 @@
 		</div>
 	{/if}
 	</div>
-
 	<div>
 		<span>
 			<a href="#">{l s='Please visit https://groups.google.com/forum/#!category-topic/mercadopago-developers-brasil/payments-modules/t_aMeOyZSuY for more details about this error message.' mod='mercadopago'}</a>

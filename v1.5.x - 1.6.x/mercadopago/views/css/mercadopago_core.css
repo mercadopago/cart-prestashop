@@ -61,6 +61,13 @@
 	font-weight: normal;
 }
 
+.mp-module .label-checkout {
+	color: black;
+	font-size: 15px;	
+	font-weight: 700;
+	
+}
+    
 .mp-module .mp-form h4 {
 	font-weight: bold;
 	font-size: 22px;
