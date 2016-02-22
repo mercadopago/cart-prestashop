@@ -2,7 +2,7 @@
 ---
 
 * [Features](#features)
-* [Available Versions](#available_versions)
+* [Available versions](#available_versions)
 * [Installation](#installation)
 
 <a name="features"></a>
@@ -25,7 +25,7 @@ window types (i.e. redirect, iframe, modal, blank and popup). Customization is n
 *Available for Argentina, Brazil, Chile, Colombia, Mexico and Venezuela*
 
 <a name="available_versions"></a>
-##Available Versions##
+##Available versions##
 <table>
   <thead>
     <tr>
