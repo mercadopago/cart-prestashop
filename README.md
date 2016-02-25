@@ -36,12 +36,12 @@ window types (i.e. redirect, iframe, modal, blank and popup). Customization is n
   <thead>
   <tbody>
     <tr>
-      <td><a href="/v1.3.6 - 1.4.7.3x/">v1.3.6 - 1.4.7.3x</a></td>
+      <td><a href="https://github.com/mercadopago/cart-prestashop/tree/master/v1.3.6%20-%201.4.7.3x/">v1.3.6 - 1.4.7.3x</a></td>
       <td>Deprecated (Old Version)</td>
       <td>Prestashop 1.3.6 - 1.4.7.3x</td>
     </tr>
     <tr>
-      <td><a href="/v1.5.x - 1.6.x/">v1.5.x - 1.6.x</a></td>
+      <td><a href="https://github.com/mercadopago/cart-prestashop/tree/master/v1.5.x%20-%201.6.x/">v1.5.x - 1.6.x</a></td>
       <td>Stable (Current Version)</td>
       <td>Prestashop v1.5.x - 1.6.x</td>
     </tr>    
