@@ -111,7 +111,12 @@
 		width: 47%;
 		margin-bottom: 20px;
 	}
-
+	
+	.mp-module .titleCoupon {
+		width: 82%;
+		margin-bottom: 20px;
+	}
+	
 	.mp-module .mp-creditcard-banner {
 		width: 280px;
 		margin-left: -30px;
@@ -131,7 +136,12 @@
 		width: 80px;
 		height: 20px;
 	}
-
+	
+	.mp-module .logo_cupom {
+		width: 500px;
+		height: 70px;
+	}
+	
 	.mp-module .poweredby {
 		margin-left: 30px;
 		color: black;
@@ -153,13 +163,18 @@
 		width: 210px;
 	}
 
-	.mp-module #id-installments, .mp-module #id-issuers-options {
+	.mp-module #id-installments, #id-installments-cust, .mp-module #id-issuers-options, #id-customerCards  {
 		width: 210px;
 		height: 30px;
 		background: white;
 		font: 600 12px/16px "Open Sans", sans-serif;
 	}
-	
+	.issuers-options-cust  {
+		width: 210px;
+		height: 30px;
+		background: white;
+		font: 600 12px/16px "Open Sans", sans-serif;
+	}
 	.mp-module .document-type {
 		width: 92 px;
 		height: 30px;
@@ -249,7 +264,7 @@
 
 	.mp-module .ch-btn-big, .mp-module .ch-btn-big:focus {
 		font-size: 14px !important;
-		min-width: 125px;
+		min-width: 175px;
 		text-align: right;
 		float: right;
 		padding: 7px 15px !important;
@@ -360,7 +375,7 @@
 	background: 60% no-repeat whitesmoke;
 }
 
-.mp-module #id-security-code {
+.mp-module #id-security-code, #id-security-code-cust{
 	width: 50px;
 }
 
@@ -389,3 +404,14 @@
     line-height: 12px;
     margin-left: 90px;
 }
+
+.ch-form-row.discount-link {
+    background: url(https://secure.mlstatic.com/checkout-resources/resourses/assets/icon-discount.bd9c2205796f.png) no-repeat;
+    line-height: 25px;
+    padding-left: 44px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+
+

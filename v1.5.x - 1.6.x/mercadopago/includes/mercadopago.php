@@ -25,7 +25,7 @@
  */
 $GLOBALS ['LIB_LOCATION'] = dirname ( __FILE__ );
 class MP_SDK {
-    const VERSION = '3.1.1';
+    const VERSION = '3.2.0';
     
     /* Info */
     const INFO = 1;
@@ -65,17 +65,7 @@ class MP_SDK {
      * Get Access Token for API use
      */
     public function getAccessToken_v1() {
-        $app_client_values = $this->buildQuery ( array (
-                'client_id' => $this->client_id,
-                'client_secret' => $this->client_secret,
-                'grant_type' => 'client_credentials' 
-        ) );
-        
-        $access_data = MPRestCli::post ( '/oauth/token', $app_client_values, 'application/x-www-form-urlencoded' );
-        
-        $this->access_data = $access_data ['response'];
-        
-        return $this->access_data ['access_token'];
+        return Configuration::get ('MERCADOPAGO_ACCESS_TOKEN');
     }
     
     /*
@@ -101,10 +91,24 @@ class MP_SDK {
      * @return array(json)
      */
     public function getPayment($id) {
-        $access_token = $this->getAccessToken ();
+        $access_token = $this->getAccessToken_v1();
         
         $uri_prefix = $this->sandbox ? '/sandbox' : '';
         $payment_info = MPRestCli::get ( $uri_prefix . '/v1/payments/' . $id . '?access_token=' . $access_token );
+        return $payment_info;
+    }
+    
+    /**
+     * Get information for specific payment
+     * @param int $id
+     * @return array(json)
+     */
+    public function getPaymentStandard($id)
+    {
+        $access_token = $this->getAccessToken();
+        
+        $uri_prefix = $this->sandbox ? '/sandbox' : '';
+        $payment_info = MPRestCli::get($uri_prefix.'/collections/notifications/'.$id.'?access_token='.$access_token);
         return $payment_info;
     }
     
@@ -128,16 +132,18 @@ class MP_SDK {
      * @return array(json)
      */
     public function getPaymentMethods() {
-        $access_token = $this->getAccessToken ();
-        $result = MPRestCli::get ( '/v1/payment_methods/?access_token=' . $access_token );
-        $result = $result ['response'];
-        // remove account_money
-        foreach ( $result as $key => $value ) {
-            if ($value ['payment_type_id'] == 'account_money')
-                unset ( $result [$key] );
-        }
-        return $result;
+		$result = MPRestCli::get('/sites/'.$this->getCountry().'/payment_methods/');
+		$result = $result['response'];
+		// remove account_money
+		foreach($result as $key => $value)
+		{	
+			if($value['payment_type_id'] == 'account_money')
+				unset($result[$key]);
+		}
+		return $result;
     }
+    
+    
     
     /**
      * Get all offline payment methods for merchant country
@@ -145,10 +151,9 @@ class MP_SDK {
      * @return array(json)
      */
     public function getOfflinePaymentMethods() {
-        $access_token = $this->getAccessToken ();
+        $access_token = $this->getAccessToken_v1();
         $result = MPRestCli::get ( '/v1/payment_methods/?access_token=' . $access_token );
         $result = $result ['response'];
-        
         // remove account_money
         foreach ( $result as $key => $value ) {
             if ($value ['payment_type_id'] == 'account_money' || $value ['payment_type_id'] == 'credit_card' || $value ['payment_type_id'] == 'debit_card' || $value ['payment_type_id'] == 'prepaid_card')
@@ -164,25 +169,94 @@ class MP_SDK {
      * @return array(json)
      */
     public function createPreference($preference) {
-        $access_token = $this->getAccessToken ();
+        $access_token = $this->getAccessToken();
         $preference_result = MPRestCli::post ( '/checkout/preferences?access_token=' . $access_token, $preference );
         return $preference_result;
     }
     
     /*
-     * v1
+     * Create payment v1
      */
     public function createCustomPayment($info) {
-        $access_token = $this->getAccessToken ();
+        $access_token = $this->getAccessToken_v1();
         $preference_result = MPRestCli::post ( '/v1/payments?access_token=' . $access_token, $info );
         
         return $preference_result;
     }
+    
+    /*
+     * getCustomer
+     */
+    public function getCustomer($params) {
+        $access_token = $this->getAccessToken_v1();
+        
+        $uri = "/v1/customers/search";
+        $params["access_token"] = $access_token;
+        
+        $uri .=  (strpos($uri, "?") === false) ? "?" : "&";
+        $uri .= $this->buildQuery($params);
+        
+        $customer = MPRestCli::get($uri);
+    
+        return $customer;
+    }
+
+    /*
+     * getCustomerCards
+     */
+    public function getCustomerCards($customerID) {
+        $access_token = $this->getAccessToken_v1();
+        $uri = "/v1/customers/".$customerID."?access_token=" . $access_token;
+        $customerCards = MPRestCli::get($uri);
+        return $customerCards;
+    }
+    
+    /*
+     * Create customerCard v1
+     * $mp->post ("/v1/customers", array("email" => "test@test.com"));
+     */
+    public function createCustomerCard($params) {
+        $access_token = $this->getAccessToken_v1();
+        $customerResponse = MPRestCli::post ( "/v1/customers?access_token=" . $access_token, $params );
+       
+        if ($customerResponse == null || $customerResponse["status"] != "200") {
+            PrestaShopLogger::addLog ( 'MercadoPago::createCustomerCard - Error: Doens\'t possibled to create the Customer', MP_SDK::WARNING, 0 );
+        }
+        return $customerResponse;
+    }    
+   
+    
+    /*
+     * Create customerCard v1
+     */
+    public function addCustomerCard($token, $customerId) {
+        $access_token = $this->getAccessToken_v1();
+        $uri = "/v1/customers/".$customerId."/cards?access_token=" . $access_token;
+        
+        $result_response = MPRestCli::post ($uri, $token );
+        return $result_response;
+    }    
+    
     public static function getCategories() {
         $response = MPRestCli::get ( '/item_categories' );
         $response = $response ['response'];
         return $response;
     }
+    
+    public function getDiscount($params) {
+        $access_token = $this->getAccessToken();
+        $uri = "/discount_campaigns";
+        $params["access_token"] = $access_token;
+
+        if (count($params) > 0) {
+            $uri .= (strpos($uri, "?") === false) ? "?" : "&";
+            $uri .= $this->buildQuery($params);
+        }
+        
+        $result = MPRestCli::get($uri);        
+        return $result;
+    }
+    
     private function buildQuery($params) {
         if (function_exists ( 'http_build_query' ))
             return http_build_query ( $params, '', '&' );
@@ -232,17 +306,18 @@ class MPRestCli {
     }
     private static function exec($method, $uri, $data, $content_type) {
         $connect = self::getConnect ( $uri, $method, $content_type );
+        
         if ($data) {
             self::setData ( $connect, $data, $content_type );
         }
         
         $api_result = curl_exec ( $connect );
         $api_http_code = curl_getinfo ( $connect, CURLINFO_HTTP_CODE );
-        
         $response = array (
                 'status' => $api_http_code,
                 'response' => Tools::jsonDecode ( $api_result, true )                 
         );
+        
         if (Configuration::get ( 'MERCADOPAGO_LOG' ) == 'true') {
             PrestaShopLogger::addLog ( 'MercadoPago.exec :: data = ' . Tools::jsonEncode ( $data ), MP_SDK::INFO, 0, null, null, true );
             PrestaShopLogger::addLog ( 'MercadoPago.exec :: response = ' . $api_result, MP_SDK::INFO, $response ['status'], null, null, true );

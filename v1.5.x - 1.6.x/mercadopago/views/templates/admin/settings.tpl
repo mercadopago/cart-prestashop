@@ -23,6 +23,10 @@
 *  International Registered Trademark & Property of MercadoPago
 *}
 <div class="mp-module">
+	{if empty($client_id)} 
+		{include file='./marketing.tpl'
+		this_path_ssl=$this_path_ssl|escape:'htmlall'}
+	{/if} 
 	<div id="settings" style="display: block">
 	<div id="alerts">
 	{if $version eq 6}
@@ -68,31 +72,18 @@
 	{/if}
 	</div>
 	<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo_large.png">
-	</br>
-	</br>
-	</br>
+	<br>
+	<br>
+	<br>
 	<h3> {l s='Notes:' mod='mercadopago'}</h3>
-	<h4> {l s='- To obtain your Client Id and Client Secret please click on your country: ' mod='mercadopago'}
-		<a href="https://www.mercadopago.com/mlb/ferramentas/aplicacoes"><u>{l s='Brazil' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mla/herramientas/aplicaciones"><u>{l s='Argentina' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mlm/herramientas/aplicaciones"><u>{l s='Mexico' mod='mercadopago'}</u></a> | 
-		<a href="https://www.mercadopago.com/mlv/herramientas/aplicaciones"><u>{l s='Venezuela' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mco/herramientas/aplicaciones"><u>{l s='Colombia' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mlc/herramientas/aplicaciones"><u>{l s='Chile' mod='mercadopago'}</u></a>
-	</h4>
-	{if $country eq "MLB"}
-		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials' mod='mercadopago'}</h4>
-	{elseif $country eq "MLM"}
-		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlm/account/credentials' mod='mercadopago'}</h4>
-	{elseif $country eq "MLA"}
-		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mla/account/credentials' mod='mercadopago'}</h4>
-	{elseif $country eq "MLC"}
-		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlc/account/credentials' mod='mercadopago'}</h4>
-	{elseif $country eq "MCO"}
-		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mco/account/credentials' mod='mercadopago'}</h4>
-	{elseif $country eq "MLV"}
-		<h4> {l s='- Get your public_key in the following address: https://www.mercadopago.com/mlv/account/credentials' mod='mercadopago'}</h4>
-	{/if}
+	<h4>{l s='- To obtain your Client Id, Client Secret, Public Key and Access Token please click on your country:' mod='mercadopago'}</h4>
+		<a href="https://www.mercadopago.com/mla/account/credentials" target="_blank"><u>{l s='Argentina' mod='mercadopago'}</u></a> |
+		<a href="https://www.mercadopago.com/mlb/account/credentials" target="_blank"><u>{l s='Brazil' mod='mercadopago'}</u></a> |
+		<a href="https://www.mercadopago.com/mco/account/credentials" target="_blank"><u>{l s='Colombia' mod='mercadopago'}</u></a> |
+		<a href="https://www.mercadopago.com/mlc/account/credentials" target="_blank"><u>{l s='Chile' mod='mercadopago'}</u></a> |		
+		<a href="https://www.mercadopago.com/mlm/account/credentials" target="_blank"><u>{l s='Mexico' mod='mercadopago'}</u></a> | 
+		<a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank"><u>{l s='Venezuela' mod='mercadopago'}</u></a> 
+	
 	<form action="{$uri|escape:'htmlall'}" method="post">
 		<fieldset>
 			<legend>
@@ -106,6 +97,11 @@
 			<label>{l s='Client Secret:' mod='mercadopago'}</label>
 			<div class="">
 				<input type="text" size="33" name="MERCADOPAGO_CLIENT_SECRET" value="{$client_secret|escape:'htmlall'}" />
+			</div>
+			<br />
+			<label>{l s='Access Token:' mod='mercadopago'}</label>
+			<div class="">
+				<input type="text" size="60" name="MERCADOPAGO_ACCESS_TOKEN" value="{$access_token|escape:'htmlall'}" />
 			</div>
 			<br />
 			{if !empty($country)}
@@ -137,10 +133,10 @@
 						 <option value="others" selected="selected">{l s='Other categories' mod='mercadopago'}</option>
 					</select>	
 				</div>
-			{/if}
-				<br/>
+								<br/>
 				<label>{l s='Notification URL' mod='mercadopago'}:</label>
 				<div>{$notification_url|escape:'javascript'}</div>
+			{/if}
 
 				<br />					
 		</fieldset>
@@ -156,12 +152,12 @@
 						<option value="false">{l s='No' mod='mercadopago'} </option>
 					</select>
 				</div>
-				<br />
+				<br />	
 				<label>{l s='Public Key:' mod='mercadopago'}</label>
 				<div class="">
 					<input type="text" size="33" name="MERCADOPAGO_PUBLIC_KEY" value="{$public_key|escape:'htmlall'}" />
 				</div>
-				<br />
+				<br/>
 				<label>{l s='Banner:' mod='mercadopago'}</label>
 				<div class="">
 					<input type="text" size="33" name="MERCADOPAGO_CREDITCARD_BANNER" value="{$creditcard_banner|escape:'htmlall'}" />
@@ -245,6 +241,30 @@
 					</select>
 				</div>
 			</fieldset>
+				
+			<fieldset>
+				<legend class="ch-form-row discount-link" style="padding-left: 30px;">
+					{l s='Coupon MercadoPago' mod='mercadopago'}
+				</legend>
+				<p style="text-align: center;">{l s='* Valid option only for sites participating coupon campaigns.' mod='mercadopago'}</p>
+				<br/>
+				<label>{l s='Enable Coupon of Discount: ' mod='mercadopago'}</label>
+				<div class="">
+					<select name="MERCADOPAGO_COUPON_ACTIVE" id="coupon_active">
+						<option value="true">{l s='Yes' mod='mercadopago'} </option>
+						<option value="false">{l s='No' mod='mercadopago'} </option>
+					</select>
+					
+				</div>
+				<!--  <label>{l s='Active for Ticket: ' mod='mercadopago'}</label>
+				<div class="">
+					<select name="MERCADOPAGO_COUPON_TICKET_ACTIVE" id="coupon_ticket_active">
+						<option value="true">{l s='Yes' mod='mercadopago'} </option>
+						<option value="false">{l s='No' mod='mercadopago'} </option>
+					</select>
+				</div>-->				
+			</fieldset>	
+						
 			<fieldset>
 				<legend>
 					<img src="../img/admin/contact.gif" />{l s='Settings - Active log' mod='mercadopago'}
@@ -284,6 +304,13 @@
 		if (document.getElementById("creditcard_active")){
 			document.getElementById("creditcard_active").value = "{$creditcard_active|escape:'javascript'}";
 		}
+		if (document.getElementById("coupon_active")){
+			document.getElementById("coupon_active").value = "{$coupon_active|escape:'javascript'}";
+		}	
+		if (document.getElementById("coupon_ticket_active")){
+			document.getElementById("coupon_ticket_active").value = "{$coupon_ticket_active|escape:'javascript'}";
+		}			
+		
 
 		if (document.getElementById("standard_active")){
 			document.getElementById("standard_active").value = "{$standard_active|escape:'javascript'}";
@@ -301,7 +328,7 @@
 		if (document.getElementById("auto_return")){
 			document.getElementById("auto_return").value = "{$auto_return|escape:'javascript'}";
 		}
-
+		
 		{foreach from=$payment_methods_settings key=payment_method item=value}
 			document.getElementById("{$payment_method|escape:'javascript'}").checked = "{$value|escape:'javascript'}";
 		{/foreach}
@@ -310,4 +337,34 @@
 			document.getElementById("{$offline_payment}_active").value = "{$value.active|escape:'javascript'}";
 		{/foreach}
 	}
+	
+	$("#back").click(
+			function() { 
+				$(".marketing").show();
+				$("#settings").hide();
+				$("#alerts").remove();
+				$.scrollTo(0, 0);
+		});
+	
+	$(document).ready(function (){
+		
+		var cliend_id = "{$client_id|escape:'javascript'}";
+		// hide marketing when settings are updated
+		if (cliend_id.length > 0) {
+			$(".marketing").hide();
+			$("#settings").show();
+			$.scrollTo(0, 0);
+		} else {
+			$(".marketing").show();
+			$("#settings").hide();
+			$.scrollTo(0, 0);
+		}
+	})	
 </script>
+
+<style>
+.ch-form-row.discount-link {
+    background: url(https://secure.mlstatic.com/checkout-resources/resourses/assets/icon-discount.bd9c2205796f.png) no-repeat;
+    line-height: 25px;
+}
+</style>

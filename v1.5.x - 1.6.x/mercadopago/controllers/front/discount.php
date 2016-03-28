@@ -18,14 +18,14 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- *  @author    ricardobrito
+ *  @author    henriqueleite
  *  @copyright Copyright (c) MercadoPago [http://www.mercadopago.com]
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of MercadoPago
  */
 include_once dirname(__FILE__) . '/../../mercadopago.php';
 
-class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
+class MercadoPagoDiscountModuleFrontController extends ModuleFrontController
 {
 
     public function initContent()
@@ -36,22 +36,34 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
 
     public function displayAjax()
     {
+        error_log("entrou aqui");
         
-        if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
-            PrestaShopLogger::addLog('Debug Mode :: displayAjax - topic = ' . Tools::getValue('topic'), MP_SDK::INFO, 0);
-            PrestaShopLogger::addLog('Debug Mode :: displayAjax - id = ' . Tools::getValue('id'), MP_SDK::INFO, 0);
-            PrestaShopLogger::addLog('Debug Mode :: displayAjax - checkout = ' . Tools::getValue('checkout'), MP_SDK::INFO, 0);
-        }
-
-        if (Tools::getValue('checkout') && Tools::getValue('data_id') || Tools::getValue('id')) {
-            $mercadopago = new MercadoPago();
-            if (Tools::getValue('checkout') == "custom") {
-                $mercadopago->listenIPN(Tools::getValue('checkout'), Tools::getValue('type'), Tools::getValue('data_id'));
-            } else {
-                $mercadopago->listenIPN(Tools::getValue('checkout'), Tools::getValue('topic'), Tools::getValue('id'));
-            }
-
+        if (isset($_REQUEST['acao'])) {
+            $cart = Context::getContext()->cart;
+            $response = array(
+                'status' => 200,
+                'valor' => $cart->getOrderTotal(true, Cart::BOTH)
+            );
+        } else {
             
+            error_log("coupon" . $_REQUEST['coupon_id']);
+            if (isset($_REQUEST['coupon_id']) && $_REQUEST['coupon_id'] != '') {
+                $coupon_id = $_REQUEST['coupon_id'];
+                $mercadopago = $this->module;
+                $response = $mercadopago->validCoupon($coupon_id);
+                error_log("response_coupon====" . Tools::jsonEncode($response));
+            } else {
+                $response = array(
+                    'status' => 400,
+                    'response' => array(
+                        'error' => 'invalid_id',
+                        'message' => 'invalid id'
+                    )
+                );
+            }
         }
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit();
     }
 }

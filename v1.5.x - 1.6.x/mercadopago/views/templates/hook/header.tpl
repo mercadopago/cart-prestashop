@@ -23,14 +23,5 @@
 *  International Registered Trademark & Property of MercadoPago
 *}
 
-{if $creditcard_active == 'true' && $public_key != ''}
-	<script type="text/javascript">
-		if (window.Mercadopago === undefined) {
-			$.getScript("https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js")
-				.done(function( script, textStatus ) {
-					Mercadopago.setPublishableKey("{$public_key|escape:'javascript'}");
-				});
-		}
-	</script>
-{/if}
+
 
