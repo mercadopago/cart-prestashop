@@ -12,15 +12,6 @@ $_MODULE['<{mercadopago}default-bootstrap>marketing_518bcfcee1eca0b19e570354ba72
 $_MODULE['<{mercadopago}default-bootstrap>marketing_8419b74fe22aef80fd2f745518d2cca3'] = '+ 120 milhões';
 $_MODULE['<{mercadopago}default-bootstrap>marketing_406633724f8599cd4f058851b8269e5f'] = 'dos usuários na nossa plataforma';
 $_MODULE['<{mercadopago}default-bootstrap>marketing_c0f323cd6ccfaf5a3301570649756dfe'] = 'Os métodos de pagamento mais importantes do mercado';
-$_MODULE['<{mercadopago}default-bootstrap>marketing_89fc0d6fe12b0e0c1af5c7a0373435a6'] = 'Visa';
-$_MODULE['<{mercadopago}default-bootstrap>marketing_2fe3351421d198ea6d3c4a4a0358d08f'] = 'MasterCard';
-$_MODULE['<{mercadopago}default-bootstrap>marketing_b993f20c6e3b73949a96e934a76bbfef'] = 'American Express';
-$_MODULE['<{mercadopago}default-bootstrap>marketing_8ac0b8f8c91db802bb168aa934bf2b74'] = 'Dinners Club International';
-$_MODULE['<{mercadopago}default-bootstrap>marketing_1c2b74608dcc70d47c11ba0d728f854f'] = 'Hipercard';
-$_MODULE['<{mercadopago}default-bootstrap>marketing_2b4f0fc90391120bc1076ccad2dee293'] = 'Elo';
-$_MODULE['<{mercadopago}default-bootstrap>marketing_6ec0a19f336217439c993234f4f19f99'] = 'MercadoLivre CreditCard';
-$_MODULE['<{mercadopago}default-bootstrap>marketing_0ec01ee31d2e9f5c9277dfa30d4a0a49'] = 'Código de Barra';
-$_MODULE['<{mercadopago}default-bootstrap>marketing_13695f6fc5385cef375a45039bb86fae'] = 'MercadoPago E-Wallet';
 $_MODULE['<{mercadopago}default-bootstrap>marketing_4dcfe232dad7b84aae58429cab08284d'] = 'Solução Completa';
 $_MODULE['<{mercadopago}default-bootstrap>marketing_e446cf301ca1863e7128869aa9534393'] = 'Pagamento com um clique';
 $_MODULE['<{mercadopago}default-bootstrap>marketing_e381448c10f78024d20c2fe05c9e80e7'] = 'Sem a necessidade de preenchimento de formulários e senhas para os seus clientes pagar suas compras';
@@ -231,4 +222,5 @@ $_MODULE['<{mercadopago}default-bootstrap>creditcard_payment_return_c23c35a63248
 $_MODULE['<{mercadopago}default-bootstrap>creditcard_payment_return_430e38106173f53736e9c447cc5e4323'] = 'Estamos processando o pagamento. Em menos de 2 dias úteis você será avisado por e-mail se foi creditado ou se precisarmos de mais informações.';
 $_MODULE['<{mercadopago}default-bootstrap>creditcard_payment_return_18b7391357b34e9a1377e86559b8df36'] = 'Estamos processando o pagamento. Em menos de 1 hora, nós enviaremos o resultado por e-mail.';
 $_MODULE['<{mercadopago}default-bootstrap>creditcard_payment_return_2a99972f5811c1017893e5d54f338fce'] = 'O pagamento foi expirado.';
+$_MODULE['<{mercadopago}default-bootstrap>print_boleto_d71658741a5b685ca8387218c85bad9b'] = 'Antes de imprimir verifique a data de vencimento.';
 $_MODULE['<{mercadopago}default-bootstrap>print_boleto_f09e6eb90dd3737379763942f47df81c'] = 'Abrir Boleto';

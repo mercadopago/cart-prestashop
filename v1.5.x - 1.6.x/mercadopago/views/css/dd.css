@@ -17,7 +17,7 @@
 	height:30px;
 }
 .dd .ddTitle span.arrow {
-	background:url(dd_arrow.gif) no-repeat 0 0; float:right; display:inline-block;width:16px; height:16px; cursor:pointer; 
+	background:url(../img/dd_arrow.gif) no-repeat 0 0; float:right; display:inline-block;width:16px; height:16px; cursor:pointer; 
 }
 
 .dd .ddTitle span.ddTitleText {text-indent:1px; overflow:hidden; line-height:16px;}

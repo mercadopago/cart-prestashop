@@ -23,8 +23,8 @@
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of MercadoPago
  */
-include_once dirname(__FILE__) . '/../../mercadopago.php';
 
+include_once dirname(__FILE__) . '/../../mercadopago.php';
 class MercadoPagoDiscountModuleFrontController extends ModuleFrontController
 {
 
@@ -36,8 +36,6 @@ class MercadoPagoDiscountModuleFrontController extends ModuleFrontController
 
     public function displayAjax()
     {
-        error_log("entrou aqui");
-        
         if (isset($_REQUEST['acao'])) {
             $cart = Context::getContext()->cart;
             $response = array(
@@ -46,12 +44,10 @@ class MercadoPagoDiscountModuleFrontController extends ModuleFrontController
             );
         } else {
             
-            error_log("coupon" . $_REQUEST['coupon_id']);
             if (isset($_REQUEST['coupon_id']) && $_REQUEST['coupon_id'] != '') {
                 $coupon_id = $_REQUEST['coupon_id'];
                 $mercadopago = $this->module;
                 $response = $mercadopago->validCoupon($coupon_id);
-                error_log("response_coupon====" . Tools::jsonEncode($response));
             } else {
                 $response = array(
                     'status' => 400,
@@ -63,7 +59,7 @@ class MercadoPagoDiscountModuleFrontController extends ModuleFrontController
             }
         }
         header('Content-Type: application/json');
-        echo json_encode($response);
+        echo Tools::jsonEncode($response);
         exit();
     }
 }

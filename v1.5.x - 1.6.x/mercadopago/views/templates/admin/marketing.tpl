@@ -73,44 +73,7 @@
 			<div class="row">
 				<div class="col-xs-12 text-center">
 					<h4 class="title2">{l s='The most important payment methods of the market' mod='mercadopago'}</h4>
-					<ul class="bandeiras">
-						<li>
-							<span><img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/bandeiras/1.png" alt="{l s='Visa' mod='mercadopago'}"></span>
-							{l s='Visa' mod='mercadopago'}
-						</li>
-						<li>
-							<span><img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/bandeiras/2.png" alt="{l s='MasterCard' mod='mercadopago'}"></span>
-							{l s='MasterCard' mod='mercadopago'}
-						</li>
-						<li>
-							<span><img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/bandeiras/3.png" alt="{l s='American Express' mod='mercadopago'}"></span>
-							{l s='American Express' mod='mercadopago'}
-						</li>
-						<li>
-							<span><img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/bandeiras/4.png" alt="{l s='Diners Club International' mod='mercadopago'}"></span>
-							{l s='Diners Club International' mod='mercadopago'}
-						</li>
-						<li>
-							<span><img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/bandeiras/5.png" alt="{l s='Hipercard' mod='mercadopago'}"></span>
-							{l s='Hipercard' mod='mercadopago'}
-						</li>
-						<li>
-							<span><img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/bandeiras/6.png" alt="{l s='Elo' mod='mercadopago'}"></span>
-							{l s='Elo' mod='mercadopago'}
-						</li>
-						<li>
-							<span><img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/bandeiras/7.png" alt="{l s='MercadoLibre CreditCard' mod='mercadopago'}"></span>
-							{l s='MercadoLibre CreditCard' mod='mercadopago'}
-						</li>
-						<li>
-							<span><img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/bandeiras/8.png" alt="{l s='Bar code' mod='mercadopago'}"></span>
-							{l s='Bar code' mod='mercadopago'}
-						</li>
-						<li>
-							<span><img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/bandeiras/9.png" alt="{l s='MercadoPago E-Wallet' mod='mercadopago'}"></span>
-							{l s='MercadoPago E-Wallet' mod='mercadopago'}
-						</li>
-					</ul>
+					<img class="bandeiras" width="100%" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/banners_all_country.jpg">
 					<div class="clearfix"></div>
 				</div>
 			</div>
@@ -183,7 +146,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-5 col-sm-6 col-xs-12 text-center">
-					<img src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/image-1.png" alt="Não se preocupe com fraudes!">
+					<img src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/image-1.png" alt="Não se preocupe com fraudes!">
 				</div>
 				<div class="col-md-7 col-sm-6 col-xs-12 fraude">
 					<h3 class="title">{l s='Don\'t worry about frauds!' mod='mercadopago'}</h3>

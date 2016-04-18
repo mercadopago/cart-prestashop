@@ -21,3 +21,8 @@ Improvement - Improved loading SDK MercadoPago
 BUG - Special characters in URL 
 BUG - Fix sending parameters in different versions of Prestashop
 
+V3.2.1 (18/04/2016)
+Setup screen for all countries
+Added option for user to print “Ticket” on historic request
+Improvement MLM checkout
+Update of good practices Prestashop

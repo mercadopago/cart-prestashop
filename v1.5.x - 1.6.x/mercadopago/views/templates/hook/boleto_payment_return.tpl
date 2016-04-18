@@ -19,14 +19,14 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			</strong>
 			<h5>
 				{l s='Payment Id (MercadoPago): ' mod='mercadopago'}
-				{$payment_id|escape:'htmlall'}<br>
+				{$payment_id|escape:'htmlall':'UTF-8'}<br>
 			</h5>
 	</div>
 	<br>
 	<div class="row">
 		{if $boleto_url != null}
-		<iframe src="{$boleto_url|escape}"
-			class="boleto-frame {$country|escape:'html'}" id="boletoframe">
+		<iframe src="{$boleto_url|escape:'htmlall':'UTF-8'}"
+			class="boleto-frame {$country|escape:'html':'UTF-8'}" id="boletoframe">
 			<div class="lightbox" id="text">
 				<div class="box">
 					<div class="content">

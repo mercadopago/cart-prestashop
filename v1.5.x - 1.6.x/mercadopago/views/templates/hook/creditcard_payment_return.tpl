@@ -36,29 +36,29 @@
 
 				{if $card_holder_name != null}
 					{l s='Card holder name: ' mod='mercadopago'}
-					{$card_holder_name|escape:'htmlall'}</br>
+					{$card_holder_name|escape:'htmlall':'UTF-8'}</br>
 				{/if}
 				
 				{if $four_digits != null}
 					{l s='Credit card: ' mod='mercadopago'}
-					{$four_digits|escape:'htmlall'}</br>
+					{$four_digits|escape:'htmlall':'UTF-8'}</br>
 				{/if}
 
 				{if $payment_method_id != null}
 					{l s='Payment method: ' mod='mercadopago'}
-					{$payment_method_id|escape:'htmlall'}</br>
+					{$payment_method_id|escape:'htmlall':'UTF-8'}</br>
 				{/if}
 
 				{l s='Amount: ' mod='mercadopago'}
-				{$amount|escape:'htmlall'}</br>
+				{$amount|escape:'htmlall':'UTF-8'}</br>
 				{if $installments != null}
 					{l s='Installments: ' mod='mercadopago'}
-					{$installments|escape:'htmlall'}</br>
+					{$installments|escape:'htmlall':'UTF-8'}</br>
 				{/if}
 				{l s='Statement descriptor: ' mod='mercadopago'}
-				{$statement_descriptor|escape:'htmlall'}</br>
+				{$statement_descriptor|escape:'htmlall':'UTF-8'}</br>
 				{l s='Payment id (MercadoPago): ' mod='mercadopago'}
-				{$payment_id|escape:'htmlall'}</br>
+				{$payment_id|escape:'htmlall':'UTF-8'}</br>
 			</h5>
 			{elseif $status_detail eq 'pending_review_manual' || $status_detail eq 'pending_review'}
 				{l s='We are processing the payment. In less than 2 business days we will tell you by e-mail if it is accredited or if we need more information.' mod='mercadopago'}

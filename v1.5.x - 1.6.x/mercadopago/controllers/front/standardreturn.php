@@ -23,6 +23,7 @@
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of MercadoPago
  */
+
 include_once dirname(__FILE__) . '/../../mercadopago.php';
 
 class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontController
@@ -47,7 +48,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             
             $mercadopago = $this->module;
             $mercadopago_sdk = $mercadopago->mercadopago;
-            
             
             foreach ($collection_ids as $collection_id) {
                 $result = $mercadopago_sdk->getPaymentStandard($collection_id);
@@ -99,12 +99,23 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 $order_id = Order::getOrderByCartId($cart->id);
                 if ($order_status != null) {
                     if (! $order_id) {
-                        $mercadopago->validateOrder($cart->id, Configuration::get($order_status), $total, $mercadopago->displayName, null, $extra_vars, $cart->id_currency, false, $cart->secure_key);
+                        $mercadopago->validateOrder(
+                            $cart->id,
+                            Configuration::get($order_status),
+                            $total,
+                            $mercadopago->displayName,
+                            null,
+                            $extra_vars,
+                            $cart->id_currency,
+                            false,
+                            $cart->secure_key
+                       );
                     }
                     $order_id = ! $order_id ? Order::getOrderByCartId($cart->id) : $order_id;
                     $order = new Order($order_id);
                     
-                    $uri = __PS_BASE_URI__ . 'order-confirmation.php?id_cart=' . $order->id_cart . '&id_module=' . $mercadopago->id . '&id_order=' . $order->id . '&key=' . $order->secure_key;
+                    $uri = __PS_BASE_URI__ . 'order-confirmation.php?id_cart=' . $order->id_cart . '&id_module=' .
+                         $mercadopago->id . '&id_order=' . $order->id . '&key=' . $order->secure_key;
                     $order_payments = $order->getOrderPayments();
                     $order_payments[0]->transaction_id = Tools::getValue('collection_id');
                     $uri .= '&payment_status=' . $payment_statuses[0];
@@ -117,8 +128,10 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                         $uri .= '&four_digits=' . implode(' / ', $four_digits_arr);
                         $uri .= '&statement_descriptor=' . $statement_descriptors[0];
                         $uri .= '&status_detail=' . $status_details[0];
-                        $order_payments[0]->card_number = empty($four_digits_arr) ? '' : implode(' / ', $four_digits_arr);
-                        $order_payments[0]->card_brand = empty($payment_method_ids) ? '' : implode(' / ', $payment_method_ids);
+                        $order_payments[0]->card_number = empty($four_digits_arr) ? '' :
+                            implode(' / ', $four_digits_arr);
+                        $order_payments[0]->card_brand = empty($payment_method_ids) ? '' :
+                            implode(' / ', $payment_method_ids);
                         $order_payments[0]->card_holder = implode(' / ', $card_holder_names);
                     }
                     $order_payments[0]->save();
@@ -126,7 +139,12 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 }
             }
         } else {
-            PrestaShopLogger::addLog('MercadoPagoStandardReturnModuleFrontController::initContent = ' . 'External reference is not set. Order placement has failed.', MP_SDK::ERROR, 0);
+            PrestaShopLogger::addLog(
+                'MercadoPagoStandardReturnModuleFrontController::initContent = ' .
+                'External reference is not set. Order placement has failed.',
+                MP_SDK::ERROR,
+                0
+            );
         }
     }
 }

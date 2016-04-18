@@ -32,7 +32,7 @@
 
 	{if $message_error != null}
 		<span class="error">{l s='Fatal Error' mod='mercadopago'}: </span>
-		{$message_error|escape:'htmlall'}</br>
+		{$message_error|escape:'htmlall':'UTF-8'}</br>
 	{/if}	
 	{if $version == 6}
 		</div>
