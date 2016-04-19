@@ -25,7 +25,7 @@
 <div class="mp-module">
 	{if empty($client_id)} 
 		{include file='./marketing.tpl'
-		this_path_ssl=$this_path_ssl|escape:'htmlall'}
+		this_path_ssl=$this_path_ssl|escape:'htmlall':'UTF-8'}
 	{/if} 
 	<div id="settings" style="display: block">
 	<div id="alerts">
@@ -48,7 +48,7 @@
 			<div class="bootstrap">
 				<div class="alert alert-danger">
 					<button type="button" class="close" data-dismiss="alert">×</button>
-					{$error|escape:'htmlall'}
+					{$error|escape:'htmlall':'UTF-8'}
 				</div>
 			</div>
 			{/foreach}
@@ -65,13 +65,13 @@
 			</div>
 			{foreach from=$errors item=error}
 			<div class="error">
-				{$error|escape:'htmlall'}	
+				{$error|escape:'htmlall':'UTF-8'}	
 			</div>
 			{/foreach}
 		{/if}
 	{/if}
 	</div>
-	<img class="logo" src="{$this_path_ssl|escape:'htmlall'}modules/mercadopago/views/img/payment_method_logo_large.png">
+	<img class="logo" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo_large.png">
 	<br>
 	<br>
 	<br>
@@ -84,24 +84,24 @@
 		<a href="https://www.mercadopago.com/mlm/account/credentials" target="_blank"><u>{l s='Mexico' mod='mercadopago'}</u></a> | 
 		<a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank"><u>{l s='Venezuela' mod='mercadopago'}</u></a> 
 	
-	<form action="{$uri|escape:'htmlall'}" method="post">
+	<form action="{$uri|escape:'htmlall':'UTF-8'}" method="post">
 		<fieldset>
 			<legend>
 				<img src="../img/admin/contact.gif" />{l s='Settings - General' mod='mercadopago'}
 			</legend>
 			<label>{l s='Client Id:' mod='mercadopago'}</label>
 			<div class="">
-				<input type="text" size="33" name="MERCADOPAGO_CLIENT_ID" value="{$client_id|escape:'htmlall'}" />
+				<input type="text" size="33" name="MERCADOPAGO_CLIENT_ID" value="{$client_id|escape:'htmlall':'UTF-8'}" />
 			</div>
 			<br />
 			<label>{l s='Client Secret:' mod='mercadopago'}</label>
 			<div class="">
-				<input type="text" size="33" name="MERCADOPAGO_CLIENT_SECRET" value="{$client_secret|escape:'htmlall'}" />
+				<input type="text" size="33" name="MERCADOPAGO_CLIENT_SECRET" value="{$client_secret|escape:'htmlall':'UTF-8'}" />
 			</div>
 			<br />
 			<label>{l s='Access Token:' mod='mercadopago'}</label>
 			<div class="">
-				<input type="text" size="60" name="MERCADOPAGO_ACCESS_TOKEN" value="{$access_token|escape:'htmlall'}" />
+				<input type="text" size="60" name="MERCADOPAGO_ACCESS_TOKEN" value="{$access_token|escape:'htmlall':'UTF-8'}" />
 			</div>
 			<br />
 			{if !empty($country)}
@@ -135,7 +135,7 @@
 				</div>
 								<br/>
 				<label>{l s='Notification URL' mod='mercadopago'}:</label>
-				<div>{$notification_url|escape:'javascript'}</div>
+				<div>{$notification_url|escape:'htmlall':'UTF-8'}</div>
 			{/if}
 
 				<br />					
@@ -155,22 +155,22 @@
 				<br />	
 				<label>{l s='Public Key:' mod='mercadopago'}</label>
 				<div class="">
-					<input type="text" size="33" name="MERCADOPAGO_PUBLIC_KEY" value="{$public_key|escape:'htmlall'}" />
+					<input type="text" size="33" name="MERCADOPAGO_PUBLIC_KEY" value="{$public_key|escape:'htmlall':'UTF-8'}" />
 				</div>
 				<br/>
 				<label>{l s='Banner:' mod='mercadopago'}</label>
 				<div class="">
-					<input type="text" size="33" name="MERCADOPAGO_CREDITCARD_BANNER" value="{$creditcard_banner|escape:'htmlall'}" />
+					<input type="text" size="33" name="MERCADOPAGO_CREDITCARD_BANNER" value="{$creditcard_banner|escape:'htmlall':'UTF-8'}" />
 				</div>
 			</fieldset>
 			{foreach from=$offline_payment_settings key=offline_payment item=value}
 				<fieldset>
 					<legend>
-						<img src="../img/admin/contact.gif" />{l s='Settings - ' mod='mercadopago'}{$value.name|ucfirst} {l s=' Custom' mod='mercadopago'}
+						<img src="../img/admin/contact.gif" />{l s='Settings - ' mod='mercadopago'}{$value.name|ucfirst|escape:'htmlall':'UTF-8'} {l s=' Custom' mod='mercadopago'}
 					</legend>
 					<label>{l s='Active: ' mod='mercadopago'}</label>
 					<div class="">
-						<select name="MERCADOPAGO_{$offline_payment|upper}_ACTIVE" id="{$offline_payment}_active">
+						<select name="MERCADOPAGO_{$offline_payment|upper|escape:'htmlall':'UTF-8'}_ACTIVE" id="{$offline_payment|escape:'htmlall':'UTF-8'}_active">
 							<option value="true">{l s='Yes' mod='mercadopago'} </option>
 							<option value="false">{l s='No' mod='mercadopago'} </option>
 						</select>
@@ -178,7 +178,7 @@
 					<br />
 					<label>{l s='Banner:' mod='mercadopago'}</label>
 					<div class="">
-						<input type="text" size="33" name="MERCADOPAGO_{$offline_payment|upper}_BANNER" value="{$value.banner|escape:'htmlall'}" />
+						<input type="text" size="33" name="MERCADOPAGO_{$offline_payment|escape:'htmlall':'UTF-8'}_BANNER" value="{$value.banner|escape:'htmlall':'UTF-8'}" />
 					</div>
 				</fieldset>
 				<br />
@@ -199,7 +199,7 @@
 				<br />
 				<label>{l s='Banner:' mod='mercadopago'}</label>
 				<div class="">
-					<input type="text" size="33" name="MERCADOPAGO_STANDARD_BANNER" value="{$standard_banner|escape:'htmlall'}" />
+					<input type="text" size="33" name="MERCADOPAGO_STANDARD_BANNER" value="{$standard_banner|escape:'htmlall':'UTF-8'}" />
 				</div>
 				<br />
 				<label>{l s='Checkout window:' mod='mercadopago'}</label>
@@ -215,22 +215,22 @@
 				<br />
 				{foreach from=$payment_methods item=payment_method}
 					<br />
-					<input type="checkbox" name="MERCADOPAGO_{$payment_method.id|upper}" id="{$payment_method.id}">{$payment_method.name}</input>
+					<input type="checkbox" name="MERCADOPAGO_{$payment_method.id|upper|escape:'htmlall':'UTF-8'}" id="{$payment_method.id|escape:'htmlall':'UTF-8'}">{$payment_method.name|escape:'htmlall':'UTF-8'}</input>
 				{/foreach}
 				</div>
 				<label>{l s='iFrame width:' mod='mercadopago'}</label>
 				<div class="">
-					<input type="text" size="33" name="MERCADOPAGO_IFRAME_WIDTH" value="{$iframe_width|escape:'htmlall'}" />
+					<input type="text" size="33" name="MERCADOPAGO_IFRAME_WIDTH" value="{$iframe_width|escape:'htmlall':'UTF-8'}" />
 				</div>
 				<br />
 				<label>{l s='iFrame height:' mod='mercadopago'}</label>
 				<div class="">
-					<input type="text" size="33" name="MERCADOPAGO_IFRAME_HEIGHT" value="{$iframe_height|escape:'htmlall'}" />
+					<input type="text" size="33" name="MERCADOPAGO_IFRAME_HEIGHT" value="{$iframe_height|escape:'htmlall':'UTF-8'}" />
 				</div>
 				<br />
 				<label>{l s='Max installments:' mod='mercadopago'}</label>
 				<div class="">
-					<input type="text" size="33" name="MERCADOPAGO_INSTALLMENTS" value="{$installments|escape:'htmlall'}" />
+					<input type="text" size="33" name="MERCADOPAGO_INSTALLMENTS" value="{$installments|escape:'htmlall':'UTF-8'}" />
 				</div>
 				<br />
 				<label>{l s='Auto Return: ' mod='mercadopago'}</label>
@@ -298,43 +298,43 @@
 	
 	window.onload = function() {
 		if (document.getElementById("category")){
-			document.getElementById("category").value = "{$category|escape:'javascript'}";
+			document.getElementById("category").value = "{$category|escape:'htmlall':'UTF-8'}";
 		}
 
 		if (document.getElementById("creditcard_active")){
-			document.getElementById("creditcard_active").value = "{$creditcard_active|escape:'javascript'}";
+			document.getElementById("creditcard_active").value = "{$creditcard_active|escape:'htmlall':'UTF-8'}";
 		}
 		if (document.getElementById("coupon_active")){
-			document.getElementById("coupon_active").value = "{$coupon_active|escape:'javascript'}";
+			document.getElementById("coupon_active").value = "{$coupon_active|escape:'htmlall':'UTF-8'}";
 		}	
 		if (document.getElementById("coupon_ticket_active")){
-			document.getElementById("coupon_ticket_active").value = "{$coupon_ticket_active|escape:'javascript'}";
+			document.getElementById("coupon_ticket_active").value = "{$coupon_ticket_active|escape:'htmlall':'UTF-8'}";
 		}			
 		
 
 		if (document.getElementById("standard_active")){
-			document.getElementById("standard_active").value = "{$standard_active|escape:'javascript'}";
+			document.getElementById("standard_active").value = "{$standard_active|escape:'htmlall':'UTF-8'}";
 		}
 
 
 		if (document.getElementById("log_active")){
-			document.getElementById("log_active").value = "{$log_active|escape:'javascript'}";
+			document.getElementById("log_active").value = "{$log_active|escape:'htmlall':'UTF-8'}";
 		}
 
 		if (document.getElementById("window_type")){
-			document.getElementById("window_type").value = "{$window_type|escape:'javascript'}";
+			document.getElementById("window_type").value = "{$window_type|escape:'htmlall':'UTF-8'}";
 		}
 
 		if (document.getElementById("auto_return")){
-			document.getElementById("auto_return").value = "{$auto_return|escape:'javascript'}";
+			document.getElementById("auto_return").value = "{$auto_return|escape:'htmlall':'UTF-8'}";
 		}
 		
 		{foreach from=$payment_methods_settings key=payment_method item=value}
-			document.getElementById("{$payment_method|escape:'javascript'}").checked = "{$value|escape:'javascript'}";
+			document.getElementById("{$payment_method|escape:'htmlall':'UTF-8'}").checked = "{$value|escape:'htmlall':'UTF-8'}";
 		{/foreach}
 		
 		{foreach from=$offline_payment_settings key=offline_payment item=value}
-			document.getElementById("{$offline_payment}_active").value = "{$value.active|escape:'javascript'}";
+			document.getElementById("{$offline_payment|escape:'htmlall':'UTF-8'}_active").value = "{$value.active|escape:'htmlall':'UTF-8'}";
 		{/foreach}
 	}
 	
@@ -348,7 +348,7 @@
 	
 	$(document).ready(function (){
 		
-		var cliend_id = "{$client_id|escape:'javascript'}";
+		var cliend_id = "{$client_id|escape:'htmlall':'UTF-8'}";
 		// hide marketing when settings are updated
 		if (cliend_id.length > 0) {
 			$(".marketing").hide();

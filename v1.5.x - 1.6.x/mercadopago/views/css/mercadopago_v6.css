@@ -163,7 +163,7 @@
 		width: 210px;
 	}
 
-	.mp-module #id-installments, #id-installments-cust, .mp-module #id-issuers-options, #id-customerCards  {
+	.mp-module #id-installments, #id-installments-cust, .mp-module #id-issuers-options, #id-customerCards, #credit_option  {
 		width: 210px;
 		height: 30px;
 		background: white;

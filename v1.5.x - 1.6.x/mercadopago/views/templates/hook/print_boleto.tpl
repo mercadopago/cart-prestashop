@@ -23,30 +23,22 @@
 *  International Registered Trademark & Property of MercadoPago
 *}
 
-  <div class="row">
-		<div class="col-xs-12 col-sm-6">
-			<!--  <ul class="address alternate_item box">
-				<li><h3 class="page-subheading">Dados do pagamento</h3></li>
-					<li><span class="address_firstname">Teste</span> <span class="address_lastname">Teste</span></li>
-					<li class="address_company">Teste</li>
-					<li><span class="address_vat_number">123</span></li>
-					<li><span class="address_address1">Testes</span></li>
-					<li class="address_address2">Teste</li>
-					<li><span class="address_postcode">06542-089</span> <span class="address_city">Osasco</span></li>
-					<li><span class="address_Country:name">Brazil</span></li>
-					<li><span class="address_phone">12345678</span></li>
-					<li class="address_phone_mobile">12345678</li>
-			</ul>-->
-			
-			<div class="box box-small clearfix">
-			
-				<label>{$boleto_url|escape}</label>
-				<a target="_parent" href="{$boleto_url|escape:'htmlall'}">link</a>
-				{if $boleto_url != null}
-					<a href="#" onClick="window.open('{$boleto_url|escape:'htmlall'}', '_parent')" class="button btn btn-info button-medium pull-right">
-					<span>{l s='Open Ticket' mod='mercadopago'}<i class="icon-chevron-right right"></i></span></a>
-				{/if}
-			</div>
-			
+{if isset($boleto_url)}
+<div class="col-xs-12 col-sm-6 box">
+	<div class="row">
+		<div class="col">
+			<img style="text-align: right;" width="40%" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/mercadopago.png">	
 		</div>
 	</div>
+<br>
+	<p><strong class="dark">{l s='Before printing check the expiration date.' mod='mercadopago'}</strong></p>
+	 <ul>
+	 	<li class="page-subheading">
+	 	</li>
+		<li>
+			<a href="#" onClick="window.open('{$boleto_url|escape:'htmlall':'UTF-8'}', '_blank')" class="button btn btn-default button-medium pull-right">
+			<span>{l s='Open Ticket' mod='mercadopago'}<i class="icon-chevron-right right"></i></span></a>
+		</li>				
+	</ul>
+</div>
+{/if}
