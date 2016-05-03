@@ -129,10 +129,6 @@ Your notification URL will be automatically send with your payment to our API.
 <br/>
 ![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Checkout.jpg)
 
-**Ticket Checkout**
-<br/>
-![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Coupon.jpg)
-
 **Print Ticket**
 <br/>
 ![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Ticket.jpg)
@@ -141,6 +137,6 @@ Your notification URL will be automatically send with your payment to our API.
 <br/>
 ![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/CustomerCard.jpg)
 
-**Discount Coupon**<strong>Prestashop v1.6.x</strong>
+**Discount Coupon** <strong>Prestashop v1.6.x</strong>
 <br/>
 ![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Coupon.jpg)
