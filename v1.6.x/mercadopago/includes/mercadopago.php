@@ -220,7 +220,7 @@ class MP_SDK
     public function createPreference($preference)
     {
         $access_token = $this->getAccessToken();
-        $trackingID = "platform:std,type:prestashop,so:".VERSION;
+        $trackingID = "platform:desktop,type:prestashop,so:".VERSION;
         $preference_result = MPRestCli::postTracking('/checkout/preferences?access_token=' . $access_token, $preference, $trackingID);
         return $preference_result;
     }
@@ -231,7 +231,7 @@ class MP_SDK
     public function createCustomPayment($info)
     {
         $access_token = $this->getAccessTokenV1();
-        $trackingID = "platform:op,type:prestashop,so:".VERSION;
+        $trackingID = "platform:v1-whitelabel,type:prestashop,so:".VERSION;
 
         $preference_result = MPRestCli::postTracking('/v1/payments?access_token=' . $access_token, $info, $trackingID);
         
