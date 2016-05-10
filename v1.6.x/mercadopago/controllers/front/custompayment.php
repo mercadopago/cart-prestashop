@@ -65,7 +65,16 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 '{bankwire_details}' => '',
                 '{bankwire_address}' => ''
             );
-            
+            error_log("====CUSTOM PAYMENT====".$response['id']);
+
+            $id_order = Order::getOrderByCartId($cart->id);
+            $order = new Order($id_order);
+            $existStates = $mercadopago->checkStateExist($id_order, Configuration::get($order_status));
+            error_log("=======existStates placeOrder===========".$existStates);
+            if ($existStates) {
+                return;
+            }
+
             $mercadopago->validateOrder(
                 $cart->id,
                 Configuration::get($order_status),

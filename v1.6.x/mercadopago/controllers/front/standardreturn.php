@@ -139,12 +139,8 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 }
             }
         } else {
-            PrestaShopLogger::addLog(
-                'MercadoPagoStandardReturnModuleFrontController::initContent = ' .
-                'External reference is not set. Order placement has failed.',
-                MP_SDK::ERROR,
-                0
-            );
+            UtilMercadoPago::logMensagem('MercadoPagoStandardReturnModuleFrontController::initContent = ' .
+                'External reference is not set. Order placement has failed.', MP_SDK::ERROR);
         }
     }
 }

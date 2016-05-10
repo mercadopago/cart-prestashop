@@ -38,16 +38,9 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
     public function displayAjax()
     {
         if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
-            PrestaShopLogger::addLog(
-                'Debug Mode :: displayAjax - topic = ' . Tools::getValue('topic'),
-                MP_SDK::INFO,
-                0
-            );
-            PrestaShopLogger::addLog('Debug Mode :: displayAjax - id = ' . Tools::getValue('id'), MP_SDK::INFO, 0);
-            PrestaShopLogger::addLog('Debug Mode :: displayAjax - checkout = ' . Tools::getValue('checkout'),
-                MP_SDK::INFO,
-                0
-            );
+             UtilMercadoPago::logMensagem('Debug Mode :: displayAjax - topic = ' . Tools::getValue('topic'), MP_SDK::INFO);
+             UtilMercadoPago::logMensagem('Debug Mode :: displayAjax - id = ' . Tools::getValue('id'), MP_SDK::INFO);
+             UtilMercadoPago::logMensagem('Debug Mode :: displayAjax - checkout = ' . Tools::getValue('checkout'), MP_SDK::INFO);
         }
         
         if (Tools::getValue('checkout') && Tools::getValue('data_id') || Tools::getValue('id')) {

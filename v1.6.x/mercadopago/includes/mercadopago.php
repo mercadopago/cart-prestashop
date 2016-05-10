@@ -26,10 +26,12 @@
 
 $GLOBALS['LIB_LOCATION'] = dirname(__FILE__);
 
+include_once 'UtilMercadoPago.php';
+
 class MP_SDK
 {
 
-    const VERSION = '3.2.1';
+    const VERSION = '3.2.2';
 
     /* Info */
     const INFO = 1;
@@ -73,7 +75,7 @@ class MP_SDK
         $access_data = MPRestCli::post('/oauth/token', $app_client_values, 'application/x-www-form-urlencoded');
         
         $this->access_data = $access_data['response'];
-        
+        error_log("$access_data======".Tools::jsonEncode($access_data));
         return $this->access_data['access_token'];
     }
 
@@ -218,7 +220,8 @@ class MP_SDK
     public function createPreference($preference)
     {
         $access_token = $this->getAccessToken();
-        $preference_result = MPRestCli::post('/checkout/preferences?access_token=' . $access_token, $preference);
+        $trackingID = "platform:std,type:prestashop,so:".VERSION;
+        $preference_result = MPRestCli::postTracking('/checkout/preferences?access_token=' . $access_token, $preference, $trackingID);
         return $preference_result;
     }
 
@@ -228,7 +231,9 @@ class MP_SDK
     public function createCustomPayment($info)
     {
         $access_token = $this->getAccessTokenV1();
-        $preference_result = MPRestCli::post('/v1/payments?access_token=' . $access_token, $info);
+        $trackingID = "platform:op,type:prestashop,so:".VERSION;
+
+        $preference_result = MPRestCli::postTracking('/v1/payments?access_token=' . $access_token, $info, $trackingID);
         
         return $preference_result;
     }
@@ -272,11 +277,7 @@ class MP_SDK
         $customerResponse = MPRestCli::post("/v1/customers?access_token=" . $access_token, $params);
         
         if ($customerResponse == null || $customerResponse["status"] != "200") {
-            PrestaShopLogger::addLog(
-                'MercadoPago::createCustomerCard - Error: Doens\'t possibled to create the Customer',
-                MP_SDK::WARNING,
-                0
-            );
+            UtilMercadoPago::logMensagem('MercadoPago::createCustomerCard - Error: Doens\'t possibled to create the Customer', MP_SDK::WARNING);
         }
         return $customerResponse;
     }
@@ -343,29 +344,78 @@ class MPRestCli
         curl_setopt($connect, CURLOPT_USERAGENT, 'MercadoPago Prestashop v' . MP_SDK::VERSION);
         curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);
+
+        return $connect;
+    }
+
+    private static function getConnectTracking($uri, $method, $content_type, $trackingID)
+    {
+        $connect = curl_init(self::API_BASE_URL . $uri);
+        
+        curl_setopt($connect, CURLOPT_USERAGENT, 'MercadoPago Prestashop v' . MP_SDK::VERSION);
+        curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt(
             $connect,
             CURLOPT_HTTPHEADER,
             array(
                 'Accept: application/json',
-                'Content-Type: ' . $content_type
+                'Content-Type: ' . $content_type,
+                'X-Tracking-Id:'.$trackingID
             )
         );
-        
+
         return $connect;
     }
 
-    private static function setData(&$connect, $data, $content_type)
+
+    private static function execTracking($method, $uri, $data, $content_type, $trackingID)
     {
+        $connect = self::getConnectTracking($uri, $method, $content_type, $trackingID);
+        
+        if ($data) {
+            self::setData($connect, $data, $content_type);
+        }
+        
+        $api_result = curl_exec($connect);
+        $api_http_code = curl_getinfo($connect, CURLINFO_HTTP_CODE);
+        $response = array(
+            'status' => $api_http_code,
+            'response' => Tools::jsonDecode($api_result, true)
+        );
+        
+        if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
+            UtilMercadoPago::logMensagem('MercadoPago.exec :: data = ' . Tools::jsonEncode($data), MP_SDK::INFO);
+            UtilMercadoPago::logMensagem('MercadoPago.exec :: response = ' . $api_result, MP_SDK::INFO);
+        }
+        
+        if ($response['status'] == 0) {
+            $error = 'Can not call the API, status code 0.';
+            throw new Exception($error);
+        } else {
+            if ($response['status'] > 202) {
+                UtilMercadoPago::logMensagem("MercadoPago::exec = " . $response['response']['message'], MP_SDK::ERROR);
+            }
+        }
+        curl_close($connect);
+        
+        return $response;
+    }    
+
+    private static function setData($connect, $data, $content_type)
+    {
+        error_log("=====data====".Tools::jsonEncode($data));
         if ($content_type == 'application/json') {
             if (gettype($data) == 'string') {
-                Tools::jsonDecode($data, true);
+                //error_log("=====entrou aqui 11====".Tools::jsonDecode($data, true));
+                $data = Tools::jsonEncode($data);
             } else {
                 $data = Tools::jsonEncode($data);
             }
             
             if (function_exists('json_last_error')) {
                 $json_error = json_last_error();
+                error_log("=======json_error========".$json_error);
                 if ($json_error != JSON_ERROR_NONE)
                     throw new Exception('JSON Error [{$json_error}] - Data: {$data}');
             }
@@ -390,22 +440,8 @@ class MPRestCli
         );
         
         if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
-            PrestaShopLogger::addLog(
-                'MercadoPago.exec :: data = ' . Tools::jsonEncode($data),
-                MP_SDK::INFO,
-                0,
-                null,
-                null,
-                true
-            );
-            PrestaShopLogger::addLog(
-                'MercadoPago.exec :: response = ' . $api_result,
-                MP_SDK::INFO,
-                $response['status'],
-                null,
-                null,
-                true
-            );
+            UtilMercadoPago::logMensagem('MercadoPago.exec :: data = ' . Tools::jsonEncode($data), MP_SDK::INFO);
+            UtilMercadoPago::logMensagem('MercadoPago.exec :: response = ' . $api_result, MP_SDK::INFO);
         }
         
         if ($response['status'] == 0) {
@@ -413,11 +449,7 @@ class MPRestCli
             throw new Exception($error);
         } else {
             if ($response['status'] > 202) {
-                PrestaShopLogger::addLog(
-                    "MercadoPago::exec = " . $response['response']['message'],
-                    MP_SDK::ERROR,
-                    $response['status']
-                );
+                UtilMercadoPago::logMensagem("MercadoPago::exec = " . $response['response']['message'], MP_SDK::ERROR);
             }
         }
         curl_close($connect);
@@ -433,6 +465,11 @@ class MPRestCli
     public static function post($uri, $data, $content_type = 'application/json')
     {
         return self::exec('POST', $uri, $data, $content_type);
+    }
+
+    public static function postTracking($uri, $data, $trackingID, $content_type = 'application/json')
+    {
+        return self::execTracking('POST', $uri, $data, $content_type, $trackingID);
     }
 
     public static function put($uri, $data, $content_type = 'application/json')
