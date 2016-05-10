@@ -38,7 +38,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
-        $this->version = '3.2.1';
+        $this->version = '3.2.2';
         $this->currencies = true;
         $this->currencies_mode = 'radio';
         $this->need_instance = 0;

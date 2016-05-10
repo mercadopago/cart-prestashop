@@ -31,7 +31,7 @@ include_once 'UtilMercadoPago.php';
 class MP_SDK
 {
 
-    const VERSION = '3.2.1';
+    const VERSION = '3.2.2';
 
     /* Info */
     const INFO = 1;
