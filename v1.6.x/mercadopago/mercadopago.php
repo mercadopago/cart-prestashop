@@ -216,11 +216,6 @@ class MercadoPago extends PaymentModule
             return false;
         }
         
-        /*
-         * ||
-         * ! $this->registerHook ( 'displayOrderConfirmation' ) ||
-         * ! $this->registerHook ( 'displayInvoice' )
-         */
         
         return true;
     }
@@ -753,13 +748,11 @@ class MercadoPago extends PaymentModule
                 
                 // get the customer cards
                 $customerID = $this->getCustomerID();
-                error_log("====customerID===".$customerID);
                 // get customer cards
                 if ($customerID != null) {
                     $data['customerID'] = $customerID;
                     $customerCards = $this->getCustomerCards($customerID);
                     $data['customerCards'] = Tools::jsonEncode($customerCards);
-                    error_log("====customerCards===".Tools::jsonEncode($customerCards));
                 } else {
                     $data['customerCards'] = null;
                 }
@@ -794,7 +787,6 @@ class MercadoPago extends PaymentModule
             }
             $data['offline_payment_settings'] = $offline_payment_settings;
             $payment_methods_credit = $this->mercadopago->getPaymentCreditsMLM();
-            error_log("=====payment_methods_credit======".Tools::jsonEncode(asort($payment_methods_credit))); 
             
             $data['payment_methods_credit'] = $payment_methods_credit;
             
@@ -871,7 +863,6 @@ class MercadoPago extends PaymentModule
     public function execPayment($post)
     {
         $preferences = $this->getPreferencesCustom($post);
-        error_log("=====prefereces======". Tools::jsonEncode($preferences));
         $result = $this->mercadopago->createCustomPayment($preferences);
         return $result['response'];
     }
@@ -907,6 +898,61 @@ class MercadoPago extends PaymentModule
         return $details_discount;
     }
 
+    public function setShippingParams($observer)
+    {
+            $shippingAddress = $order->getShippingAddress();
+            $zipCode = $shippingAddress->getPostcode();
+           //$defaultShippingId = substr($method, strpos($method, '_') + 1);
+            $defaultShippingId = 100009;
+            $paramsME = [
+                'mode'                    => 'me2',
+                'zip_code'                => $zipCode,
+                'default_shipping_method' => intval($defaultShippingId),
+                'dimensions'              => $helperMe->getDimensions($helperMe->getAllItems($order->getAllItems()))
+            ];
+            /*
+            if ($shippingCost == 0) {
+                $paramsME['free_methods'] = [['id' => intval($defaultShippingId)]];
+            }
+        
+        if (!empty($paramsME['cost'])) {
+            error_log("===shipping==");
+            $paramsME['cost'] = (float)$order->getBaseShippingAmount();
+        }*/
+
+        return $observer;
+    }
+
+    /**
+     * @param $quote Mage_Sales_Model_Quote
+     */
+    public function getDimensions($items)
+    {
+        $width = 0;
+        $height = 0;
+        $length = 0;
+        $weight = 0;
+        foreach ($items as $item) {
+            $width += $this->_getShippingDimension($item, 'width');
+            $height += $this->_getShippingDimension($item, 'height');
+            $length += $this->_getShippingDimension($item, 'length');
+            $weight += $this->_getShippingDimension($item, 'weight');
+        }
+        $height = ceil($height);
+        $width = ceil($width);
+        $length = ceil($length);
+        $weight = ceil($weight);
+
+        if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
+            $this->log('Invalid dimensions in cart:', ['width' => $width, 'height' => $height, 'length' => $length, 'weight' => $weight,]);
+            Mage::throwException('Invalid dimensions cart');
+        }
+
+        return $height . 'x' . $width . 'x' . $length . ',' . $weight;
+
+    }
+
+
     /**
      *
      * @param
@@ -920,6 +966,10 @@ class MercadoPago extends PaymentModule
         // items
         $image_url = '';
         $products = $cart->getProducts();
+
+        //error_log("====products=====".Tools::jsonEncode($products));
+        //error_log("====products=====".Tools::jsonEncode($cart->getOrderShippingCost( ,true)));
+
         $items = array();
         $summary = '';
         
@@ -949,7 +999,7 @@ class MercadoPago extends PaymentModule
             
             $items[] = $item;
         }
-        
+
         // include shipping cost
         $shipping_cost = (double) $cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
         if ($shipping_cost > 0) {
@@ -1024,6 +1074,16 @@ class MercadoPago extends PaymentModule
                     'apartment' => '-'
             )
         );
+
+        /*$zipCode = $address_delivery->postcode;
+       //$defaultShippingId = substr($method, strpos($method, '_') + 1);
+        $defaultShippingId = 100009;
+        $paramsME = [
+            'mode'                    => 'me2',
+            'zip_code'                => $zipCode,
+            'default_shipping_method' => intval($defaultShippingId)
+        ];
+//            'dimensions'              => $this->getDimensions($helperMe->getAllItems($order->getAllItems()))*/
         
         $notification_url = $this->link->getModuleLink('mercadopago',
             'notification',
@@ -1034,7 +1094,6 @@ class MercadoPago extends PaymentModule
             false);
         
         $ordelTotal = (double) number_format($cart->getOrderTotal(true, Cart::BOTH), 2, '.', '');
-        error_log("payment_method_id====".$post['payment_method_id']);
         $payment_preference = array(
             'transaction_amount' => $ordelTotal,
             'external_reference' => $cart->id,
@@ -1306,8 +1365,8 @@ class MercadoPago extends PaymentModule
         $data['customer']['name'] = $data['customer']['first_name'];
         $data['customer']['surname'] = $data['customer']['last_name'];
         $data['payer'] = $data['customer'];
-        unset($data['customer']);
-        
+        error_log("===standard====".Tools::jsonEncode($data));
+
         return $data;
     }
 
@@ -1356,6 +1415,7 @@ class MercadoPago extends PaymentModule
 
     public function listenIPN($checkout, $topic, $id)
     {
+        error_log("==========ipn================".$id);
         $payment_method_ids = array();
         $payment_ids = array();
         $payment_statuses = array();
@@ -1453,6 +1513,20 @@ class MercadoPago extends PaymentModule
            (int) Configuration::get('MERCADOPAGO_STATUS_1'));
     }
 
+     /**
+     * Verify if there is state approved for order
+     */
+    public static function checkStateExist($id_order, $id_order_state)
+    {
+        return (bool) Db::getInstance()->getValue(
+            '
+        SELECT `id_order_state`
+        FROM ' . _DB_PREFIX_ . 'order_history
+        WHERE `id_order` = ' . (int) $id_order . '
+        AND `id_order_state` = ' .
+           (int) $id_order_state);
+    }   
+
     private function updateOrder(
         $result,
         $payment_ids,
@@ -1464,6 +1538,9 @@ class MercadoPago extends PaymentModule
         $transaction_amounts,
         $external_reference
     ) {
+
+
+
         // if has two creditcard validate whether payment has same status in order to continue validating order
         if (count($payment_statuses) == 1 ||
              (count($payment_statuses) == 2 && $payment_statuses[0] == $payment_statuses[1])) {
@@ -1471,6 +1548,7 @@ class MercadoPago extends PaymentModule
             $order_status = null;
             $payment_status = $payment_statuses[0];
             $payment_type = $payment_types[0];
+
             switch ($payment_status) {
                 case 'in_process':
                     $order_status = 'MERCADOPAGO_STATUS_0';
@@ -1505,8 +1583,14 @@ class MercadoPago extends PaymentModule
                 
                 if ($id_order) {
                     $order = new Order($id_order);
+
+                    $existStates = $this->checkStateExist($id_order, Configuration::get($order_status));
+                    error_log("=======existStates===========".$existStates);
+                    if ($existStates) {
+                        return;
+                    }
                 }
-                
+
                 // If order wasn't created yet and payment is approved or pending or in_process, create it.
                 // This can happen when user closes checkout standard
                 if (empty($id_order) && ($payment_status == 'in_process' || $payment_status == 'approved' ||
@@ -1520,6 +1604,14 @@ class MercadoPago extends PaymentModule
                     );
                     $id_order = ! $id_order ? Order::getOrderByCartId($id_cart) : $id_order;
                     $order = new Order($id_order);
+
+
+                    $existStates = $this->checkStateExist($id_order, Configuration::get($order_status));
+                    error_log("=======existStates===========".$existStates);
+                    if ($existStates) {
+                        return;
+                    }
+
                     $this->validateOrder($id_cart,
                         Configuration::get($order_status),
                         $total,
@@ -1532,7 +1624,6 @@ class MercadoPago extends PaymentModule
                     );
                 } elseif (! empty($order) && $order->current_state != null &&
                      $order->current_state != Configuration::get($order_status)) {
-                    
                     /*
                      * this is necessary to ignore the transactions with the same
                      * external reference and states diferents
@@ -1547,6 +1638,7 @@ class MercadoPago extends PaymentModule
                     
                     $id_order = ! $id_order ? Order::getOrderByCartId($id_cart) : $id_order;
                     $order = new Order($id_order);
+
                     $this->updateOrderHistory($order->id, Configuration::get($order_status));
                     
                     // Cancel the order to force products to go to stock.
@@ -1617,7 +1709,6 @@ class MercadoPago extends PaymentModule
                 $customerData = array();
                 $customerData['email'] = $emailCustomer;
                 $customer = $this->mercadopago->createCustomerCard($customerData);
-                error_log("===customerData====".Tools::jsonEncode($customerData));
                 $customerID = $customer["response"]["id"];
             }
         }
