@@ -7,7 +7,7 @@
 * [Setup](#setup)
 * [Notifications](#notifications)
 * [Example features](#pictures_features)
-
+* [Feedback](#feedback)
 
 <a name="features"></a>
 ##Features##
@@ -140,3 +140,12 @@ Your notification URL will be automatically send with your payment to our API.
 **Discount Coupon** <strong>Prestashop v1.6.x</strong>
 <br/>
 ![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Coupon.jpg)
+
+<a name="feedback"></a>
+##Feedback##
+
+We want to know your opinion, please answer the following form.
+<ul>
+	<li><a href="http://goo.gl/forms/2n5jWHaQbfEtdy0E2" target="_blank">Portuguese</a></li>
+	<li><a href="http://goo.gl/forms/A9bm8WuqTIZ89MI22" target="_blank">Spanish</a></li>
+</ul>
