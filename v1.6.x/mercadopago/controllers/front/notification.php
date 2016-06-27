@@ -25,6 +25,7 @@
  */
 
 include_once dirname(__FILE__) . '/../../mercadopago.php';
+include_once dirname(__FILE__) . '/../../includes/MPApi.php';
 
 class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
 {
@@ -36,15 +37,16 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
     }
 
     public function displayAjax()
-    {
+    {               
+        
         if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
-             UtilMercadoPago::logMensagem('Debug Mode :: displayAjax - topic = ' . Tools::getValue('topic'), MP_SDK::INFO);
-             UtilMercadoPago::logMensagem('Debug Mode :: displayAjax - id = ' . Tools::getValue('id'), MP_SDK::INFO);
-             UtilMercadoPago::logMensagem('Debug Mode :: displayAjax - checkout = ' . Tools::getValue('checkout'), MP_SDK::INFO);
+             UtilMercadoPago::logMensagem('Debug Mode :: displayAjax - topic = ' . Tools::getValue('topic'), MPApi::INFO);
+             UtilMercadoPago::logMensagem('Debug Mode :: displayAjax - id = ' . Tools::getValue('id'), MPApi::INFO);
+             UtilMercadoPago::logMensagem('Debug Mode :: displayAjax - checkout = ' . Tools::getValue('checkout'), MPApi::INFO);
         }
         
         if (Tools::getValue('checkout') && Tools::getValue('data_id') || Tools::getValue('id')) {
-            $mercadopago = new MercadoPago();
+            $mercadopago = $this->module;
             if (Tools::getValue('checkout') == "custom") {
                 $mercadopago->listenIPN(
                     Tools::getValue('checkout'),

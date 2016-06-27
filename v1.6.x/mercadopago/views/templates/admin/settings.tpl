@@ -17,7 +17,7 @@
 * versions in the future. If you wish to customize PrestaShop for your
 * needs please refer to http://www.prestashop.com for more information.
 *
-*  @author    ricardobrito
+*  @author    MercadoPago
 *  @copyright Copyright (c) MercadoPago [http://www.mercadopago.com]
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of MercadoPago
@@ -91,17 +91,17 @@
 			</legend>
 			<label>{l s='Client Id:' mod='mercadopago'}</label>
 			<div class="">
-				<input type="text" size="33" name="MERCADOPAGO_CLIENT_ID" value="{$client_id|escape:'htmlall':'UTF-8'}" />
+				<input type="text" size="33" required="true" name="MERCADOPAGO_CLIENT_ID" value="{$client_id|escape:'htmlall':'UTF-8'}" />
 			</div>
 			<br />
 			<label>{l s='Client Secret:' mod='mercadopago'}</label>
 			<div class="">
-				<input type="text" size="33" name="MERCADOPAGO_CLIENT_SECRET" value="{$client_secret|escape:'htmlall':'UTF-8'}" />
+				<input type="text" size="33" required="true" name="MERCADOPAGO_CLIENT_SECRET" value="{$client_secret|escape:'htmlall':'UTF-8'}" />
 			</div>
 			<br />
 			<label>{l s='Access Token:' mod='mercadopago'}</label>
 			<div class="">
-				<input type="text" size="60" name="MERCADOPAGO_ACCESS_TOKEN" value="{$access_token|escape:'htmlall':'UTF-8'}" />
+				<input type="text" size="60" required="true" name="MERCADOPAGO_ACCESS_TOKEN" value="{$access_token|escape:'htmlall':'UTF-8'}" />
 			</div>
 			<br />
 			{if !empty($country)}
@@ -140,7 +140,7 @@
 
 				<br />					
 		</fieldset>
-		{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV'}
+		{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV' || $country == 'MPE'}
 			<fieldset>
 				<legend>
 					<img src="../img/admin/contact.gif" />{l s='Settings - Custom Credit Card' mod='mercadopago'}
@@ -170,7 +170,7 @@
 					</legend>
 					<label>{l s='Active: ' mod='mercadopago'}</label>
 					<div class="">
-						<select name="MERCADOPAGO_{$offline_payment|upper|escape:'htmlall':'UTF-8'}_ACTIVE" id="{$offline_payment|escape:'htmlall':'UTF-8'}_active">
+						<select name="MERCADOPAGO_{$offline_payment|upper|escape:'htmlall':'UTF-8'}_ACTIVE" class="ticket" id="{$offline_payment|escape:'htmlall':'UTF-8'}_active">
 							<option value="true">{l s='Yes' mod='mercadopago'} </option>
 							<option value="false">{l s='No' mod='mercadopago'} </option>
 						</select>
@@ -240,31 +240,43 @@
 						<option value="false">{l s='No' mod='mercadopago'} </option>
 					</select>
 				</div>
+				{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV'}			
+					<div class="row">
+						<div class="col-md12">
+							<img class="logo" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/mercadoenvios_hori.jpg" width="250px;" style="margin-left:-250px;">
+						</div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-md12">
+							<label>{l s='Active MercadoEnvios: ' mod='mercadopago'}</label>
+							<div class="">
+								<select name="MERCADOENVIOS_ACTIVATE" id="MERCADOENVIOS_ACTIVATE">
+									<option value="true">{l s='Yes' mod='mercadopago'} </option>
+									<option value="false">{l s='No' mod='mercadopago'} </option>
+								</select>
+							</div>
+						</div>
+					</div>
+				{/if}
 			</fieldset>
-				
-			<fieldset>
-				<legend class="ch-form-row discount-link" style="padding-left: 30px;">
-					{l s='Coupon MercadoPago' mod='mercadopago'}
-				</legend>
-				<p style="text-align: center;">{l s='* Valid option only for sites participating coupon campaigns.' mod='mercadopago'}</p>
-				<br/>
-				<label>{l s='Enable Coupon of Discount: ' mod='mercadopago'}</label>
-				<div class="">
-					<select name="MERCADOPAGO_COUPON_ACTIVE" id="coupon_active">
-						<option value="true">{l s='Yes' mod='mercadopago'} </option>
-						<option value="false">{l s='No' mod='mercadopago'} </option>
-					</select>
-					
-				</div>
-				<!--  <label>{l s='Active for Ticket: ' mod='mercadopago'}</label>
-				<div class="">
-					<select name="MERCADOPAGO_COUPON_TICKET_ACTIVE" id="coupon_ticket_active">
-						<option value="true">{l s='Yes' mod='mercadopago'} </option>
-						<option value="false">{l s='No' mod='mercadopago'} </option>
-					</select>
-				</div>-->				
-			</fieldset>	
+			{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MPE'}				
+				<fieldset>
+					<legend class="ch-form-row discount-link" style="padding-left: 30px;">
+						{l s='Coupon MercadoPago' mod='mercadopago'}
+					</legend>
+					<p style="text-align: center;">{l s='* Valid option only for sites participating coupon campaigns.' mod='mercadopago'}</p>
+					<br/>
+					<label>{l s='Enable Coupon of Discount: ' mod='mercadopago'}</label>
+					<div class="">
+						<select name="MERCADOPAGO_COUPON_ACTIVE" id="coupon_active">
+							<option value="true">{l s='Yes' mod='mercadopago'} </option>
+							<option value="false">{l s='No' mod='mercadopago'} </option>
+						</select>
 						
+					</div>			
+				</fieldset>
+			{/if}
 			<fieldset>
 				<legend>
 					<img src="../img/admin/contact.gif" />{l s='Settings - Active log' mod='mercadopago'}
@@ -316,7 +328,10 @@
 			document.getElementById("standard_active").value = "{$standard_active|escape:'htmlall':'UTF-8'}";
 		}
 
-
+		if (document.getElementById("MERCADOENVIOS_ACTIVATE")){
+			document.getElementById("MERCADOENVIOS_ACTIVATE").value = "{$MERCADOENVIOS_ACTIVATE|escape:'htmlall':'UTF-8'}" == "" ? "false" : 
+			"{$MERCADOENVIOS_ACTIVATE|escape:'htmlall':'UTF-8'}";
+		}
 		if (document.getElementById("log_active")){
 			document.getElementById("log_active").value = "{$log_active|escape:'htmlall':'UTF-8'}";
 		}
@@ -346,8 +361,31 @@
 				$.scrollTo(0, 0);
 		});
 	
+	$("#MERCADOENVIOS_ACTIVATE").change(
+			function() { 
+				if (this.value == "true") {
+					retorno = window.confirm("{l s='If you enable this, the others payment type will be disable. Do you want to continue?' mod='mercadopago'}");
+					if (retorno) {
+						$( "#creditcard_active" ).val("false");
+						$( ".ticket" ).val("false");
+						$('[name=MERCADOPAGO_PUBLIC_KEY]').val("");
+					}
+				}
+		});
+	$( "#MERCADOENVIOS_ACTIVATE" ).prop("disabled", true);
+	$("#standard_active").change(
+			function() { 
+				$( "#MERCADOENVIOS_ACTIVATE" ).val("false");
+				if (this.value == "true") {
+					$( "#MERCADOENVIOS_ACTIVATE" ).prop("disabled", false);
+				} else {
+					$( "#MERCADOENVIOS_ACTIVATE" ).prop("disabled", true);
+				}
+			}
+	);
+
+
 	$(document).ready(function (){
-		
 		var cliend_id = "{$client_id|escape:'htmlall':'UTF-8'}";
 		// hide marketing when settings are updated
 		if (cliend_id.length > 0) {

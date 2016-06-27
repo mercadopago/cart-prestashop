@@ -8,7 +8,7 @@ license@prestashop.com so we can send you a copy immediately. * *
 DISCLAIMER * * Do not edit or add to this file if you wish to upgrade
 PrestaShop to newer * versions in the future. If you wish to customize
 PrestaShop for your * needs please refer to http://www.prestashop.com
-for more information. * * @author ricardobrito * @copyright Copyright
+for more information. * * @author MercadoPago * @copyright Copyright
 (c) MercadoPago [http://www.mercadopago.com] * @license
 http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 3.0) * International Registered Trademark & Property of MercadoPago *}
@@ -42,109 +42,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	rel="stylesheet" type="text/css" />
 
 <div class="mp-module">
-	{if $creditcard_active == 'true' && $public_key != ''} {if $version ==
-	5}
-	<div class="payment_module mp-form-custom">
-		<div class="row">
-			<span class="payment-label">{l s='CREDIT CARD'
-				mod='mercadopago'} </span> <br/> <span class="poweredby">{l s='Powered
-				by' mod='mercadopago'}</span> <img class="logo"
-				src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png" />
-			{if !empty($creditcard_banner)} <img
-				src="{$creditcard_banner|escape:'htmlall':'UTF-8'}"
-				class="mp-creditcard-banner" /> {/if}
-		</div>
-		<form action="{$custom_action_url|escape:'htmlall':'UTF-8'}" method="post"
-			id="form-pagar-mp">
-			<input id="amount" type="hidden" value="{$amount|escape:'htmlall':'UTF-8'}" />
-			<input id="payment_method_id" type="hidden" name="payment_method_id" />
-			<input id="payment_type_id" type="hidden" name="payment_type_id" />
-			<input name="mercadopago_coupon" type="hidden"
-				class="mercadopago_coupon_ticket" />
-			<div class="row">
-				<div class="col">
-					<label for="id-card-number">{l s='Card number: '
-						mod='mercadopago'}</label> <input id="id-card-number"
-						data-checkout="cardNumber" type="text" />
-					<div id="id-card-number-status" class="status"></div>
-				</div>
-				<div class="col col-expiration">
-					<label for="id-card-expiration-month">{l s='Month Exp: '
-						mod='mercadopago'}</label> <select id="id-card-expiration-month"
-						class="small-select" data-checkout="cardExpirationMonth"
-						type="text"></select>
-				</div>
-				<div class="col col-expiration">
-					<label for="id-card-expiration-month">{l s='Year Exp: '
-						mod='mercadopago'}</label> <select id="id-card-expiration-year"
-						class="small-select" data-checkout="cardExpirationYear"
-						type="text"></select>
-					<div id="id-card-expiration-year-status" class="status"></div>
-				</div>
-				<div class="col">
-					<label for="id-card-holder-name">{l s='Card Holder Name:' mod='mercadopago'}</label> <input id="id-card-holder-name"
-						data-checkout="cardholderName" type="text" name="cardholderName" />
-					<div id="id-card-holder-name-status" class="status"></div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col col-security">
-					<label for="id-security-code">{l s='Security Code: '
-						mod='mercadopago'}</label> <input id="id-security-code"
-						data-checkout="securityCode" type="text" maxlength="4" //> <img
-						src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/cvv.png"
-						class="cvv" />
-					<div id="id-security-code-status" class="status"></div>
-				</div>
-				{if $country == 'MLB'}
-				<div class="col col-cpf">
-					<label for="id-doc-number">{l s='CPF: ' mod='mercadopago'}</label>
-					<input id="id-doc-number" name="docNumber"
-						data-checkout="docNumber" type="text" maxlength="11" />
-					<div id="id-doc-number-status" class="status"></div>
-					<input name="docType" data-checkout="docType" type="hidden"
-						id="id-docType" value="CPF" />
-				</div>
-				{elseif $country == 'MLM' || $country == 'MLA'}
-				<div class="col col-bank">
-					<label class="issuers-options" for="id-issuers-options">{l
-						s='Bank: ' mod='mercadopago'}</label> <select class="issuers-options"
-						id="id-issuers-options" name="issuersOptions" type="text>"></select>
-				</div>
-				{/if}
-				<div class="col">
-					<label for="id-installments">{l s='Installments: '
-						mod='mercadopago'}</label> <select id="id-installments"
-						name="installments" type="text"></select>
-					<div id="id-installments-status" class="status"></div>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-bottom">
-					{if $country == 'MLA'}
-					<div class="row">
-						<div class="col">
-							<label for="docType">{l s='Document type: '
-								mod='mercadopago'}</label> <select name="docType" id="id-docType"
-								data-checkout="docType"></select>
-						</div>
-						<div class="col">
-							<input id="id-doc-number" name="docNumber"
-								data-checkout="docNumber" type="text" />
-							<div id="id-doc-number-status" class="status"></div>
-						</div>
-					</div>
-					{/if} <input type="submit"
-						value="{l s='Confirm payment' mod='mercadopago'}"
-						class="ch-btn ch-btn-big submit" />
-				</div>
-			</div>
-		</form>
-		</p>
-	</div>
-
-	{elseif $version == 6} {if $coupon_active == 'true' }
+	{if $coupon_active == 'true' }
 	
 	<div class="row">
 		<div class="col-xs-12 col-md-6">
@@ -166,7 +64,10 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 							<img class="logo_cupom" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/MCO/CUPOM_MCO.jpg">
 						{elseif $country eq "MLV"}
 							<img class="logo_cupom" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/MLV/CUPOM_MLV.jpg">
-						{/if}							
+						{elseif $country eq "MPE"}
+							<img class="logo_cupom" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/MPE/CUPOM_MPE.jpg">
+						{/if}		
+
 						</span>
 					</div>
 				</div>
@@ -225,8 +126,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	</div>
 
 	{/if}
-
-
+{if $mercadoenvios_activate == 'false'}
 
 	<div class="card row">
 		<div class="col-xs-12 col-md-6">
@@ -297,7 +197,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 					</div>
 					
 					<div id="cardDiv">
-						{if $country == 'MLM'}
+						{if $country == 'MLM' || $country == 'MPE'}
 						<div class="row">
 							<div class="col">
 								<label for="id-card-number">{l s='Card Type: '
@@ -364,17 +264,17 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 									id="id-docType" value="CPF" />
 							</div>
 						</div>
-						{elseif $country == 'MLM' || $country == 'MLA'}
+						{elseif $country == 'MLM' || $country == 'MLA' || $country == 'MPE'}
 						<div class="row">
 							<div class="col">
 								<label class="issuers-options" for="id-issuers-options">{l
-									s='Bank: ' mod='mercadopago'}<em>*</em>
+									s='Bank: ' mod='mercadopago'}
 								</label> <select class="issuers-options" id="id-issuers-options"
 									name="issuersOptions" type="text"></select>
 							</div>
 						</div>
 						{/if} {if $country == 'MLA' || $country == 'MCO' || $country ==
-						'MLV'}
+						'MLV'  || $country == 'MPE'}
 						<div class="row">
 							<div class="col">
 								<label for="docType">{l s='Document type: '
@@ -438,38 +338,12 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			</p>
 		</div>
 	</div>
+	{/if}
 
-	{/if} {/if} {if $country == 'MLB' || $country == 'MLM' || $country ==
+	{if $country == 'MLB' || $country == 'MLM' || $country == 'MPE' || $country ==
 	'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV'}
 	{foreach from=$offline_payment_settings key=offline_payment item=value}
-	{if $value.active == "true"} {if $version == 5}
-	<div class="payment_module mp-form">
-		<div class="row">
-			<div class="row">
-				<div class="col offline">
-					<span class="payment-label">{$value.name|upper|escape:'htmlall':'UTF-8'}</span><br /> <span
-						class="poweredby">{l s='Powered by' mod='mercadopago'}</span> <img
-						class="logo"
-						src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">
-				</div>
-				<a href="javascript:void(0);"
-					id="id-{$offline_payment|escape:'htmlall':'UTF-8'}" class="offline-payment">
-					{l s='Pay through ' mod='mercadopago'}{$value.name|ucfirst}{l s='
-					via MercadoPago' mod='mercadopago'}
-					<form action="{$custom_action_url|escape:'htmlall':'UTF-8'}" method="post">
-						<input name="mercadopago_coupon" type="hidden"
-							class="mercadopago_coupon_ticket" /> <input
-							name="payment_method_id" type="hidden"
-							value="{$offline_payment|escape:'htmlall':'UTF-8'}" /> <input
-							type="submit" class="create-boleto"
-							id="id-create-{$offline_payment|escape:'htmlall':'UTF-8'}">
-					</form>
-				</a>
-			</div>
-		</div>
-	</div>
-	{elseif $version == 6}
-
+	{if $value.active == "true" && $mercadoenvios_activate == 'false'} 
 	<div class="row">
 		<div class="col-xs-12 col-md-6">
 			<a href="javascript:void(0);"
@@ -499,29 +373,12 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			</a>
 		</div>
 	</div>
-	{/if} {/if} {/foreach} {/if} {if $standard_active eq 'true' &&
-	$preferences_url != null} {if $version == 5} {if $window_type !=
-	'iframe'}
+	{/if}
+	{/foreach} 
+	{/if} 
+	{if $standard_active eq 'true' &&
+	$preferences_url != null}
 
-	<div class="payment_module mp-form">
-		<img
-			src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo_120_31.png"
-			id="id-standard-logo"> <a class="standard"
-			href="{$preferences_url|escape:'htmlall':'UTF-8'}"
-			mp-mode="{$window_type|escape:'htmlall':'UTF-8'}" id="id-standard"
-			name="MP-Checkout">{l s='Pay via MercadoPago and split into '
-			mod='mercadopago'}<br/>{l s=' up to 24 times' mod='mercadopago'}
-		</a> <img src="{$standard_banner|escape:'htmlall':'UTF-8'}"
-			class="mp-standard-banner" />
-	</div>
-	{else}
-	<div class="mp-form">
-		<iframe src="{$preferences_url|escape:'htmlall':'UTF-8'}" name="MP-Checkout"
-			width="{$iframe_width|escape:'htmlall':'UTF-8'}"
-			height="{$iframe_height|escape:'htmlall':'UTF-8'}" frameborder="0">
-		</iframe>
-	</div>
-	{/if} {elseif $version == 6}
 	<div class="row">
 		<div class="col-xs-12 col-md-6">
 			{if $window_type != 'iframe'} <a
@@ -550,7 +407,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			{/if}
 		</div>
 	</div>
-	{/if} {/if}
+	{/if}
 </div>
 
 
@@ -622,7 +479,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		} else if (bin.length < 6) {
 			$("#id-card-number").css('background-image', '');
 			$("#id-installments").html('');
-			if (country == "MLM") {
+			if (country == "MLM" || country == "MPE") {
 				$("#id-issuers-options").html('');
 			}
 			
@@ -646,7 +503,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			var payment_method = result[0];
 			var amount = returnAmount();
 			var bin = getBin();
-			if (country === "MLM" || country === "MLA") {
+			if (country === "MLM" || country === "MLA" || country === "MPE") {
 				// check if the issuer is necessary to pay
 				var issuerMandatory = false, additionalInfo = result[0].additional_info_needed;
 
@@ -657,7 +514,13 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				}
 
 				if (issuerMandatory) {
-					Mercadopago.getIssuers(result[0].id, showCardIssuers);
+					payment_method_issue = 0;
+					if (country === "MLM" || country === "MPE") {
+						payment_method_issue = document.getElementById("credit_option").value;
+					} else {
+						payment_method_issue = result[0].id;
+					}
+					Mercadopago.getIssuers(payment_method_issue, showCardIssuers);
 					//$("#id-issuers-options").bind("change", function() {
 						//setInstallmentsByIssuerId(status, result)
 					//});
@@ -707,13 +570,10 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			issuerId = document.querySelector('#id-issuers-options').value, amount;
 			bin = getBin();
 		}
-		console.info("==issuerId=="+issuerId);
 		if (issuerId == '-1') {
 			console.info("Entrou aqui");
 			return;
 		}
-
-		console.info("passou aqui setInstallmentsByIssuerId");
 		
 		//var jsonPaymentMethod = getPaymentMethods();
 		//"payment_method_id" : jsonPaymentMethod.payment_method_id,
@@ -769,37 +629,33 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		}
 
 		
-		issuersSelector.options.length = 0;
-		var option = new Option("{l s='Choose' mod='mercadopago'}...", '-1');
-		fragment.appendChild(option);
-
-		for (var i = 0; i < issuers.length; i++) {
-			if (issuers[i].name != "default") {
-				option = new Option(issuers[i].name, issuers[i].id);
-			} else {
-				option = new Option("Otro", issuers[i].id);
-			}
+		if (issuers.length > 0) {
+			issuersSelector.options.length = 0;
+			var option = new Option("{l s='Choose' mod='mercadopago'}...", '-1');
 			fragment.appendChild(option);
+			for (var i = 0; i < issuers.length; i++) {
+				if (issuers[i].name != "default") {
+					option = new Option(issuers[i].name, issuers[i].id);
+				} else {
+					option = new Option("Otro", issuers[i].id);
+				}
+				fragment.appendChild(option);
+			}
+			issuersSelector.appendChild(fragment);
+			issuersSelector.removeAttribute('disabled');
+			
+			id_issuers_options.removeAttribute('style');
+			issuers_options.removeAttribute('style');			
 		}
-		issuersSelector.appendChild(fragment);
-		issuersSelector.removeAttribute('disabled');
-		
-		id_issuers_options.removeAttribute('style');
-		issuers_options.removeAttribute('style');
+
 	};
 
-	if (country === "MLM" || country === "MLA") {
+	if (country === "MLM" || country === "MLA" || country === "MPE") {
 		$("#id-issuers-options").change(function() {
-			
 			
 			var issuerId = $('#id-issuers-options').val();
 			var amount = returnAmount();
-			
-			console.info("showCardIssuers");
-			
-			//var jsonPaymentMethod = getPaymentMethods();
-			//"payment_method_id" : jsonPaymentMethod.payment_method_id,
-			//"payment_type_id" : jsonPaymentMethod.payment_type_id,
+
 			Mercadopago.getInstallments({
 				"bin" : getBin(),
 				"amount" : amount,
@@ -1196,7 +1052,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	createModal();
 
 	// need to set 0 so modal checkout can work
-	$("#header").css("z-index", 0);
+	//$("#header").css("z-index", 0);
 	if ("{$standard_active|escape:'javascript':'UTF-8'}" == "true"
 			&& "{$window_type|escape:'javascript':'UTF-8'}" == "iframe") {
 		$(".mp-form")
@@ -1471,17 +1327,17 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		return true;
 	}
 
-	/*$("#credit_option")
+	$("#credit_option")
 	.change(
 			function(e) {
-				//$("#id-card-number").val("");
-				//loadCard();
-			});*/
+				$("#id-card-number").val("");
+				loadCard();
+			});
 	
 	function getPaymentMethods() {
 		var json = {};
 		
-		if(country == "MLM") {
+		if(country == "MLM" || country == "MPE") {
 			var credit_option = document.querySelector('select[name="credit_option"]');
 			console.info(credit_option[credit_option.options.selectedIndex]);
 			console.info(credit_option);
@@ -1677,7 +1533,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	});
 	
 
-	if (country === "MLM") {
+	if (country === "MLM" || country === "MPE") {
 		var html_options = "";
 		var html_options_mp = "";
 		var credit = "";

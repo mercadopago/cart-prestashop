@@ -1,8 +1,6 @@
 <?php
-
-
 /**
- * 2007-2016 PrestaShop
+ * 2007-2015 PrestaShop.
  *
  * NOTICE OF LICENSE
  *
@@ -20,29 +18,31 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- * @author    MERCADOPAGO.COM REPRESENTA&Ccedil;&Otilde;ES LTDA.
- * @copyright Copyright (c) MercadoPago [http://www.mercadopago.com]
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- *          International Registered Trademark & Property of MercadoPago
+ *  @author    MercadoPago
+ *  @copyright Copyright (c) MercadoPago [http://www.mercadopago.com]
+ *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ *  International Registered Trademark & Property of MercadoPago
  */
+
 class UtilMercadoPago
 {
-	public static function logMensagem ($mensagem, $nivel) {
+    public static function logMensagem($mensagem, $nivel)
+    {
         $version = UtilMercadoPago::getPrestashopVersion();
-		$data_hora = date("F j, Y, g:i a");
-		if ($version >= 6) {
-		       	PrestaShopLogger::addLog(
+        $data_hora = date("F j, Y, g:i a");
+        if ($version >= 6) {
+            PrestaShopLogger::addLog(
                 $data_hora."===".$mensagem,
                 $nivel,
                 0,
                 null,
                 null,
                 true
-        	);	
-		} else {
-			error_log($data_hora."===".$mensagem);
-		}
-	}
+            );
+        } else {
+            error_log($data_hora."===".$mensagem);
+        }
+    }
 
     public static function getPrestashopVersion()
     {
@@ -57,5 +57,4 @@ class UtilMercadoPago
         }
         return $version;
     }
-
 }
