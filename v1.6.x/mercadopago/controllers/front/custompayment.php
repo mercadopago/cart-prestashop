@@ -18,7 +18,7 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- *  @author    ricardobrito
+ *  @author    MercadoPago
  *  @copyright Copyright (c) MercadoPago [http://www.mercadopago.com]
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of MercadoPago
@@ -40,6 +40,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
     {
         // card_token_id
         $mercadopago = $this->module;
+
         $response = $mercadopago->execPayment($_POST);
         $order_status = null;
         if (array_key_exists('status', $response)) {
@@ -65,16 +66,14 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 '{bankwire_details}' => '',
                 '{bankwire_address}' => ''
             );
-            error_log("====CUSTOM PAYMENT====".$response['id']);
 
             $id_order = Order::getOrderByCartId($cart->id);
             $order = new Order($id_order);
             $existStates = $mercadopago->checkStateExist($id_order, Configuration::get($order_status));
-            error_log("=======existStates placeOrder===========".$existStates);
             if ($existStates) {
                 return;
             }
-
+            
             $mercadopago->validateOrder(
                 $cart->id,
                 Configuration::get($order_status),
@@ -86,10 +85,12 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 false,
                 $cart->secure_key
             );
+
             $order = new Order($mercadopago->currentOrder);
+
             $order_payments = $order->getOrderPayments();
             $order_payments[0]->transaction_id = $response['id'];
-            
+
             $uri = __PS_BASE_URI__ . 'order-confirmation.php?id_cart=' . $cart->id . '&id_module=' . $mercadopago->id .
                  '&id_order=' . $mercadopago->currentOrder . '&key=' . $order->secure_key . '&payment_id=' .
                  $response['id'] . '&payment_status=' . $response['status'];

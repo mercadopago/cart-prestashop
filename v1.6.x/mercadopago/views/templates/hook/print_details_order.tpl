@@ -42,3 +42,33 @@
 	</ul>
 </div>
 {/if}
+{if isset($shipment_id)}
+<div class="col-xs-12 col-sm-6 box">
+	<div class="row">
+		<div class="col">
+			<img style="text-align: right;" width="10%" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/mercado_envios.jpg">	
+		</div>
+	</div>
+<br>
+	 <ul>
+	 	<li class="page-subheading">
+	 		{l s='Track your delivery' mod='mercadopago'}
+	 	</li>
+	 	{if ! empty($tracking_number)} 
+			<li>
+				<span><strong class="dark">{l s='Tracking ID' mod='mercadopago'}:</strong>&nbsp;</span>{$tracking_number|escape:'htmlall':'UTF-8'}
+			</li>	
+			<li>
+				<span><strong class="dark">{l s='Status' mod='mercadopago'}:</strong>&nbsp;</span>{$status|escape:'htmlall':'UTF-8'}
+			</li>			
+			<li>
+				<span><strong class="dark">{l s='Estimated Delivery' mod='mercadopago'}:</strong>	&nbsp;</span>{$estimated_delivery|escape:'htmlall':'UTF-8'}
+			</li>
+		{else}
+			<li>
+				<span><strong class="dark">{l s='Tracking Pending' mod='mercadopago'}</strong>
+			</li>	
+		{/if}					
+	</ul>
+</div>
+{/if}

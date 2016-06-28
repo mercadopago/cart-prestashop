@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
 	<name>mercadopago</name>
-	<displayName><![CDATA[MercadoPago]]></displayName>
-	<version><![CDATA[3.2.2]]></version>
-	<description><![CDATA[Receive payments via MercadoPago of credit cards and tickets using our custom checkout or standard checkout]]></description>
-	<author><![CDATA[MERCADOPAGO.COM REPRESENTA&Ccedil;&Otilde;ES LTDA.]]></author>
+	<displayName><![CDATA[Mercado Pago]]></displayName>
+	<version><![CDATA[3.3.0]]></version>
+	<description><![CDATA[Receba su pagos de tarjetas y tickets con nuestro Custom Checkout y Standard con Mercado Envios.]]></description>
+	<author><![CDATA[MERCADOPAGO.COM LTDA.]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
-	<confirmUninstall><![CDATA[Are you sure you want to uninstall MercadoPago?]]></confirmUninstall>
+	<confirmUninstall><![CDATA[¿Está seguro de que desea desinstalar MercadoPago]]></confirmUninstall>
 	<is_configurable>1</is_configurable>
 	<need_instance>0</need_instance>
 	<limited_countries></limited_countries>
