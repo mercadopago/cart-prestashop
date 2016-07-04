@@ -43,23 +43,3 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	</div>
 </div>
 
-<script>
-	while($("#plugin") == "undefined") {
-		console.info("carregando");
-	}
-	/*while($("#plugin") == "undefined") {
-		console.info("carregando");
-	}
-	console.info("finalizado");
-	window.onload = init();
-	function init(){
-		 document.getElementById("boletoframe").addEventListener("load", function(){
-			 console.log('load');
-		}, complete());
-		
-	}
-	
-	function complete() {
-		console.info("teste");
-	}*/
-</script>

@@ -23,5 +23,3 @@
 *  International Registered Trademark & Property of MercadoPago
 *}
 
-
-
