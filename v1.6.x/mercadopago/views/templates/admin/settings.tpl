@@ -360,7 +360,16 @@
 				$("#alerts").remove();
 				$.scrollTo(0, 0);
 		});
-	
+
+	function bloquearEnvios(obj) { 
+		$( "#MERCADOENVIOS_ACTIVATE" ).val("false");
+		if (obj.value == "true") {
+			$( "#MERCADOENVIOS_ACTIVATE" ).prop("disabled", false);
+		} else {
+			$( "#MERCADOENVIOS_ACTIVATE" ).prop("disabled", true);
+		}
+	}
+
 	$("#MERCADOENVIOS_ACTIVATE").change(
 			function() { 
 				if (this.value == "true") {
@@ -373,19 +382,16 @@
 				}
 		});
 	$( "#MERCADOENVIOS_ACTIVATE" ).prop("disabled", true);
-	$("#standard_active").change(
-			function() { 
-				$( "#MERCADOENVIOS_ACTIVATE" ).val("false");
-				if (this.value == "true") {
-					$( "#MERCADOENVIOS_ACTIVATE" ).prop("disabled", false);
-				} else {
-					$( "#MERCADOENVIOS_ACTIVATE" ).prop("disabled", true);
-				}
-			}
+	$("#standard_active").change(function(){
+		bloquearEnvios(this);
+	}
 	);
 
 
 	$(document).ready(function (){
+		bloquearEnvios(document.getElementById("standard_active"));
+
+
 		var cliend_id = "{$client_id|escape:'htmlall':'UTF-8'}";
 		// hide marketing when settings are updated
 		if (cliend_id.length > 0) {
@@ -397,7 +403,7 @@
 			$("#settings").hide();
 			$.scrollTo(0, 0);
 		}
-	})	
+	});
 </script>
 
 <style>

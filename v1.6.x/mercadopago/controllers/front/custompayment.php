@@ -42,6 +42,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
         $mercadopago = $this->module;
 
         $response = $mercadopago->execPayment($_POST);
+        error_log("====response=====".Tools::jsonEncode($response));
         $order_status = null;
         if (array_key_exists('status', $response)) {
             switch ($response['status']) {
@@ -68,6 +69,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
             );
 
             $id_order = Order::getOrderByCartId($cart->id);
+
             $order = new Order($id_order);
             $existStates = $mercadopago->checkStateExist($id_order, Configuration::get($order_status));
             if ($existStates) {
@@ -85,9 +87,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 false,
                 $cart->secure_key
             );
-
             $order = new Order($mercadopago->currentOrder);
-
             $order_payments = $order->getOrderPayments();
             $order_payments[0]->transaction_id = $response['id'];
 
