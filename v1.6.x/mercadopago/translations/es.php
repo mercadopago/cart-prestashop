@@ -31,6 +31,9 @@ $_MODULE['<{mercadopago}prestashop>mercadopago_78086b44061cc166428738759175358b'
 $_MODULE['<{mercadopago}prestashop>mercadopago_ad0a072fdcfaadc00c66c140986e05e1'] = 'No se puede excluir todas las formas de pago.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_d30c5478912eab71729a86ac59ee6cc3'] = 'Después de la publicación, que ha recibido el producto a';
 $_MODULE['<{mercadopago}prestashop>mercadopago_428a9b89d4731fd6e1045d494dd6342c'] = 'dia útil.';
+$_MODULE['<{mercadopago}prestashop>mercadopago_de02900d3b2cef67fe96cc2e900ce021'] = 'No fue posible cargar Mercado Envios.';
+$_MODULE['<{mercadopago}prestashop>mercadopago_59b1945cfa936507a1001138a340b56d'] = 'Código postal no es válido.';
+$_MODULE['<{mercadopago}prestashop>mercadopago_c549e670c60a8fced091f6eb1fd165a1'] = 'Dimensiones del producto no válida.';
 $_MODULE['<{mercadopago}prestashop>marketing_142f1c01254127506592cf5e94910369'] = 'Mercado Pago';
 $_MODULE['<{mercadopago}prestashop>marketing_1a6d2a8ff2319210efdf5327a1de772e'] = 'La más fácil, más rápido y segura manera';
 $_MODULE['<{mercadopago}prestashop>marketing_4e893a527a3117835701899735b9ed04'] = 'para recibir pagos y elevar sus ventas Web';

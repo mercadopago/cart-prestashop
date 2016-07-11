@@ -32,7 +32,7 @@ include_once 'MPRestCli.php';
 class MPApi
 {
 
-    const VERSION = '3.3.1';
+    const VERSION = '3.3.2';
 
     /* Info */
     const INFO = 1;
@@ -110,7 +110,7 @@ class MPApi
     /*
      * v0
      */
-    public function calculate($params)
+    public function calculateEnvios($params)
     {
         $access_token = $this->getAccessToken();
     
