@@ -17,6 +17,7 @@ $_MODULE['<{mercadopago}prestashop>mercadopago_53b4d02529d11ed85eb327d5297ec1ca'
 $_MODULE['<{mercadopago}prestashop>mercadopago_6ae116b2d13fd57f5d24af2dcc093bdf'] = 'Pronto para o Envio';
 $_MODULE['<{mercadopago}prestashop>mercadopago_747cf5c8587184b9e489ff897d97c20d'] = 'Enviado';
 $_MODULE['<{mercadopago}prestashop>mercadopago_67edd3b99247c9eb5884a02802a20fa7'] = 'Entregue';
+$_MODULE['<{mercadopago}prestashop>mercadopago_ef6fc0ab0be4a7dfd2161eb8713c0970'] = 'Curl not installed';
 $_MODULE['<{mercadopago}prestashop>mercadopago_acc997397c57774e5e87b621f61b1d34'] = 'Pronto para envio';
 $_MODULE['<{mercadopago}prestashop>mercadopago_80856f4cbeb11f3c4f21b569855f60d3'] = 'Etiqueta pronta para impressão';
 $_MODULE['<{mercadopago}prestashop>mercadopago_23e0074ad595205611cd164d226f23ba'] = 'Etiqueta impressa';
@@ -30,6 +31,9 @@ $_MODULE['<{mercadopago}prestashop>mercadopago_78086b44061cc166428738759175358b'
 $_MODULE['<{mercadopago}prestashop>mercadopago_ad0a072fdcfaadc00c66c140986e05e1'] = 'Não é permitido excluir todos os métodos de pagamentos.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_d30c5478912eab71729a86ac59ee6cc3'] = 'Após a postagem, você o receberá o produto em até';
 $_MODULE['<{mercadopago}prestashop>mercadopago_428a9b89d4731fd6e1045d494dd6342c'] = 'dia útil.';
+$_MODULE['<{mercadopago}prestashop>mercadopago_de02900d3b2cef67fe96cc2e900ce021'] = 'Não foi possível carregar Mercado Envios.';
+$_MODULE['<{mercadopago}prestashop>mercadopago_59b1945cfa936507a1001138a340b56d'] = 'Cep inválido.';
+$_MODULE['<{mercadopago}prestashop>mercadopago_c549e670c60a8fced091f6eb1fd165a1'] = 'Dimensões dos produtos inválido.';
 $_MODULE['<{mercadopago}prestashop>marketing_142f1c01254127506592cf5e94910369'] = 'MercadoPago';
 $_MODULE['<{mercadopago}prestashop>marketing_1a6d2a8ff2319210efdf5327a1de772e'] = 'A maneira mais fácil, mais rápida e mais segura';
 $_MODULE['<{mercadopago}prestashop>marketing_4e893a527a3117835701899735b9ed04'] = 'para receber pagamentos e aumentar seu site de vendas';

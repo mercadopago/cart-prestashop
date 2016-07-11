@@ -36,6 +36,7 @@ class MercadoPago extends PaymentModule
 
     public static $listShipping;
 
+    public static $listCache =  array();
     public  $id_carrier;
 
     private $dimensionUnitList = array(
@@ -86,7 +87,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
-        $this->version = '3.3.1';
+        $this->version = '3.3.2';
         $this->currencies = true;
         $this->currencies_mode = 'radio';
         $this->need_instance = 0;
@@ -300,6 +301,9 @@ class MercadoPago extends PaymentModule
             ! $this->registerHook('beforeCarrier')
             ||
             ! $this->registerHook('displayBeforeCarrier')
+            ||
+            ! $this->registerHook('displayFooter')
+
 
             ) {
             return false;
@@ -369,7 +373,6 @@ class MercadoPago extends PaymentModule
             foreach ($order_payments as $order_payment) {
 
                 $result = $this->mercadopago->getPayment($order_payment->transaction_id);
-                error_log("====result dislpay======".Tools::jsonEncode($result));
                 if ($result['status'] == "404") {
                     $result = $this->mercadopago->getPaymentStandard($order_payment->transaction_id);
                 }
@@ -690,8 +693,6 @@ class MercadoPago extends PaymentModule
                         Configuration::updateValue('MERCADOPAGO_PUBLIC_KEY', $public_key);
                     }
                     Configuration::updateValue('MERCADOPAGO_ACCESS_TOKEN', $access_token);
-                    error_log("====mercadoenvios_activate=====".$mercadoenvios_activate);
-                    error_log("====MERCADOPAGO_CARRIER=====".count(Tools::jsonDecode(Configuration::get('MERCADOPAGO_CARRIER'))));
                     if ($mercadoenvios_activate == 'true' && count(Tools::jsonDecode(Configuration::get('MERCADOPAGO_CARRIER'))) == 0) {
                         $this->setCarriers();
                     } elseif (count(Tools::jsonDecode(Configuration::get('MERCADOPAGO_CARRIER'))) > 0) {
@@ -1022,14 +1023,14 @@ class MercadoPago extends PaymentModule
         return $this->display(__file__, '/views/templates/hook/header.tpl');
     }
 
-    /*public function hookDisplayFooter()
+    public function hookDisplayFooter()
     {
         if (! $this->active) {
             return;
         }
 
         return $this->display(__file__, '/views/templates/hook/display.tpl');
-    }*/
+    }
 
     
 
@@ -1039,7 +1040,6 @@ class MercadoPago extends PaymentModule
             return;
         }
         $creditcard_active = Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE');
-        error_log("====creditcard_active========".$creditcard_active);
         $mercadoenvios_activate = Configuration::get('MERCADOENVIOS_ACTIVATE');
         $boleto_active = Configuration::get('MERCADOPAGO_BOLETO_ACTIVE');
         if ($mercadoenvios_activate == 'true') {
@@ -1048,8 +1048,6 @@ class MercadoPago extends PaymentModule
         } else {
             $mercadoenvios_activate = 'false';
         }
-        error_log("====mercadoenvios_activate=====".$mercadoenvios_activate);
-
         if ($this->hasCredential()) {
             $this_path_ssl = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://') .
                  htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8') . __PS_BASE_URI__;
@@ -1139,8 +1137,6 @@ class MercadoPago extends PaymentModule
                 );
             }
             $data['offline_payment_settings'] = $offline_payment_settings;
-
-            error_log("==Country===".Configuration::get('MERCADOPAGO_COUNTRY'));
             if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLM' ||
                 Configuration::get('MERCADOPAGO_COUNTRY') == 'MPE'
                 ) {
@@ -1548,7 +1544,7 @@ class MercadoPago extends PaymentModule
             $items[] = $item;
         }
         // include shipping cost
-        $shipping_cost = (double) $cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
+        /*$shipping_cost = (double) $cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
         if ($shipping_cost > 0) {
             $item = array(
                 'title' => 'Shipping',
@@ -1558,7 +1554,7 @@ class MercadoPago extends PaymentModule
                 'category_id' => Configuration::get('MERCADOPAGO_CATEGORY')
             );
             $items[] = $item;
-        }
+        }*/
         // include wrapping cost
         $wrapping_cost = (double) $cart->getOrderTotal(true, Cart::ONLY_WRAPPING);
         if ($wrapping_cost > 0) {
@@ -1585,11 +1581,14 @@ class MercadoPago extends PaymentModule
             $items[] = $item;
         }
 
-        if (Configuration::get('MERCADOENVIOS_ACTIVATE') == "true") {
-            $dimensions = $this->getDimensions($products);
-            $lista_shipping = (array)Tools::jsonDecode(
+        $lista_shipping = (array)Tools::jsonDecode(
             Configuration::get('MERCADOPAGO_CARRIER'),true
-            );
+        );
+
+        if (Configuration::get('MERCADOENVIOS_ACTIVATE') == "true" &&
+            isset($lista_shipping['MP_CARRIER'][$cart->id_carrier])
+            ) {
+            $dimensions = $this->getDimensions($products);
             $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$cart->id_carrier];
             $address_delivery = new Address((integer) $cart->id_address_delivery);
             $shipments = array(
@@ -1608,6 +1607,18 @@ class MercadoPago extends PaymentModule
             );            
         } else {
             $shipments = array();
+            // include shipping cost
+            $shipping_cost = (double) $cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
+            if ($shipping_cost > 0) {
+                $item = array(
+                    'title' => 'Shipping',
+                    'description' => 'Shipping service used by store',
+                    'quantity' => 1,
+                    'unit_price' => $shipping_cost,
+                    'category_id' => Configuration::get('MERCADOPAGO_CATEGORY')
+                );
+                $items[] = $item;
+            }
         }
 
         $data = array(
@@ -1685,7 +1696,6 @@ class MercadoPago extends PaymentModule
         $data['customer']['surname'] = $data['customer']['last_name'];
         $data['payer'] = $data['customer'];
         unset($data['customer']);
-
         return $data;
     }
 
@@ -2080,7 +2090,7 @@ class MercadoPago extends PaymentModule
                 $customerData = array();
                 $customerData['email'] = $emailCustomer;
                 $customer = $this->mercadopago->createCustomerCard($customerData);
-                error_log("====customer===".Tools::jsonEncode($customer));
+
                 $customerID = $customer["response"]["id"];
             }
         }
@@ -2211,62 +2221,81 @@ class MercadoPago extends PaymentModule
             $this->context->smarty->assign('delivery_option_list', $delivery_option_list);
             return;
         }
-        $retornoCalculadora = $this->calculateList($address->postcode);
-        error_log("====retornoCalculadora=====".Tools::jsonEncode($retornoCalculadora));
+        if (isset($params['delivery_option_list'])) {
+            $retornoCalculadora = $this->calculateListCache($address->postcode);
+            if ($retornoCalculadora != null) {
+                $lista_shipping = (array)Tools::jsonDecode(
+                    Configuration::get('MERCADOPAGO_CARRIER'),true
+                );
 
-        if ($retornoCalculadora != null ||
-            ! empty($retornoCalculadora['response'])) {
+                $mpCarrier = $lista_shipping['MP_SHIPPING'];
 
-            $lista_shipping = (array)Tools::jsonDecode(
-                Configuration::get('MERCADOPAGO_CARRIER'),true
-            );
+                $delivery_option_list = $params['delivery_option_list'];
+                foreach($delivery_option_list as $id_address => $carrier_list_raw) {
+                    foreach($carrier_list_raw as $key => $carrier_list) {
+                        foreach($carrier_list['carrier_list'] as $id_carrier => $carrier) {
+                            if (in_array($id_carrier, $mpCarrier)) {
 
-            $mpCarrier = $lista_shipping['MP_SHIPPING'];
+                                $carriers_return[] = $carrier;
 
-            $delivery_option_list = $params['delivery_option_list'];
-            foreach($delivery_option_list as $id_address => $carrier_list_raw) {
-                foreach($carrier_list_raw as $key => $carrier_list) {
-                    foreach($carrier_list['carrier_list'] as $id_carrier => $carrier) {
-                        if (in_array($id_carrier, $mpCarrier)) {
+                                $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$id_carrier];
+                                $calculadora = $retornoCalculadora[(string)$id_mercadoenvios_service_code];
+                                $appended_text =$this->l('Após a postagem, você o receberá o produto em até')." ".$calculadora["estimated_delivery"]." ".$this->l('dia útil.');
 
-                            $carriers_return[] = $carrier;
-
-                            $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$id_carrier];
-                            $calculadora = $retornoCalculadora[(string)$id_mercadoenvios_service_code];
-                            $appended_text =$this->l('Após a postagem, você o receberá o produto em até')." ".$calculadora["estimated_delivery"]." ".$this->l('dia útil.');
-
-                            $delay = &$delivery_option_list[$id_address][$key]['carrier_list'][$id_carrier]['instance']->delay;
-                            $delay = array_map(function ($item) {global $appended_text; return $appended_text;}, $delay);
+                                $delay = &$delivery_option_list[$id_address][$key]['carrier_list'][$id_carrier]['instance']->delay;
+                                $delay = array_map(function ($item) {global $appended_text; return $appended_text;}, $delay);
+                            }
                         }
                     }
                 }
+                // overwrite the list of shipping options
+                $this->context->smarty->assign('delivery_option_list', $delivery_option_list);
+            } else {
+                $delivery_option_list = $params['delivery_option_list'];
+                foreach($delivery_option_list as $id_address => $carrier_list_raw) {
+                    foreach($carrier_list_raw as $key => $carrier_list) {
+                        foreach($carrier_list['carrier_list'] as $id_carrier => $carrier) {
+
+                            $obj_carrier = &$delivery_option_list[$id_address];
+                            if (in_array($id_carrier, $mpCarrier)) {
+                                unset($obj_carrier[$key]);
+                            }
+                        }
+                    }
+                }
+
+                $this->context->smarty->assign('delivery_option_list', $delivery_option_list);  
             }
-            // overwrite the list of shipping options
-            $this->context->smarty->assign('delivery_option_list', $delivery_option_list);
+        }
+    }
+
+
+    private function calculateListCache($postcode)
+    {
+        $cart = Context::getContext()->cart;
+        $products = $cart->getProducts();
+        $price_total = 0;
+        foreach ($products as $product)
+        {
+            for ($qty = 0; $qty < $product['quantity']; $qty++)     
+            {
+                $price_total += $product['price_wt'];
+            }
+        }
+
+        $external_reference = $cart->id;
+
+        $chave =  $external_reference .
+        "|" .
+        $postcode . "" .
+        $price_total;
+
+        if (isset(self::$listCache[$chave])) {
+            return self::$listCache[$chave];
         } else {
-            error_log("Não foi possível carregar o MercadoEnvios");
-            $delivery_option_list = $params['delivery_option_list'];
-            foreach($delivery_option_list as $id_address => $carrier_list_raw) {
-                foreach($carrier_list_raw as $key => $carrier_list) {
-                    foreach($carrier_list['carrier_list'] as $id_carrier => $carrier) {
-
-                        $obj_carrier = &$delivery_option_list[$id_address];
-                        if (in_array($id_carrier, $mpCarrier)) {
-                            unset($obj_carrier[$key]);
-                        }
-                    }
-                }
-            }
-
-            /*$settings = array(
-                'mensagem' => 'teste jenrqe',
-                'delivery_option_list', $delivery_option_list
-            );
-            $this->context->smarty->assign($settings);   */
-            $this->context->smarty->assign('delivery_option_list', $delivery_option_list); 
-            //$this->context->smarty->assign( 'mensagem', 1 );    
-            
-            //$this->errors[] = Tools::displayError( 'Fatal error!' );   
+            $retorno = $this->calculateList($postcode);
+            self::$listCache[$chave] = $retorno;
+            return $retorno;
         }
     }
 
@@ -2294,7 +2323,7 @@ class MercadoPago extends PaymentModule
                 $length += $product['depth'];
                 $weight += $product['weight'];
             }
-        } 
+        }
 
         $height = ceil($height);
         $width = ceil($width);
@@ -2302,14 +2331,15 @@ class MercadoPago extends PaymentModule
         $weight = ceil($weight);
 
         if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
-            $error = 'Invalid dimensions cart';
+            $error = 'Invalid dimensions cart.';
             error_log($error);
+            $this->context->smarty->assign('mensagem',
+                $this->l($error));            
             return null;
             //throw new Exception($error);
         }
 
         $dimensions = $height . 'x' . $width . 'x' . $length . ',' . $weight;
-        error_log("====dimensions=====".$dimensions);
         if (Configuration::get('MERCADOPAGO_COUNTRY') == "MLB") {
             $postcode = str_replace("-", "", $postcode);
         } elseif (Configuration::get('MERCADOPAGO_COUNTRY') == "MLA") {
@@ -2318,14 +2348,13 @@ class MercadoPago extends PaymentModule
 
         $return = array();
         $paramsMP = array(
-        "dimensions" => $dimensions,
-        "zip_code" => $postcode,
-        "item_price"=>(double) number_format($price_total, 2, '.', ''),
-        "free_method" => "" // optional
+            "dimensions" => $dimensions,
+            "zip_code" => $postcode,
+            "item_price"=>(double) number_format($price_total, 2, '.', ''),
+            "free_method" => "" // optional
         );
 
-        $response = $mp->calculate($paramsMP);
-        error_log("====retornoCalculadora=====".Tools::jsonEncode($response));
+        $response = $mp->calculateEnvios($paramsMP);
         if ($response['status'] == "200" && isset($response['response']['options'])) {
             $shipping_options = $response['response']['options'];
             $i = 0;
@@ -2343,12 +2372,36 @@ class MercadoPago extends PaymentModule
             }   
 
         } else {
-            $error = 'Invalid dimensions cart';
-            error_log("====ERROR====".Tools::jsonEncode($response));
+            $this->context->smarty->assign(
+                'mensagem',
+                $this->errorMercadoEnvios(
+                    $response['status']
+                )
+            );
+
             return null;            
         }
 
         return $return;
+    }
+
+    private function errorMercadoEnvios($status) {
+        $mensagem = "";
+        switch ($status) {
+            case 200:
+                $mensagem = $this->l('Mercado Envios not loading.');
+                break;
+            case 404:
+                $mensagem = $this->l('Not found receiver address.');
+                break;
+            case 400:
+                $mensagem = $this->l('Invalid dimensions.');
+                break;            
+            default:
+                $mensagem = $this->l('Mercado Envios not loading.');
+                break;
+        }
+        return $mensagem;
     }
 
     public function getOrderShippingCostExternal($params)
@@ -2365,11 +2418,44 @@ class MercadoPago extends PaymentModule
 
         $mpCarrier = $lista_shipping['MP_SHIPPING'];
         if (in_array($this->id_carrier, $mpCarrier)) {
-            $retorno = $this->calculate($params, $this->id_carrier);
+            $retorno = $this->verifyCache($params, $this->id_carrier);
             return (float)$retorno["cost"];
         }
         return false;
     }
+
+    private function verifyCache($params, $id_carrier) {
+
+        $cart = Context::getContext()->cart;
+        $products = $cart->getProducts();
+        $price_total = 0;
+        foreach ($products as $product)
+        {
+            for ($qty = 0; $qty < $product['quantity']; $qty++)     
+            {
+                $price_total += $product['price_wt'];
+            }
+        }
+
+        $address = new Address($params->id_address_delivery);
+        $postcode = $address->postcode;
+
+        $external_reference = $cart->id;
+
+        $chave =  $external_reference .
+        "|" .
+        $id_carrier . "" .
+        $postcode . "" .
+        $price_total;
+
+        if (array_key_exists($chave, self::$listCache)) {
+            return self::$listCache[$chave];
+        } else {
+            $retorno = $this->calculate($params, $id_carrier);
+            self::$listCache[$chave] = $retorno;            
+        }
+    }
+
     private function calculate($params, $id_carrier){
 
         $lista_shipping = (array)Tools::jsonDecode(
@@ -2379,12 +2465,11 @@ class MercadoPago extends PaymentModule
 
         $carrier = new Carrier($id_carrier);
         $cart = Context::getContext()->cart;
-        $products = $cart->getProducts();
         $price_total = 0;
 
         // Init var
         $address = new Address($params->id_address_delivery);
-
+        $products = $cart->getProducts();
         $mp = $this->mercadopago;
 
         // pega medidas dos produtos
@@ -2422,8 +2507,7 @@ class MercadoPago extends PaymentModule
             $postcode = str_replace("-", "", $postcode);
         } elseif (Configuration::get('MERCADOPAGO_COUNTRY') == "MLA") {
             $postcode = substr($postcode, 1);
-        }        
-
+        }
         $return = null;
         $paramsMP = array(
         "dimensions" => $dimensions,
@@ -2432,11 +2516,10 @@ class MercadoPago extends PaymentModule
         "free_method" => "" // optional
         );
 
-        $response = $mp->calculate($paramsMP);
-        if ($response['status'] == "200") {
-            if(isset($response['response']['options'])){
-                $shipping_options = $response['response']['options'];
-                foreach($shipping_options as $shipping_option) {
+        $response = $mp->calculateEnvios($paramsMP);
+        if($response['status'] == "200" && isset($response['response']['options'])){
+            $shipping_options = $response['response']['options'];
+            foreach($shipping_options as $shipping_option) {
 
                 $value = $shipping_option['shipping_method_id'];
                 $shipping_speed = $shipping_option['estimated_delivery_time']['shipping'];
@@ -2451,8 +2534,14 @@ class MercadoPago extends PaymentModule
                     break;
                 }
 
-            }       
-            }       
+            }            
+        } else {
+            $this->context->smarty->assign(
+                'mensagem',
+                $this->errorMercadoEnvios(
+                    $response['status']
+                )
+            );
         }
 
         return $return;
