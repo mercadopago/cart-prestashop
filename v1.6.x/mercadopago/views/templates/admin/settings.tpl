@@ -247,6 +247,35 @@
 						</div>
 					</div>
 					<br>
+					<h3>{l s='Settings Mercado Envios' mod='mercadopago'}</h3>
+					{if $country == 'MLA'}
+						<ul>
+							<li><a target="_blank" href="https://www.mercadopago.com.ar/envios">Activa MercadoEnvíos</a></li>
+							<li>
+							Consulta los<a target="_blank" href="https://www1.oca.com.ar/ocaexpresspak/help/serviviosbasicos.asp">valores admitidos por OCA</a>.</li>
+						</ul>
+					{/if}
+					{if $country == 'MLM'}
+						<ul>
+							<li>
+								<a target="_blank" href="https://www.mercadopago.com.mx/envios">Activa MercadoEnvíos</a>
+							</li>
+							<li>
+								Consulta los <a target="_blank" href="http://www.dhl.com.mx/content/dam/downloads/language_masters/express/es/shipping/weights_and_dimensions/weights_and_dimensions_es_lm.pdf">valores admitidos por DHL</a>.
+							</li>
+						</ul>
+					{/if}
+					{if $country == 'MLB'}
+						<ul>
+							<li>
+								<a target="_blank" href="https://www.mercadopago.com.br/envios">Ativar MercadoEnvios</a>
+							</li>
+							<li>
+								Consultar os <a target="_blank" href="http://www.correios.com.br/para-voce/precisa-de-ajuda/limites-de-dimensoes-e-de-peso">valores permitidos pelos Correios</a>.
+							</li>
+						</ul>
+					{/if}
+					<br>
 					<div class="row">
 						<div class="col-md12">
 							<label>{l s='Active MercadoEnvios: ' mod='mercadopago'}</label>

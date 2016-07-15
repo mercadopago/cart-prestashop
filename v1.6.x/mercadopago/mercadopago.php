@@ -54,12 +54,12 @@ class MercadoPago extends PaymentModule
     public static $_countryOptions = array(
         'MLA' => array(
             'normal' => array(
-                'value' => 73328, 'label' => 'MercadoEnvios - Normal',
-                'description' => 'MercadoEnvios - Normal'
+                'value' => 73328, 'label' => 'MercadoEnvios - OCA Estándar',
+                'description' => 'MercadoEnvios - OCA Estándar'
             ),
             'expresso' => array(
-                'value' => 73330, 'label' => 'Prioritario',
-                'description' => 'MercadoEnvios - Prioritario'
+                'value' => 73330, 'label' => 'MercadoEnvios - OCA Prioritario',
+                'description' => 'MercadoEnvios - OCA Prioritario'
             )
         ),
         'MLB' => array(
@@ -87,7 +87,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
-        $this->version = '3.3.2';
+        $this->version = '3.3.3';
         $this->currencies = true;
         $this->currencies_mode = 'radio';
         $this->need_instance = 0;
@@ -1773,6 +1773,7 @@ class MercadoPago extends PaymentModule
 
     public function listenIPN($checkout, $topic, $id)
     {
+
         $payment_method_ids = array();
         $payment_ids = array();
         $payment_statuses = array();
@@ -1781,6 +1782,8 @@ class MercadoPago extends PaymentModule
         $transaction_amounts = 0;
         $cardholders = array();
         $external_reference = '';
+        $cost_mercadoEnvios = 0;
+        $isMercadoEnvios = 0;
         if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
             PrestaShopLogger::addLog('MercadoPago :: listenIPN - topic = ' . $topic, MPApi::INFO, 0);
             PrestaShopLogger::addLog('MercadoPago :: listenIPN - id = ' . $id, MPApi::INFO, 0);
@@ -1788,12 +1791,19 @@ class MercadoPago extends PaymentModule
         }
         
         if ($checkout == "standard" && $topic == 'merchant_order' && $id > 0) {
-            // get merchant order info
+
             $result = $this->mercadopago->getMerchantOrder($id);
+
             $merchant_order_info = $result['response'];
             $status_shipment = null;
             if (isset($merchant_order_info["shipments"][0]) &&
                 $merchant_order_info["shipments"][0]["shipping_mode"] == "me2") {
+
+                $isMercadoEnvios = true;
+                $cost_mercadoEnvios = $merchant_order_info["shipments"][0]["shipping_option"]["cost"];
+
+               // error_log("======cost_mercadoEnvios=========". $cost_mercadoEnvios);
+
                 $status_shipment = $merchant_order_info["shipments"][0]["status"];
 
                 $id_order = $this->getOrderByCartId($merchant_order_info['external_reference']);
@@ -1811,6 +1821,11 @@ class MercadoPago extends PaymentModule
                         break;    
                 }
                 if ($order_status != null) {
+
+                    $existStates = $this->checkStateExist($id_order, Configuration::get($order_status));
+                    if ($existStates) {
+                        return;
+                    }
                     $this->updateOrderHistory($order->id, Configuration::get($order_status));
                 } 
                 return;          
@@ -1836,8 +1851,12 @@ class MercadoPago extends PaymentModule
                                     $payment_info['card']['cardholder']['name'] : "";
                 }
             }
-            
+
             if ($merchant_order_info['total_amount'] == $transaction_amounts) {
+                if ($isMercadoEnvios) {
+                    $transaction_amounts += $cost_mercadoEnvios;
+                }
+
                 $this->updateOrder(
                     $result,
                     $payment_ids,
@@ -1972,7 +1991,6 @@ class MercadoPago extends PaymentModule
             if ($order_status) {
                 $id_cart = $external_reference;
                 $id_order = $this->getOrderByCartId($id_cart);
-                
                 if ($id_order) {
                     $order = new Order($id_order);
 
@@ -2223,6 +2241,7 @@ class MercadoPago extends PaymentModule
         }
         if (isset($params['delivery_option_list'])) {
             $retornoCalculadora = $this->calculateListCache($address->postcode);
+
             if ($retornoCalculadora != null) {
                 $lista_shipping = (array)Tools::jsonDecode(
                     Configuration::get('MERCADOPAGO_CARRIER'),true
@@ -2234,17 +2253,28 @@ class MercadoPago extends PaymentModule
                 foreach($delivery_option_list as $id_address => $carrier_list_raw) {
                     foreach($carrier_list_raw as $key => $carrier_list) {
                         foreach($carrier_list['carrier_list'] as $id_carrier => $carrier) {
+
                             if (in_array($id_carrier, $mpCarrier)) {
 
                                 $carriers_return[] = $carrier;
 
+                                $obj_carrier = &$delivery_option_list[$id_address];
+
                                 $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$id_carrier];
+
+                                if (!isset($retornoCalculadora[(string)$id_mercadoenvios_service_code])) {
+                                    unset($obj_carrier[$key]);
+                                    continue;
+                                }
+
                                 $calculadora = $retornoCalculadora[(string)$id_mercadoenvios_service_code];
                                 $appended_text =$this->l('Após a postagem, você o receberá o produto em até')." ".$calculadora["estimated_delivery"]." ".$this->l('dia útil.');
 
                                 $delay = &$delivery_option_list[$id_address][$key]['carrier_list'][$id_carrier]['instance']->delay;
+
                                 $delay = array_map(function ($item) {global $appended_text; return $appended_text;}, $delay);
                             }
+
                         }
                     }
                 }
@@ -2375,7 +2405,7 @@ class MercadoPago extends PaymentModule
             $this->context->smarty->assign(
                 'mensagem',
                 $this->errorMercadoEnvios(
-                    $response['status']
+                    $response
                 )
             );
 
@@ -2385,21 +2415,29 @@ class MercadoPago extends PaymentModule
         return $return;
     }
 
-    private function errorMercadoEnvios($status) {
+    private function errorMercadoEnvios($response) {
         $mensagem = "";
-        switch ($status) {
-            case 200:
-                $mensagem = $this->l('Mercado Envios not loading.');
-                break;
-            case 404:
-                $mensagem = $this->l('Not found receiver address.');
-                break;
-            case 400:
-                $mensagem = $this->l('Invalid dimensions.');
-                break;            
-            default:
-                $mensagem = $this->l('Mercado Envios not loading.');
-                break;
+        $status = $response['status'];
+        //error_log("====response error====".Tools::jsonEncode($response));
+        if ($status == 200) {
+            $mensagem = $this->l('Mercado Envios not loading.');
+        } else {
+            $error = $response['response']['error'];
+            if ($error == "invalid_zip_code") {
+                $mensagem = $this->l('Invalid zip code.');
+                return $mensagem;
+            }
+            switch ($status) {
+                case 404:
+                    $mensagem = $this->l('Not found receiver address.');
+                    break;
+                case 400:
+                    $mensagem = $this->l('Invalid dimensions.');
+                    break;            
+                default:
+                    $mensagem = $this->l('Mercado Envios not loading.');
+                    break;
+            }
         }
         return $mensagem;
     }
@@ -2539,7 +2577,7 @@ class MercadoPago extends PaymentModule
             $this->context->smarty->assign(
                 'mensagem',
                 $this->errorMercadoEnvios(
-                    $response['status']
+                    $response
                 )
             );
         }
