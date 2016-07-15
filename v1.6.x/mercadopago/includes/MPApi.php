@@ -32,7 +32,7 @@ include_once 'MPRestCli.php';
 class MPApi
 {
 
-    const VERSION = '3.3.2';
+    const VERSION = '3.3.3';
 
     /* Info */
     const INFO = 1;
@@ -119,8 +119,6 @@ class MPApi
         
         $uri .= (strpos($uri, "?") === false) ? "?" : "&";
         $uri .= $this->buildQuery($params);
-        
-        error_log("=====uri =======".Tools::jsonEncode($uri));
 
         $result = MPRestCli::get($uri);             
         return  $result;
