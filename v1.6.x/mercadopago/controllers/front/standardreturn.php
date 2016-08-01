@@ -117,11 +117,13 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                     }
 
                     if (! $order_id) {
+                        $displayName = UtilMercadoPago::setNamePaymentType($payment_types[0]);
+
                         $mercadopago->validateOrder(
                             $cart->id,
                             Configuration::get($order_status),
                             $total,
-                            $mercadopago->displayName,
+                            $displayName,
                             null,
                             $extra_vars,
                             $cart->id_currency,
@@ -137,7 +139,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                     $uri = __PS_BASE_URI__ . 'order-confirmation.php?id_cart=' . $order->id_cart . '&id_module=' .
                          $mercadopago->id . '&id_order=' . $order->id . '&key=' . $order->secure_key;
                     $order_payments = $order->getOrderPayments();
-                    //error_log("====order_payments=====".Tools::jsonEncode($order_payments));
 
                     $order_payments[0]->transaction_id = Tools::getValue('collection_id');
                     $uri .= '&payment_status=' . $payment_statuses[0];

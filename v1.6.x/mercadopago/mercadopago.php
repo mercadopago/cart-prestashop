@@ -87,7 +87,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
-        $this->version = '3.3.3';
+        $this->version = '3.3.4';
         $this->currencies = true;
         $this->currencies_mode = 'radio';
         $this->need_instance = 0;
@@ -314,23 +314,63 @@ class MercadoPago extends PaymentModule
     private function isMercadoEnvios($id_carrier)
     {
         $lista_shipping = (array)Tools::jsonDecode(
-        Configuration::get('MERCADOPAGO_CARRIER'),true
+            Configuration::get('MERCADOPAGO_CARRIER'),true
         );
+        if (isset($lista_shipping['MP_CARRIER'])) {
+            $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$id_carrier];
+        } else {
+            $id_mercadoenvios_service_code = 0;
+        }
 
-        $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$id_carrier];
 
         return $id_mercadoenvios_service_code;
     }    
 
+    /**
+     * Verify if there is state approved for order
+     */
+    public static function getOrderStatePending($id_order)
+    {
+
+        return (int) Db::getInstance()->getValue(
+            '
+        SELECT MAX(id_order_state)
+        FROM ' . _DB_PREFIX_ . 'order_history
+        WHERE id_order =  '. (int) $id_order
+        );
+    }
+
     public function hookDisplayAdminOrder($params)
     {
         $order = new Order((int)$params['id_order']);
+        $statusOrder = "";
+        $id_order_state = $this->getOrderStatePending($order->id);
+        
+        if ($id_order_state == Configuration::get('MERCADOPAGO_STATUS_7')) {
+            $statusOrder = "Pendente";
+        }
+
+        $data = array(
+            "statusOrder" => $statusOrder,
+            'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://') .
+                                     htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8') . __PS_BASE_URI__,
+            'cancel_action_url' => $this->link->getModuleLink(
+                'mercadopago',
+                'cancelorder',
+                array(),
+                Configuration::get('PS_SSL_ENABLED'),
+                null,
+                null,
+                false
+            )
+        );
+
         $id_order_carrier = $order->getIdOrderCarrier();
 
         $order_carrier = new OrderCarrier($id_order_carrier);
         $id_mercadoenvios_service_code = $this->isMercadoEnvios($order_carrier->id_carrier);
-        if ($id_mercadoenvios_service_code) {
 
+        if ($id_mercadoenvios_service_code > 0) {
             $order_payments = $order->getOrderPayments();        
             foreach ($order_payments as $order_payment) {
                 $result = $this->mercadopago->getPaymentStandard($order_payment->transaction_id);
@@ -360,23 +400,22 @@ class MercadoPago extends PaymentModule
                 break;
             }
         }
+
+        $this->context->smarty->assign($data);
+
         return $this->display(__file__, '/views/templates/hook/imprimir_etiqueta.tpl');
     }
 
     public function hookDisplayOrderDetail($params)
     {
-
         if ($params['order']->module == "mercadopago") {
-
             $order = new Order(Tools::getValue("id_order"));
             $order_payments =  $order->getOrderPayments();  
             foreach ($order_payments as $order_payment) {
-
                 $result = $this->mercadopago->getPayment($order_payment->transaction_id);
                 if ($result['status'] == "404") {
                     $result = $this->mercadopago->getPaymentStandard($order_payment->transaction_id);
                 }
-
                 if ($result['status'] == 200) {
                     $payment_info = $result['response'];
                     if(isset($payment_info['collection'])) {
@@ -384,7 +423,6 @@ class MercadoPago extends PaymentModule
                         $merchant_order_id = $payment_info['collection']["merchant_order_id"];
                         $result_merchant = $this->mercadopago->getMerchantOrder($merchant_order_id);
                         $return_tracking = $this->setTracking($order, $result_merchant['response']['shipments'], true);
-
                         $this->context->smarty->assign($return_tracking);
                     } else {
                         $payment_type_id = $payment_info['payment_type_id'];
@@ -1031,11 +1069,11 @@ class MercadoPago extends PaymentModule
 
         return $this->display(__file__, '/views/templates/hook/display.tpl');
     }
-
     
 
     public function hookPayment($params)
     {
+
         if (! $this->active) {
             return;
         }
@@ -1070,7 +1108,7 @@ class MercadoPago extends PaymentModule
                     null,
                     null,
                     false
-                ),
+                ),              
                 'discount_action_url' => $this->link->getModuleLink(
                     'mercadopago',
                     'discount',
@@ -1773,7 +1811,6 @@ class MercadoPago extends PaymentModule
 
     public function listenIPN($checkout, $topic, $id)
     {
-
         $payment_method_ids = array();
         $payment_ids = array();
         $payment_statuses = array();
@@ -1801,8 +1838,6 @@ class MercadoPago extends PaymentModule
 
                 $isMercadoEnvios = true;
                 $cost_mercadoEnvios = $merchant_order_info["shipments"][0]["shipping_option"]["cost"];
-
-               // error_log("======cost_mercadoEnvios=========". $cost_mercadoEnvios);
 
                 $status_shipment = $merchant_order_info["shipments"][0]["status"];
 
@@ -1994,7 +2029,10 @@ class MercadoPago extends PaymentModule
                 if ($id_order) {
                     $order = new Order($id_order);
 
-                    $existStates = $this->checkStateExist($id_order, Configuration::get($order_status));
+                    $existStates = $this->checkStateExist(
+                        $id_order,
+                        Configuration::get($order_status)
+                    );
                     if ($existStates) {
                         return;
                     }
@@ -2019,11 +2057,14 @@ class MercadoPago extends PaymentModule
                     if ($existStates) {
                         return;
                     }
+
+                    $displayName = UtilMercadoPago::setNamePaymentType($payment_type);
+
                     $this->validateOrder(
                         $id_cart,
                         Configuration::get($order_status),
                         $total,
-                        $this->displayName,
+                        $displayName,
                         null,
                         $extra_vars,
                         $cart->id_currency,
@@ -2056,23 +2097,19 @@ class MercadoPago extends PaymentModule
                             break;
                     }
                 }
-                
+                 
                 if ($order) {
                     // update order payment information
                     $order_payments = $order->getOrderPayments();
 
                     foreach ($order_payments as $order_payment) {
                         $order_payment->transaction_id = join(" / ", $payment_ids);
-                        
                         if ($payment_type == "credit_card") {
                             $order_payment->card_number = join(" / ", $credit_cards);
-                            
                             $order_payment->card_brand = join(" / ", $payment_method_ids);
                             $order_payment->card_holder = join(" / ", $cardholders);
                             
-                            // card_expiration just custom checkout has it. Can't fecht it thru collections
                         }
-
                         $order_payment->save();
                     }
                 }
@@ -2115,7 +2152,7 @@ class MercadoPago extends PaymentModule
         return $customerID;
     }
 
-    private function updateOrderHistory($id_order, $status, $mail = true)
+    public function updateOrderHistory($id_order, $status, $mail = true)
     {
         // Change order state and send email
         $history = new OrderHistory();
@@ -2418,7 +2455,6 @@ class MercadoPago extends PaymentModule
     private function errorMercadoEnvios($response) {
         $mensagem = "";
         $status = $response['status'];
-        //error_log("====response error====".Tools::jsonEncode($response));
         if ($status == 200) {
             $mensagem = $this->l('Mercado Envios not loading.');
         } else {
@@ -2649,6 +2685,8 @@ class MercadoPago extends PaymentModule
 
         return false;
     }    
+
+
 
     /**
      * Get an order by its cart id

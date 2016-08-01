@@ -74,18 +74,21 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
             if ($existStates) {
                 return;
             }
+            $payment_type_id = $response['payment_type_id'];
+            $displayName = UtilMercadoPago::setNamePaymentType($payment_type_id);
             
             $mercadopago->validateOrder(
                 $cart->id,
                 Configuration::get($order_status),
                 $total,
-                $mercadopago->displayName,
+                $displayName,
                 null,
                 $extra_vars,
                 $cart->id_currency,
                 false,
                 $cart->secure_key
             );
+            
             $order = new Order($mercadopago->currentOrder);
             $order_payments = $order->getOrderPayments();
             $order_payments[0]->transaction_id = $response['id'];

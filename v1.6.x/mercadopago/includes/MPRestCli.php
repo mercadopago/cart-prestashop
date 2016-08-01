@@ -34,8 +34,7 @@ class MPRestCli
 
     private static function getConnect($uri, $method, $content_type, $uri_base)
     {
-        $connect = curl_init($uri_base . $uri);
-        
+        $connect = curl_init($uri_base . $uri);        
         curl_setopt($connect, CURLOPT_USERAGENT, 'MercadoPago Prestashop v' . MPApi::VERSION);
         curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);

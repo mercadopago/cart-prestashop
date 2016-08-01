@@ -249,6 +249,7 @@ $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_c23c35a632486258dec
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_430e38106173f53736e9c447cc5e4323'] = 'Estamos procesando el pago. En menos de 2 días hábiles le diremos por e-mail si es acreditado o si necesitamos más información.';
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_18b7391357b34e9a1377e86559b8df36'] = 'Estamos procesando el pago. En menos de una hora, le enviaremos por correo electrónico el resultado.';
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_2a99972f5811c1017893e5d54f338fce'] = 'Pago expiró.';
+$_MODULE['<{mercadopago}prestashop>imprimir_etiqueta_09fe8d7c2050052fc0648f659409455b'] = 'Cancelar el pedido';
 $_MODULE['<{mercadopago}prestashop>imprimir_etiqueta_b8ed1287ef68546a8d9132bbf131a712'] = 'Seguir su entrega';
 $_MODULE['<{mercadopago}prestashop>imprimir_etiqueta_0eaadb4fcb48a0a0ed7bc9868be9fbaa'] = 'Atención';
 $_MODULE['<{mercadopago}prestashop>imprimir_etiqueta_80856f4cbeb11f3c4f21b569855f60d3'] = 'Etiqueta listo para impresión';

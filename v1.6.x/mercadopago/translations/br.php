@@ -32,6 +32,7 @@ $_MODULE['<{mercadopago}prestashop>mercadopago_ad0a072fdcfaadc00c66c140986e05e1'
 $_MODULE['<{mercadopago}prestashop>mercadopago_d30c5478912eab71729a86ac59ee6cc3'] = 'Após a postagem, você o receberá o produto em até';
 $_MODULE['<{mercadopago}prestashop>mercadopago_428a9b89d4731fd6e1045d494dd6342c'] = 'dia útil.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_de02900d3b2cef67fe96cc2e900ce021'] = 'Não foi possível carregar Mercado Envios.';
+$_MODULE['<{mercadopago}prestashop>mercadopago_97d1a6c4b5f09e4a2edb3a86b4bc4c5e'] = 'Código postal no es válido.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_59b1945cfa936507a1001138a340b56d'] = 'Cep inválido.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_c549e670c60a8fced091f6eb1fd165a1'] = 'Dimensões dos produtos inválido.';
 $_MODULE['<{mercadopago}prestashop>marketing_142f1c01254127506592cf5e94910369'] = 'MercadoPago';
@@ -138,6 +139,7 @@ $_MODULE['<{mercadopago}prestashop>settings_19fc2ae8d604c0a95e97550133e82e90'] =
 $_MODULE['<{mercadopago}prestashop>settings_9412305f1434ac4869dbe498dd4dd525'] = 'Altura do checkout iFrame:';
 $_MODULE['<{mercadopago}prestashop>settings_ec6c833b9b1ab37b7e132b39c0ec6c65'] = 'Número máximo de parcelas:';
 $_MODULE['<{mercadopago}prestashop>settings_9e4891d2f525fbb901559d5eaf017e52'] = 'Retorno automático:';
+$_MODULE['<{mercadopago}prestashop>settings_016d597f7b1c79268be0fc5ef406f52b'] = 'Ajustes - Mercado Envios';
 $_MODULE['<{mercadopago}prestashop>settings_842b4d284c13e92cd54e6f2a5ec27feb'] = 'Ativar MercadoEnvios:';
 $_MODULE['<{mercadopago}prestashop>settings_78a32249d180b89d908e00da286cdc3c'] = 'Cupom Mercado Pago';
 $_MODULE['<{mercadopago}prestashop>settings_536ac9adcdb9768a81c39aea862fdcc9'] = '* Opção válida apenas para sites participantes de campanhas de cupom.';
@@ -248,6 +250,7 @@ $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_c23c35a632486258dec
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_430e38106173f53736e9c447cc5e4323'] = 'Estamos processando o pagamento. Em menos de 2 dias úteis você será avisado por e-mail se foi creditado ou se precisarmos de mais informações.';
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_18b7391357b34e9a1377e86559b8df36'] = 'Estamos processando o pagamento. Em menos de 1 hora, nós enviaremos o resultado por e-mail.';
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_2a99972f5811c1017893e5d54f338fce'] = 'O pagamento foi expirado.';
+$_MODULE['<{mercadopago}prestashop>imprimir_etiqueta_09fe8d7c2050052fc0648f659409455b'] = 'Cancelar o Pedido';
 $_MODULE['<{mercadopago}prestashop>imprimir_etiqueta_b8ed1287ef68546a8d9132bbf131a712'] = 'Acompanhe sua entrega';
 $_MODULE['<{mercadopago}prestashop>imprimir_etiqueta_0eaadb4fcb48a0a0ed7bc9868be9fbaa'] = 'Atenção';
 $_MODULE['<{mercadopago}prestashop>imprimir_etiqueta_80856f4cbeb11f3c4f21b569855f60d3'] = 'Etiqueta pronta para impressão';
