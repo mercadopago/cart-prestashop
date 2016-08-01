@@ -51,3 +51,6 @@ Improvement in perfomance MercadoEnvios
 V3.3.3 (15/06/2016)
 Bug fix URL callback checkout standard
 
+V3.3.4 (01/08/2016)
+Feature for cancel orders in BackOffice
+Feature for show the payment type of payment

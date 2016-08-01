@@ -22,7 +22,27 @@
 	*  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	*  International Registered Trademark & Property of MercadoPago
 	*}
+{if $statusOrder == "Pendente"} 
+	<div class="panel">
+		<form action="{$cancel_action_url|escape:'htmlall':'UTF-8'}" method="post" id="frmCancelOrder">	   <div class="row">
+				<img class="logo_cupom" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">	
+			</div>	
+			<br>
+			<br>
+			<input type="hidden" name="id_order" id="id_order"/>
+			<div>
+				<button class="btn btn-primary"
+					value="{l s='Cancel the Order' mod='mercadopago'}"
+					type="submit"
+					id="btoCancelOrder">
+						{l s='Cancel the Order' mod='mercadopago'}
+					</button>
+			</div>
+		</form>
+	</div>
 
+	<br>
+{/if}
 {if isset($status)} 
 	<div id="formAddPaymentPanel" class="panel">
 		<div class="panel-heading">
@@ -81,3 +101,18 @@
 
 	</div>
 {/if}
+
+<script type="text/javascript">
+	function getParameterByName(name, url) {
+	    if (!url) url = window.location.href;
+	    name = name.replace(/[\[\]]/g, "\\$&");
+	    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+	        results = regex.exec(url);
+	    if (!results) return null;
+	    if (!results[2]) return '';
+	    return decodeURIComponent(results[2].replace(/\+/g, " "));
+	}
+
+	var id_order = getParameterByName('id_order');
+	document.getElementById("id_order").value = id_order;
+</script>

@@ -44,6 +44,24 @@ class UtilMercadoPago
         }
     }
 
+    public static function setNamePaymentType($payment_type_id)
+    {
+        if ($payment_type_id == "ticket") {
+            $displayName = "Mercado Pago - ticket";
+        } elseif ($payment_type_id == "atm") {
+            $displayName = "Mercado Pago - ATM";
+        } elseif ($payment_type_id == "credit_card") {
+           $displayName = "Mercado Pago - Credit card";
+        } elseif ($payment_type_id == "debit_card") {
+            $displayName = "Mercado Pago - Debit card";
+        } elseif ($payment_type_id == "prepaid_card") {
+           $displayName = "Mercado Pago - Prepaid card";
+        } else {
+            $displayName = "Mercado Pago";
+        }
+        return $displayName;
+    }
+
     public static function getPrestashopVersion()
     {
         if (version_compare(_PS_VERSION_, '1.7.0.0', '>=')) {
