@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2015 PrestaShop
+ * 2007-2015 PrestaShop.
  *
  * NOTICE OF LICENSE
  *
@@ -27,15 +27,13 @@
 include_once 'MPApi.php';
 class MPRestCli
 {
-
     const API_BASE_URL = 'https://api.mercadopago.com';
     const API_BASE_MELI_URL = 'https://api.mercadolibre.com';
 
-
     private static function getConnect($uri, $method, $content_type, $uri_base)
     {
-        $connect = curl_init($uri_base . $uri);        
-        curl_setopt($connect, CURLOPT_USERAGENT, 'MercadoPago Prestashop v' . MPApi::VERSION);
+        $connect = curl_init($uri_base.$uri);
+        curl_setopt($connect, CURLOPT_USERAGENT, 'MercadoPago Prestashop v'.MPApi::VERSION);
         curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt(
@@ -43,18 +41,18 @@ class MPRestCli
             CURLOPT_HTTPHEADER,
             array(
                 'Accept: application/json',
-                'Content-Type: ' . $content_type
-            )
-        );
+                'Content-Type: '.$content_type,
+                )
+            );
 
         return $connect;
     }
 
     private static function getConnectTracking($uri, $method, $content_type, $trackingID)
     {
-        $connect = curl_init(self::API_BASE_URL . $uri);
-        
-        curl_setopt($connect, CURLOPT_USERAGENT, 'MercadoPago Prestashop v' . MPApi::VERSION);
+        $connect = curl_init(self::API_BASE_URL.$uri);
+
+        curl_setopt($connect, CURLOPT_USERAGENT, 'MercadoPago Prestashop v'.MPApi::VERSION);
         curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt(
@@ -62,10 +60,10 @@ class MPRestCli
             CURLOPT_HTTPHEADER,
             array(
                 'Accept: application/json',
-                'Content-Type: ' . $content_type,
-                'X-Tracking-Id:'.$trackingID
-            )
-        );
+                'Content-Type: '.$content_type,
+                'X-Tracking-Id:'.$trackingID,
+                )
+            );
 
         return $connect;
     }
@@ -73,33 +71,33 @@ class MPRestCli
     private static function execTracking($method, $uri, $data, $content_type, $trackingID)
     {
         $connect = self::getConnectTracking($uri, $method, $content_type, $trackingID);
-        
+
         if ($data) {
             self::setData($connect, $data, $content_type);
         }
-        
+
         $api_result = curl_exec($connect);
         $api_http_code = curl_getinfo($connect, CURLINFO_HTTP_CODE);
         $response = array(
             'status' => $api_http_code,
-            'response' => Tools::jsonDecode($api_result, true)
-        );
-        
+            'response' => Tools::jsonDecode($api_result, true),
+            );
+
         if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
-            UtilMercadoPago::logMensagem('MercadoPago.exec :: data = ' . Tools::jsonEncode($data), MPApi::INFO);
-            UtilMercadoPago::logMensagem('MercadoPago.exec :: response = ' . $api_result, MPApi::INFO);
+            UtilMercadoPago::logMensagem('MercadoPago.exec :: data = '.Tools::jsonEncode($data), MPApi::INFO);
+            UtilMercadoPago::logMensagem('MercadoPago.exec :: response = '.$api_result, MPApi::INFO);
         }
-        
+
         if ($response['status'] == 0) {
             $error = 'Can not call the API, status code 0.';
             throw new Exception($error);
         } else {
             if ($response['status'] > 202) {
-                UtilMercadoPago::logMensagem("MercadoPago::exec = " . $response['response']['message'], MPApi::ERROR);
+                UtilMercadoPago::logMensagem('MercadoPago::exec = '.$response['response']['message'], MPApi::ERROR);
             }
         }
         curl_close($connect);
-        
+
         return $response;
     }
 
@@ -111,7 +109,7 @@ class MPRestCli
             } else {
                 $data = Tools::jsonEncode($data);
             }
-            
+
             if (function_exists('json_last_error')) {
                 $json_error = json_last_error();
                 if ($json_error != JSON_ERROR_NONE) {
@@ -119,40 +117,40 @@ class MPRestCli
                 }
             }
         }
-        
+
         curl_setopt($connect, CURLOPT_POSTFIELDS, $data);
     }
 
     private static function exec($method, $uri, $data, $content_type, $uri_base)
     {
         $connect = self::getConnect($uri, $method, $content_type, $uri_base);
-        
+
         if ($data) {
             self::setData($connect, $data, $content_type);
         }
-        
+
         $api_result = curl_exec($connect);
         $api_http_code = curl_getinfo($connect, CURLINFO_HTTP_CODE);
         $response = array(
             'status' => $api_http_code,
-            'response' => Tools::jsonDecode($api_result, true)
-        );
-        
+            'response' => Tools::jsonDecode($api_result, true),
+            );
+
         if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
-            UtilMercadoPago::logMensagem('MercadoPago.exec :: data = ' . Tools::jsonEncode($data), MPApi::INFO);
-            UtilMercadoPago::logMensagem('MercadoPago.exec :: response = ' . $api_result, MPApi::INFO);
+            UtilMercadoPago::logMensagem('MercadoPago.exec :: data = '.Tools::jsonEncode($data), MPApi::INFO);
+            UtilMercadoPago::logMensagem('MercadoPago.exec :: response = '.$api_result, MPApi::INFO);
         }
-        
+
         if ($response['status'] == 0) {
             $error = 'Can not call the API, status code 0.';
             throw new Exception($error);
         } else {
             if ($response['status'] > 202) {
-                UtilMercadoPago::logMensagem("MercadoPago::exec = " . $response['response']['message'], MPApi::ERROR);
+                UtilMercadoPago::logMensagem('MercadoPago::exec = '.$response['response']['message'], MPApi::ERROR);
             }
         }
         curl_close($connect);
-        
+
         return $response;
     }
 

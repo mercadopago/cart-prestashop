@@ -2,9 +2,9 @@
 <module>
 	<name>mercadopago</name>
 	<displayName><![CDATA[Mercado Pago]]></displayName>
-	<version><![CDATA[3.3.4]]></version>
+	<version><![CDATA[3.3.5]]></version>
 	<description><![CDATA[Reciba pagos con tarjetas y tickets con nuestro Checkout Personalizado o Checkout Básico. Utiliza Mercado Envios.]]></description>
-	<author><![CDATA[MERCADOPAGO.COM LTDA.]]></author>
+	<author><![CDATA[MERCADOPAGO.COM REPRESENTAÇÕES LTDA.]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
 	<confirmUninstall><![CDATA[¿Está seguro de que desea desinstalar MercadoPago]]></confirmUninstall>
 	<is_configurable>1</is_configurable>

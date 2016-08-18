@@ -23,10 +23,10 @@
 *  International Registered Trademark & Property of MercadoPago
 *}
 <div class="mp-module">
-	{if empty($client_id)} 
+	{if empty($client_id)}
 		{include file='./marketing.tpl'
 		this_path_ssl=$this_path_ssl|escape:'htmlall':'UTF-8'}
-	{/if} 
+	{/if}
 	<div id="settings" style="display: block">
 	<div id="alerts">
 	{if $version eq 6}
@@ -65,7 +65,7 @@
 			</div>
 			{foreach from=$errors item=error}
 			<div class="error">
-				{$error|escape:'htmlall':'UTF-8'}	
+				{$error|escape:'htmlall':'UTF-8'}
 			</div>
 			{/foreach}
 		{/if}
@@ -80,10 +80,10 @@
 		<a href="https://www.mercadopago.com/mla/account/credentials" target="_blank"><u>{l s='Argentina' mod='mercadopago'}</u></a> |
 		<a href="https://www.mercadopago.com/mlb/account/credentials" target="_blank"><u>{l s='Brazil' mod='mercadopago'}</u></a> |
 		<a href="https://www.mercadopago.com/mco/account/credentials" target="_blank"><u>{l s='Colombia' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mlc/account/credentials" target="_blank"><u>{l s='Chile' mod='mercadopago'}</u></a> |		
-		<a href="https://www.mercadopago.com/mlm/account/credentials" target="_blank"><u>{l s='Mexico' mod='mercadopago'}</u></a> | 
-		<a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank"><u>{l s='Venezuela' mod='mercadopago'}</u></a> 
-	
+		<a href="https://www.mercadopago.com/mlc/account/credentials" target="_blank"><u>{l s='Chile' mod='mercadopago'}</u></a> |
+		<a href="https://www.mercadopago.com/mlm/account/credentials" target="_blank"><u>{l s='Mexico' mod='mercadopago'}</u></a> |
+		<a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank"><u>{l s='Venezuela' mod='mercadopago'}</u></a>
+
 	<form action="{$uri|escape:'htmlall':'UTF-8'}" method="post">
 		<fieldset>
 			<legend>
@@ -106,7 +106,7 @@
 			<br />
 			{if !empty($country)}
 			<label>{l s='Category:' mod='mercadopago'}</label>
-				<div class=""> 
+				<div class="">
 					<select name="MERCADOPAGO_CATEGORY" id="category">
 						 <option value="art">{l s='Collectibles & Art' mod='mercadopago'}</option>
 						 <option value="baby">{l s='Toys for Baby, Stroller, Stroller Accessories, Car Safety Seats' mod='mercadopago'}</option>
@@ -131,14 +131,14 @@
 						 <option value="travels">{l s='Plane tickets, Hotel vouchers, Travel vouchers' mod='mercadopago'}</option>
 						 <option value="virtual_goods">{l s='E-books, Music Files, Software, Digital Images,  PDF Files and any item which can be electronically stored in a file, Mobile Recharge, DTH Recharge and any Online Recharge' mod='mercadopago'}</option>
 						 <option value="others" selected="selected">{l s='Other categories' mod='mercadopago'}</option>
-					</select>	
+					</select>
 				</div>
 								<br/>
 				<label>{l s='Notification URL' mod='mercadopago'}:</label>
 				<div>{$notification_url|escape:'htmlall':'UTF-8'}</div>
 			{/if}
 
-				<br />					
+				<br />
 		</fieldset>
 		{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV' || $country == 'MPE'}
 			<fieldset>
@@ -152,7 +152,7 @@
 						<option value="false">{l s='No' mod='mercadopago'} </option>
 					</select>
 				</div>
-				<br />	
+				<br />
 				<label>{l s='Public Key:' mod='mercadopago'}</label>
 				<div class="">
 					<input type="text" size="33" name="MERCADOPAGO_PUBLIC_KEY" value="{$public_key|escape:'htmlall':'UTF-8'}" />
@@ -240,41 +240,39 @@
 						<option value="false">{l s='No' mod='mercadopago'} </option>
 					</select>
 				</div>
-				{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV'}			
+				{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV'}
 					<div class="row">
 						<div class="col-md12">
-							<img class="logo" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/mercadoenvios_hori.jpg" width="250px;" style="margin-left:-250px;">
+							<img class="logo" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/mercadoenvios_hori.jpg" width="250px;" style="margin-left:-10px;">
 						</div>
 					</div>
 					<br>
 					<h3>{l s='Settings Mercado Envios' mod='mercadopago'}</h3>
-					{if $country == 'MLA'}
 						<ul>
-							<li><a target="_blank" href="https://www.mercadopago.com.ar/envios">Activa MercadoEnvíos</a></li>
-							<li>
-							Consulta los<a target="_blank" href="https://www1.oca.com.ar/ocaexpresspak/help/serviviosbasicos.asp">valores admitidos por OCA</a>.</li>
+							<li><span style="color:red;">**** &nbsp;</span>{l s='Mercado Envios works only with Checkout Standard' mod='mercadopago'}</li>
+							{if $country == 'MLA'}
+									<li><a target="_blank" href="https://www.mercadopago.com.ar/envios">Activa MercadoEnvíos</a></li>
+									<li>
+									Consulta los<a target="_blank" href="https://www1.oca.com.ar/ocaexpresspak/help/serviviosbasicos.asp">valores admitidos por OCA</a>.</li>
+							{/if}
+							{if $country == 'MLM'}
+								<ul>
+									<li>
+										<a target="_blank" href="https://www.mercadopago.com.mx/envios">Activa MercadoEnvíos</a>
+									</li>
+									<li>
+										Consulta los <a target="_blank" href="http://www.dhl.com.mx/content/dam/downloads/language_masters/express/es/shipping/weights_and_dimensions/weights_and_dimensions_es_lm.pdf">valores admitidos por DHL</a>.
+									</li>
+								{/if}
+								{if $country == 'MLB'}
+									<li>
+										<a target="_blank" href="https://www.mercadopago.com.br/envios">Ativar MercadoEnvios</a>
+									</li>
+									<li>
+										Consultar os <a target="_blank" href="http://www.correios.com.br/para-voce/precisa-de-ajuda/limites-de-dimensoes-e-de-peso">valores permitidos pelos Correios</a>.
+									</li>
+								{/if}
 						</ul>
-					{/if}
-					{if $country == 'MLM'}
-						<ul>
-							<li>
-								<a target="_blank" href="https://www.mercadopago.com.mx/envios">Activa MercadoEnvíos</a>
-							</li>
-							<li>
-								Consulta los <a target="_blank" href="http://www.dhl.com.mx/content/dam/downloads/language_masters/express/es/shipping/weights_and_dimensions/weights_and_dimensions_es_lm.pdf">valores admitidos por DHL</a>.
-							</li>
-						</ul>
-					{/if}
-					{if $country == 'MLB'}
-						<ul>
-							<li>
-								<a target="_blank" href="https://www.mercadopago.com.br/envios">Ativar MercadoEnvios</a>
-							</li>
-							<li>
-								Consultar os <a target="_blank" href="http://www.correios.com.br/para-voce/precisa-de-ajuda/limites-de-dimensoes-e-de-peso">valores permitidos pelos Correios</a>.
-							</li>
-						</ul>
-					{/if}
 					<br>
 					<div class="row">
 						<div class="col-md12">
@@ -289,7 +287,7 @@
 					</div>
 				{/if}
 			</fieldset>
-			{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MPE'}				
+			{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MPE'}
 				<fieldset>
 					<legend class="ch-form-row discount-link" style="padding-left: 30px;">
 						{l s='Coupon MercadoPago' mod='mercadopago'}
@@ -302,8 +300,8 @@
 							<option value="true">{l s='Yes' mod='mercadopago'} </option>
 							<option value="false">{l s='No' mod='mercadopago'} </option>
 						</select>
-						
-					</div>			
+
+					</div>
 				</fieldset>
 			{/if}
 			<fieldset>
@@ -317,7 +315,7 @@
 						<option value="false">{l s='No' mod='mercadopago'} </option>
 					</select>
 				</div>
-			</fieldset>			
+			</fieldset>
 		{/if}
 		{if empty($country)}
 			<input type="submit" name="login" value="{l s='Login' mod='mercadopago'}" class="ch-btn ch-btn-big"/>
@@ -336,7 +334,7 @@
 			$.scrollTo(0, 0);
 		}
 	})
-	
+
 	window.onload = function() {
 		if (document.getElementById("category")){
 			document.getElementById("category").value = "{$category|escape:'htmlall':'UTF-8'}";
@@ -347,18 +345,18 @@
 		}
 		if (document.getElementById("coupon_active")){
 			document.getElementById("coupon_active").value = "{$coupon_active|escape:'htmlall':'UTF-8'}";
-		}	
+		}
 		if (document.getElementById("coupon_ticket_active")){
 			document.getElementById("coupon_ticket_active").value = "{$coupon_ticket_active|escape:'htmlall':'UTF-8'}";
-		}			
-		
+		}
+
 
 		if (document.getElementById("standard_active")){
 			document.getElementById("standard_active").value = "{$standard_active|escape:'htmlall':'UTF-8'}";
 		}
 
 		if (document.getElementById("MERCADOENVIOS_ACTIVATE")){
-			document.getElementById("MERCADOENVIOS_ACTIVATE").value = "{$MERCADOENVIOS_ACTIVATE|escape:'htmlall':'UTF-8'}" == "" ? "false" : 
+			document.getElementById("MERCADOENVIOS_ACTIVATE").value = "{$MERCADOENVIOS_ACTIVATE|escape:'htmlall':'UTF-8'}" == "" ? "false" :
 			"{$MERCADOENVIOS_ACTIVATE|escape:'htmlall':'UTF-8'}";
 		}
 		if (document.getElementById("log_active")){
@@ -372,25 +370,25 @@
 		if (document.getElementById("auto_return")){
 			document.getElementById("auto_return").value = "{$auto_return|escape:'htmlall':'UTF-8'}";
 		}
-		
+
 		{foreach from=$payment_methods_settings key=payment_method item=value}
 			document.getElementById("{$payment_method|escape:'htmlall':'UTF-8'}").checked = "{$value|escape:'htmlall':'UTF-8'}";
 		{/foreach}
-		
+
 		{foreach from=$offline_payment_settings key=offline_payment item=value}
 			document.getElementById("{$offline_payment|escape:'htmlall':'UTF-8'}_active").value = "{$value.active|escape:'htmlall':'UTF-8'}";
 		{/foreach}
 	}
-	
+
 	$("#back").click(
-			function() { 
+			function() {
 				$(".marketing").show();
 				$("#settings").hide();
 				$("#alerts").remove();
 				$.scrollTo(0, 0);
 		});
 
-	function bloquearEnvios(obj) { 
+	function bloquearEnvios(obj) {
 		$( "#MERCADOENVIOS_ACTIVATE" ).val("false");
 		if (obj.value == "true") {
 			$( "#MERCADOENVIOS_ACTIVATE" ).prop("disabled", false);
@@ -400,7 +398,7 @@
 	}
 
 	$("#MERCADOENVIOS_ACTIVATE").change(
-			function() { 
+			function() {
 				if (this.value == "true") {
 					retorno = window.confirm("{l s='If you enable this, the others payment type will be disable. Do you want to continue?' mod='mercadopago'}");
 					if (retorno) {
