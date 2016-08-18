@@ -23,16 +23,13 @@
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of MercadoPago
  */
-
-include_once dirname(__FILE__) . '/../../mercadopago.php';
-include_once dirname(__FILE__) . '/../../includes/MPApi.php';
+include_once dirname(__FILE__).'/../../mercadopago.php';
+include_once dirname(__FILE__).'/../../includes/MPApi.php';
 class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontController
 {
-
     public function initContent()
     {
         parent::initContent();
-
         if (Tools::getIsset('collection_id') && Tools::getValue('collection_id') != 'null') {
             // payment variables
             $payment_statuses = array();
@@ -45,32 +42,32 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             $status_details = array();
             $transaction_amounts = 0;
             $collection_ids = explode(',', Tools::getValue('collection_id'));
-            
-            $merchant_order_id= Tools::getValue('merchant_order_id');
+
+            $merchant_order_id = Tools::getValue('merchant_order_id');
 
             $mercadopago = $this->module;
             $mercadopago_sdk = $mercadopago->mercadopago;
-            
+
             foreach ($collection_ids as $collection_id) {
                 $result = $mercadopago_sdk->getPaymentStandard($collection_id);
-        
+
                 $payment_info = $result['response']['collection'];
                 $id_cart = $payment_info['external_reference'];
                 $cart = new Cart($id_cart);
                 $payment_statuses[] = $payment_info['status'];
                 $payment_ids[] = $payment_info['id'];
                 $payment_types[] = $payment_info['payment_type'];
-                
+
                 if (isset($payment_info['payment_method_id'])) {
                     $payment_method_ids[] = $payment_info['payment_method_id'];
                 }
-                
+
                 $transaction_amounts += $payment_info['transaction_amount'];
-                
+
                 if (isset($payment_info['payment_type']) && $payment_info['payment_type'] == 'credit_card') {
                     $card_holder_names[] = isset($payment_info['card']['cardholder']['name']) ? $payment_info['card']['cardholder']['name'] : '';
                     if (isset($payment_info['card']['last_four_digits'])) {
-                        $four_digits_arr[] = '**** **** **** ' . $payment_info['card']['last_four_digits'];
+                        $four_digits_arr[] = '**** **** **** '.$payment_info['card']['last_four_digits'];
                     }
                     $statement_descriptors[] = $payment_info['statement_descriptor'];
                     $status_details[] = $payment_info['status_detail'];
@@ -82,7 +79,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 $extra_vars = array(
                     '{bankwire_owner}' => $mercadopago->textshowemail,
                     '{bankwire_details}' => '',
-                    '{bankwire_address}' => ''
+                    '{bankwire_address}' => '',
                 );
                 $order_status = null;
                 $payment_status = $payment_info['status'];
@@ -101,22 +98,17 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 $order_id = $mercadopago->getOrderByCartId($cart->id);
 
                 if ($order_status != null) {
-
                     $result_merchant = $mercadopago_sdk->getMerchantOrder($merchant_order_id);
-
                     $merchant_order_info = $result_merchant['response'];
-                    
-                    $status_shipment = null;
-                    if (isset($merchant_order_info["shipments"][0]) &&
-                        $merchant_order_info["shipments"][0]["shipping_mode"] == "me2") {
 
-                        $isMercadoEnvios = true;
-                        $cost_mercadoEnvios = $merchant_order_info["shipments"][0]["shipping_option"]["cost"];
+                    if (isset($merchant_order_info['shipments'][0]) &&
+                        $merchant_order_info['shipments'][0]['shipping_mode'] == 'me2') {
+                        $cost_mercadoEnvios = $merchant_order_info['shipments'][0]['shipping_option']['cost'];
 
                         $total += $cost_mercadoEnvios;
                     }
 
-                    if (! $order_id) {
+                    if (!$order_id) {
                         $displayName = UtilMercadoPago::setNamePaymentType($payment_types[0]);
 
                         $mercadopago->validateOrder(
@@ -129,28 +121,33 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                             $cart->id_currency,
                             false,
                             $cart->secure_key
-                        ); 
+                        );
                     }
 
-                    $order_id = ! $mercadopago->currentOrder ? Order::getOrderByCartId($cart->id) : $mercadopago->currentOrder;
-
+                    $order_id = !$mercadopago->currentOrder ? Order::getOrderByCartId($cart->id) : $mercadopago->currentOrder;
+                    error_log("==================order id standard ================".$order_id);
                     $order = new Order($order_id);
-                    
-                    $uri = __PS_BASE_URI__ . 'order-confirmation.php?id_cart=' . $order->id_cart . '&id_module=' .
-                         $mercadopago->id . '&id_order=' . $order->id . '&key=' . $order->secure_key;
+
+                    $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$order->id_cart.'&id_module='.
+                         $mercadopago->id.'&id_order='.$order->id.'&key='.$order->secure_key;
                     $order_payments = $order->getOrderPayments();
 
+                    if ($order_payments == null || $order_payments[0] == null) {
+                        error_log("=======order payment esta nulo=====");
+                        $order_payments[0] = new stdClass();
+                    }
+
                     $order_payments[0]->transaction_id = Tools::getValue('collection_id');
-                    $uri .= '&payment_status=' . $payment_statuses[0];
-                    $uri .= '&payment_id=' . implode(' / ', $payment_ids);
-                    $uri .= '&payment_type=' . implode(' / ', $payment_types);
-                    $uri .= '&payment_method_id=' . implode(' / ', $payment_method_ids);
-                    $uri .= '&amount=' . $total;
+                    $uri .= '&payment_status='.$payment_statuses[0];
+                    $uri .= '&payment_id='.implode(' / ', $payment_ids);
+                    $uri .= '&payment_type='.implode(' / ', $payment_types);
+                    $uri .= '&payment_method_id='.implode(' / ', $payment_method_ids);
+                    $uri .= '&amount='.$total;
                     if ($payment_info['payment_type'] == 'credit_card') {
-                        $uri .= '&card_holder_name=' . implode(' / ', $card_holder_names);
-                        $uri .= '&four_digits=' . implode(' / ', $four_digits_arr);
-                        $uri .= '&statement_descriptor=' . $statement_descriptors[0];
-                        $uri .= '&status_detail=' . $status_details[0];
+                        $uri .= '&card_holder_name='.implode(' / ', $card_holder_names);
+                        $uri .= '&four_digits='.implode(' / ', $four_digits_arr);
+                        $uri .= '&statement_descriptor='.$statement_descriptors[0];
+                        $uri .= '&status_detail='.$status_details[0];
                         $order_payments[0]->card_number = empty($four_digits_arr) ? '' :
                             implode(' / ', $four_digits_arr);
                         $order_payments[0]->card_brand = empty($payment_method_ids) ? '' :
@@ -164,11 +161,10 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             }
         } else {
             UtilMercadoPago::logMensagem(
-                'MercadoPagoStandardReturnModuleFrontController::initContent = ' .
+                'MercadoPagoStandardReturnModuleFrontController::initContent = '.
                 'External reference is not set. Order placement has failed.',
                 MPApi::ERROR
             );
         }
     }
-
 }

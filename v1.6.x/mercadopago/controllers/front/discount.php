@@ -43,7 +43,7 @@ class MercadoPagoDiscountModuleFrontController extends ModuleFrontController
                 'valor' => $cart->getOrderTotal(true, Cart::BOTH)
             );
         } else {
-            
+
             if (isset($_REQUEST['coupon_id']) && $_REQUEST['coupon_id'] != '') {
                 $coupon_id = $_REQUEST['coupon_id'];
                 $mercadopago = $this->module;

@@ -18,10 +18,10 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- *  @author    MercadoPago
+ *  @author    Mercado Pago
  *  @copyright Copyright (c) MercadoPago [http://www.mercadopago.com]
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- *  International Registered Trademark & Property of MercadoPago
+ *  International Registered Trademark & Property of Mercado Pago
  */
 
 class UtilMercadoPago
@@ -51,11 +51,11 @@ class UtilMercadoPago
         } elseif ($payment_type_id == "atm") {
             $displayName = "Mercado Pago - ATM";
         } elseif ($payment_type_id == "credit_card") {
-           $displayName = "Mercado Pago - Credit card";
+            $displayName = "Mercado Pago - Credit card";
         } elseif ($payment_type_id == "debit_card") {
             $displayName = "Mercado Pago - Debit card";
         } elseif ($payment_type_id == "prepaid_card") {
-           $displayName = "Mercado Pago - Prepaid card";
+            $displayName = "Mercado Pago - Prepaid card";
         } else {
             $displayName = "Mercado Pago";
         }

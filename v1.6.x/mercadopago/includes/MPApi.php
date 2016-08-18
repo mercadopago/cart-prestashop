@@ -32,7 +32,7 @@ include_once 'MPRestCli.php';
 class MPApi
 {
 
-    const VERSION = '3.3.4';
+    const VERSION = '3.3.5';
 
     /* Info */
     const INFO = 1;
@@ -72,11 +72,11 @@ class MPApi
                 'grant_type' => 'client_credentials'
             )
         );
-        
+
         $access_data = MPRestCli::post('/oauth/token', $app_client_values, 'application/x-www-form-urlencoded');
-        
+
         $this->access_data = $access_data['response'];
-        
+
         return $this->access_data['access_token'];
     }
 
@@ -85,7 +85,7 @@ class MPApi
      */
     public function getAccessTokenV1()
     {
-        return Configuration::get('MERCADOPAGO_ACCESS_TOKEN');
+        return trim(Configuration::get('MERCADOPAGO_ACCESS_TOKEN'));
     }
 
     /*
@@ -95,7 +95,7 @@ class MPApi
     {
         $access_token = $this->getAccessToken();
         $result = MPRestCli::get('/users/me?access_token=' . $access_token);
-        
+
         return in_array('test_user', $result['response']['tags']);
     }
 
@@ -103,7 +103,7 @@ class MPApi
     {
         $access_token = $this->getAccessToken();
         $result = MPRestCli::get('/users/me?access_token=' . $access_token);
-        
+
         return $result['response']['site_id'];
     }
 
@@ -113,17 +113,17 @@ class MPApi
     public function calculateEnvios($params)
     {
         $access_token = $this->getAccessToken();
-    
+
         $uri = "/shipping_options";
         $params["access_token"] = $access_token;
-        
+
         $uri .= (strpos($uri, "?") === false) ? "?" : "&";
         $uri .= $this->buildQuery($params);
 
-        $result = MPRestCli::get($uri);             
+        $result = MPRestCli::get($uri);
         return  $result;
     }
-   
+
     /*
      * v0
      */
@@ -136,7 +136,7 @@ class MPApi
         $result = MPRestCli::put("/collections/" . $id . "?access_token=" . $access_token, $params);
 
         return  $result;
-    }    
+    }
 
     /*
      * v1
@@ -155,7 +155,7 @@ class MPApi
     /**
      * Get information for specific payment
      *
-     * @param int $id            
+     * @param int $id
      * @return array(json)
      */
     public function getPayment($id)
@@ -169,7 +169,7 @@ class MPApi
     /**
      * Get information for specific payment
      *
-     * @param int $id            
+     * @param int $id
      * @return array(json)
      */
     public function getTracking($id_shipment)
@@ -185,7 +185,7 @@ class MPApi
     {
         $access_token = $this->getAccessToken();
         $tag_shipment = '/shipment_labels?savePdf=Y&shipment_ids='.$id_shipment.'&access_token=' . $access_token;
-        
+
         return MPRestCli::API_BASE_MELI_URL.$tag_shipment;
     }
 
@@ -193,14 +193,14 @@ class MPApi
     {
         $access_token = $this->getAccessToken();
         $tag_shipment = '/shipment_labels?response_type=zpl2&shipment_ids='.$id_shipment.'&access_token=' . $access_token;
-        
+
         return MPRestCli::API_BASE_MELI_URL.$tag_shipment;
     }
 
     /**
      * Get information for specific payment
      *
-     * @param int $id            
+     * @param int $id
      * @return array(json)
      */
     public function getPaymentStandard($id)
@@ -217,13 +217,13 @@ class MPApi
     /**
      * Get information for specific payment
      *
-     * @param int $id            
+     * @param int $id
      * @return array(json)
      */
     public function getMerchantOrder($id)
     {
         $access_token = $this->getAccessToken();
-        
+
         $uri_prefix = $this->sandbox ? '/sandbox' : '';
         $merchant_order = MPRestCli::get($uri_prefix . '/merchant_orders/' . $id . '?access_token=' . $access_token);
         return $merchant_order;
@@ -255,7 +255,7 @@ class MPApi
     public function getOfflinePaymentMethods()
     {
         $access_token = $this->getAccessTokenV1();
-        $result = MPRestCli::get('/v1/payment_methods/?access_token=' . $access_token);
+        $result = MPRestCli::get('/v1/payment_methods?access_token=' . $access_token);
         $result = $result['response'];
         // remove account_money
         foreach ($result as $key => $value) {
@@ -290,7 +290,7 @@ class MPApi
     /**
      * Create a checkout preference
      *
-     * @param array $preference            
+     * @param array $preference
      * @return array(json)
      */
     public function createPreference($preference)
@@ -310,7 +310,7 @@ class MPApi
         $trackingID = "platform:v1-whitelabel,type:prestashop,so:".MPApi::VERSION;
 
         $preference_result = MPRestCli::postTracking('/v1/payments?access_token=' . $access_token, $info, $trackingID);
-        
+
         return $preference_result;
     }
 
@@ -320,15 +320,15 @@ class MPApi
     public function getCustomer($params)
     {
         $access_token = $this->getAccessTokenV1();
-        
+
         $uri = "/v1/customers/search";
         $params["access_token"] = $access_token;
-        
+
         $uri .= (strpos($uri, "?") === false) ? "?" : "&";
         $uri .= $this->buildQuery($params);
-        
+
         $customer = MPRestCli::get($uri);
-        
+
         return $customer;
     }
 
@@ -351,7 +351,7 @@ class MPApi
     {
         $access_token = $this->getAccessTokenV1();
         $customerResponse = MPRestCli::post("/v1/customers?access_token=" . $access_token, $params);
-        
+
         if ($customerResponse == null || $customerResponse["status"] != "200") {
             UtilMercadoPago::logMensagem('MercadoPago::createCustomerCard - Error: Doens\'t possibled to create the Customer', MPApi::WARNING);
         }
@@ -365,7 +365,7 @@ class MPApi
     {
         $access_token = $this->getAccessTokenV1();
         $uri = "/v1/customers/" . $customerId . "/cards?access_token=" . $access_token;
-        
+
         $result_response = MPRestCli::post($uri, $token);
         return $result_response;
     }
@@ -382,7 +382,7 @@ class MPApi
         $access_token = $this->getAccessToken();
         $uri = "/discount_campaigns";
         $params["access_token"] = $access_token;
-        
+
         if (count($params) > 0) {
             $uri .= (strpos($uri, "?") === false) ? "?" : "&";
             $uri .= $this->buildQuery($params);

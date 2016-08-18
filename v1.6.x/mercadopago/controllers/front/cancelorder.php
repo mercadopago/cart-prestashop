@@ -42,7 +42,7 @@ class MercadoPagoCancelOrderModuleFrontController extends ModuleFrontController
         $mercadopago_sdk = $mercadopago->mercadopago;
 
         $order = new Order(Tools::getValue("id_order"));
-        $order_payments =  $order->getOrderPayments();  
+        $order_payments =  $order->getOrderPayments();
         foreach ($order_payments as $order_payment) {
 
             if ($order_payment->transaction_id > 0) {
@@ -56,7 +56,7 @@ class MercadoPagoCancelOrderModuleFrontController extends ModuleFrontController
 
                     $responseCancel = $mercadopago_sdk->cancelPaymentsStandard(
                         $order_payment->transaction_id
-                    );             
+                    );
                 }
             }
 
@@ -72,5 +72,4 @@ class MercadoPagoCancelOrderModuleFrontController extends ModuleFrontController
 
         Tools::redirectAdmin("http://localhost:8888/prestashop_teste/admin092p1atwr/index.php?controller=AdminOrders&id_order=650&vieworder&token=05a0706998e10c3519887e3fd5c82ddb");
     }
-
 }
