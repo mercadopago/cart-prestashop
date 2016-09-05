@@ -65,11 +65,12 @@ class MercadoPagoCancelOrderModuleFrontController extends ModuleFrontController
 
         $url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://') .
                                      htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8') . __PS_BASE_URI__;
-
         if ($responseCancel != null && $responseCancel['status'] == 200) {
             $mercadopago->updateOrderHistory($order->id, Configuration::get('PS_OS_CANCELED'));
         }
 
-        Tools::redirectAdmin("http://localhost:8888/prestashop_teste/admin092p1atwr/index.php?controller=AdminOrders&id_order=650&vieworder&token=05a0706998e10c3519887e3fd5c82ddb");
+        $redirect = $this->context->link->getAdminLink('AdminOrders');
+        Tools::redirectAdmin($redirect);
     }
 }
+

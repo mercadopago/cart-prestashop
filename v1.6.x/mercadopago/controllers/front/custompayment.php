@@ -74,6 +74,16 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
             $payment_type_id = $response['payment_type_id'];
             $displayName = UtilMercadoPago::setNamePaymentType($payment_type_id);
 
+            $payment_mode = 'boleto';
+            $installments = 1;
+            if (Tools::getIsset('card_token_id')) {
+                $payment_mode = 'cartao';
+                $installments = (int)$response['installments'];
+            }
+            
+            $id_cart_rule = $mercadopago->applyDiscount($cart, $payment_mode, $installments);
+            
+            
             $mercadopago->validateOrder(
                 $cart->id,
                 Configuration::get($order_status),
@@ -85,7 +95,13 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 false,
                 $cart->secure_key
             );
-
+            
+            if($id_cart_rule != null){
+                $cartRule = new CartRule($id_cart_rule);
+                $cartRule->active = false;
+                $cartRule->save();
+            }
+            
             $order = new Order($mercadopago->currentOrder);
             $order_payments = $order->getOrderPayments();
             $order_payments[0]->transaction_id = $response['id'];
