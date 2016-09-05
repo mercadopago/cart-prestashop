@@ -57,3 +57,6 @@ Feature for show the payment type of payment
 
 V3.3.5 (18/08/2016)
 Fix about issue https://github.com/mercadopago/cart-prestashop/issues/96
+
+V3.3.6 (18/08/2016)
+Fix Mercado Envios.

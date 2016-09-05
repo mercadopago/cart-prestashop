@@ -42,6 +42,13 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	rel="stylesheet" type="text/css" />
 
 <div class="mp-module">
+
+{if $percent != 0 && count($percent) > 0}
+    <div class="row">
+        <h4 class="payment-label">Ganhe {$percent}% de desconto comprando com boleto ou cartão de crédito á vista</h4>
+    </div>
+{/if}
+
 	{if $coupon_active == 'true' }
 
 	<div class="row">
@@ -1574,4 +1581,3 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		}
 	</script>
 {/if}
-

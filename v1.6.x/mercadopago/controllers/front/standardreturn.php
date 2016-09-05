@@ -125,7 +125,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                     }
 
                     $order_id = !$mercadopago->currentOrder ? Order::getOrderByCartId($cart->id) : $mercadopago->currentOrder;
-                    error_log("==================order id standard ================".$order_id);
                     $order = new Order($order_id);
 
                     $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$order->id_cart.'&id_module='.
@@ -133,7 +132,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                     $order_payments = $order->getOrderPayments();
 
                     if ($order_payments == null || $order_payments[0] == null) {
-                        error_log("=======order payment esta nulo=====");
                         $order_payments[0] = new stdClass();
                     }
 

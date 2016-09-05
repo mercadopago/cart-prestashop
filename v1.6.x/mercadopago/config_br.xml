@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
 	<name>mercadopago</name>
-	<displayName><![CDATA[Mercado Pago]]></displayName>
-	<version><![CDATA[3.3.5]]></version>
+	<displayName><![CDATA[]]></displayName>
+	<version><![CDATA[3.3.6]]></version>
 	<description><![CDATA[Reciba pagos con tarjetas y tickets con nuestro Checkout Personalizado o Checkout B&aacute;sico. Utiliza Mercado Envios.]]></description>
 	<author><![CDATA[MERCADOPAGO.COM REPRESENTA&Ccedil;&Otilde;ES LTDA.]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>

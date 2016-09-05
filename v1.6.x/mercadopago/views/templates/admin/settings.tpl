@@ -27,7 +27,8 @@
 		{include file='./marketing.tpl'
 		this_path_ssl=$this_path_ssl|escape:'htmlall':'UTF-8'}
 	{/if}
-	<div id="settings" style="display: block">
+
+	<div id="settings" style="display: none">
 	<div id="alerts">
 	{if $version eq 6}
 		{if $success eq 'true'}
@@ -287,6 +288,21 @@
 					</div>
 				{/if}
 			</fieldset>
+      <!--<fieldset>
+          <legend>
+              <img src="../img/admin/contact.gif" />{l s='Settings - Mercado Pago Discount' mod='mercadopago'}
+          </legend>
+          <label>{l s='Discount percent:' mod='mercadopago'}</label>
+          <div >
+              <input type="text" name="MERCADOPAGO_DISCOUNT_PERCENT" value='{$percent}'/>
+          </div><br />
+          <label>{l s='Discount payment methods:' mod='mercadopago'}</label>
+          <div >
+              <input type="checkbox" name="MERCADOPAGO_ACTIVE_CREDITCARD" {if $active_credicard == 1}checked='checked'{/if} value="1">{l s='Credit card (in cash)' mod='mercadopago'}</input><br />
+              <input type="checkbox" name="MERCADOPAGO_ACTIVE_BOLETO" {if $active_boleto == 1}checked='checked'{/if} value="1">{l s='Ticket' mod='mercadopago'}</input>
+          </div>
+          <br />
+      </fieldset>-->
 			{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MPE'}
 				<fieldset>
 					<legend class="ch-form-row discount-link" style="padding-left: 30px;">
@@ -325,6 +341,7 @@
 			<!-- <input type="button" id="back" value="{l s='Back' mod='mercadopago'}" class="ch-btn-orange ch-btn-big-orange"/> -->
 	</form>
 </div>
+
 <script type="text/javascript">
 	$(document).ready(function (){
 		// hide marketing when settings are updated
