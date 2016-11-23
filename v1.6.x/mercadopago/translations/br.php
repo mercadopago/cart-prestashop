@@ -2,7 +2,7 @@
 
 global $_MODULE;
 $_MODULE = array();
-$_MODULE['<{mercadopago}prestashop>mercadopago_142f1c01254127506592cf5e94910369'] = 'Mercado Pago';
+$_MODULE['<{mercadopago}prestashop>mercadopago_cc3ad716730c38cc02d9c1ac647ae184'] = 'Receba seus pagamentos utilizando o Mercado Pago e receba em cartão de crédito e boletos através no nosso checkout Transparente ou Padrão.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_6f65bd2d4642c6c333afa152859a391d'] = 'Você tem certeza que deseja desinstalar o Mercado Pago?';
 $_MODULE['<{mercadopago}prestashop>mercadopago_69ac2c43655bbbe45d94baf6c760e257'] = 'Você deve seguir regras MercadoPago para a compra de ser válida';
 $_MODULE['<{mercadopago}prestashop>mercadopago_59ce89ed3bffb4012f1024d09703ae3e'] = 'MERCADOPAGO.COM REPRESENTAÇÕES LTDA.';
@@ -140,7 +140,13 @@ $_MODULE['<{mercadopago}prestashop>settings_9412305f1434ac4869dbe498dd4dd525'] =
 $_MODULE['<{mercadopago}prestashop>settings_ec6c833b9b1ab37b7e132b39c0ec6c65'] = 'Número máximo de parcelas:';
 $_MODULE['<{mercadopago}prestashop>settings_9e4891d2f525fbb901559d5eaf017e52'] = 'Retorno automático:';
 $_MODULE['<{mercadopago}prestashop>settings_016d597f7b1c79268be0fc5ef406f52b'] = 'Ajustes - Mercado Envios';
+$_MODULE['<{mercadopago}prestashop>settings_af47ff587557270db51148d03fb41034'] = 'Mercado Envios funciona apenas com Checkout Standard';
 $_MODULE['<{mercadopago}prestashop>settings_842b4d284c13e92cd54e6f2a5ec27feb'] = 'Ativar MercadoEnvios:';
+$_MODULE['<{mercadopago}prestashop>settings_308e865caea89c61c57ddc6148c845c6'] = '';
+$_MODULE['<{mercadopago}prestashop>settings_305df34ffddb0a8811e69b1fd59cc4dd'] = '';
+$_MODULE['<{mercadopago}prestashop>settings_6d32e1032ea5bc6bf3fbad620aeaf87a'] = '';
+$_MODULE['<{mercadopago}prestashop>settings_709751874f68743ad2be5cf7643db076'] = '';
+$_MODULE['<{mercadopago}prestashop>settings_c751439d0db3883ac1c8e816327adcab'] = '';
 $_MODULE['<{mercadopago}prestashop>settings_78a32249d180b89d908e00da286cdc3c'] = 'Cupom Mercado Pago';
 $_MODULE['<{mercadopago}prestashop>settings_536ac9adcdb9768a81c39aea862fdcc9'] = '* Opção válida apenas para sites participantes de campanhas de cupom.';
 $_MODULE['<{mercadopago}prestashop>settings_7749c0ed299d98aeffdd7eab8843bedd'] = 'Habilitar Cupom de Desconto:';

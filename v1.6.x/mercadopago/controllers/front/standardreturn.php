@@ -23,6 +23,7 @@
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of MercadoPago
  */
+
 include_once dirname(__FILE__).'/../../mercadopago.php';
 include_once dirname(__FILE__).'/../../includes/MPApi.php';
 class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontController
@@ -65,7 +66,8 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 $transaction_amounts += $payment_info['transaction_amount'];
 
                 if (isset($payment_info['payment_type']) && $payment_info['payment_type'] == 'credit_card') {
-                    $card_holder_names[] = isset($payment_info['card']['cardholder']['name']) ? $payment_info['card']['cardholder']['name'] : '';
+                    $card_holder_names[] = isset($payment_info['card']['cardholder']['name'])
+                    ? $payment_info['card']['cardholder']['name'] : '';
                     if (isset($payment_info['card']['last_four_digits'])) {
                         $four_digits_arr[] = '**** **** **** '.$payment_info['card']['last_four_digits'];
                     }
@@ -124,7 +126,8 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                         );
                     }
 
-                    $order_id = !$mercadopago->currentOrder ? Order::getOrderByCartId($cart->id) : $mercadopago->currentOrder;
+                    $order_id = !$mercadopago->currentOrder ?
+                    Order::getOrderByCartId($cart->id) : $mercadopago->currentOrder;
                     $order = new Order($order_id);
 
                     $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$order->id_cart.'&id_module='.

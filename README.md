@@ -112,28 +112,31 @@ You will receive the following message: " Module(s) installed successfully."
 
 4. Set your **CLIENT_ID** and **CLIENT_SECRET**, or **PUBLIC_KEY** and **ACCESS_TOKEN** (depending on which module you're using). 
 
-	Get your credentials in the following address:
-	* Argentina: [https://www.mercadopago.com/mla/account/credentials](https://www.mercadopago.com/mla/account/credentials)
-	* Brazil: [https://www.mercadopago.com/mlb/account/credentials](https://www.mercadopago.com/mlb/account/credentials)
-	* Chile: [https://www.mercadopago.com/mlc/account/credentials](https://www.mercadopago.com/mlc/account/credentials)
-	* Colombia: [https://www.mercadopago.com/mco/account/credentials](https://www.mercadopago.com/mco/account/credentials)
-	* Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
-	* Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
+  Get your credentials in the following address:
+  * Argentina: [https://www.mercadopago.com/mla/account/credentials](https://www.mercadopago.com/mla/account/credentials)
+  * Brazil: [https://www.mercadopago.com/mlb/account/credentials](https://www.mercadopago.com/mlb/account/credentials)
+  * Chile: [https://www.mercadopago.com/mlc/account/credentials](https://www.mercadopago.com/mlc/account/credentials)
+  * Colombia: [https://www.mercadopago.com/mco/account/credentials](https://www.mercadopago.com/mco/account/credentials)
+  * Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
+  * Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
+  * Peru: [https://www.mercadopago.com/mlp/account/credentials](https://www.mercadopago.com/mlp/account/credentials)
 
 ***IMPORTANT:*** *This module will only work with the following currencies:*
 
 * Argentina:
-	* **ARS** (Peso Argentino)
+  * **ARS** (Peso Argentino)
 * Brazil:
-	* **BRL** (Real)
+  * **BRL** (Real)
 * Chile:
-	* **CLP** (Peso Chileno)
+  * **CLP** (Peso Chileno)
 * Colombia:
-	* **COP** (Peso Colombiano)
+  * **COP** (Peso Colombiano)
 * Mexico:
-	* **MXN** (Peso Mexicano)
+  * **MXN** (Peso Mexicano)
 * Venezuela:
-	* **VEF** (Bolivar fuerte)
+  * **VEF** (Bolivar fuerte)
+* Peru:
+  * **PEN** (Novo sol)
 
 <a name="notifications"></a>
 ## Sync your backoffice with MercadoPago (IPN) 
@@ -163,6 +166,6 @@ Your notification URL will be automatically send with your payment to our API.
 
 Follow our facebook group and watch our videos
 <ul>
-	<li><a href="https://www.facebook.com/groups/modulos.mercadopago/?ref=ts&fref=ts" target="_blank">FACEBOOK</a></li>
-	<li><a href="https://www.youtube.com/playlist?list=PLl8LGzRu2_sXxChIJm1e0xY6dU3Dj_tNi" target="_blank">YOUTUBE</a></li>
+  <li><a href="https://www.facebook.com/groups/modulos.mercadopago/?ref=ts&fref=ts" target="_blank">FACEBOOK</a></li>
+  <li><a href="https://www.youtube.com/playlist?list=PLl8LGzRu2_sXxChIJm1e0xY6dU3Dj_tNi" target="_blank">YOUTUBE</a></li>
 </ul>

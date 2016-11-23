@@ -24,10 +24,17 @@
 *}
 
 
-{if isset($mensagem)}
+{if isset($mensagem) && !empty($mensagem)}
 
 <script type="text/javascript">
-	alert("{$mensagem|escape:'javascript':'UTF-8'}");
+	var obj = JSON.parse("{$code_shipment|escape:'javascript':'UTF-8'}");
+
+	for (var x in obj){
+  		if (obj.hasOwnProperty(x)){
+			$('input[data-key="' +x+ ',"]').first().parents("table").remove();
+  		}
+	}
+
 </script>
 
 {/if}

@@ -31,8 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-
-    const VERSION = '3.3.6';
+    const VERSION = '3.3.8';
 
     /* Info */
     const INFO = 1;
@@ -83,6 +82,26 @@ class MPApi
     /**
      * Get Access Token for API use
      */
+    public function getAccessTokenResponse()
+    {
+        $app_client_values = $this->buildQuery(
+            array(
+                'client_id' => $this->client_id,
+                'client_secret' => $this->client_secret,
+                'grant_type' => 'client_credentials'
+            )
+        );
+
+        $access_data = MPRestCli::post('/oauth/token', $app_client_values, 'application/x-www-form-urlencoded');
+
+        $this->access_data = $access_data['response'];
+
+        return $access_data['response'];
+    }
+
+    /**
+     * Get Access Token for API use
+     */
     public function getAccessTokenV1()
     {
         return trim(Configuration::get('MERCADOPAGO_ACCESS_TOKEN'));
@@ -121,6 +140,10 @@ class MPApi
         $uri .= $this->buildQuery($params);
 
         $result = MPRestCli::get($uri);
+
+
+        error_log("====result====".Tools::jsonEncode($result));
+
         return  $result;
     }
 
@@ -192,7 +215,9 @@ class MPApi
     public function getTagShipmentZebra($id_shipment)
     {
         $access_token = $this->getAccessToken();
-        $tag_shipment = '/shipment_labels?response_type=zpl2&shipment_ids='.$id_shipment.'&access_token=' . $access_token;
+        $tag_shipment = '/shipment_labels?response_type=zpl2&shipment_ids='.
+            $id_shipment.'&access_token=' .
+            $access_token;
 
         return MPRestCli::API_BASE_MELI_URL.$tag_shipment;
     }
@@ -297,7 +322,11 @@ class MPApi
     {
         $access_token = $this->getAccessToken();
         $trackingID = "platform:desktop,type:prestashop,so:".MPApi::VERSION;
-        $preference_result = MPRestCli::postTracking('/checkout/preferences?access_token=' . $access_token, $preference, $trackingID);
+        $preference_result = MPRestCli::postTracking(
+            '/checkout/preferences?access_token=' . $access_token,
+            $preference,
+            $trackingID
+        );
         return $preference_result;
     }
 
@@ -309,7 +338,12 @@ class MPApi
         $access_token = $this->getAccessTokenV1();
         $trackingID = "platform:v1-whitelabel,type:prestashop,so:".MPApi::VERSION;
 
-        $preference_result = MPRestCli::postTracking('/v1/payments?access_token=' . $access_token, $info, $trackingID);
+        $preference_result = MPRestCli::postTracking(
+            '/v1/payments?access_token=' .
+            $access_token,
+            $info,
+            $trackingID
+        );
 
         return $preference_result;
     }
@@ -353,7 +387,10 @@ class MPApi
         $customerResponse = MPRestCli::post("/v1/customers?access_token=" . $access_token, $params);
 
         if ($customerResponse == null || $customerResponse["status"] != "200") {
-            UtilMercadoPago::logMensagem('MercadoPago::createCustomerCard - Error: Doens\'t possibled to create the Customer', MPApi::WARNING);
+            UtilMercadoPago::logMensagem(
+                'MercadoPago::createCustomerCard - Error: Doens\'t possibled to create the Customer',
+                MPApi::WARNING
+            );
         }
         return $customerResponse;
     }
@@ -377,6 +414,34 @@ class MPApi
         return $response;
     }
 
+    public function getCheckConfigCard()
+    {
+        $access_token = $this->getAccessTokenV1();
+        $uri = "/settings?access_token=".$access_token;
+
+        error_log("======url======".$uri);
+
+        $result = MPRestCli::getConfig($uri);
+        return $result;
+    }
+
+    /*
+     * v1
+     * active/inactive
+     */
+    public function setEnableDisableTwoCard($params)
+    {
+        $access_token = $this->getAccessTokenV1();
+        error_log("=====params two cards=====".$params);
+
+        $params = array(
+            "two_cards" => $params
+        );
+        $result = MPRestCli::putConfig("/settings?access_token=" . $access_token, $params);
+        error_log("=====result two cards=====".Tools::jsonEncode($result));
+        return  $result;
+    }
+
     public function getDiscount($params)
     {
         $access_token = $this->getAccessToken();
@@ -389,6 +454,19 @@ class MPApi
         }
         $result = MPRestCli::get($uri);
         return $result;
+    }
+
+    /*
+     * Save settings
+     */
+    public function saveSettings($params)
+    {
+        $access_token = $this->getAccessTokenV1();
+        $uri = "/modules/tracking/saveSettings?access_token=" . $access_token;
+
+        $result_response = MPRestCli::post($uri, $params);
+
+        return $result_response;
     }
 
     private function buildQuery($params)
