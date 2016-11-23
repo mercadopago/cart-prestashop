@@ -2,12 +2,13 @@
 ---
 
 * [Features](#features)
+* [Requirements](#requirements)
 * [Available versions](#available_versions)
 * [Installation](#installation)
 * [Setup](#setup)
 * [Notifications](#notifications)
 * [Example features](#pictures_features)
-* [Feedback](#feedback)
+* [Social](#social)
 
 <a name="features"></a>
 ##Features##
@@ -38,12 +39,28 @@ This functionality allowed that their customers cards are stored in our API, all
 
 This feature allows the customer to have discounts applying the <strong>Mercado Pago</strong> discount coupons, the store should contact the <strong>Mercado Pago</strong> to participate in a campaign and generated coupons.
 
-***Important information***
+**Cash Payment**<strong>Prestashop v1.6.x</strong>
+This feature alows the customer to have discount in payment in cash using ticket or credit card.
+
+<a name="requirements"></a>
+##Requirements##
+Basically, the requirements of this plugin are same as you need to run WooCommerce. Your machine should have:
+
+**Platforms**
+
+* <a href="https://www.prestashop.com/en/download">Prestashop</a> 1.6 or greater;
+
+**Web Server Host**
+
+* <a href="http://php.net/">PHP</a> 5.6 or greater with CURL support;
+* <a href="http://www.mysql.com/">MySQL</a> version 5.6 or greater OR <a href="https://mariadb.org/">MariaDB</a> version 10.0 or greater;
+* <a href="https://httpd.apache.org/">Apache 2.x</a>.
 
 **SSL certificate**
 
-If you're using Ticket Checkout or Custom Checkout, it is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
+If you're using Custom Checkout, it is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
 During the sandbox mode tests, you can operate over HTTP, but for homologation you'll need to acquire the certificate in case you don't have it.
+
 
 <a name="available_versions"></a>
 ##Available versions##
@@ -141,11 +158,11 @@ Your notification URL will be automatically send with your payment to our API.
 <br/>
 ![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Coupon.jpg)
 
-<a name="feedback"></a>
-##Feedback##
+<a name="social"></a>
+##Social##
 
-We want to know your opinion, please answer the following form.
+Follow our facebook group and watch our videos
 <ul>
-	<li><a href="http://goo.gl/forms/2n5jWHaQbfEtdy0E2" target="_blank">Portuguese</a></li>
-	<li><a href="http://goo.gl/forms/A9bm8WuqTIZ89MI22" target="_blank">Spanish</a></li>
+	<li><a href="https://www.facebook.com/groups/modulos.mercadopago/?ref=ts&fref=ts" target="_blank">FACEBOOK</a></li>
+	<li><a href="https://www.youtube.com/playlist?list=PLl8LGzRu2_sXxChIJm1e0xY6dU3Dj_tNi" target="_blank">YOUTUBE</a></li>
 </ul>
