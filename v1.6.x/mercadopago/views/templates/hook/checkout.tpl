@@ -44,9 +44,24 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 <div class="mp-module">
 
 {if $percent != 0 && count($percent) > 0}
+
     <div class="row">
-        <h4 class="payment-label">Ganhe {$percent}% de desconto comprando com boleto ou cartão de crédito á vista</h4>
+
+			{if $credit_card_discount > 0 && $boleto_discount == 0}
+
+	        <h4 class="payment-label">{l s='Save' mod='mercadopago'}&nbsp;<span style="color: red;">{$percent|escape:'htmlall':'UTF-8'}% </span>{l s='discount payment by Mercado Pago with credit card in cash.' mod='mercadopago'}</h4>
+
+			{elseif $boleto_discount > 0 && $credit_card_discount == 0}
+
+	        <h4 class="payment-label">{l s='Save' mod='mercadopago'}&nbsp;<span style="color: red;">{$percent|escape:'htmlall':'UTF-8'}%</span> {l s='discount payment by Mercado Pago with ticket.' mod='mercadopago'}</h4>
+
+			{elseif $credit_card_discount > 0 && $boleto_discount > 0}
+
+	        <h4 class="payment-label">{l s='Save' mod='mercadopago'}&nbsp;<span style="color: red;">{$percent|escape:'htmlall':'UTF-8'}%</span> {l s='discount payment by Mercado Pago with ticket and credit card  in cash.' mod='mercadopago'}</h4>
+			{/if}
+
     </div>
+
 {/if}
 
 	{if $coupon_active == 'true' }
@@ -422,6 +437,10 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 <script defer type="text/javascript"
 	src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/jquery.dd.js"></script>
 <script defer type="text/javascript">
+
+	var active_credit_card = "{$active_credit_card|escape:'javascript':'UTF-8'}";
+	var orderTotal = "{$orderTotal|escape:'javascript':'UTF-8'}";
+
 	var country = "{$country|escape:'javascript':'UTF-8'}";
 
 	function loadSubDocType(value) {
@@ -596,12 +615,20 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	//Mostre as parcelas disponíveis no div 'installmentsOption'
 	function setInstallmentInfo(status, installments) {
 		var html_options = "";
+
 		if (status != 404 && status != 400 && installments.length > 0) {
+
 			html_options += "<option value='' selected>{l s='Choice' mod='mercadopago'}...</option>";
 			var installments = installments[0].payer_costs;
 			$.each(installments, function(key, value) {
-				html_options += "<option value='"+ value.installments + "'>"
+
+				if(value.installments == 1 && active_credit_card == 1){
+					html_options += "<option value='"+ value.installments + "'>"+ value.installments +" parcela de R$ "+ orderTotal +" ("+ orderTotal +") </option>";
+				}else{
+					html_options += "<option value='"+ value.installments + "'>"
 						+ value.recommended_message + "</option>";
+				}
+
 			});
 		} else {
 			console.error("Installments Not Found.");

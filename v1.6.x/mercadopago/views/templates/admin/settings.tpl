@@ -287,14 +287,15 @@
 						</div>
 					</div>
 				{/if}
+
 			</fieldset>
-      <!--<fieldset>
+      <fieldset>
           <legend>
               <img src="../img/admin/contact.gif" />{l s='Settings - Mercado Pago Discount' mod='mercadopago'}
           </legend>
           <label>{l s='Discount percent:' mod='mercadopago'}</label>
           <div >
-              <input type="text" name="MERCADOPAGO_DISCOUNT_PERCENT" value='{$percent}'/>
+              <input type="text" name="MERCADOPAGO_DISCOUNT_PERCENT" value="{$percent|escape:'htmlall':'UTF-8'}" />
           </div><br />
           <label>{l s='Discount payment methods:' mod='mercadopago'}</label>
           <div >
@@ -302,7 +303,7 @@
               <input type="checkbox" name="MERCADOPAGO_ACTIVE_BOLETO" {if $active_boleto == 1}checked='checked'{/if} value="1">{l s='Ticket' mod='mercadopago'}</input>
           </div>
           <br />
-      </fieldset>-->
+      </fieldset>
 			{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MPE'}
 				<fieldset>
 					<legend class="ch-form-row discount-link" style="padding-left: 30px;">
@@ -322,15 +323,25 @@
 			{/if}
 			<fieldset>
 				<legend>
-					<img src="../img/admin/contact.gif" />{l s='Settings - Active log' mod='mercadopago'}
+					<img src="../img/admin/contact.gif" />{l s='Settings' mod='mercadopago'}
 				</legend>
-				<label>{l s='Active: ' mod='mercadopago'}</label>
+
+				<label>{l s='Log: ' mod='mercadopago'}</label>
 				<div class="">
 					<select name="MERCADOPAGO_LOG" id="log_active">
 						<option value="true">{l s='Yes' mod='mercadopago'} </option>
 						<option value="false">{l s='No' mod='mercadopago'} </option>
 					</select>
 				</div>
+				<br>
+				<label>{l s='Payments with two cards: ' mod='mercadopago'}</label>
+				<div class="">
+					<select name="MERCADOPAGO_TWO_CARDS" id="two_cards" alt="Checkout Standard">
+						<option value="active">{l s='Yes' mod='mercadopago'} </option>
+						<option value="inactive">{l s='No' mod='mercadopago'} </option>
+					</select>
+				</div>
+
 			</fieldset>
 		{/if}
 		{if empty($country)}
@@ -367,6 +378,7 @@
 			document.getElementById("coupon_ticket_active").value = "{$coupon_ticket_active|escape:'htmlall':'UTF-8'}";
 		}
 
+		document.getElementById("two_cards").value = "{$two_cards|escape:'htmlall':'UTF-8'}";
 
 		if (document.getElementById("standard_active")){
 			document.getElementById("standard_active").value = "{$standard_active|escape:'htmlall':'UTF-8'}";

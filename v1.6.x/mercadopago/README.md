@@ -2,48 +2,64 @@
 ---
 
 * [Features](#features)
+* [Requirements](#requirements)
 * [Available versions](#available_versions)
 * [Installation](#installation)
 * [Setup](#setup)
 * [Notifications](#notifications)
 * [Example features](#pictures_features)
-
+* [Social](#social)
 
 <a name="features"></a>
 ##Features##
 
-**Standard checkout**
+Checkout options right for your business:
+We offer two checkout methods that make it easy to securely accept payments from anyone, anywhere.
 
-This feature allows merchants to have a standard checkout. It includes all
-payment methods (i.e. all credit cards, bar code payment, account money) and all window types (i.e. redirect, iframe, modal, blank and popup). Customization is not allowed.
+**Custom Checkout**
 
-**Credit Card Customized Checkout**
+Offer a checkout fully customized to your brand experience with our simple-to-use payments API.
 
-This feature will allow merchants to have a customized checkout for credit card
-payment. Thus, it will be possible to customize its look and feel, customers won’t be redirected away to complete the payment, and it will also reduce the checkout steps, improving conversion rates.
+* Seamless integration— no coding required, unless you want to.
+* Full control of buying experience.
+* Store buyer’s card for fast checkout.
+* Accept tickets in addition to cards.
+* Accept Mercado Pago's discount coupons.
+* Improve conversion rate.
 
-**Ticket Checkout**
+*Available for Argentina, Brazil, Colombia, Mexico, Peru and Venezuela*
 
-This feature allows merchants to have a customized ticket checkout, according to each country's ticket method (i.e Boleto in Brazil, RapiPago in Argentina, etc).  Thus, it will be possible to customize its look and feel, customers won’t be redirected away to complete the payment, and it will also reduce the checkout steps, improving conversion rates. The ticket link will be shown and when the customer click on it, another tab with the ticket will be opened.
+**Basic Checkout**
 
-**Print Ticket**
+Great for merchants who want to get going quickly and easily.
 
-This functionality allows the user, if necessary go to the ticket on purchase history.
+* Easy website integration— no coding required.
+* Limited control of buying experience — display Checkout window as redirect, modal or iframe.
+* Store buyer’s card for fast checkout.
+* Accept tickets, bank transfer and account money in addition to cards.
+* Accept Mercado Pago's discount coupons.
 
-**Customer Card** <strong>Prestashop v1.6.x</strong>
+*Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru and Venezuela*
 
-This functionality allowed that their customers cards are stored in our API, allowing for future purchases his card to be loaded without the need to fill all values. This facilitates the payment and improves the shopping experience of your customer.
+<a name="requirements"></a>
+##Requirements##
+Basically, the requirements of this plugin are same as you need to run WooCommerce. Your machine should have:
 
-**Discount Coupon**<strong>Prestashop v1.6.x</strong>
+**Platforms**
 
-This feature allows the customer to have discounts applying the <strong>Mercado Pago</strong> discount coupons, the store should contact the <strong>Mercado Pago</strong> to participate in a campaign and generated coupons.
+* <a href="https://www.prestashop.com/en/download">Prestashop</a> 1.6 or greater;
 
-***Important information***
+**Web Server Host**
+
+* <a href="http://php.net/">PHP</a> 5.6 or greater with CURL support;
+* <a href="http://www.mysql.com/">MySQL</a> version 5.6 or greater OR <a href="https://mariadb.org/">MariaDB</a> version 10.0 or greater;
+* <a href="https://httpd.apache.org/">Apache 2.x</a>.
 
 **SSL certificate**
 
-If you're using Ticket Checkout or Custom Checkout, it is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
+If you're using Custom Checkout, it is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
 During the sandbox mode tests, you can operate over HTTP, but for homologation you'll need to acquire the certificate in case you don't have it.
+
 
 <a name="available_versions"></a>
 ##Available versions##
@@ -91,52 +107,66 @@ During the sandbox mode tests, you can operate over HTTP, but for homologation y
 
 3. Search by **MercadoPago** and click install. <br />
 You will receive the following message: " Module(s) installed successfully."
-  ![Installation](https://raw.github.com/PrestaShop/mercadopago/master/views/img/Installation.JPG)<br />
+  ![Installation](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Installation.JPG)<br />
 
 4. Set your **CLIENT_ID** and **CLIENT_SECRET**, or **PUBLIC_KEY** and **ACCESS_TOKEN** (depending on which module you're using). 
 
-	Get your credentials in the following address:
-	* Argentina: [https://www.mercadopago.com/mla/account/credentials](https://www.mercadopago.com/mla/account/credentials)
-	* Brazil: [https://www.mercadopago.com/mlb/account/credentials](https://www.mercadopago.com/mlb/account/credentials)
-	* Chile: [https://www.mercadopago.com/mlc/account/credentials](https://www.mercadopago.com/mlc/account/credentials)
-	* Colombia: [https://www.mercadopago.com/mco/account/credentials](https://www.mercadopago.com/mco/account/credentials)
-	* Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
-	* Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
+  Get your credentials in the following address:
+  * Argentina: [https://www.mercadopago.com/mla/account/credentials](https://www.mercadopago.com/mla/account/credentials)
+  * Brazil: [https://www.mercadopago.com/mlb/account/credentials](https://www.mercadopago.com/mlb/account/credentials)
+  * Chile: [https://www.mercadopago.com/mlc/account/credentials](https://www.mercadopago.com/mlc/account/credentials)
+  * Colombia: [https://www.mercadopago.com/mco/account/credentials](https://www.mercadopago.com/mco/account/credentials)
+  * Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
+  * Peru: [https://www.mercadopago.com/mlp/account/credentials](https://www.mercadopago.com/mlp/account/credentials)
+  * Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
+
 
 ***IMPORTANT:*** *This module will only work with the following currencies:*
 
 * Argentina:
-	* **ARS** (Peso Argentino)
+  * **ARS** (Argentinian Peso)
 * Brazil:
-	* **BRL** (Real)
+  * **BRL** (Brazilian Real)
 * Chile:
-	* **CLP** (Peso Chileno)
+  * **CLP** (Chilean Peso)
 * Colombia:
-	* **COP** (Peso Colombiano)
+  * **COP** (Colombian Peso)
 * Mexico:
-	* **MXN** (Peso Mexicano)
+  * **MXN** (Mexican Peso)
+* Peru:
+  * **PEN** (Peruvian Sol)
 * Venezuela:
-	* **VEF** (Bolivar fuerte)
+  * **VEF** (Venezuelan Bolivar)
+
 
 <a name="notifications"></a>
-## Sync your backoffice with MercadoPago (IPN) 
-Your notification URL will be automatically send with your payment to our API.
+## Notifications
+Your store will automatically sync with Mercado Pago. The notification URL will be sent in each payment.
 
 <a name="pictures_features"></a>
 ## Example features
 
 **Credit Card Customized Checkout**
 <br/>
-![pictures_features](https://raw.github.com/PrestaShop/mercadopago/master/views/img/Checkout.jpg)
+![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Checkout.jpg)
 
 **Print Ticket**
 <br/>
-![pictures_features](https://raw.github.com/PrestaShop/mercadopago/master/views/img/Ticket.jpg)
+![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Ticket.jpg)
 
 **Customer Card** <strong>Prestashop v1.6.x</strong>
 <br/>
-![pictures_features](https://raw.github.com/PrestaShop/mercadopago/master/views/img/CustomerCard.jpg)
+![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/CustomerCard.jpg)
 
 **Discount Coupon** <strong>Prestashop v1.6.x</strong>
 <br/>
-![pictures_features](https://raw.github.com/PrestaShop/mercadopago/master/views/img/Coupon.jpg)
+![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Coupon.jpg)
+
+<a name="social"></a>
+##Social##
+
+Follow our facebook group and watch our videos
+<ul>
+  <li><a href="https://www.facebook.com/groups/modulos.mercadopago/?ref=ts&fref=ts" target="_blank">FACEBOOK</a></li>
+  <li><a href="https://www.youtube.com/playlist?list=PLl8LGzRu2_sXxChIJm1e0xY6dU3Dj_tNi" target="_blank">YOUTUBE</a></li>
+</ul>

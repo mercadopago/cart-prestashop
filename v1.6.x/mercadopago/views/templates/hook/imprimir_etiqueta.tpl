@@ -24,7 +24,10 @@
 	*}
 {if $statusOrder == "Pendente"} 
 	<div class="panel">
-		<form action="{$cancel_action_url|escape:'htmlall':'UTF-8'}" method="post" id="frmCancelOrder">	   <div class="row">
+		<form action="{$cancel_action_url|escape:'htmlall':'UTF-8'}" method="post" id="frmCancelOrder">
+			<input type="hidden" name="token_form" id="token_form" value="{$token_form|escape:'htmlall':'UTF-8'}"/>
+
+			<div class="row">
 				<img class="logo_cupom" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">	
 			</div>	
 			<br>

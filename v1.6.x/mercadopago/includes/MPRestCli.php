@@ -18,7 +18,7 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- * @author    MERCADOPAGO.COM REPRESENTA&Ccedil;&Otilde;ES LTDA.
+ * @author    MERCADOPAGO.COM REPRESENTA&Ccedil;&Otilde;ES LTDA
  * @copyright Copyright (c) MercadoPago [http://www.mercadopago.com]
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  *          International Registered Trademark & Property of MercadoPago
@@ -27,8 +27,13 @@
 include_once 'MPApi.php';
 class MPRestCli
 {
+    const API_BASE_SETTINGS_URL = 'http://localhost:8080';
+
     const API_BASE_URL = 'https://api.mercadopago.com';
     const API_BASE_MELI_URL = 'https://api.mercadolibre.com';
+
+    const API_CONFIG_BASE_URL = 'https://api.mercadopago.com/account';
+
 
     private static function getConnect($uri, $method, $content_type, $uri_base)
     {
@@ -42,8 +47,8 @@ class MPRestCli
             array(
                 'Accept: application/json',
                 'Content-Type: '.$content_type,
-                )
-            );
+            )
+        );
 
         return $connect;
     }
@@ -62,8 +67,8 @@ class MPRestCli
                 'Accept: application/json',
                 'Content-Type: '.$content_type,
                 'X-Tracking-Id:'.$trackingID,
-                )
-            );
+            )
+        );
 
         return $connect;
     }
@@ -159,6 +164,11 @@ class MPRestCli
         return self::exec('GET', $uri, null, $content_type, self::API_BASE_MELI_URL);
     }
 
+    public static function getConfig($uri, $content_type = 'application/json')
+    {
+        return self::exec('GET', $uri, null, $content_type, self::API_CONFIG_BASE_URL);
+    }
+
     public static function get($uri, $content_type = 'application/json')
     {
         return self::exec('GET', $uri, null, $content_type, self::API_BASE_URL);
@@ -177,5 +187,10 @@ class MPRestCli
     public static function put($uri, $data, $content_type = 'application/json')
     {
         return self::exec('PUT', $uri, $data, $content_type, self::API_BASE_URL);
+    }
+
+    public static function putConfig($uri, $data, $content_type = 'application/json')
+    {
+        return self::exec('PUT', $uri, $data, $content_type, self::API_CONFIG_BASE_URL);
     }
 }

@@ -23,6 +23,7 @@
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of MercadoPago
  */
+
 include_once dirname(__FILE__).'/../../mercadopago.php';
 class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontController
 {
@@ -80,10 +81,15 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 $payment_mode = 'cartao';
                 $installments = (int)$response['installments'];
             }
-            
-            $id_cart_rule = $mercadopago->applyDiscount($cart, $payment_mode, $installments);
-            
-            
+
+            $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
+            $id_cart_rule = null;
+            if ($percent > 0) {
+                error_log("Entrou aqui percent====".$percent);
+
+                $id_cart_rule = $mercadopago->applyDiscount($cart, $payment_mode, $installments);
+            }
+
             $mercadopago->validateOrder(
                 $cart->id,
                 Configuration::get($order_status),
@@ -95,13 +101,13 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 false,
                 $cart->secure_key
             );
-            
-            if($id_cart_rule != null){
+
+            if ($id_cart_rule != null) {
                 $cartRule = new CartRule($id_cart_rule);
                 $cartRule->active = false;
                 $cartRule->save();
             }
-            
+
             $order = new Order($mercadopago->currentOrder);
             $order_payments = $order->getOrderPayments();
             $order_payments[0]->transaction_id = $response['id'];
