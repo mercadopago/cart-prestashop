@@ -2320,7 +2320,7 @@ class MercadoPago extends PaymentModule
                     if ($payment_status == 'cancelled' || $payment_status == 'rejected') {
 
                         // check if is mercadopago
-                        if $order->module == "mercadopago" {
+                        if ($order->module == "mercadopago") {
                             $retorno = $this->getOrderStateApproved($id_order);
                             if ($retorno) {
                                 return;
