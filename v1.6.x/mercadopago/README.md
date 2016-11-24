@@ -13,34 +13,33 @@
 <a name="features"></a>
 ##Features##
 
-**Standard checkout**
+Checkout options right for your business:
+We offer two checkout methods that make it easy to securely accept payments from anyone, anywhere.
 
-This feature allows merchants to have a standard checkout. It includes all
-payment methods (i.e. all credit cards, bar code payment, account money) and all window types (i.e. redirect, iframe, modal, blank and popup). Customization is not allowed.
+**Custom Checkout**
 
-**Credit Card Customized Checkout**
+Offer a checkout fully customized to your brand experience with our simple-to-use payments API.
 
-This feature will allow merchants to have a customized checkout for credit card
-payment. Thus, it will be possible to customize its look and feel, customers won’t be redirected away to complete the payment, and it will also reduce the checkout steps, improving conversion rates.
+* Seamless integration— no coding required, unless you want to.
+* Full control of buying experience.
+* Store buyer’s card for fast checkout.
+* Accept tickets in addition to cards.
+* Accept Mercado Pago's discount coupons.
+* Improve conversion rate.
 
-**Ticket Checkout**
+*Available for Argentina, Brazil, Colombia, Mexico, Peru and Venezuela*
 
-This feature allows merchants to have a customized ticket checkout, according to each country's ticket method (i.e Boleto in Brazil, RapiPago in Argentina, etc).  Thus, it will be possible to customize its look and feel, customers won’t be redirected away to complete the payment, and it will also reduce the checkout steps, improving conversion rates. The ticket link will be shown and when the customer click on it, another tab with the ticket will be opened.
+**Basic Checkout**
 
-**Print Ticket**
+Great for merchants who want to get going quickly and easily.
 
-This functionality allows the user, if necessary go to the ticket on purchase history.
+* Easy website integration— no coding required.
+* Limited control of buying experience — display Checkout window as redirect, modal or iframe.
+* Store buyer’s card for fast checkout.
+* Accept tickets, bank transfer and account money in addition to cards.
+* Accept Mercado Pago's discount coupons.
 
-**Customer Card** <strong>Prestashop v1.6.x</strong>
-
-This functionality allowed that their customers cards are stored in our API, allowing for future purchases his card to be loaded without the need to fill all values. This facilitates the payment and improves the shopping experience of your customer.
-
-**Discount Coupon**<strong>Prestashop v1.6.x</strong>
-
-This feature allows the customer to have discounts applying the <strong>Mercado Pago</strong> discount coupons, the store should contact the <strong>Mercado Pago</strong> to participate in a campaign and generated coupons.
-
-**Cash Payment**<strong>Prestashop v1.6.x</strong>
-This feature alows the customer to have discount in payment in cash using ticket or credit card.
+*Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru and Venezuela*
 
 <a name="requirements"></a>
 ##Requirements##
@@ -118,29 +117,31 @@ You will receive the following message: " Module(s) installed successfully."
   * Chile: [https://www.mercadopago.com/mlc/account/credentials](https://www.mercadopago.com/mlc/account/credentials)
   * Colombia: [https://www.mercadopago.com/mco/account/credentials](https://www.mercadopago.com/mco/account/credentials)
   * Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
-  * Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
   * Peru: [https://www.mercadopago.com/mlp/account/credentials](https://www.mercadopago.com/mlp/account/credentials)
+  * Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
+
 
 ***IMPORTANT:*** *This module will only work with the following currencies:*
 
 * Argentina:
-  * **ARS** (Peso Argentino)
+  * **ARS** (Argentinian Peso)
 * Brazil:
-  * **BRL** (Real)
+  * **BRL** (Brazilian Real)
 * Chile:
-  * **CLP** (Peso Chileno)
+  * **CLP** (Chilean Peso)
 * Colombia:
-  * **COP** (Peso Colombiano)
+  * **COP** (Colombian Peso)
 * Mexico:
-  * **MXN** (Peso Mexicano)
-* Venezuela:
-  * **VEF** (Bolivar fuerte)
+  * **MXN** (Mexican Peso)
 * Peru:
-  * **PEN** (Novo sol)
+  * **PEN** (Peruvian Sol)
+* Venezuela:
+  * **VEF** (Venezuelan Bolivar)
+
 
 <a name="notifications"></a>
-## Sync your backoffice with MercadoPago (IPN) 
-Your notification URL will be automatically send with your payment to our API.
+## Notifications
+Your store will automatically sync with Mercado Pago. The notification URL will be sent in each payment.
 
 <a name="pictures_features"></a>
 ## Example features
