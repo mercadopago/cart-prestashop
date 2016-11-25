@@ -2312,15 +2312,18 @@ class MercadoPago extends PaymentModule
                     );
                 } elseif (!empty($order) && $order->current_state != null &&
                      $order->current_state != Configuration::get($order_status)) {
+
+                    $id_order = !$id_order ? $this->getOrderByCartId($id_cart) : $id_order;
+                    $order = new Order($id_order);
+
                     /*
                      * this is necessary to ignore the transactions with the same
                      * external reference and states diferents
                      * the transaction approved cant to change the status, except refunded.
                      */
                     if ($payment_status == 'cancelled' || $payment_status == 'rejected') {
-
                         // check if is mercadopago
-                        if $order->module == "mercadopago" {
+                        if ($order->module == "mercadopago") {
                             $retorno = $this->getOrderStateApproved($id_order);
                             if ($retorno) {
                                 return;
@@ -2329,8 +2332,6 @@ class MercadoPago extends PaymentModule
                             return;
                         }
                     }
-                    $id_order = !$id_order ? $this->getOrderByCartId($id_cart) : $id_order;
-                    $order = new Order($id_order);
                     $this->updateOrderHistory($order->id, Configuration::get($order_status));
 
                     // Cancel the order to force products to go to stock.
