@@ -40,6 +40,9 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
         $mercadopago = $this->module;
 
         $response = $mercadopago->execPayment($_POST);
+
+        error_log("====retorno pagamento=====".Tools::jsonEncode($response));
+
         $order_status = null;
         if (array_key_exists('status', $response)) {
             switch ($response['status']) {

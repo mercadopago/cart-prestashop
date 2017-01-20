@@ -1,11 +1,10 @@
 <?php
-
 global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{mercadopago}prestashop>mercadopago_cc3ad716730c38cc02d9c1ac647ae184'] = 'Receba seus pagamentos utilizando o Mercado Pago e receba em cartão de crédito e boletos através no nosso checkout Transparente ou Padrão.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_6f65bd2d4642c6c333afa152859a391d'] = 'Você tem certeza que deseja desinstalar o Mercado Pago?';
 $_MODULE['<{mercadopago}prestashop>mercadopago_69ac2c43655bbbe45d94baf6c760e257'] = 'Você deve seguir regras MercadoPago para a compra de ser válida';
-$_MODULE['<{mercadopago}prestashop>mercadopago_59ce89ed3bffb4012f1024d09703ae3e'] = 'MERCADOPAGO.COM REPRESENTAÇÕES LTDA.';
+$_MODULE['<{mercadopago}prestashop>mercadopago_4bd15f1199b9b5111234bb6fe76f03b3'] = 'MERCADOPAGO.COM Representações LTDA.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_aea84af3b9a9115bf366af2993aafe68'] = 'Transação em Andamento';
 $_MODULE['<{mercadopago}prestashop>mercadopago_e19b4eb59155cc085659fdfdab497f93'] = 'Transação Finalizada';
 $_MODULE['<{mercadopago}prestashop>mercadopago_ff271d75e88b7b308f70889459d7b2f6'] = 'Transação Cancelada';
@@ -85,6 +84,14 @@ $_MODULE['<{mercadopago}prestashop>marketing_6996c25fad3e9a6767966c6f8be64425'] 
 $_MODULE['<{mercadopago}prestashop>marketing_ab066b3292d8ab61ef3b5c77169cdd19'] = 'Mais informações';
 $_MODULE['<{mercadopago}prestashop>settings_5d4646d84c32dfa4d963c7c41b7799ca'] = 'Configurações atualizadas com sucesso.';
 $_MODULE['<{mercadopago}prestashop>settings_8c66220ba3229322899c260c7586714a'] = 'As configurações não foram atualizadas com sucesso.';
+$_MODULE['<{mercadopago}prestashop>settings_5a2ebfb8baa378cfcfcba58bbb1380c2'] = 'Requisitos';
+$_MODULE['<{mercadopago}prestashop>settings_a97ea56b0e00b2379736ae60869ff66a'] = 'Questões';
+$_MODULE['<{mercadopago}prestashop>settings_c4cb9c0d85fc8339e2b18a21761c3f82'] = 'Curl instalado';
+$_MODULE['<{mercadopago}prestashop>settings_29be3fb832b0c782c3b3f43b78421c00'] = 'Dimensões dos produtos cadastradas';
+$_MODULE['<{mercadopago}prestashop>settings_53d24de7b6b6e7f8485d11e6c0e97a38'] = 'SSL instalado';
+$_MODULE['<{mercadopago}prestashop>settings_ab64e3d5feb645333b320d80a84c8255'] = 'Versão PHP';
+$_MODULE['<{mercadopago}prestashop>settings_82c332dc2cb8dcb79d291e8d5d38e7af'] = 'Carregar usuário';
+$_MODULE['<{mercadopago}prestashop>settings_96019d01302bbc929e0ec2310a328c51'] = 'Cartão de crédito para teste';
 $_MODULE['<{mercadopago}prestashop>settings_2a01d572b1447155c310cabafac3fae9'] = 'Observações:';
 $_MODULE['<{mercadopago}prestashop>settings_b0c1d2e4cab812082c1268543d99884a'] = '- Para obter seu Client Id, Client Secret, Public Key e Access Token por favor clique no seu país:';
 $_MODULE['<{mercadopago}prestashop>settings_3536be57ce0713954e454ae6c53ec023'] = 'Argentina';
@@ -142,18 +149,19 @@ $_MODULE['<{mercadopago}prestashop>settings_9e4891d2f525fbb901559d5eaf017e52'] =
 $_MODULE['<{mercadopago}prestashop>settings_016d597f7b1c79268be0fc5ef406f52b'] = 'Ajustes - Mercado Envios';
 $_MODULE['<{mercadopago}prestashop>settings_af47ff587557270db51148d03fb41034'] = 'Mercado Envios funciona apenas com Checkout Standard';
 $_MODULE['<{mercadopago}prestashop>settings_842b4d284c13e92cd54e6f2a5ec27feb'] = 'Ativar MercadoEnvios:';
-$_MODULE['<{mercadopago}prestashop>settings_308e865caea89c61c57ddc6148c845c6'] = '';
-$_MODULE['<{mercadopago}prestashop>settings_305df34ffddb0a8811e69b1fd59cc4dd'] = '';
-$_MODULE['<{mercadopago}prestashop>settings_6d32e1032ea5bc6bf3fbad620aeaf87a'] = '';
-$_MODULE['<{mercadopago}prestashop>settings_709751874f68743ad2be5cf7643db076'] = '';
-$_MODULE['<{mercadopago}prestashop>settings_c751439d0db3883ac1c8e816327adcab'] = '';
+$_MODULE['<{mercadopago}prestashop>settings_308e865caea89c61c57ddc6148c845c6'] = 'Configurações - Desconto Mercado Pago';
+$_MODULE['<{mercadopago}prestashop>settings_305df34ffddb0a8811e69b1fd59cc4dd'] = 'Percentual de desconto:';
+$_MODULE['<{mercadopago}prestashop>settings_6d32e1032ea5bc6bf3fbad620aeaf87a'] = 'Desconto aos métodos de pagamento:';
+$_MODULE['<{mercadopago}prestashop>settings_709751874f68743ad2be5cf7643db076'] = 'Cartão de crédito(a vista)';
+$_MODULE['<{mercadopago}prestashop>settings_c751439d0db3883ac1c8e816327adcab'] = 'Boleto';
 $_MODULE['<{mercadopago}prestashop>settings_78a32249d180b89d908e00da286cdc3c'] = 'Cupom Mercado Pago';
 $_MODULE['<{mercadopago}prestashop>settings_536ac9adcdb9768a81c39aea862fdcc9'] = '* Opção válida apenas para sites participantes de campanhas de cupom.';
 $_MODULE['<{mercadopago}prestashop>settings_7749c0ed299d98aeffdd7eab8843bedd'] = 'Habilitar Cupom de Desconto:';
-$_MODULE['<{mercadopago}prestashop>settings_288f4702f7824d9721d23e435149be46'] = 'Ajustes - Ativar Log';
+$_MODULE['<{mercadopago}prestashop>settings_f4f70727dc34561dfde1a3c529b6205c'] = 'Configurações';
+$_MODULE['<{mercadopago}prestashop>settings_1821adb92356435285d7dd9987dc3dc8'] = 'Log:';
+$_MODULE['<{mercadopago}prestashop>settings_ed06a54a4bd211223627c26dd70bbc68'] = 'Pagamento com dois cartões:';
 $_MODULE['<{mercadopago}prestashop>settings_99dea78007133396a7b8ed70578ac6ae'] = 'Login';
 $_MODULE['<{mercadopago}prestashop>settings_c9cc8cce247e49bae79f15173ce97354'] = 'Atualizar';
-$_MODULE['<{mercadopago}prestashop>settings_0557fa923dcee4d0f86b1409f5c2167f'] = 'Voltar';
 $_MODULE['<{mercadopago}prestashop>settings_513d7a143496b83932aff6956627ef44'] = 'Se você habilitar o MercadoEnvios outros pagamentos vão ser desabilitados, você quer continuar?';
 $_MODULE['<{mercadopago}prestashop>error_1e97d97a923eaddd810e056c828e99ea'] = 'Erro no pagamento';
 $_MODULE['<{mercadopago}prestashop>error_d37f3fd96c35d2a1d6d629ebb6a5cc04'] = 'Um erro ocorreu durante o processo do pagamento. Por favor revise suas informações ou escolha outro método de pagamento.';
@@ -190,6 +198,10 @@ $_MODULE['<{mercadopago}prestashop>boleto_payment_return_24a4e89cbe1fdf5548035b9
 $_MODULE['<{mercadopago}prestashop>boleto_payment_return_9ba8ddd1e3a3d4605c65c58e26e1e4ce'] = 'Numero de pagamento (MercadoPago): ';
 $_MODULE['<{mercadopago}prestashop>boleto_payment_return_21d104a54fc71a19a325c7305327f1d2'] = 'Processando...';
 $_MODULE['<{mercadopago}prestashop>checkout_21d104a54fc71a19a325c7305327f1d2'] = 'Processando...';
+$_MODULE['<{mercadopago}prestashop>checkout_c9cc8cce247e49bae79f15173ce97354'] = 'Salvar';
+$_MODULE['<{mercadopago}prestashop>checkout_7979528f7cdbd42b85962010f7c5e059'] = 'Pagamento a vista com desconto via Mercado Pago no cartão de crédito.';
+$_MODULE['<{mercadopago}prestashop>checkout_62b88e4c85bed3dfb8fd1afedf8af503'] = 'Pagamento a vista com desconto via Mercado Pago no boleto.';
+$_MODULE['<{mercadopago}prestashop>checkout_860a7f5b9ca06955c72b118f73b565f9'] = 'Pagamento a vista com desconto via Mercado Pago no cartão de crédito e boleto.';
 $_MODULE['<{mercadopago}prestashop>checkout_adb6e651c47c732f9af50ae33748feaa'] = 'Cupom';
 $_MODULE['<{mercadopago}prestashop>checkout_1063e38cb53d94d386f21227fcd84717'] = 'Remover';
 $_MODULE['<{mercadopago}prestashop>checkout_9639e32cab248434a17ab32237cb3b71'] = 'Aplicar';

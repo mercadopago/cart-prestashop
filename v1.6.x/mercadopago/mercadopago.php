@@ -88,9 +88,9 @@ class MercadoPago extends PaymentModule
     {
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
-        $this->version = '3.3.8';
+        $this->version = '3.3.9';
         $this->currencies = true;
-        $this->currencies_mode = 'radio';
+        //$this->currencies_mode = 'radio';
         $this->need_instance = 0;
         $this->module_key = '4380f33bbe84e7899aacb0b7a601376f';
         $this->ps_versions_compliancy = array(
@@ -116,6 +116,10 @@ class MercadoPago extends PaymentModule
             Configuration::get('MERCADOPAGO_CLIENT_ID'),
             Configuration::get('MERCADOPAGO_CLIENT_SECRET')
         );
+
+        $this->currencies_mode = 'checkbox';
+
+        //$this->bootstrap = true;
     }
 
     /**
@@ -724,6 +728,9 @@ class MercadoPago extends PaymentModule
                 }
             }
         } elseif (Tools::getValue('submitmercadopago')) {
+
+            error_log("====ENTROU AQUI 1=====");
+
             $client_id = Tools::getValue('MERCADOPAGO_CLIENT_ID');
             $client_secret = Tools::getValue('MERCADOPAGO_CLIENT_SECRET');
             $access_token = Tools::getValue('MERCADOPAGO_ACCESS_TOKEN');
@@ -980,26 +987,36 @@ class MercadoPago extends PaymentModule
 
                     $payment_methods_settings[$payment_method['id']] = Configuration::get($pm_variable_name);
                 }
-                // load all offline payment method settings
-                $offline_methods_payments = $this->mercadopago->getOfflinePaymentMethods();
-                $offline_payment_settings = array();
-                foreach ($offline_methods_payments as $offline_payment) {
-                    $op_banner_variable = 'MERCADOPAGO_'.Tools::strtoupper($offline_payment['id'].'_BANNER');
-                    $op_active_variable = 'MERCADOPAGO_'.Tools::strtoupper($offline_payment['id'].'_ACTIVE');
-
-                    $offline_payment_settings[$offline_payment['id']] = array(
-                        'name' => $offline_payment['name'],
-                        'banner' => Configuration::get($op_banner_variable),
-                        'active' => Configuration::get($op_active_variable),
-                    );
-                }
             }
+        }
+
+        // load all offline payment method settings
+        $offline_methods_payments = $this->mercadopago->getOfflinePaymentMethods();
+        $offline_payment_settings = array();
+        foreach ($offline_methods_payments as $offline_payment) {
+            $op_banner_variable = 'MERCADOPAGO_'.Tools::strtoupper($offline_payment['id'].'_BANNER');
+            $op_active_variable = 'MERCADOPAGO_'.Tools::strtoupper($offline_payment['id'].'_ACTIVE');
+
+            $offline_payment_settings[$offline_payment['id']] = array(
+                'name' => $offline_payment['name'],
+                'banner' => Configuration::get($op_banner_variable),
+                'active' => Configuration::get($op_active_variable),
+            );
         }
 
         $this->mercadopago = new MPApi(
             Configuration::get('MERCADOPAGO_CLIENT_ID'),
             Configuration::get('MERCADOPAGO_CLIENT_SECRET')
         );
+
+        $site_id = array(
+            'site_id' => Configuration::get('MERCADOPAGO_COUNTRY'),
+        );
+        $test_user = $this->mercadopago->getTestUser($site_id);
+
+        $requirements = UtilMercadoPago::checkRequirements();
+
+        error_log("=====requirements=======".Tools::jsonEncode($requirements));
 
         $configCard = $this->mercadopago->getCheckConfigCard();
         error_log("======two_cards configCard=====".Tools::jsonEncode($configCard));
@@ -1019,6 +1036,8 @@ class MercadoPago extends PaymentModule
             false
         );
         $settings = array(
+            'test_user' => $test_user,
+            'requirements' => $requirements,
             'two_cards' => htmlentities(Configuration::get('MERCADOPAGO_TWO_CARDS'), ENT_COMPAT, 'UTF-8'),
             'public_key' => htmlentities(Configuration::get('MERCADOPAGO_PUBLIC_KEY'), ENT_COMPAT, 'UTF-8'),
             'access_token' => htmlentities(Configuration::get('MERCADOPAGO_ACCESS_TOKEN'), ENT_COMPAT, 'UTF-8'),
@@ -1213,6 +1232,10 @@ class MercadoPago extends PaymentModule
 
     public function hookPayment($params)
     {
+
+        error_log("======entrou======método hookPayment=======");
+
+
         if (!$this->active) {
             return;
         }
@@ -1246,11 +1269,6 @@ class MercadoPago extends PaymentModule
         $credit_card_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_CREDITCARD');
         $boleto_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_BOLETO');
         $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
-
-
-        error_log("====credit_card_discount=====".$credit_card_discount);
-        error_log("=====boleto_discount=====". $boleto_discount);
-        error_log("=====percent=====".$percent);
 
         if ($this->hasCredential()) {
             $this_path_ssl = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
@@ -1316,8 +1334,12 @@ class MercadoPago extends PaymentModule
                 }
             }
             // send standard configurations only activated
+
             if (Configuration::get('MERCADOPAGO_STANDARD_ACTIVE') == 'true') {
                 $result = $this->createStandardCheckoutPreference();
+
+                error_log("========result=========". Tools::jsonEncode($result));
+
                 if (array_key_exists('init_point', $result['response'])) {
                     $data['standard_banner'] = Configuration::get('MERCADOPAGO_STANDARD_BANNER');
                     $data['preferences_url'] = $result['response']['init_point'];
@@ -1333,6 +1355,9 @@ class MercadoPago extends PaymentModule
             }
             // send offline settings
             $offline_methods_payments = $this->mercadopago->getOfflinePaymentMethods();
+
+            error_log("===offline_methods_payments===".Tools::jsonEncode($offline_methods_payments));
+
             $offline_payment_settings = array();
             foreach ($offline_methods_payments as $offline_payment) {
                 $op_banner_variable = 'MERCADOPAGO_'.Tools::strtoupper($offline_payment['id'].'_BANNER');
@@ -1342,9 +1367,13 @@ class MercadoPago extends PaymentModule
                     'name' => $offline_payment['name'],
                     'banner' => Configuration::get($op_banner_variable),
                     'active' => Configuration::get($op_active_variable),
+                    'thumbnail' => $offline_payment['thumbnail'],
                 );
             }
             $data['offline_payment_settings'] = $offline_payment_settings;
+
+           // error_log("===offline_payment_settings===".Tools::jsonEncode($data['offline_payment_settings']));
+
             if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLM' ||
                 Configuration::get('MERCADOPAGO_COUNTRY') == 'MPE'
                 ) {
@@ -1352,10 +1381,47 @@ class MercadoPago extends PaymentModule
                 $data['payment_methods_credit'] = $payment_methods_credit;
             }
 
+            error_log("===MERCADOPAGO_STANDARD_ACTIVE===".Configuration::get('MERCADOPAGO_STANDARD_ACTIVE'));
+
             $this->context->smarty->assign($data);
+            $this->context->smarty->assign($this->setPreModuleAnalytics());
 
             return $this->display(__file__, '/views/templates/hook/checkout.tpl');
         }
+    }
+
+    function setPreModuleAnalytics() {
+
+        $customer_fields = Context::getContext()->customer->getFields();
+
+        $select = 'SELECT name FROM '. _DB_PREFIX_ .'module where active = 1 AND id_module IN (
+            SELECT h.id_module
+            FROM '. _DB_PREFIX_ .'hook_module h INNER JOIN '. _DB_PREFIX_ .'hook ph on ph.id_hook = h.id_hook
+            WHERE ph.name = "displayPayment"
+            )';
+
+        error_log("=====select======".$select);
+
+        $query = Db::getInstance()->executeS($select);
+
+        $resultModules = array();
+
+        foreach ($query as $result) {
+            array_push( $resultModules, $result['name']);
+        }
+
+        $return = array(
+            'publicKey'=> Configuration::get('MERCADOPAGO_PUBLIC_KEY') ? Configuration::get('MERCADOPAGO_PUBLIC_KEY') : "",
+            'token'=> Configuration::get('MERCADOPAGO_ACCESS_TOKEN'),
+            'platform' => "PRESTASHOP",
+            'platformVersion' => $this->getPrestashopVersion(),
+            'moduleVersion' => $this->version,
+            'payerEmail' => $customer_fields['email'],
+            'userLogged' => $this->context->customer->isLogged() ? 1 : 0,
+            'installedModules' => implode(', ', $resultModules),
+            'additionalInfo' => ""
+        );
+        return $return;
     }
 
     /**
@@ -1438,6 +1504,7 @@ class MercadoPago extends PaymentModule
     public function execPayment($post)
     {
         $preferences = $this->getPreferencesCustom($post);
+        error_log("==dados pagamento====".Tools::jsonEncode($preferences));
         $result = $this->mercadopago->createCustomPayment($preferences);
 
         return $result['response'];
@@ -1638,6 +1705,9 @@ class MercadoPago extends PaymentModule
                 'shipments' => $shipments,
             ),
         );
+
+        error_log("===opcaoPagamentoCreditCard===". $post['opcaoPagamentoCreditCard']);
+
         if (isset($post['opcaoPagamentoCreditCard']) && $post['opcaoPagamentoCreditCard'] == 'Cards') {
             // salva o cartão
             $payment_preference['metadata'] = array(
@@ -1722,6 +1792,7 @@ class MercadoPago extends PaymentModule
 
         return $payment_preference;
     }
+
 
     private function getPrestashopPreferencesStandard()
     {
@@ -1833,6 +1904,9 @@ class MercadoPago extends PaymentModule
             ) {
             error_log("=====entrou aqui=====");
             $dimensions = $this->getDimensions($products);
+
+            error_log("===dimensions==". Tools::jsonEncode($dimensions));
+
             $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$cart->id_carrier];
             $address_delivery = new Address((integer) $cart->id_address_delivery);
             $shipments = array(
@@ -2009,7 +2083,7 @@ class MercadoPago extends PaymentModule
      * @param $post
      * @param $cart
      */
-    private function salveCard($result)
+    private function saveCard($result)
     {
         $token = $result['response']['metadata']['card_token_id'];
         $customerID = $result['response']['metadata']['customer_id'];
@@ -2025,6 +2099,8 @@ class MercadoPago extends PaymentModule
     public function listenIPN($checkout, $topic, $id)
     {
         error_log('=====IPN id======'.$id);
+        error_log('=====IPN checkout======'.$checkout);
+        error_log('=====IPN topic======'.$topic);
         $payment_method_ids = array();
         $payment_ids = array();
         $payment_statuses = array();
@@ -2056,7 +2132,7 @@ class MercadoPago extends PaymentModule
             $order = new Order($id_order);
             error_log("=====module======".$order->module);
             error_log("=====external_reference======".$merchant_order_info['external_reference']);
-            error_log("=====id_order======".$id_order);
+            error_log("=====id_order======".$order->$id);
 
             error_log("=====total======".$total);
             error_log("=====total mercadopago======".$merchant_order_info['total_amount']);
@@ -2215,7 +2291,8 @@ class MercadoPago extends PaymentModule
         $credit_cards,
         $cardholders,
         $transaction_amounts,
-        $external_reference
+        $external_reference,
+        $result
     ) {
         $order = null;
 
@@ -2310,6 +2387,9 @@ class MercadoPago extends PaymentModule
                         false,
                         $cart->secure_key
                     );
+
+                    $this->saveCard($result);
+
                 } elseif (!empty($order) && $order->current_state != null &&
                      $order->current_state != Configuration::get($order_status)) {
 
@@ -2391,7 +2471,7 @@ class MercadoPago extends PaymentModule
                 $customerData = array();
                 $customerData['email'] = $emailCustomer;
                 $customer = $this->mercadopago->createCustomerCard($customerData);
-
+                error_log("====customer====".Tools::jsonEncode($customer));
                 $customerID = $customer['response']['id'];
             }
         }
@@ -2528,6 +2608,9 @@ class MercadoPago extends PaymentModule
         if (isset($params['delivery_option_list'])) {
             $retornoCalculadora = $this->calculateListCache($address->postcode);
 
+            error_log("====retornoCalculadora=======". Tools::jsonEncode($retornoCalculadora));
+            
+
             if ($retornoCalculadora != null) {
                 $lista_shipping = (array) Tools::jsonDecode(
                     Configuration::get('MERCADOPAGO_CARRIER'),
@@ -2563,14 +2646,11 @@ class MercadoPago extends PaymentModule
                                 $delay = &$delivery_option_list[$id_address]
                                 [$key]['carrier_list'][$id_carrier]['instance']->delay;
 
-                                /*$delay = array_map(
-                                    function ($item) {
-                                        return self::$appended_text;
-                                    },
-                                    $delay
-                                );*/
+                                $delay = array_map(function ($item) {
+                                    return self::$appended_text;},$delay
+                                );
 
-                                $delay = array(1 => self::$appended_text);
+                                //$delay = array(1 => self::$appended_text);
 
                             }
                         }
@@ -2688,6 +2768,8 @@ class MercadoPago extends PaymentModule
             $postcode = Tools::substr($postcode, 1);
         }
 
+        error_log("======dimensions para enviar =====". Tools::jsonEncode($dimensions ));
+
         $return = array();
         $paramsMP = array(
             'dimensions' => $dimensions,
@@ -2697,6 +2779,10 @@ class MercadoPago extends PaymentModule
         );
 
         $response = $mp->calculateEnvios($paramsMP);
+
+        error_log("======dimensions response=====". Tools::jsonEncode($response ));
+
+
         if ($response['status'] == '200' && isset($response['response']['options'])) {
             $shipping_options = $response['response']['options'];
             foreach ($shipping_options as $shipping_option) {
@@ -3040,8 +3126,7 @@ class MercadoPago extends PaymentModule
 
         foreach ($rules as $value) {
             if ($value['name'] == $discount_name) {
-
-                return $cart;
+                return $value['id_cart_rule'];
             }
         }
 
@@ -3062,7 +3147,7 @@ class MercadoPago extends PaymentModule
                     $cart_rule->quantity_per_user = 9;
                     $cart_rule->code = $cart->id . '-DISCOUNT-MP';
                     foreach (Language::getLanguages(true) as $lang) {
-                        $cart_rule->name[$lang['id_lang']] = 'Desconto Mercado Pago Cart-ID=' . $cart->id;
+                        $cart_rule->name[$lang['id_lang']] = $discount_name;
                     }
 
                     $cart_rule->save();
@@ -3072,8 +3157,9 @@ class MercadoPago extends PaymentModule
                 }
             }
         }
-        return $cart;
+        return null;
     }
+
 
     public function uninstallModule()
     {

@@ -123,9 +123,9 @@
 	}
 
 	.mp-module .payment-label {
-		font: bolder 20px/24px "Open Sans", sans-serif;
+		font: bolder 16px/18px "Open Sans", sans-serif;
 		color: #333333;
-		margin-left: 28px;
+		margin-left: 15px;
 	}
 
 	.mp-module .col {

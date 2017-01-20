@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.3.8';
+    const VERSION = '3.3.9';
 
     /* Info */
     const INFO = 1;
@@ -261,14 +261,16 @@ class MPApi
      */
     public function getPaymentMethods()
     {
-        $result = MPRestCli::get('/sites/' . $this->getCountry() . '/payment_methods/');
+        $result = MPRestCli::get('/sites/' . $this->getCountry() . '/payment_methods?marketplace=NONE');
         $result = $result['response'];
+
         // remove account_money
         foreach ($result as $key => $value) {
             if ($value['payment_type_id'] == 'account_money') {
                 unset($result[$key]);
             }
         }
+
         return $result;
     }
 
@@ -282,6 +284,7 @@ class MPApi
         $access_token = $this->getAccessTokenV1();
         $result = MPRestCli::get('/v1/payment_methods?access_token=' . $access_token);
         $result = $result['response'];
+
         // remove account_money
         foreach ($result as $key => $value) {
             if ($value['payment_type_id'] == 'account_money' || $value['payment_type_id'] == 'credit_card' ||
@@ -337,7 +340,7 @@ class MPApi
     {
         $access_token = $this->getAccessTokenV1();
         $trackingID = "platform:v1-whitelabel,type:prestashop,so:".MPApi::VERSION;
-
+        error_log("====ACCESS TOKEN ======".$access_token);
         $preference_result = MPRestCli::postTracking(
             '/v1/payments?access_token=' .
             $access_token,
@@ -440,6 +443,18 @@ class MPApi
         $result = MPRestCli::putConfig("/settings?access_token=" . $access_token, $params);
         error_log("=====result two cards=====".Tools::jsonEncode($result));
         return  $result;
+    }
+
+    public function getTestUser($siteID)
+    {
+        $access_token = $this->getAccessToken();
+        $uri = "/users/test_user?access_token=" . $access_token;
+        error_log("====uri=====".$uri);
+        $result = MPRestCli::post($uri, $siteID);
+
+        error_log("=====getTestUser======".Tools::jsonEncode($result));
+
+        return $result;
     }
 
     public function getDiscount($params)

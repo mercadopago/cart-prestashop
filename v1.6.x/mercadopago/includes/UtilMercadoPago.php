@@ -75,4 +75,49 @@ class UtilMercadoPago
         }
         return $version;
     }
+
+    /***
+     * Check the requirements of module
+     * @return array
+     */
+    public static function checkRequirements()
+    {
+        $requirements = array(
+            'dimensoes' => '',
+            'version' => '',
+            'curl' => '',
+            'ssl' => ''
+        );
+
+        $version = str_replace('.', '', phpversion());
+
+        if ($version < 533) {
+            $requirements['version'] = 'negative';
+        } else {
+            $requirements['version'] = 'positive';
+        }
+
+        if (!function_exists('curl_init')) {
+            $requirements['curl'] = 'negative';
+        } else {
+            $requirements['curl'] = 'positive';
+        }
+
+        $sql = "SELECT id_product
+                FROM "._DB_PREFIX_."product
+                WHERE width = 0 OR height = 0 OR depth = 0 OR weight = 0";
+
+        $dados = Db::getInstance()->executeS($sql);
+ 
+        if ($dados) {
+            $requirements['dimensoes'] = 'negative';
+        } else {
+            $requirements['dimensoes'] = 'positive';
+        }
+
+        $requirements['ssl'] = Configuration::get('PS_SSL_ENABLED') == 0 ? "negative" : "positive";
+
+        return $requirements;
+    }
+
 }

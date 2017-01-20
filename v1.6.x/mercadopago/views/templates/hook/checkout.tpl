@@ -374,8 +374,11 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				<div class="mp-form-boleto">
 					<div class="row boleto">
 						<div class="col">
+							<img src="{$value.thumbnail|escape:'htmlall':'UTF-8'}">
+
 							<span class="payment-label">{$value.name|upper|escape:'htmlall':'UTF-8'} </span><br> <span
-								class="poweredby">{l s='Powered by' mod='mercadopago'}</span> <img
+								class="poweredby">{l s='Powered by' mod='mercadopago'}</span>
+								<img
 								class="logo"
 								src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">
 						</div>
@@ -436,6 +439,23 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 <script defer type="text/javascript"
 	src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/jquery.dd.js"></script>
+
+<script src="https://secure.mlstatic.com/modules/javascript/analytics.js"></script>
+
+<script type="text/javascript">
+
+	ModuleAnalytics.setPublicKey("{$publicKey|escape:'htmlall':'UTF-8'}");
+	ModuleAnalytics.setToken("{$token|escape:'htmlall':'UTF-8'}");
+	ModuleAnalytics.setPlatform("{$platform|escape:'htmlall':'UTF-8'}");
+	ModuleAnalytics.setPlatformVersion("{$platformVersion|escape:'htmlall':'UTF-8'}");
+	ModuleAnalytics.setModuleVersion("{$moduleVersion|escape:'htmlall':'UTF-8'}");
+	ModuleAnalytics.setPayerEmail("{$payerEmail|escape:'htmlall':'UTF-8'}");
+	ModuleAnalytics.setUserLogged(parseInt("{$userLogged|escape:'htmlall':'UTF-8'}"));
+	ModuleAnalytics.setInstalledModules("{$installedModules|escape:'htmlall':'UTF-8'}");
+	ModuleAnalytics.setAdditionalInfo("{$additionalInfo|escape:'htmlall':'UTF-8'}");
+	ModuleAnalytics.post();
+</script>
+
 <script defer type="text/javascript">
 
 	var active_credit_card = "{$active_credit_card|escape:'javascript':'UTF-8'}";

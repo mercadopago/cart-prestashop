@@ -29,6 +29,7 @@
 	{/if}
 
 	<div id="settings" style="display: none">
+
 	<div id="alerts">
 	{if $version eq 6}
 		{if $success eq 'true'}
@@ -76,6 +77,123 @@
 	<br>
 	<br>
 	<br>
+
+
+	<ul class="tab">
+	  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Requisitos')" id="defaultOpen">{l s='Requirements' mod='mercadopago'}</a></li>
+	  <!--<li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Testes')">Testes</a></li>-->
+	  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Duvidas')">{l s='Question' mod='mercadopago'}</a></li>
+	</ul>
+
+	<div id="Requisitos" class="tabcontent">
+	 	<h3>{l s='Requirements' mod='mercadopago'}</h3>
+		<p>
+			<strong>{l s='Installed Curl' mod='mercadopago'}:</strong><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/{$requirements.curl|escape:'htmlall':'UTF-8'}.png" width="20px;" height="20px">
+		</p>
+		<p>
+			<strong>{l s='Dimensions of the product registered' mod='mercadopago'}:</strong> <img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/{$requirements.dimensoes|escape:'htmlall':'UTF-8'}.png" width="20px;" height="20px">
+		</p>
+		<p>
+			<strong>{l s='Installed SSL' mod='mercadopago'}:</strong><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/{$requirements.ssl|escape:'htmlall':'UTF-8'}.png" width="20px;" height="20px">
+		</p>
+		<p>
+			<strong>{l s='PHP Version' mod='mercadopago'}:</strong><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/{$requirements.version|escape:'htmlall':'UTF-8'}.png" width="20px;" height="20px">
+		</p>		
+	</div>
+
+	<!--<div id="Testes" class="tabcontent">
+	  	<h3>Dados para testes</h3>
+
+	  	<p>
+	  		<strong>Utilizar esses dados de teste?</strong>
+	  	</p>
+	  	<p>
+	  		<input type="radio" name="usuarioTeste" value="Sim"> Sim  
+	  		&nbsp;<input type="radio" name="usuarioTeste" value="Nao" checked="true"> Não 
+	  	</p>
+	  	<table>
+	  		<tr>
+	  			<td width="300px;">
+				  	<table>
+					  	<tr>
+					 		<td>
+								<strong>Email Vendedor:</strong> teste@teste.com.br
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>Senha Vendedor</strong> @#$%ˆ&
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>Client ID</strong> 123456789
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>Client Secret</strong> lkhgid5r
+							</td>
+						</tr>	
+						<tr>
+							<td>
+								<strong>Access Token</strong> fkljdksjf3456787456yfsd543436576uhg
+							</td>
+						</tr>	
+					</table>	  			
+	  			</td>
+	  			<td>
+					<table>
+					  	<tr>
+					 		<td>
+								<strong>Email comprador:</strong> teste@teste.com.br
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>Senha comprador</strong> @#$%ˆ&
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+						</tr>										
+				  	</table>
+	  			</td>
+	  		</tr>
+
+	  		<tfoot align="center">
+	  			<tr>
+	  				<td colspan="2" height="50px">
+	  					<button value="Carregar Usuários" class="ch-btn-user">{l s='Load users' mod='mercadopago'}</button>
+	  				</td>
+	  			</tr>
+	  		</tfoot>
+	  	</table>
+
+		<p>
+			<strong><a href="https://www.mercadopago.com.br/developers/pt/solutions/payments/custom-checkout/test-cards/" target="_blank"> {l s='Credit Card for test' mod='mercadopago'}</a> </strong>
+		</p>
+	</div>-->
+
+	<div id="Duvidas" class="tabcontent">
+	  	<h3>{l s='Question' mod='mercadopago'}</h3>
+		<p><strong><a href="https://www.youtube.com/playlist?list=PLl8LGzRu2_sXxChIJm1e0xY6dU3Dj_tNi" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/youtube.png" width="20px;" height="20px">YouTube</a> </strong></p>
+		<p><strong><a href="https://www.facebook.com/groups/modulos.mercadopago" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/facebook.png" width="20px;" height="20px">Facebook</a> </strong></p> 
+
+
+		<p><a href="mailto:developers@mercadopago.com.br?subject=Suport - Prestashop"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/email.png" width="20px;" height="20px">developers@mercadopago.com.br</a> </p>
+
+		<p><a href="https://www.mercadopago.com.br/developers/pt/solutions/payments/basic-checkout/test/test-payments/" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/credit_card.png" width="20px;" height="20px">{l s='Credit Card for test' mod='mercadopago'}</a></p>		
+	</div>
+
+	<br>
+
 	<h3> {l s='Notes:' mod='mercadopago'}</h3>
 	<h4>{l s='- To obtain your Client Id, Client Secret, Public Key and Access Token please click on your country:' mod='mercadopago'}</h4>
 		<a href="https://www.mercadopago.com/mla/account/credentials" target="_blank"><u>{l s='Argentina' mod='mercadopago'}</u></a> |
@@ -254,7 +372,7 @@
 							{if $country == 'MLA'}
 									<li><a target="_blank" href="https://www.mercadopago.com.ar/envios">Activa MercadoEnvíos</a></li>
 									<li>
-									Consulta los<a target="_blank" href="https://www1.oca.com.ar/ocaexpresspak/help/serviviosbasicos.asp">valores admitidos por OCA</a>.</li>
+									Consulta los <a target="_blank" href="https://www1.oca.com.ar/ocaexpresspak/help/serviviosbasicos.asp">valores admitidos por OCA</a>.</li>
 							{/if}
 							{if $country == 'MLM'}
 								<ul>
@@ -349,7 +467,7 @@
 		{else}
 			<input type="submit" name="submitmercadopago" value="{l s='Save' mod='mercadopago'}" class="ch-btn ch-btn-big"/>
 		{/if}
-			<!-- <input type="button" id="back" value="{l s='Back' mod='mercadopago'}" class="ch-btn-orange ch-btn-big-orange"/> -->
+
 	</form>
 </div>
 
@@ -460,11 +578,28 @@
 			$.scrollTo(0, 0);
 		}
 	});
+
+	function openTab(evt, cityName) {
+	    // Declare all variables
+	    var i, tabcontent, tablinks;
+
+	    // Get all elements with class="tabcontent" and hide them
+	    tabcontent = document.getElementsByClassName("tabcontent");
+	    for (i = 0; i < tabcontent.length; i++) {
+	        tabcontent[i].style.display = "none";
+	    }
+
+	    // Get all elements with class="tablinks" and remove the class "active"
+	    tablinks = document.getElementsByClassName("tablinks");
+	    for (i = 0; i < tablinks.length; i++) {
+	        tablinks[i].className = tablinks[i].className.replace(" active", "");
+	    }
+
+	    // Show the current tab, and add an "active" class to the link that opened the tab
+	    document.getElementById(cityName).style.display = "block";
+	    evt.currentTarget.className += " active";
+	}	
+	// Get the element with id="defaultOpen" and click on it
+	document.getElementById("defaultOpen").click();
 </script>
 
-<style>
-.ch-form-row.discount-link {
-    background: url(https://secure.mlstatic.com/checkout-resources/resourses/assets/icon-discount.bd9c2205796f.png) no-repeat;
-    line-height: 25px;
-}
-</style>
