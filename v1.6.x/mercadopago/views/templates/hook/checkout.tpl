@@ -213,8 +213,20 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 										mod='mercadopago'}<em>*</em>
 									</label> <select id="id-installments-cust" name="installmentsCust" type="text"></select>
 									<div id="id-installments-status-cust" class="status"></div>
+									<div class="col">
+										<div class="mp-text-cft">
+										</div>
+									</div>
 								</div>
 							</div>
+
+							<div class="row">
+								<div class="col">
+									<div class="mp-text-tea">
+									</div>
+								</div>
+							</div>
+
 						</div>
 					</div>
 
@@ -331,6 +343,18 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 									mod='mercadopago'}<em>*</em>
 								</label> <select id="id-installments" name="installments" type="text"></select>
 								<div id="id-installments-status" class="status"></div>
+							</div>
+
+							<div class="col">
+								<div class="mp-text-cft">
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col">
+								<div class="mp-text-tea">
+								</div>
 							</div>
 						</div>
 
@@ -642,10 +666,22 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			var installments = installments[0].payer_costs;
 			$.each(installments, function(key, value) {
 
+				// tax resolution 51/2017 arg
+				var dataInput = "";
+				var tax = value.labels;
+				if(tax.length > 0){
+					for (var l = 0; l < tax.length; l++) {
+						if (tax[l].indexOf('CFT_') !== -1){
+							dataInput = 'data-tax="' + tax[l] + '"'
+						}
+					}
+				}
+
+
 				if(value.installments == 1 && active_credit_card == 1){
-					html_options += "<option value='"+ value.installments + "'>"+ value.installments +" parcela de R$ "+ orderTotal +" ("+ orderTotal +") </option>";
+					html_options += "<option value='"+ value.installments + "' "+ dataInput +">"+ value.installments +" parcela de R$ "+ orderTotal +" ("+ orderTotal +") </option>";
 				}else{
-					html_options += "<option value='"+ value.installments + "'>"
+					html_options += "<option value='"+ value.installments + "' "+ dataInput +">"
 						+ value.recommended_message + "</option>";
 				}
 
@@ -657,8 +693,10 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		var opcaoPagamento = $("#opcaoPagamentoCreditCard").val();
 		if (opcaoPagamento == "Customer") {
 			$("#id-installments-cust").html(html_options);
+			taxesInstallmentsCust();
 		} else {
 			$("#id-installments").html(html_options);
+			taxesInstallments();
 		}
 
 	};
@@ -719,6 +757,45 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 		});
 	}
+
+	if (country === "MLA") {
+		$("#id-installments").change(taxesInstallments);
+		$("#id-installments-cust").change(taxesInstallmentsCust);
+		$(".mp-text-cft").show();
+		$(".mp-text-tea").show();
+	}
+
+	function taxesInstallments(){
+		var selectorInstallments = document.querySelector("#id-installments");
+		showTaxes(selectorInstallments);
+	}
+	function taxesInstallmentsCust(){
+		var selectorInstallments = document.querySelector("#id-installments-cust");
+		showTaxes(selectorInstallments);
+	}
+
+	function showTaxes(selectorInstallments){
+		 var tax = selectorInstallments.options[selectorInstallments.selectedIndex].getAttribute('data-tax');
+
+		 var cft = ""
+		 var tea = ""
+
+		 if(tax != null){
+			 var tax_split = tax.split('|');
+			 cft = tax_split[0].replace('_', ' ');
+			 tea = tax_split[1].replace('_', ' ');
+
+			 if(cft == "CFT 0,00%" && tea == "TEA 0,00%"){
+				 cft = ""
+				 tea = ""
+			 }
+
+		 }
+
+		$(".mp-text-cft").html(cft);
+		$(".mp-text-tea").html(tea);
+
+	 }
 
 	function disabledSubmit(disabled) {
 		if (disabled) {
