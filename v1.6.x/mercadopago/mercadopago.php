@@ -1829,6 +1829,12 @@ class MercadoPago extends PaymentModule
         $products = $cart->getProducts();
         $items = array();
         $summary = '';
+        $round_place = 2;
+
+        if(Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO'){
+          $round_place = 0;
+        }
+
         foreach ($products as $key => $product) {
             $image = Image::getCover($product['id_product']);
             $product_image = new Product($product['id_product'], false, Context::getContext()->language->id);
@@ -1845,7 +1851,7 @@ class MercadoPago extends PaymentModule
                 'title' => $product['name'],
                 'description' => $product['description_short'],
                 'quantity' => $product['quantity'],
-                'unit_price' => round($product['price_wt'], 2),
+                'unit_price' => round($product['price_wt'], $round_place),
                 'picture_url' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').$imagePath,
                 'category_id' => Configuration::get('MERCADOPAGO_CATEGORY'),
             );
@@ -2014,6 +2020,9 @@ class MercadoPago extends PaymentModule
         $data['customer']['surname'] = $data['customer']['last_name'];
         $data['payer'] = $data['customer'];
         unset($data['customer']);
+
+        error_log("-------> ". Tools::jsonEncode($data));
+
         return $data;
     }
 
@@ -2126,6 +2135,14 @@ class MercadoPago extends PaymentModule
             // check value
             $cart = new Cart($merchant_order_info['external_reference']);
             $total = (float)$cart->getOrderTotal(true, Cart::BOTH);
+
+            if(Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO'){
+              $products = $cart->getProducts();
+              $total = 0;
+              foreach ($products as $key => $product) {
+                $total += round($product['price_wt'], 0) * $product['quantity'];
+              }
+            }
 
             // check the module
             $id_order = $this->getOrderByCartId($merchant_order_info['external_reference']);
@@ -2609,7 +2626,7 @@ class MercadoPago extends PaymentModule
             $retornoCalculadora = $this->calculateListCache($address->postcode);
 
             error_log("====retornoCalculadora=======". Tools::jsonEncode($retornoCalculadora));
-            
+
 
             if ($retornoCalculadora != null) {
                 $lista_shipping = (array) Tools::jsonDecode(
