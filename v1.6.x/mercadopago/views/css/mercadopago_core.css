@@ -46,28 +46,28 @@
 }
 
 .mp-module .boleto-frame {
-	width: 780px; 
+	width: 780px;
 	height: 845px;
 }
 
 .mp-module .MLM {
-	width: 670px; 
+	width: 670px;
 	height: 670px;
 }
 
 .mp-module p {
 	color: black;
-	font-size: 15px;	
+	font-size: 15px;
 	font-weight: normal;
 }
 
 .mp-module .label-checkout {
 	color: black;
-	font-size: 15px;	
+	font-size: 15px;
 	font-weight: 700;
-	
+
 }
-    
+
 .mp-module .mp-form h4 {
 	font-weight: bold;
 	font-size: 22px;
@@ -105,51 +105,51 @@
 }
 
 .mp-module .ch-btn, .mp-module .ch-btn:focus, .mp-module .ch-btn:visited {
-		font-family: 'Lato', sans-serif;
-		font-weight: 400;
-		background-color: #36A1F1;
-		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #36A1F1), color-stop(100%, #0F79C9));
-		background-image: -webkit-linear-gradient(#36A1F1, #0F79C9);
-		background-image: -moz-linear-gradient(#36A1F1, #0F79C9);
-		background-image: -o-linear-gradient(#36A1F1, #0F79C9);
-		background-image: linear-gradient(#36A1F1, #0F79C9);
-		-webkit-box-shadow: inset 0 1px #97DCFF;
-		box-shadow: 0 1px #97DCFF inset;
-		color: #FFF!important;
-		border: 0px solid #0D6FB9;
-		border-radius: 4px 4px 4px 4px;
-		cursor: pointer;
-		display: inline-block;
+	font-family: 'Lato', sans-serif;
+	font-weight: 400;
+	background-color: #36A1F1;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #36A1F1), color-stop(100%, #0F79C9));
+	background-image: -webkit-linear-gradient(#36A1F1, #0F79C9);
+	background-image: -moz-linear-gradient(#36A1F1, #0F79C9);
+	background-image: -o-linear-gradient(#36A1F1, #0F79C9);
+	background-image: linear-gradient(#36A1F1, #0F79C9);
+	-webkit-box-shadow: inset 0 1px #97DCFF;
+	box-shadow: 0 1px #97DCFF inset;
+	color: #FFF!important;
+	border: 0px solid #0D6FB9;
+	border-radius: 4px 4px 4px 4px;
+	cursor: pointer;
+	display: inline-block;
 }
 .mp-module .ch-btn:hover {
-		background-color: #4CBFF8;
-		background-image: linear-gradient(#4CBFF8, #1699DF);
-		box-shadow: 0 1px #B6EBFF inset;
-		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #4CBFF8), color-stop(100%, #1699DF));
-		background-image: -webkit-linear-gradient(#4CBFF8, #1699DF);
-		background-image: -moz-linear-gradient(#4CBFF8, #1699DF);
-		background-image: -o-linear-gradient(#4CBFF8, #1699DF);
-		background-image: linear-gradient(#4CBFF8, #1699DF);
-		-webkit-box-shadow: inset 0 1px #B6EBFF;
-		border: 0px solid #1890D3;
-		color: #FFF;
-		text-decoration: none;
-		outline: 0
+	background-color: #4CBFF8;
+	background-image: linear-gradient(#4CBFF8, #1699DF);
+	box-shadow: 0 1px #B6EBFF inset;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #4CBFF8), color-stop(100%, #1699DF));
+	background-image: -webkit-linear-gradient(#4CBFF8, #1699DF);
+	background-image: -moz-linear-gradient(#4CBFF8, #1699DF);
+	background-image: -o-linear-gradient(#4CBFF8, #1699DF);
+	background-image: linear-gradient(#4CBFF8, #1699DF);
+	-webkit-box-shadow: inset 0 1px #B6EBFF;
+	border: 0px solid #1890D3;
+	color: #FFF;
+	text-decoration: none;
+	outline: 0
 }
 .mp-module .ch-btn:active {
-		background-color: #1473CD;
-		background-image: linear-gradient(#1473CD, #0B66BC);
-		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1473CD), color-stop(100%, #0B66BC));
-		background-image: -webkit-linear-gradient(#1473CD, #0B66BC);
-		background-image: -moz-linear-gradient(#1473CD, #0B66BC);
-		background-image: -o-linear-gradient(#1473CD, #0B66BC);
-		background-image: linear-gradient(#1473CD, #0B66BC);
-		-webkit-box-shadow: inset 0 1px #0B5BA6;
-		box-shadow: 0 1px #0B5BA6 inset;
-		border: 0px solid #0B5BA6;
-		color: #FFF;
-		text-decoration: none;
-		outline: 0
+	background-color: #1473CD;
+	background-image: linear-gradient(#1473CD, #0B66BC);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1473CD), color-stop(100%, #0B66BC));
+	background-image: -webkit-linear-gradient(#1473CD, #0B66BC);
+	background-image: -moz-linear-gradient(#1473CD, #0B66BC);
+	background-image: -o-linear-gradient(#1473CD, #0B66BC);
+	background-image: linear-gradient(#1473CD, #0B66BC);
+	-webkit-box-shadow: inset 0 1px #0B5BA6;
+	box-shadow: 0 1px #0B5BA6 inset;
+	border: 0px solid #0B5BA6;
+	color: #FFF;
+	text-decoration: none;
+	outline: 0
 }
 
 .mp-module .ch-btn-big, .mp-module .ch-btn-big:focus {
@@ -163,40 +163,40 @@
 }
 
 .mp-module .ch-btn-skin, .mp-module .ch-btn-skin:focus, .mp-module .ch-btn-skin:visited {
-		background-color: #DAF1FC;
-		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #DAF1FC), color-stop(100%, #C2E2F3));
-		background-image: -webkit-linear-gradient(#DAF1FC, #C2E2F3);
-		background-image: -moz-linear-gradient(#DAF1FC, #C2E2F3);
-		background-image: -o-linear-gradient(#DAF1FC, #C2E2F3);
-		background-image: linear-gradient(#DAF1FC, #C2E2F3);
-		border: 0px solid #79B0D9;
-		-webkit-box-shadow: inset 0 1px #EFF7FD;
-		box-shadow: inset 0 1px #EFF7FD;
-		color: #295D8F;
-		text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-		outline: 0
+	background-color: #DAF1FC;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #DAF1FC), color-stop(100%, #C2E2F3));
+	background-image: -webkit-linear-gradient(#DAF1FC, #C2E2F3);
+	background-image: -moz-linear-gradient(#DAF1FC, #C2E2F3);
+	background-image: -o-linear-gradient(#DAF1FC, #C2E2F3);
+	background-image: linear-gradient(#DAF1FC, #C2E2F3);
+	border: 0px solid #79B0D9;
+	-webkit-box-shadow: inset 0 1px #EFF7FD;
+	box-shadow: inset 0 1px #EFF7FD;
+	color: #295D8F;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+	outline: 0
 }
 .mp-module .ch-btn-skin:hover {
-		background-color: #EAF7FE;
-		background-image: -webkit-linear-gradient(#EAF7FE, #D9EDF8);
-		background-image: -moz-linear-gradient(#EAF7FE, #D9EDF8);
-		background-image: -o-linear-gradient(#EAF7FE, #D9EDF8);
-		background-image: linear-gradient(#EAF7FE, #D9EDF8);
-		-webkit-box-shadow: inset 0 1px #F7FAFE;
-		box-shadow: inset 0 1px #F7FAFE;
-		outline: 0
+	background-color: #EAF7FE;
+	background-image: -webkit-linear-gradient(#EAF7FE, #D9EDF8);
+	background-image: -moz-linear-gradient(#EAF7FE, #D9EDF8);
+	background-image: -o-linear-gradient(#EAF7FE, #D9EDF8);
+	background-image: linear-gradient(#EAF7FE, #D9EDF8);
+	-webkit-box-shadow: inset 0 1px #F7FAFE;
+	box-shadow: inset 0 1px #F7FAFE;
+	outline: 0
 }
 .mp-module .ch-btn-skin:active {
-		background-color: #A9DBF7;
-		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #A9DBF7), color-stop(100%, #A3D0EE));
-		background-image: -webkit-linear-gradient(#A9DBF7, #A3D0EE);
-		background-image: -moz-linear-gradient(#A9DBF7, #A3D0EE);
-		background-image: -o-linear-gradient(#A9DBF7, #A3D0EE);
-		background-image: linear-gradient(#A9DBF7, #A3D0EE);
-		-webkit-box-shadow: inset 0 1px 6px rgba(71, 98, 116, .6);
-		box-shadow: inset 0 1px 6px rgba(71, 98, 116, .6);
-		border-color: #79A8C7;
-		outline: 0
+	background-color: #A9DBF7;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #A9DBF7), color-stop(100%, #A3D0EE));
+	background-image: -webkit-linear-gradient(#A9DBF7, #A3D0EE);
+	background-image: -moz-linear-gradient(#A9DBF7, #A3D0EE);
+	background-image: -o-linear-gradient(#A9DBF7, #A3D0EE);
+	background-image: linear-gradient(#A9DBF7, #A3D0EE);
+	-webkit-box-shadow: inset 0 1px 6px rgba(71, 98, 116, .6);
+	box-shadow: inset 0 1px 6px rgba(71, 98, 116, .6);
+	border-color: #79A8C7;
+	outline: 0
 }
 
 .lightbox {
@@ -209,11 +209,11 @@
 	left: 0;
 	color:#333333;
 	margin-top: -2px;
-	}
+}
 
 .lightbox:target {
-		display: block;
-		outline: none;
+	display: block;
+	outline: none;
 }
 
 .lightbox .box {
@@ -260,5 +260,26 @@
 }
 
 .mp-module .alert.alert-danger:before {
+	display: none;
+}
+
+
+
+
+/*
+* Taxes - MLA
+*/
+.mp-text-cft{
+	font-size: 22px;
+	line-height: 30px;
+	font-family: Lato,sans-serif;
+	display: none;
+}
+
+.mp-text-tea{
+	font-size: 9px;
+	width: 235px;
+	text-align: right;
+	font-family: Lato,sans-serif;
 	display: none;
 }
