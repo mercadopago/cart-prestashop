@@ -213,9 +213,10 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 										mod='mercadopago'}<em>*</em>
 									</label> <select id="id-installments-cust" name="installmentsCust" type="text"></select>
 									<div id="id-installments-status-cust" class="status"></div>
-									<div class="col">
-										<div class="mp-text-cft">
-										</div>
+								</div>
+
+								<div class="col">
+									<div class="mp-text-cft">
 									</div>
 								</div>
 							</div>
@@ -775,22 +776,26 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	}
 
 	function showTaxes(selectorInstallments){
-		 var tax = selectorInstallments.options[selectorInstallments.selectedIndex].getAttribute('data-tax');
+		var tax = null;
 
-		 var cft = ""
-		 var tea = ""
+		if(selectorInstallments.selectedIndex > -1){
+		  tax = selectorInstallments.options[selectorInstallments.selectedIndex].getAttribute('data-tax');
+		}
 
-		 if(tax != null){
-			 var tax_split = tax.split('|');
-			 cft = tax_split[0].replace('_', ' ');
-			 tea = tax_split[1].replace('_', ' ');
+		var cft = ""
+		var tea = ""
 
-			 if(cft == "CFT 0,00%" && tea == "TEA 0,00%"){
-				 cft = ""
-				 tea = ""
-			 }
+		if(tax != null){
+			var tax_split = tax.split('|');
+			cft = tax_split[0].replace('_', ' ');
+			tea = tax_split[1].replace('_', ' ');
 
-		 }
+			if(cft == "CFT 0,00%" && tea == "TEA 0,00%"){
+				cft = ""
+				tea = ""
+			}
+
+		}
 
 		$(".mp-text-cft").html(cft);
 		$(".mp-text-tea").html(tea);
@@ -1615,6 +1620,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			$("#cardDiv").show();
 			$("#opcaoPagamentoCreditCard").val("Cards");
 			clearErrorStatus()
+			taxesInstallments();
 		} else if (this.value != "") {
 			$("#customerCardsDiv").show();
 			$("#cardDiv").hide();
@@ -1622,6 +1628,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			//loadInstallments();
 			loadInstallmentsOneClick();
 			clearErrorStatus();
+			taxesInstallmentsCust();
 		}
 	});
 
