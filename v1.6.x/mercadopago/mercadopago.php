@@ -1785,6 +1785,9 @@ class MercadoPago extends PaymentModule
                 case 'MPE':
                     $payment_preference['sponsor_id'] = 217182014;
                     break;
+                case 'MLU':
+                    $payment_preference['sponsor_id'] = 241730009;
+                    break;
             }
         }
 
@@ -1973,6 +1976,9 @@ class MercadoPago extends PaymentModule
                     break;
                 case 'MPE':
                     $data['sponsor_id'] = 217182014;
+                    break;
+                case 'MLU':
+                    $data['sponsor_id'] = 241730009;
                     break;
             }
         }
