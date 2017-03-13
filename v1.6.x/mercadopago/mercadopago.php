@@ -1358,7 +1358,13 @@ class MercadoPago extends PaymentModule
                     'active' => Configuration::get($op_active_variable),
                     'thumbnail' => $offline_payment['thumbnail'],
                 );
+
+                error_log("======thumbnail".$offline_payment['thumbnail']);
+
             }
+
+
+
             $data['offline_payment_settings'] = $offline_payment_settings;
 
            // error_log("===offline_payment_settings===".Tools::jsonEncode($data['offline_payment_settings']));
@@ -1368,6 +1374,8 @@ class MercadoPago extends PaymentModule
                 ) {
                 $payment_methods_credit = $this->mercadopago->getPaymentCreditsMLM();
                 $data['payment_methods_credit'] = $payment_methods_credit;
+            } else {
+                $data['payment_methods_credit'] = array();
             }
 
             error_log("===MERCADOPAGO_STANDARD_ACTIVE===".Configuration::get('MERCADOPAGO_STANDARD_ACTIVE'));

@@ -856,7 +856,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 									      	$('#card_token_id').val(response.id);
 
-											document.getElementById("form-pagar-mp").action = "{$custom_action_url|escape:'htmlall':'UTF-8'}";
+											document.getElementById("form-pagar-mp").action = "{$custom_action_url|escape:'quotes':'UTF-8'}";
 											document.getElementById("form-pagar-mp").submit();
 								      }
 						     	});
@@ -964,7 +964,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 													$form
 															.append($('<input name="lastFourDigits" type="hidden" value="' + lastFourDigits + '"/>'));
 													document
-															.getElementById("form-pagar-mp").action = "{$custom_action_url|escape:'htmlall':'UTF-8'}";
+															.getElementById("form-pagar-mp").action = "{$custom_action_url|escape:'quotes':'UTF-8'}";
 													document.getElementById(
 															"form-pagar-mp")
 															.submit();
