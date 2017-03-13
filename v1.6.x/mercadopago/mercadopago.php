@@ -1352,17 +1352,18 @@ class MercadoPago extends PaymentModule
                 $op_banner_variable = 'MERCADOPAGO_'.Tools::strtoupper($offline_payment['id'].'_BANNER');
                 $op_active_variable = 'MERCADOPAGO_'.Tools::strtoupper($offline_payment['id'].'_ACTIVE');
 
+                $thumbnail = $offline_payment['thumbnail'];
+
+                if (Configuration::get('PS_SSL_ENABLED')) {
+                    $thumbnail = str_replace("http", "https", $offline_payment['thumbnail']);
+                }
                 $offline_payment_settings[$offline_payment['id']] = array(
                     'name' => $offline_payment['name'],
                     'banner' => Configuration::get($op_banner_variable),
                     'active' => Configuration::get($op_active_variable),
-                    'thumbnail' => $offline_payment['thumbnail'],
+                    'thumbnail' => $thumbnail,
                 );
-
-                error_log("======thumbnail".$offline_payment['thumbnail']);
-
             }
-
 
 
             $data['offline_payment_settings'] = $offline_payment_settings;
@@ -2588,6 +2589,13 @@ class MercadoPago extends PaymentModule
     public function hookdisplayBeforeCarrier($params) {
 
         if (!isset($this->context->smarty->tpl_vars['delivery_option_list'])) {
+            return;
+        }
+
+        //global $appended_text;
+        $mercado_envios_activate = Configuration::get('MERCADOENVIOS_ACTIVATE');
+        if (empty($mercado_envios_activate) ||
+            $mercado_envios_activate == "false") {
             return;
         }
 
