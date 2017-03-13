@@ -43,7 +43,6 @@ class MercadoPagoCancelOrderModuleFrontController extends ModuleFrontController
         $token = Tools::getAdminToken('AdminOrder'.Tools::getValue('id_order'));
 
         $token_form = Tools::getValue('token_form');
-        error_log("===token_form===".$token_form);
         //check token
         if ($token == $token_form) {
 
@@ -51,14 +50,12 @@ class MercadoPagoCancelOrderModuleFrontController extends ModuleFrontController
             $order_payments =  $order->getOrderPayments();
             foreach ($order_payments as $order_payment) {
                 if ($order_payment->transaction_id > 0) {
-                    error_log("===entrou aqui 1====");
                     $result = $mercadopago_sdk->getPayment($order_payment->transaction_id);
                     if ($result['status'] == 200) {
                         $responseCancel = $mercadopago_sdk->cancelPaymentsCustom(
                             $order_payment->transaction_id
                         );
                     } else {
-                        error_log("===entrou aqui 2====");
                         $result = $mercadopago_sdk->getPaymentStandard($order_payment->transaction_id);
                         $responseCancel = $mercadopago_sdk->cancelPaymentsStandard(
                             $order_payment->transaction_id

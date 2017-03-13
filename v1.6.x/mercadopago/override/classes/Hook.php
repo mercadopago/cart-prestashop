@@ -32,6 +32,7 @@ class Hook extends HookCore
         $base = HookCore::getHookModuleExecList($hook_name);
         if (Configuration::get('MERCADOPAGO_CARRIER') != null
             && Configuration::get('MERCADOENVIOS_ACTIVATE') == "true") {
+
             $lista_shipping = (array)Tools::jsonDecode(
                 Configuration::get('MERCADOPAGO_CARRIER'),
                 true

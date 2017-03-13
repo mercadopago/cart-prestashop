@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.4.0';
+    const VERSION = '3.4.1';
 
     /* Info */
     const INFO = 1;
@@ -141,9 +141,6 @@ class MPApi
 
         $result = MPRestCli::get($uri);
 
-
-        error_log("====result====".Tools::jsonEncode($result));
-
         return  $result;
     }
 
@@ -191,7 +188,7 @@ class MPApi
 
     /**
      * Get information for specific payment
-     *
+     * https://api.mercadolibre.com/shipments/$id_shipment?access_token='
      * @param int $id
      * @return array(json)
      */
