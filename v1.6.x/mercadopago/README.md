@@ -39,7 +39,7 @@ Great for merchants who want to get going quickly and easily.
 * Accept tickets, bank transfer and account money in addition to cards.
 * Accept Mercado Pago's discount coupons.
 
-*Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru and Venezuela*
+*Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru, Uruguay and Venezuela*
 
 <a name="requirements"></a>
 ##Requirements##
@@ -135,6 +135,8 @@ You will receive the following message: " Module(s) installed successfully."
   * **MXN** (Mexican Peso)
 * Peru:
   * **PEN** (Peruvian Sol)
+* Uruguay:
+  * **UYU** (Peso Uruguayo)  
 * Venezuela:
   * **VEF** (Venezuelan Bolivar)
 
