@@ -1,4 +1,5 @@
 <?php
+
 global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{mercadopago}prestashop>mercadopago_cc3ad716730c38cc02d9c1ac647ae184'] = 'Receba seus pagamentos utilizando o Mercado Pago e receba em cartão de crédito e boletos através no nosso checkout Transparente ou Padrão.';
@@ -28,8 +29,8 @@ $_MODULE['<{mercadopago}prestashop>mercadopago_9c01def13f9a04251a73efc7edbd17f0'
 $_MODULE['<{mercadopago}prestashop>mercadopago_0cccaf1b86d57f777bb07f9d29d934d9'] = 'Por favor, preencha os campos Client Id, Client Secret e Access Token.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_78086b44061cc166428738759175358b'] = 'Client Id ou Client Secret inválido';
 $_MODULE['<{mercadopago}prestashop>mercadopago_ad0a072fdcfaadc00c66c140986e05e1'] = 'Não é permitido excluir todos os métodos de pagamentos.';
-$_MODULE['<{mercadopago}prestashop>mercadopago_d30c5478912eab71729a86ac59ee6cc3'] = 'Após a postagem, você o receberá o produto em até';
-$_MODULE['<{mercadopago}prestashop>mercadopago_428a9b89d4731fd6e1045d494dd6342c'] = 'dia útil.';
+$_MODULE['<{mercadopago}prestashop>mercadopago_115a1c1887aebdcdaa92fbb1d908e4ad'] = 'dias úteis.';
+$_MODULE['<{mercadopago}prestashop>mercadopago_3986fd4fc34c06d732cb02e76c8cece8'] = 'Após o envio, você receberá o produto em ';
 $_MODULE['<{mercadopago}prestashop>mercadopago_de02900d3b2cef67fe96cc2e900ce021'] = 'Não foi possível carregar Mercado Envios.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_97d1a6c4b5f09e4a2edb3a86b4bc4c5e'] = 'Código postal no es válido.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_59b1945cfa936507a1001138a340b56d'] = 'Cep inválido.';

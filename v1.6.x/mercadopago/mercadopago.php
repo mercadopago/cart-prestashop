@@ -329,10 +329,11 @@ class MercadoPago extends PaymentModule
             Configuration::get('MERCADOPAGO_CARRIER'),
             true
         );
-        if (isset($lista_shipping['MP_CARRIER'])) {
+
+        $id_mercadoenvios_service_code = 0;
+        if (isset($lista_shipping['MP_CARRIER']) &&
+            array_key_exists($id_carrier, $lista_shipping['MP_CARRIER'])) {
             $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$id_carrier];
-        } else {
-            $id_mercadoenvios_service_code = 0;
         }
 
         return $id_mercadoenvios_service_code;
@@ -391,6 +392,7 @@ class MercadoPago extends PaymentModule
             $order_payments = $order->getOrderPayments();
             foreach ($order_payments as $order_payment) {
                 $result = $this->mercadopago->getPaymentStandard($order_payment->transaction_id);
+                error_log("====result mercadoenvios === ".Tools::jsonEncode($result));
                 if ($result['status'] == '200') {
                     $payment_info = $result['response'];
                     if (isset($payment_info['collection'])) {
@@ -1221,8 +1223,9 @@ class MercadoPago extends PaymentModule
 
     public function hookPayment($params)
     {
-
+        error_log("entrou aqui");
         if (!$this->active) {
+            error_log("entrou aqui 1");
             return;
         }
 
@@ -1321,10 +1324,10 @@ class MercadoPago extends PaymentModule
                 }
             }
             // send standard configurations only activated
-
+            error_log("entrou aqui 3 == ".Configuration::get('MERCADOPAGO_STANDARD_ACTIVE'));
             if (Configuration::get('MERCADOPAGO_STANDARD_ACTIVE') == 'true') {
                 $result = $this->createStandardCheckoutPreference();
-
+                error_log("====result====".Tools::jsonEncode($result));
                 if (array_key_exists('init_point', $result['response'])) {
                     $data['standard_banner'] = Configuration::get('MERCADOPAGO_STANDARD_BANNER');
                     $data['preferences_url'] = $result['response']['init_point'];
@@ -2041,7 +2044,7 @@ class MercadoPago extends PaymentModule
                 $width +=  $product['width'];
                 $height += $product['height'];
                 $length += $product['depth'];
-                $weight += $product['weight'];
+                $weight += $product['weight'] * 1000;
             }
         }
 
@@ -2051,7 +2054,7 @@ class MercadoPago extends PaymentModule
         $weight = ceil($weight);
 
         if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
-            $error = 'Invalid dimensions cart';
+            $error = 'Invalid dimensions cart [height, length, width, weight]';
 
             $this->context->smarty->assign(
                 $this->setErrorMercadoEnvios(
@@ -2067,7 +2070,9 @@ class MercadoPago extends PaymentModule
 
     public function createStandardCheckoutPreference()
     {
-        return $this->mercadopago->createPreference($this->getPrestashopPreferencesStandard(null));
+        $preferences = $this->getPrestashopPreferencesStandard(null);
+        error_log("=====preferences=====".Tools::jsonEncode($preferences));
+        return $this->mercadopago->createPreference($preferences);
     }
 
     private function getExcludedPaymentMethods()
@@ -2395,8 +2400,9 @@ class MercadoPago extends PaymentModule
                         false,
                         $cart->secure_key
                     );
-
-                    $this->saveCard($result);
+                    if ($payment_type == 'credit_card') {
+                        $this->saveCard($result);
+                    }
 
                 } elseif (!empty($order) && $order->current_state != null &&
                      $order->current_state != Configuration::get($order_status)) {
@@ -2615,7 +2621,7 @@ class MercadoPago extends PaymentModule
                             $calculadora = $retornoCalculadora[(string) $id_mercadoenvios_service_code];
                             $msg = $calculadora['estimated_delivery'].' '.$this->l('working days.');
 
-                            $id_carrier['instance']->delay[$this->context->cart->id_lang] = $this->l("After the post, receive the product ").$msg;
+                            $id_carrier['instance']->delay[$this->context->cart->id_lang] = $this->l('After the post, receive the product ').$msg;
                         }
                     }
                 }
@@ -2669,7 +2675,7 @@ class MercadoPago extends PaymentModule
         foreach ($products as $product) {
             for ($qty = 0; $qty < $product['quantity']; ++$qty) {
                 if ($product['width'] == 0) {
-                    $error = 'Invalid dimensions cart.';
+                    $error = 'Invalid dimensions cart [width].';
                     error_log($error);
 
                     $this->context->smarty->assign(
@@ -2684,7 +2690,7 @@ class MercadoPago extends PaymentModule
                 $width  += $product['width'];
                 $height += $product['height'];
                 $length += $product['depth'];
-                $weight += $product['weight'];
+                $weight += $product['weight'] * 1000;
             }
         }
 
@@ -2694,7 +2700,7 @@ class MercadoPago extends PaymentModule
         $weight = ceil($weight);
 
         if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
-            $error = 'Invalid dimensions cart.';
+            $error = 'Invalid dimensions cart [height,length, width, weight].';
             error_log($error);
 
             $this->context->smarty->assign(
@@ -2721,6 +2727,7 @@ class MercadoPago extends PaymentModule
             'free_method' => '', // optional
         );
 
+        error_log("===calculadora mercadoenvios====".Tools::jsonEncode($paramsMP));
         $response = $mp->calculateEnvios($paramsMP);
 
         if ($response['status'] == '200' && isset($response['response']['options'])) {
@@ -2882,7 +2889,7 @@ class MercadoPago extends PaymentModule
                 $width  += $product['width'];
                 $height += $product['height'];
                 $length += $product['depth'];
-                $weight += $product['weight'];
+                $weight += $product['weight'] * 1000;
             }
         }
 
@@ -2892,7 +2899,7 @@ class MercadoPago extends PaymentModule
         $weight = ceil($weight);
 
         if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
-            $error = 'Invalid dimensions cart';
+            $error = 'Invalid dimensions cart [height, length, width, weight]';
             error_log($error);
            // throw new Exception($error);
         }
