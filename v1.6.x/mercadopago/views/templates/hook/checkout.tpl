@@ -442,8 +442,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 								id="id-standard-logo"> <img
 								src="{$standard_banner|escape:'htmlall':'UTF-8'}"
 								class="mp-standard-banner" /> <span
-								class="payment-label standard">{l s='Pay via MercadoPago
-								and split into up to 24 times' mod='mercadopago'}</span>
+								class="payment-label standard">{l s='Pague a través de MercadoPago y hasta en 24 cuotas' mod='mercadopago'}</span>
 						</div>
 					</div>
 				</div>
@@ -474,7 +473,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	ModuleAnalytics.setPlatform("{$platform|escape:'htmlall':'UTF-8'}");
 	ModuleAnalytics.setPlatformVersion("{$platformVersion|escape:'htmlall':'UTF-8'}");
 	ModuleAnalytics.setModuleVersion("{$moduleVersion|escape:'htmlall':'UTF-8'}");
-	ModuleAnalytics.setPayerEmail("{$payerEmail|escape:'htmlall':'UTF-8'}");
+	ModuleAnalytics.seterEmail("{$payerEmail|escape:'htmlall':'UTF-8'}");
 	ModuleAnalytics.setUserLogged(parseInt("{$userLogged|escape:'htmlall':'UTF-8'}"));
 	ModuleAnalytics.setInstalledModules("{$installedModules|escape:'htmlall':'UTF-8'}");
 	ModuleAnalytics.setAdditionalInfo("{$additionalInfo|escape:'htmlall':'UTF-8'}");
