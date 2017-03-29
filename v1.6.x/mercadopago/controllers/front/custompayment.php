@@ -41,8 +41,6 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 
         $response = $mercadopago->execPayment($_POST);
 
-        error_log("====retorno pagamento=====".Tools::jsonEncode($response));
-
         $order_status = null;
         if (array_key_exists('status', $response)) {
             switch ($response['status']) {
@@ -170,7 +168,6 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                     new Currency(Context::getContext()->cart->id_currency),
                     false
                 );
-                error_log("=====response=====".);
                 $data['payment_id'] = $response['id'];
                 $data['one_step'] = Configuration::get('PS_ORDER_PROCESS_TYPE');
                 $data['valid_user'] = true;

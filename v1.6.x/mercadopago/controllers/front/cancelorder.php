@@ -45,7 +45,6 @@ class MercadoPagoCancelOrderModuleFrontController extends ModuleFrontController
         $token_form = Tools::getValue('token_form');
         //check token
         if ($token == $token_form) {
-
             $order = new Order(Tools::getValue("id_order"));
             $order_payments =  $order->getOrderPayments();
             foreach ($order_payments as $order_payment) {
@@ -65,15 +64,16 @@ class MercadoPagoCancelOrderModuleFrontController extends ModuleFrontController
                 break;
             }
 
-            $url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://') .
-                                         htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8') . __PS_BASE_URI__;
-
             if ($responseCancel != null && $responseCancel['status'] == 200) {
                 $mercadopago->updateOrderHistory($order->id, Configuration::get('PS_OS_CANCELED'));
             }
 
-            $redirect = $this->context->link->getAdminLink('AdminOrders');
-            Tools::redirectAdmin($redirect);
+            $getAdminLink = $this->context->link->getAdminLink('AdminOrders');
+            $getViewOrder = $getAdminLink.'&vieworder&id_order='.Tools::getValue('id_order');
+
+            error_log("====getViewOrder=====" . $getViewOrder);
+
+            Tools::redirectAdmin($getViewOrder);
         }
     }
 }

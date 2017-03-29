@@ -337,7 +337,6 @@ class MPApi
     {
         $access_token = $this->getAccessTokenV1();
         $trackingID = "platform:v1-whitelabel,type:prestashop,so:".MPApi::VERSION;
-        error_log("====ACCESS TOKEN ======".$access_token);
         $preference_result = MPRestCli::postTracking(
             '/v1/payments?access_token=' .
             $access_token,
