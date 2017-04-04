@@ -39,6 +39,8 @@ class UtilMercadoPago
                 null,
                 true
             );
+        } else {
+            error_log($data_hora."===".$mensagem);
         }
     }
 

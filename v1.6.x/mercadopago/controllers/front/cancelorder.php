@@ -71,8 +71,6 @@ class MercadoPagoCancelOrderModuleFrontController extends ModuleFrontController
             $getAdminLink = $this->context->link->getAdminLink('AdminOrders');
             $getViewOrder = $getAdminLink.'&vieworder&id_order='.Tools::getValue('id_order');
 
-            error_log("====getViewOrder=====" . $getViewOrder);
-
             Tools::redirectAdmin($getViewOrder);
         }
     }

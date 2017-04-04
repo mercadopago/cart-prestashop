@@ -59,6 +59,19 @@ class MPApi
         $this->client_secret = $client_secret;
     }
 
+    public static function getInstanceMP()
+    {
+        static $mercadopago = null;
+        if (null === $mercadopago) {
+            $mercadopago = new MPApi(
+                Configuration::get('MERCADOPAGO_CLIENT_ID'),
+                Configuration::get('MERCADOPAGO_CLIENT_SECRET')
+            );
+        }
+
+        return $mercadopago;
+    }
+
     /**
      * Get Access Token for API use
      */
@@ -280,16 +293,6 @@ class MPApi
     {
         $access_token = $this->getAccessTokenV1();
         $result = MPRestCli::get('/v1/payment_methods?access_token=' . $access_token);
-
-        if ($result['status'] != 200 || $result['status']  != 201) {
-            PrestaShopLogger::addLog(
-                'MercadoPago::getContent - Fatal Error: '.Tools::jsonEncode($result),
-                MPApi::WARNING,
-                0
-            );
-            return array();
-        }
-
         $result = $result['response'];
 
         // remove account_money
@@ -428,6 +431,8 @@ class MPApi
         $access_token = $this->getAccessTokenV1();
         $uri = "/settings?access_token=".$access_token;
 
+        error_log("======url======".$uri);
+
         $result = MPRestCli::getConfig($uri);
         return $result;
     }
@@ -439,11 +444,13 @@ class MPApi
     public function setEnableDisableTwoCard($params)
     {
         $access_token = $this->getAccessTokenV1();
+        error_log("=====params two cards=====".$params);
 
         $params = array(
             "two_cards" => $params
         );
         $result = MPRestCli::putConfig("/settings?access_token=" . $access_token, $params);
+        error_log("=====result two cards=====".Tools::jsonEncode($result));
         return  $result;
     }
 
@@ -451,7 +458,10 @@ class MPApi
     {
         $access_token = $this->getAccessToken();
         $uri = "/users/test_user?access_token=" . $access_token;
+        error_log("====uri=====".$uri);
         $result = MPRestCli::post($uri, $siteID);
+
+        error_log("=====getTestUser======".Tools::jsonEncode($result));
 
         return $result;
     }

@@ -86,8 +86,6 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
             $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
             $id_cart_rule = null;
             if ($percent > 0) {
-                error_log("Entrou aqui percent====".$percent);
-
                 $id_cart_rule = $mercadopago->applyDiscount($cart, $payment_mode, $installments);
             }
 

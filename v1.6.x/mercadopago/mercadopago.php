@@ -1308,7 +1308,6 @@ class MercadoPago extends PaymentModule
                 $result = $this->createStandardCheckoutPreference();
 
                 if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
-                    error_log("====result====".Tools::jsonEncode($result));
                     $messageLog = "====result====".Tools::jsonEncode($result);
                     PrestaShopLogger::addLog(
                         $messageLog,
@@ -1961,6 +1960,38 @@ class MercadoPago extends PaymentModule
             'items' => $items,
             'shipments' => $shipments,
         );
+
+        // PRESTASHOP
+        // if (!$this->mercadopago->isTestUser()) {
+        //     switch (Configuration::get('MERCADOPAGO_COUNTRY')) {
+        //         case 'MLB':
+        //             $payment_preference['sponsor_id'] = 236914421;
+        //             break;
+        //         case 'MLM':
+        //             $payment_preference['sponsor_id'] = 237793014;
+        //             break;
+        //         case 'MLA':
+        //             $payment_preference['sponsor_id'] = 237788409;
+        //             break;
+        //         case 'MCO':
+        //             $payment_preference['sponsor_id'] = 237788769;
+        //             break;
+        //         case 'MLV':
+        //             $payment_preference['sponsor_id'] = 237789083;
+        //             break;
+        //         case 'MLC':
+        //             $payment_preference['sponsor_id'] = 237788173;
+        //             break;
+        //         case 'MPE':
+        //             $payment_preference['sponsor_id'] = 237791025;
+        //             break;
+        //         case 'MLU':
+        //             $payment_preference['sponsor_id'] = 241730009;
+        //             break;
+        //     }
+        // }
+
+        //GIT HUB
         if (!$this->mercadopago->isTestUser()) {
             switch (Configuration::get('MERCADOPAGO_COUNTRY')) {
                 case 'MLB':
@@ -2060,6 +2091,7 @@ class MercadoPago extends PaymentModule
 
         if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
             $error = 'Invalid dimensions cart [height, length, width, weight]';
+            PrestaShopLogger::addLog('MercadoPago :: getDimensions = '.$error, MPApi::INFO, 0);
 
             $this->context->smarty->assign(
                 $this->setErrorMercadoEnvios(
@@ -2078,7 +2110,6 @@ class MercadoPago extends PaymentModule
         $preferences = $this->getPrestashopPreferencesStandard(null);
         if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
             PrestaShopLogger::addLog("=====preferences=====".Tools::jsonEncode($preferences), MPApi::INFO, 0);
-            error_log("=====preferences=====".Tools::jsonEncode($preferences));
         }
         return $this->mercadopago->createPreference($preferences);
     }
@@ -2139,10 +2170,6 @@ class MercadoPago extends PaymentModule
             PrestaShopLogger::addLog('MercadoPago :: listenIPN - topic = '.$topic, MPApi::INFO, 0);
             PrestaShopLogger::addLog('MercadoPago :: listenIPN - id = '.$id, MPApi::INFO, 0);
             PrestaShopLogger::addLog('MercadoPago :: listenIPN - checkout = '.$checkout, MPApi::INFO, 0);
-
-            error_log('=====IPN id======'.$id);
-            error_log('=====IPN checkout======'.$checkout);
-            error_log('=====IPN topic======'.$topic);
         }
 
         if ($checkout == 'standard' && $topic == 'merchant_order' && $id > 0) {
@@ -2671,8 +2698,11 @@ class MercadoPago extends PaymentModule
         foreach ($products as $product) {
             for ($qty = 0; $qty < $product['quantity']; ++$qty) {
                 if ($product['width'] == 0) {
-                    $error = 'Invalid dimensions cart [width].';
-                    error_log($error);
+                    if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
+                        $error = 'Invalid dimensions cart [width].';
+                        PrestaShopLogger::addLog("=====dimensions=====".
+                        $error, MPApi::ERROR, 0);
+                    }
 
                     $this->context->smarty->assign(
                         $this->setErrorMercadoEnvios(
@@ -2697,8 +2727,6 @@ class MercadoPago extends PaymentModule
 
         if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
             $error = 'Invalid dimensions cart [height,length, width, weight].';
-            error_log($error);
-
             if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
                 PrestaShopLogger::addLog("=====dimensions=====".$error, MPApi::ERROR, 0);
             }
@@ -2898,7 +2926,7 @@ class MercadoPago extends PaymentModule
 
         if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
             $error = 'Invalid dimensions cart [height, length, width, weight]';
-            error_log($error);
+            PrestaShopLogger::addLog("=====calculate=====".$error, MPApi::ERROR, 0);
            // throw new Exception($error);
         }
 
@@ -2974,8 +3002,6 @@ class MercadoPago extends PaymentModule
                 $carrier->delay[(int) $language['id_lang']] = $config['delay'][$language['iso_code']];
             } elseif ($language['iso_code'] == Language::getIsoById(Configuration::get('PS_LANG_DEFAULT'))) {
                 $carrier->delay[(int) $language['id_lang']] = $config['delay'][$language['iso_code']];
-            } else {
-                error_log('iso_code---'.$language['iso_code']);
             }
         }
 
@@ -3191,7 +3217,6 @@ class MercadoPago extends PaymentModule
         } catch (Exception $e) {
             if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
                 PrestaShopLogger::addLog("=====settings=====".$e->getMessage(), MPApi::ERROR, 0);
-                error_log("=====settings======" . $e->getMessage());
             }
         }
     }
