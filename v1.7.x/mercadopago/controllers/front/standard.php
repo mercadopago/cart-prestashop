@@ -248,9 +248,9 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
             }
         }
         $data['auto_return'] = $mercadopagoSettings['auto_return'] == 'approved' ? 'approved' : '';
-        $data['back_urls']['success'] = $this->getURLReturn($cart->id, $mercadopagoSettings);
-        $data['back_urls']['failure'] = $this->getURLReturn($cart->id, $mercadopagoSettings);
-        $data['back_urls']['pending'] = $this->getURLReturn($cart->id, $mercadopagoSettings);
+        $data['back_urls']['success'] = $this->getURLReturn($cart->id, $mercadopagoSettings, 'success');
+        $data['back_urls']['failure'] = $this->getURLReturn($cart->id, $mercadopagoSettings, 'failure');
+        $data['back_urls']['pending'] = $this->getURLReturn($cart->id, $mercadopagoSettings, 'pending');
         $data['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentMethods();
         $data['payment_methods']['excluded_payment_types'] = array();
         $data['payment_methods']['installments'] = (integer) $mercadopagoSettings['installments'];
@@ -272,7 +272,7 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         return $data;
     }
 
-    private function getURLReturn($cart_id, $mercadopagoSettings)
+    private function getURLReturn($cart_id, $mercadopagoSettings, $typeReturn)
     {
         return $this->context->link->getModuleLink(
             'mercadopago',
@@ -283,7 +283,7 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
             null,
             null,
             false
-        ).'?checkout=standard&cart_id='.$cart_id;
+        ).'?checkout=standard&cart_id='.$cart_id.'&typeReturn='.$typeReturn;
     }
 
     private function redirectError($returnMessage)

@@ -1,4 +1,4 @@
-# Prestashop - Mercado Pago Module (v1.3.6 - 1.4.7.3x, 1.5.x, 1.6.x)
+# Prestashop - Mercado Pago Module (v1.3.6 - 1.4.7.3x, 1.5.x, 1.6.x, 1.7.x)
 ---
 
 * [Features](#features)
@@ -87,6 +87,11 @@ During the sandbox mode tests, you can operate over HTTP, but for homologation y
       <td>Stable (Current Version)</td>
       <td>Prestashop v1.6.x</td>
      </tr>
+    <tr>
+      <td><a href="https://github.com/mercadopago/cart-prestashop/tree/master/v1.7.x">v1.7.x</a></td>
+      <td>Stable (Current Version)</td>
+      <td>Prestashop v1.7.x</td>
+     </tr>
   </tbody>
 </table>
 
@@ -97,6 +102,7 @@ During the sandbox mode tests, you can operate over HTTP, but for homologation y
     * Prestashop v1.3.6 - 1.4.7.3x
     * Prestashop v1.5.x
     * Prestashop v1.6.x
+    * Prestashop v1.7.x
 
 <a name="setup"></a>
 ##Setup##
@@ -119,7 +125,7 @@ You will receive the following message: " Module(s) installed successfully."
   * Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
   * Peru: [https://www.mercadopago.com/mlp/account/credentials](https://www.mercadopago.com/mlp/account/credentials)
   * Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
-
+  * Uruguay: [https://www.mercadopago.com/mlu/account/credentials](https://www.mercadopago.com/mlu/account/credentials)
 
 ***IMPORTANT:*** *This module will only work with the following currencies:*
 
@@ -136,7 +142,7 @@ You will receive the following message: " Module(s) installed successfully."
 * Peru:
   * **PEN** (Peruvian Sol)
 * Uruguay:
-  * **UYU** (Peso Uruguayo)  
+  * **UYU** (Peso Uruguayo)
 * Venezuela:
   * **VEF** (Venezuelan Bolivar)
 

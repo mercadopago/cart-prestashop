@@ -1676,7 +1676,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		var html_options_mp = "";
 		var credit = "";
 		"{foreach from=$payment_methods_credit item=value}"
-			"{if $value.status == 'active'}"
+			"{if $value.status == 'active' && ($value.payment_type_id == 'credit_card' || $value.payment_type_id == 'debit_card' || $value.payment_type_id == 'prepaid_card')}"
 				credit = "";
 				if ('{$value.payment_type_id}' == "credit_card") {
 					credit = "{l s='Credit' mod='mercadopago'}";

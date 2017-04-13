@@ -30,7 +30,15 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
     public function initContent()
     {
         parent::initContent();
+        error_log("entrou aqui orderConfirmationUrl " . Tools::getValue('collection_id'));
+        error_log("entrou aqui orderConfirmationUrl  typeReturn == " . Tools::getValue('typeReturn'));
+
+        if (Tools::getValue('typeReturn') == 'failure') {
+            error_log("entrou aqui failure ");
+            $this->redirectError();
+        }
         if (Tools::getIsset('collection_id') && Tools::getValue('collection_id') != 'null') {
+            error_log("entrou aqui 1 ");
             // payment variables
             $payment_statuses = array();
             $payment_ids = array();
@@ -47,10 +55,10 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
 
             $mercadopago = $this->module;
             $mercadopago_sdk = MPApi::getInstanceMP();
-
+            error_log("entrou aqui 2 ");
             foreach ($collection_ids as $collection_id) {
                 $result = $mercadopago_sdk->getPaymentStandard($collection_id);
-
+                error_log("===result standard=====".Tools::jsonEncode($result));
                 $payment_info = $result['response']['collection'];
                 $id_cart = $payment_info['external_reference'];
                 $cart = new Cart($id_cart);
@@ -156,6 +164,10 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
                     }
                     $order_payments[0]->save();
                     $order_payments = $order->getOrderPayments();
+
+
+                    error_log("====vai fazer o redirect====". $uri);
+
                     Tools::redirectLink($uri);
                 }
             }
@@ -166,5 +178,13 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
                 MPApi::ERROR
             );
         }
+    }
+
+    protected function redirectError()
+    {
+        error_log("Entrou no redirectError");
+        $this->errors[] = $this->module->getMappingError("ERROR_PENDING");
+        $this->redirectWithNotifications($this->context->link->getPageLink('order', true, null, array(
+            'step' => '3')));
     }
 }

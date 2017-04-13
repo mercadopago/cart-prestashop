@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.4.1';
+    const VERSION = '3.4.2';
 
     /* Info */
     const INFO = 1;
@@ -64,19 +64,22 @@ class MPApi
      */
     public function getAccessToken()
     {
-        $app_client_values = $this->buildQuery(
-            array(
-                'client_id' => $this->client_id,
-                'client_secret' => $this->client_secret,
-                'grant_type' => 'client_credentials'
-            )
-        );
+        if ($this->client_id != null) {
+            $app_client_values = $this->buildQuery(
+                array(
+                    'client_id' => $this->client_id,
+                    'client_secret' => $this->client_secret,
+                    'grant_type' => 'client_credentials'
+                )
+            );
 
-        $access_data = MPRestCli::post('/oauth/token', $app_client_values, 'application/x-www-form-urlencoded');
+            $access_data = MPRestCli::post('/oauth/token', $app_client_values, 'application/x-www-form-urlencoded');
 
-        $this->access_data = $access_data['response'];
+            $this->access_data = $access_data['response'];
 
-        return $this->access_data['access_token'];
+            return $this->access_data['access_token'];
+        }
+        return null;
     }
 
     /**
@@ -121,9 +124,12 @@ class MPApi
     public function getCountry()
     {
         $access_token = $this->getAccessToken();
-        $result = MPRestCli::get('/users/me?access_token=' . $access_token);
-
-        return $result['response']['site_id'];
+        if ($access_token != null) {
+            $result = MPRestCli::get('/users/me?access_token=' . $access_token);
+            return $result['response']['site_id'];
+        } else {
+            return null;
+        }
     }
 
     /*
@@ -260,14 +266,14 @@ class MPApi
     {
         $result = MPRestCli::get('/sites/' . $this->getCountry() . '/payment_methods?marketplace=NONE');
         $result = $result['response'];
-
-        // remove account_money
+        if (isset($result['status']) && $result['status'] != "200") {
+            return null;
+        }
         foreach ($result as $key => $value) {
             if ($value['payment_type_id'] == 'account_money') {
                 unset($result[$key]);
             }
         }
-
         return $result;
     }
 
@@ -278,10 +284,10 @@ class MPApi
      */
     public function getOfflinePaymentMethods()
     {
-        $access_token = $this->getAccessTokenV1();
+        //$access_token = $this->getAccessTokenV1();
+        $access_token = $this->getAccessToken();
         $result = MPRestCli::get('/v1/payment_methods?access_token=' . $access_token);
-
-        if ($result['status'] != 200 || $result['status']  != 201) {
+        if ($result['status'] != "200") {
             PrestaShopLogger::addLog(
                 'MercadoPago::getContent - Fatal Error: '.Tools::jsonEncode($result),
                 MPApi::WARNING,

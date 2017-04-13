@@ -12,10 +12,10 @@
             {l s='Thank you, your payment has been approved.' mod='mercadopago'}
         </div>
     {/if}
-    {if $payment_status == "in_process"}
+    {if $payment_status == "pending"}
         <div class="alert alert-warning">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            {l s='Thank you, your payment is being processed.' mod='mercadopago'}
+            {l s='Thank you, we are waiting for your payment.' mod='mercadopago'}
         </div>
     {/if}
     {if $payment_status == "rejected"}

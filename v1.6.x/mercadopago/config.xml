@@ -2,7 +2,7 @@
 <module>
 	<name>mercadopago</name>
 	<displayName><![CDATA[Mercado Pago]]></displayName>
-	<version><![CDATA[3.4.1]]></version>
+	<version><![CDATA[3.4.2]]></version>
 	<description><![CDATA[Receive your payments using Mercado Pago, you can using the Custom Checkout or Checkout Standard.]]></description>
 	<author><![CDATA[MERCADOPAGO.COM Representações LTDA.]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>

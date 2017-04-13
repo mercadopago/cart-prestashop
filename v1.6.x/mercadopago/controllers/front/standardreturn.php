@@ -77,7 +77,16 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             }
 
             if (Validate::isLoadedObject($cart)) {
-                $total = (double) number_format($transaction_amounts, 2, '.', '');
+                $round = false;
+                if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO') {
+                    $round = true;
+                    $total = (double) ceil($transaction_amounts);
+                    $total_ordem = ceil($cart->getOrderTotal(true, Cart::BOTH));
+                } else {
+                    $total = (double) number_format($transaction_amounts, 2, '.', '');
+                    $total_ordem = $cart->getOrderTotal(true, Cart::BOTH);
+                }
+
                 $extra_vars = array(
                     '{bankwire_owner}' => $mercadopago->textshowemail,
                     '{bankwire_details}' => '',
@@ -110,9 +119,21 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                         $total += $cost_mercadoEnvios;
                     }
 
+                    error_log("=====ENTROU AQUI TOTAL total=====".$total);
+                    error_log("=====ENTROU AQUI TOTAL getOrderTotal=====".$total_ordem);
+
+                    if ($total != $total_ordem) {
+                        PrestaShopLogger::addLog('Não atualizou o pedido, valores diferentes'.
+                        ' merchant_order_id = '.$merchant_order_id, MPApi::INFO, 0);
+                        error_log("entrou no retorno=");
+                        return;
+                    }
+                    if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO') {
+                        $total = $cart->getOrderTotal(true, Cart::BOTH);
+                    }
+
                     if (!$order_id) {
                         $displayName = UtilMercadoPago::setNamePaymentType($payment_types[0]);
-
                         $mercadopago->validateOrder(
                             $cart->id,
                             Configuration::get($order_status),

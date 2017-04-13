@@ -51,7 +51,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = "mercadopago";
         $this->tab = "payments_gateways";
-        $this->version = "1.0.0";
+        $this->version = "1.0.1";
         $this->ps_versions_compliancy = array("min" => "1.7", "max" => _PS_VERSION_);
         $this->author = "Mercado Pago";
         $this->controllers = array("validationstandard", "standardreturn");
@@ -347,46 +347,59 @@ class MercadoPago extends PaymentModule
     protected function getPaymentConfigurationTemplate()
     {
         $locale = $this->getPaymentConfigurationLocale();
-        if (Tools::isSubmit("btnSubmitPaymentConfig")) {
-            $this->selectedTab = "payment_configuration";
-            $this->updatePaymentConfig();
+        if ($this->existCredentials()) {
+            if (Tools::isSubmit("btnSubmitPaymentConfig")) {
+                $this->selectedTab = "payment_configuration";
+                $this->updatePaymentConfig();
+            }
+
+            $paymentsResult = MPApi::getInstanceMP()->getPaymentMethods();
+
+            $i = 0;
+            $payments = array();
+            foreach ($paymentsResult as $paymentMethod) {
+                $paymentTypeLowerCase = Tools::strtolower($paymentMethod["name"]);
+
+                $activeConfigName = Configuration::get("MERCADOPAGO_".$paymentMethod["id"]."_ACTIVE");
+                $modeConfigName = Configuration::get("MERCADOPAGO_".$paymentMethod["id"]."_MODE");
+
+                $payments[$i]["id"] = $paymentMethod["id"];
+                $payments[$i]["title"] = $paymentTypeLowerCase;
+                $payments[$i]["type"] = $paymentMethod["payment_type_id"];
+                $payments[$i]["active"] = Tools::getValue("MERCADOPAGO_".$paymentMethod["id"]."_ACTIVE", $activeConfigName);
+                $payments[$i]["mode"] = Tools::getValue("MERCADOPAGO_".$paymentMethod["id"]."_MODE", $modeConfigName);
+                $payments[$i]["brand"] = $paymentMethod["secure_thumbnail"];
+                $payments[$i]["tooltips"] = "";
+
+                error_log("".$paymentMethod["id"]);
+
+                $i++;
+            }
+
+            $tplVars = array(
+                "show" => true,
+                "mercadoPagoActive" => Configuration::get("MERCADOPAGO_STARDAND_ACTIVE"),
+                "panelTitle" => "teste",
+                "payments" => $payments,
+                "thisPath" => Tools::getShopDomain(true, true).__PS_BASE_URI__."modules/mercadopago/",
+                "fieldsValue" => $this->getPaymentConfiguration(),
+                "currentIndex" => $this->getAdminModuleLink(),
+                "label" => $locale["label"],
+                "button" => $locale["button"]
+            );
+        } else {
+            $tplVars = array(
+                "show" => false,
+                "mercadoPagoActive" => false,
+                "panelTitle" => "teste",
+                "payments" => array(),
+                "thisPath" => Tools::getShopDomain(true, true).__PS_BASE_URI__."modules/mercadopago/",
+                "fieldsValue" => $this->getPaymentConfiguration(),
+                "currentIndex" => $this->getAdminModuleLink(),
+                "label" => $locale["label"],
+                "button" => $locale["button"]
+            );
         }
-
-        $paymentsResult = MPApi::getInstanceMP()->getPaymentMethods();
-
-        $i = 0;
-        $payments = array();
-        foreach ($paymentsResult as $paymentMethod) {
-            $paymentTypeLowerCase = Tools::strtolower($paymentMethod["name"]);
-
-            $activeConfigName = Configuration::get("MERCADOPAGO_".$paymentMethod["id"]."_ACTIVE");
-            $modeConfigName = Configuration::get("MERCADOPAGO_".$paymentMethod["id"]."_MODE");
-
-            $payments[$i]["id"] = $paymentMethod["id"];
-            $payments[$i]["title"] = $paymentTypeLowerCase;
-            $payments[$i]["type"] = $paymentMethod["payment_type_id"];
-            $payments[$i]["active"] = Tools::getValue("MERCADOPAGO_".$paymentMethod["id"]."_ACTIVE", $activeConfigName);
-            $payments[$i]["mode"] = Tools::getValue("MERCADOPAGO_".$paymentMethod["id"]."_MODE", $modeConfigName);
-            $payments[$i]["brand"] = $paymentMethod["secure_thumbnail"];
-            $payments[$i]["tooltips"] = "";
-
-            error_log("".$paymentMethod["id"]);
-
-            $i++;
-        }
-
-        error_log("===payments==" . Tools::jsonEncode($payments));
-
-        $tplVars = array(
-            "mercadoPagoActive" => Configuration::get("MERCADOPAGO_STARDAND_ACTIVE"),
-            "panelTitle" => "teste",
-            "payments" => $payments,
-            "thisPath" => Tools::getShopDomain(true, true).__PS_BASE_URI__."modules/mercadopago/",
-            "fieldsValue" => $this->getPaymentConfiguration(),
-            "currentIndex" => $this->getAdminModuleLink(),
-            "label" => $locale["label"],
-            "button" => $locale["button"]
-        );
         $this->context->smarty->assign($tplVars);
 
         return $this->display(__FILE__, "views/templates/admin/paymentConfiguration.tpl");
@@ -397,31 +410,18 @@ class MercadoPago extends PaymentModule
     {
         $locale = array();
 
-        $locale["label"]["active"] = "Enabled";
-        $locale["label"]["disable"] = "Disable";
+        $locale["label"]["active"] = $this->l("Enabled");
+        $locale["label"]["disable"] = $this->l("Disable");
 
-        $locale["label"]["mode"] = "Show Separately";
-
-        $locale["paymentsConfig"] = "Payment Configuration";
+        $locale["paymentsConfig"] = $this->l("Payment Configuration");
 
 
         $locale["flexible"]["tooltips"] =
-                "When enabled, all single payment methods will be disabled";
+                $this->l("When enabled, all single payment methods will be disabled");
 
-
-        $locale["psc"]["tooltips"] = "American Samoa, Austria, Belgium, Canada,
-            Croatia, Cyprus, Czech Republic, Denmark,
-            Finland, France, Germany, Guam, Hungary,
-            Ireland, Italy, Latvia, Luxembourg, Malta,
-            Mexico, Netherlands, Northern Mariana Islands,
-            Norway, Poland, Portugal, Puerto Rico,
-            Romania, Slovakia, Slovenia, Spain, Sweden,
-            Switzerland, Turkey, United Kingdom, United
-            States Of America and US Virgin Islands";
-
-        $locale["button"]["save"] = "Save";
-        $locale["button"]["yes"] = "Yes";
-        $locale["button"]["no"] = "No";
+        $locale["button"]["save"] = $this->l("Save");
+        $locale["button"]["yes"] = $this->l("Yes");
+        $locale["button"]["no"] = $this->l("No");
 
         return $locale;
     }
@@ -487,7 +487,7 @@ class MercadoPago extends PaymentModule
             if ($isRequired) {
                 $warning = implode(", ", $fieldsRequired) . " ";
                 if ($this->l("ERROR_MANDATORY") == "ERROR_MANDATORY") {
-                    $warning .= "é obrigatório. Por favor informe esse campo";
+                    $warning .= $this->l("é obrigatório. Por favor informe esse campo");
                 } else {
                     $warning .= $this->l("ERROR_MANDATORY");
                 }
@@ -524,6 +524,17 @@ class MercadoPago extends PaymentModule
         }
     }
 
+
+    private function existCredentials()
+    {
+        $client_id = Configuration::get("MERCADOPAGO_CLIENT_ID");
+        $client_secret = Configuration::get("MERCADOPAGO_CLIENT_SECRET");
+        if (trim($client_id) == "" || trim($client_secret) == "") {
+            return false;
+        }
+        return true;
+    }
+
     protected function getPresentationTemplate()
     {
         $vars = array(
@@ -546,10 +557,10 @@ class MercadoPago extends PaymentModule
     protected function getTabsLocale()
     {
         $locale = array();
-        $locale["presentation"] = "Apresentação";
-        $locale["requirements"] = "Requisitos";
-        $locale["settings"] = "Configurações básicas";
-        $locale["paymentsConfig"] = "Configurações do pagamento";
+        $locale["presentation"] = $this->l("Apresentação");
+        $locale["requirements"] = $this->l("Requisitos");
+        $locale["settings"] = $this->l("Configurações básicas");
+        $locale["paymentsConfig"] = $this->l("Configurações do pagamento");
 
         return $locale;
     }
@@ -568,7 +579,7 @@ class MercadoPago extends PaymentModule
             Configuration::updateValue("MERCADOPAGO_STARDAND_ACTIVE", Tools::getValue("MERCADOPAGO_STARDAND_ACTIVE"));
 
             if ($this->l("SUCCESS_GENERAL_PAYMENTCONFIG") == "SUCCESS_GENERAL_PAYMENTCONFIG") {
-                $successMessage = "Congratulations, your payments configuration were successfully updated.";
+                $successMessage = $this->l("Congratulations, your payments configuration were successfully updated.");
             } else {
                 $successMessage = $this->l("SUCCESS_GENERAL_PAYMENTCONFIG");
             }
@@ -800,25 +811,25 @@ class MercadoPago extends PaymentModule
         $locale["client_id"]["label"] = "Client ID";
         $locale["client_secret"]["label"] = "Client Secret";
 
-        $locale["checkout_display"]["label"] = "Modo de visualização";
+        $locale["checkout_display"]["label"] = $this->l("Modo de visualização");
         $locale["checkout_display"]["label"] = "Display";
         $locale["checkout_display"]["iframe"] = "iFrame";
         $locale["checkout_display"]["redirect"] = "Redirect";
 
         $locale["checkout_display"]["desc"] =
-                "iFrame – Habilitamos dentro do seu checkout uma área com o ambiente do Mercado Pago,
-                Redirect – O cliente é direcionado ao ambiente do Mercado Pago em uma nova tela(recomendável).";
+                $this->l("iFrame – Habilitamos dentro do seu checkout uma área com o ambiente do Mercado Pago,
+                Redirect – O cliente é direcionado ao ambiente do Mercado Pago em uma nova tela(recomendável).");
 
         //descrições
         $locale["client_id"]["desc"] =
-                "Este campo é obrigatório e não deve ser compartilhado com outras pessoas.
-                Mais informações acesse: https://www.mercadopago.com.br/developers/en/solutions/payments/basic-checkout/receive-payments.";
+                $this->l("Este campo é obrigatório e não deve ser compartilhado com outras pessoas.
+                Mais informações acesse: https://www.mercadopago.com.br/developers/en/solutions/payments/basic-checkout/receive-payments.");
         $locale["client_secret"]["desc"] =
-                "Este campo é obrigatório e não deve ser compartilhado com outras pessoas.
-                Mais informações acesse: https://www.mercadopago.com.br/developers/en/solutions/payments/basic-checkout/receive-payments.";
+               $this->l("Este campo é obrigatório e não deve ser compartilhado com outras pessoas.
+                Mais informações acesse: https://www.mercadopago.com.br/developers/en/solutions/payments/basic-checkout/receive-payments.");
 
-        $locale["checkout_installments"]["label"] = "Installments";
-        $locale["checkout_installments"]["desc"] = "Informe a quantidade permitida de parcelas que os clientes poderam parcelar, máximo 24.";
+        $locale["checkout_installments"]["label"] = $this->l("Installments");
+        $locale["checkout_installments"]["desc"] = $this->l("Informe a quantidade permitida de parcelas que os clientes poderam parcelar, máximo 24.");
 
         $locale["checkout_display_category"]["label"] = "Categoria";
         $locale["checkout_display_category"]["others"] = "Other categories";
@@ -910,6 +921,7 @@ class MercadoPago extends PaymentModule
         if (!$this->active) {
             return;
         }
+        error_log("==========hookPaymentReturn=====");
         $currency = $this->context->currency;
 
         $logo_mercadopago = Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/views/img/logo-mercadopago.png');
@@ -917,7 +929,7 @@ class MercadoPago extends PaymentModule
         if (Tools::getValue('payment_method_id') == 'bolbradesco' ||
             Tools::getValue('payment_type') == 'bank_transfer' ||
             Tools::getValue('payment_type') == 'atm' || Tools::getValue('payment_type') == 'ticket') {
-
+            error_log("====boleto_url====". Tools::getValue('boleto_url'));
             $boleto_url = Tools::getValue('boleto_url');
             if (Configuration::get('PS_SSL_ENABLED')) {
                 $boleto_url = str_replace("http", "https", $boleto_url);
@@ -933,8 +945,8 @@ class MercadoPago extends PaymentModule
                     htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__,
                 )
             );
-
-            return $this->display(__file__, '/views/templates/hook/payment_return_ticket.tpl');
+            error_log("vai retornar aqui no boleto");
+            return $this->display(__FILE__, 'views/templates/hook/displayStatusOrderTicket.tpl');
         } else {
             $this->context->smarty->assign(
                 array(
@@ -1001,10 +1013,7 @@ class MercadoPago extends PaymentModule
 
     public function getExternalPaymentOption()
     {
-
-
-        error_log("=====name======".$this->name);
-
+        $country = strtoupper(MPApi::getInstanceMP()->getCountry());
         $externalOption = new PaymentOption();
         $externalOption->setCallToActionText($this->l("Mercado Pago Redirect"))
                        ->setAction($this->context->link->getModuleLink($this->name, "standard", array(), true))
@@ -1015,7 +1024,7 @@ class MercadoPago extends PaymentModule
                                 "value" =>"12345689",
                             ],
                         ])
-                       ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name."/views/img/mercadopago_468X60.jpg"));
+                       ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name."/views/img/".$country."/mercadopago_468X60.jpg"));
 
         return $externalOption;
     }
@@ -1039,5 +1048,19 @@ class MercadoPago extends PaymentModule
         ]);
 
         return $this->context->smarty->fetch("module:paymentexample/views/templates/front/payment_form.tpl");
+    }
+
+    public function getMappingError($idError)
+    {
+        switch ($idError) {
+            case 'ERROR_PENDING':
+                $message = "Unfortunately, the confirmation of your payment failed.
+                    Please contact your merchant for clarification.";
+            break;
+            default:
+                $message = "";
+            break;
+        }
+        return $message;
     }
 }

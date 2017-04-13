@@ -1,5 +1,7 @@
+
 <form id="module_form" class="defaultForm form-horizontal" action="{$currentIndex|escape:'htmlall':'UTF-8'}" method="post" enctype="multipart/form-data">
 <div class="panel">
+	{if $show}
 	<div class="form-group border-none">
 		<div class="col-lg-2 logo-wrapper">
 			<img src="{$thisPath|escape:'htmlall':'UTF-8'}views/img/mercadopago_125X125.jpg" class="payment-config-logo">
@@ -26,7 +28,13 @@
 		<div style="clear: both"></div>
 	</div>
 	<div style="clear: both"></div>
+	{else}
+		<div class="alert alert-danger">
+	  		<strong>{l s='Danger!' mod='mercadopago'}</strong> {l s='Please, fill your credentials to enable the module.' mod='mercadopago'}
+		</div>
+	{/if}
 </div>
+{if $show}
 <div class="panel panel-default">
 	<div class="panel-heading">Payment Methods</div>
 	<div class="alert alert-info">
@@ -72,4 +80,5 @@
 	</div>
 
 </div>
+{/if}
 </form>
