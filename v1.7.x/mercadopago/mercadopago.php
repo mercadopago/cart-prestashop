@@ -51,7 +51,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = "mercadopago";
         $this->tab = "payments_gateways";
-        $this->version = "1.0.1";
+        $this->version = "1.0.2";
         $this->ps_versions_compliancy = array("min" => "1.7", "max" => _PS_VERSION_);
         $this->author = "Mercado Pago";
         $this->controllers = array("validationstandard", "standardreturn");
@@ -69,6 +69,8 @@ class MercadoPago extends PaymentModule
 
         $this->displayName = $this->l("Mercado Pago");
         $this->description = $this->l("Receive your payments using Mercado Pago, you can using the Checkout Standard.");
+
+// this->getTranslator()->trans('Receive your payments using Mercado Pago, you can using the Checkout Standard.', array(), 'Admin.Global');
 
         if (!count(Currency::checkPaymentCurrencies($this->id))) {
             $this->warning = $this->l("No currency has been set for this module.");
@@ -95,7 +97,7 @@ class MercadoPago extends PaymentModule
     {
         error_log("entro no hookDisplayPayment");
         return $this->hookPayment($params);
-    }    
+    }
     /**
      * Create the states, we need to check if doens`t exists.
      */
@@ -487,7 +489,7 @@ class MercadoPago extends PaymentModule
             if ($isRequired) {
                 $warning = implode(", ", $fieldsRequired) . " ";
                 if ($this->l("ERROR_MANDATORY") == "ERROR_MANDATORY") {
-                    $warning .= $this->l("é obrigatório. Por favor informe esse campo");
+                    $warning .= $this->l("is required. Please fill this field.");
                 } else {
                     $warning .= $this->l("ERROR_MANDATORY");
                 }
@@ -517,8 +519,7 @@ class MercadoPago extends PaymentModule
 
             Configuration::updateValue("MERCADOPAGO_COUNTRY", MPApi::getInstanceMP()->getCountry());
 
-            $successMessage = "Suas configurações foram salvas com sucesso.";
-
+            $successMessage = $this->l("Settings successfully saved");
             $this->context->cookie->mercadoPagoMessageSuccess = true;
             $this->context->cookie->mercadoPagoConfigMessage = $successMessage;
         }
@@ -557,10 +558,10 @@ class MercadoPago extends PaymentModule
     protected function getTabsLocale()
     {
         $locale = array();
-        $locale["presentation"] = $this->l("Apresentação");
-        $locale["requirements"] = $this->l("Requisitos");
-        $locale["settings"] = $this->l("Configurações básicas");
-        $locale["paymentsConfig"] = $this->l("Configurações do pagamento");
+        $locale["presentation"] = $this->l("Presentation");
+        $locale["requirements"] = $this->l("Requirement");
+        $locale["settings"] = $this->l("Basic Settings");
+        $locale["paymentsConfig"] = $this->l("Payment Settings");
 
         return $locale;
     }
@@ -811,25 +812,25 @@ class MercadoPago extends PaymentModule
         $locale["client_id"]["label"] = "Client ID";
         $locale["client_secret"]["label"] = "Client Secret";
 
-        $locale["checkout_display"]["label"] = $this->l("Modo de visualização");
+        $locale["checkout_display"]["label"] = $this->l("Visualization mode");
         $locale["checkout_display"]["label"] = "Display";
         $locale["checkout_display"]["iframe"] = "iFrame";
         $locale["checkout_display"]["redirect"] = "Redirect";
 
         $locale["checkout_display"]["desc"] =
-                $this->l("iFrame – Habilitamos dentro do seu checkout uma área com o ambiente do Mercado Pago,
-                Redirect – O cliente é direcionado ao ambiente do Mercado Pago em uma nova tela(recomendável).");
+                $this->l("iFrame – We enable within your checkout an area with enviroment of Mercado Mercado,
+                Redirect – The client will be redirect to Mercadopago environment (Recommended).");
 
         //descrições
         $locale["client_id"]["desc"] =
-                $this->l("Este campo é obrigatório e não deve ser compartilhado com outras pessoas.
-                Mais informações acesse: https://www.mercadopago.com.br/developers/en/solutions/payments/basic-checkout/receive-payments.");
+                $this->l("This field is required and you can't to show to other people.
+                For more information: https://www.mercadopago.com.br/developers/en/solutions/payments/basic-checkout/receive-payments.");
         $locale["client_secret"]["desc"] =
-               $this->l("Este campo é obrigatório e não deve ser compartilhado com outras pessoas.
-                Mais informações acesse: https://www.mercadopago.com.br/developers/en/solutions/payments/basic-checkout/receive-payments.");
+               $this->l("This field is required and you can't to show to other people.
+                For more information: https://www.mercadopago.com.br/developers/en/solutions/payments/basic-checkout/receive-payments.");
 
         $locale["checkout_installments"]["label"] = $this->l("Installments");
-        $locale["checkout_installments"]["desc"] = $this->l("Informe a quantidade permitida de parcelas que os clientes poderam parcelar, máximo 24.");
+        $locale["checkout_installments"]["desc"] = $this->l("Inform the allowed amount of parcels that the customers can install, maximum 24.");
 
         $locale["checkout_display_category"]["label"] = "Categoria";
         $locale["checkout_display_category"]["others"] = "Other categories";
@@ -862,7 +863,7 @@ class MercadoPago extends PaymentModule
         $locale["checkout_display_category"]["virtual_goods"] = "E-books, Music Files, Software, Digital Images,".
         "PDF Files and any item which can be electronically stored in a file, Mobile Recharge, DTH Recharge and any Online Recharge";
 
-        $locale["save"] = "Save";
+        $locale["save"] = $this->l("Save");
 
         return $locale;
     }
@@ -979,23 +980,6 @@ class MercadoPago extends PaymentModule
         }
     }
 
-    /**
-     * Get an order by its cart id.
-     *
-     * @param int $id_cart Cart id
-     *
-     * @return array Order details
-     */
-    public static function getOrderByCartId($id_cart)
-    {
-        $sql = 'SELECT `id_order`
-            FROM `'._DB_PREFIX_.'orders`
-            WHERE `id_cart` = '.(int) $id_cart
-            .Shop::addSqlRestriction().' order by id_order desc';
-        $result = Db::getInstance()->getRow($sql);
-
-        return isset($result['id_order']) ? $result['id_order'] : false;
-    }
     public function checkCurrency($cart)
     {
         $currency_order = new Currency($cart->id_currency);
@@ -1054,8 +1038,8 @@ class MercadoPago extends PaymentModule
     {
         switch ($idError) {
             case 'ERROR_PENDING':
-                $message = "Unfortunately, the confirmation of your payment failed.
-                    Please contact your merchant for clarification.";
+                $message = $this->l("Unfortunately, the confirmation of your payment failed.
+                    Please contact your merchant for clarification.");
             break;
             default:
                 $message = "";
@@ -1063,4 +1047,23 @@ class MercadoPago extends PaymentModule
         }
         return $message;
     }
+
+    /**
+     * Get an order by its cart id.
+     *
+     * @param int $id_cart Cart id
+     *
+     * @return array Order details
+     */
+    public static function getOrderByCartId($id_cart)
+    {
+        $sql = 'SELECT `id_order`
+            FROM `'._DB_PREFIX_.'orders`
+            WHERE `id_cart` = '.(int) $id_cart
+            .Shop::addSqlRestriction().' order by id_order desc';
+        $result = Db::getInstance()->getRow($sql);
+
+        return isset($result['id_order']) ? $result['id_order'] : false;
+    }
+
 }

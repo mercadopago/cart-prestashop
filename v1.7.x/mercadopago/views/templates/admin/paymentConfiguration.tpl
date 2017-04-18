@@ -22,7 +22,7 @@
 		</div>
 		<div class="col-lg-4">
 			<label class="general-tooltip">
-				When enabled, all single payment methods will be disabled
+				{l s='When enabled, all single payment methods will be disabled44.' mod='mercadopago'}
 			</label>
 		</div>
 		<div style="clear: both"></div>
@@ -36,9 +36,9 @@
 </div>
 {if $show}
 <div class="panel panel-default">
-	<div class="panel-heading">Payment Methods</div>
+	<div class="panel-heading">{l s='Payment Methods' mod='mercadopago'}</div>
 	<div class="alert alert-info">
-	  Enable and disable your payment methods.
+	  {l s='Enable and disable your payment methods.' mod='mercadopago'}
 	</div>
 	{foreach from=$payments key=sort item=payment}
 		<div class="form-group">

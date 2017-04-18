@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
     <name>mercadopago</name>
-    <displayName><![CDATA[Payment Example]]></displayName>
-    <version><![CDATA[1.0.1]]></version>
-    <description><![CDATA[Description of Payment Example]]></description>
+    <displayName><![CDATA[Mercado Pago]]></displayName>
+    <version><![CDATA[1.0.2]]></version>
+    <description><![CDATA[Receive your payments using Mercado Pago, you can using or Checkout Standard.]]></description>
     <author><![CDATA[Mercado Pago]]></author>
     <tab><![CDATA[payments_gateways]]></tab>
     <is_configurable>true</is_configurable>

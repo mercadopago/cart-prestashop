@@ -12,6 +12,7 @@
 			<div class="row">
 				<div class="col-md-4 col-sm-4 col-xs-12 bgblue2">
 					<h4 class="text-right font-1">{l s='Latin America leader' mod='mercadopago'}</h4>
+					<!--<h4 class="text-right font-1">{l s='Latin America leader' d='Modules.FeaturedProducts.Admin'}</h4>-->
 				</div>
 				<div class="col-md-8 col-sm-8 col-xs-12">
 					<div class="row">
@@ -199,7 +200,7 @@
 					<h6>{l s='More information' mod='mercadopago'}</h6>
 					<p>
 						<a target="_blank" href="mailto:comercial@mercadopago.com.br">comercial@mercadopago.com.br </a><br>
-						<a target="_blank" href="mailto:developers@mercadopago.com.br">developers@mercadopago.com.br </a>
+						<a target="_blank" href="mailto:modulos@mercadopago.com.br">modulos@mercadopago.com.br </a>
 					</p>
 				</div>
 			</div>
