@@ -117,4 +117,12 @@ class UtilMercadoPago
 
         return $requirements;
     }
+
+    public static function checkValueNull($value)
+    {
+        if (is_null($value) || empty($value)) {
+            return "false";
+        }
+        return $value;
+    }
 }

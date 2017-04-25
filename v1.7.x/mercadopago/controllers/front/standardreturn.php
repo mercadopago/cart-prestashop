@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2015 PrestaShop.
  *
@@ -23,7 +24,6 @@
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of MercadoPago
  */
-
 class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontController
 {
     public function postProcess()
@@ -33,7 +33,8 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
         error_log("topic=====".Tools::getValue('topic'));
 		$checkout = Tools::getValue('checkout');
 		$topic = Tools::getValue('topic');
-		if ($checkout == 'standard' && $topic == 'merchant_order' && $id > 0) {
+		if ($checkout == 'standard' && $topic == 'merchant_order') {
+            error_log("====notification id ==== ".Tools::getValue('id'));
 	        $this->listenIPN(
 	            $checkout,
 	            $topic,

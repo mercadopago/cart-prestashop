@@ -88,7 +88,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
-        $this->version = '3.4.2';
+        $this->version = '3.4.4';
         $this->currencies = true;
         //$this->currencies_mode = 'radio';
         $this->need_instance = 0;
@@ -365,11 +365,10 @@ class MercadoPago extends PaymentModule
             $statusOrder = 'Pendente';
         }
 
-
         $token_form = Tools::getAdminToken('AdminOrder'.Tools::getValue('id_order'));
 
-
         $data = array(
+            'id_order' => $params['id_order'],
             'token_form' => $token_form,
             'statusOrder' => $statusOrder,
             'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
@@ -384,6 +383,19 @@ class MercadoPago extends PaymentModule
                 false
             ),
         );
+
+        if ($id_order_state == 10) {
+            $data["payment_pos_action_url"] = $this->link->getModuleLink(
+                'mercadopago',
+                'paymentpos',
+                array(),
+                Configuration::get('PS_SSL_ENABLED'),
+                null,
+                null,
+                false
+            );
+            $this->context->smarty->assign('pos_options', $this->loadPoints());
+        }
 
         $id_order_carrier = $order->getIdOrderCarrier();
 
@@ -424,6 +436,18 @@ class MercadoPago extends PaymentModule
         $this->context->smarty->assign($data);
 
         return $this->display(__file__, '/views/templates/hook/imprimir_etiqueta.tpl');
+    }
+
+    private function loadPoints()
+    {
+        $pos_options =
+        array(
+            '5A001226' => 'Point Teste 1',
+            '1002' => 'Point Teste 2',
+            '1003' => 'Point Teste 3',
+            '1004' => 'Point Teste 4'
+        );
+        return $pos_options;
     }
 
     public function hookDisplayOrderDetail($params)
@@ -593,12 +617,8 @@ class MercadoPago extends PaymentModule
     {
         $this->removeMercadoEnvios();
         $this->uninstallModule();
-        $this->setSettings();
-
         // continue the states
         if (!$this->uninstallPaymentSettings() || !Configuration::deleteByName('MERCADOPAGO_PUBLIC_KEY') ||
-             !Configuration::deleteByName('MERCADOPAGO_CLIENT_ID') ||
-             !Configuration::deleteByName('MERCADOPAGO_CLIENT_SECRET') ||
              !Configuration::deleteByName('MERCADOPAGO_CATEGORY') ||
              !Configuration::deleteByName('MERCADOPAGO_CREDITCARD_BANNER') ||
              !Configuration::deleteByName('MERCADOPAGO_CREDITCARD_ACTIVE') ||
@@ -626,6 +646,12 @@ class MercadoPago extends PaymentModule
             !parent::uninstall()) {
             return false;
         }
+
+        $this->setSettings();
+
+        Configuration::deleteByName('MERCADOPAGO_CLIENT_ID');
+        Configuration::deleteByName('MERCADOPAGO_CLIENT_SECRET');
+
         return true;
     }
 
@@ -680,7 +706,6 @@ class MercadoPago extends PaymentModule
         ));
 
         if (Tools::getValue('login')) {
-            error_log("=====login 1=====");
             $client_id = Tools::getValue('MERCADOPAGO_CLIENT_ID');
             $client_secret = Tools::getValue('MERCADOPAGO_CLIENT_SECRET');
             if (empty($client_id) || empty($client_secret)) {
@@ -919,7 +944,6 @@ class MercadoPago extends PaymentModule
                     }
                 }
             }
-            $this->setSettings();
         } else {
             // populate all payments according to country
             if ($client_id  != '' &&
@@ -941,9 +965,8 @@ class MercadoPago extends PaymentModule
             }
         }
 
-
         $this->mercadopago = new MPApi(
-            $client_id ,
+            $client_id,
             $client_secret
         );
 
@@ -980,9 +1003,10 @@ class MercadoPago extends PaymentModule
         $requirements = UtilMercadoPago::checkRequirements();
 
         $configCard = $this->mercadopago->getCheckConfigCard();
-
-        $two_cards = $configCard['response']['two_cards'];
-        Configuration::updateValue('MERCADOPAGO_TWO_CARDS', $two_cards);
+        if (!isset($configCard['response']['status'])) {
+            $two_cards = $configCard['response']['two_cards'];
+            Configuration::updateValue('MERCADOPAGO_TWO_CARDS', $two_cards);
+        }
 
         $notification_url = $this->link->getModuleLink(
             'mercadopago',
@@ -993,13 +1017,6 @@ class MercadoPago extends PaymentModule
             null,
             false
         );
-
-
-        // error_log("=====payment_methods=====". Tools::jsonEncode($payment_methods));
-
-        error_log("=====payment_methods_settings=====". Tools::jsonEncode($payment_methods_settings));
-
-        error_log("=====offline_payment_settings=====". Tools::jsonEncode($offline_payment_settings));
 
         $settings = array(
             'test_user' => $test_user,
@@ -1053,6 +1070,11 @@ class MercadoPago extends PaymentModule
                  htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__,
                 'version' => $this->getPrestashopVersion(),
         );
+
+        if (Tools::getValue('login') ||
+            Tools::getValue('submitmercadopago')) {
+            $this->setSettings();
+        }
 
         $this->context->smarty->assign($settings);
 
@@ -1181,7 +1203,6 @@ class MercadoPago extends PaymentModule
             $this->_path.'views/css/mercadopago_v6.css',
             'all'
         );
-
         $this->context->smarty->assign($data);
 
         return $this->display(__file__, '/views/templates/hook/header.tpl');
@@ -1750,64 +1771,64 @@ class MercadoPago extends PaymentModule
         }
 
         //PRESTASHOP
-        // if (!$this->mercadopago->isTestUser()) {
-        //     switch (Configuration::get('MERCADOPAGO_COUNTRY')) {
-        //         case 'MLB':
-        //             $payment_preference['sponsor_id'] = 236914421;
-        //             break;
-        //         case 'MLM':
-        //             $payment_preference['sponsor_id'] = 237793014;
-        //             break;
-        //         case 'MLA':
-        //             $payment_preference['sponsor_id'] = 237788409;
-        //             break;
-        //         case 'MCO':
-        //             $payment_preference['sponsor_id'] = 237788769;
-        //             break;
-        //         case 'MLV':
-        //             $payment_preference['sponsor_id'] = 237789083;
-        //             break;
-        //         case 'MLC':
-        //             $payment_preference['sponsor_id'] = 237788173;
-        //             break;
-        //         case 'MPE':
-        //             $payment_preference['sponsor_id'] = 237791025;
-        //             break;
-        //         case 'MLU':
-        //             $payment_preference['sponsor_id'] = 241729464;
-        //             break;
-        //     }
-        // }
-
-        //GIT HUB
         if (!$this->mercadopago->isTestUser()) {
             switch (Configuration::get('MERCADOPAGO_COUNTRY')) {
                 case 'MLB':
-                    $payment_preference['sponsor_id'] = 178326379;
+                    $payment_preference['sponsor_id'] = 236914421;
                     break;
                 case 'MLM':
-                    $payment_preference['sponsor_id'] = 187899553;
+                    $payment_preference['sponsor_id'] = 237793014;
                     break;
                 case 'MLA':
-                    $payment_preference['sponsor_id'] = 187899872;
+                    $payment_preference['sponsor_id'] = 237788409;
                     break;
                 case 'MCO':
-                    $payment_preference['sponsor_id'] = 187900060;
+                    $payment_preference['sponsor_id'] = 237788769;
                     break;
                 case 'MLV':
-                    $payment_preference['sponsor_id'] = 187900246;
+                    $payment_preference['sponsor_id'] = 237789083;
                     break;
                 case 'MLC':
-                    $payment_preference['sponsor_id'] = 187900485;
+                    $payment_preference['sponsor_id'] = 237788173;
                     break;
                 case 'MPE':
-                    $payment_preference['sponsor_id'] = 217182014;
+                    $payment_preference['sponsor_id'] = 237791025;
                     break;
                 case 'MLU':
-                    $payment_preference['sponsor_id'] = 241730009;
+                    $payment_preference['sponsor_id'] = 241729464;
                     break;
             }
         }
+
+        //GIT HUB
+        // if (!$this->mercadopago->isTestUser()) {
+        //     switch (Configuration::get('MERCADOPAGO_COUNTRY')) {
+        //         case 'MLB':
+        //             $payment_preference['sponsor_id'] = 178326379;
+        //             break;
+        //         case 'MLM':
+        //             $payment_preference['sponsor_id'] = 187899553;
+        //             break;
+        //         case 'MLA':
+        //             $payment_preference['sponsor_id'] = 187899872;
+        //             break;
+        //         case 'MCO':
+        //             $payment_preference['sponsor_id'] = 187900060;
+        //             break;
+        //         case 'MLV':
+        //             $payment_preference['sponsor_id'] = 187900246;
+        //             break;
+        //         case 'MLC':
+        //             $payment_preference['sponsor_id'] = 187900485;
+        //             break;
+        //         case 'MPE':
+        //             $payment_preference['sponsor_id'] = 217182014;
+        //             break;
+        //         case 'MLU':
+        //             $payment_preference['sponsor_id'] = 241730009;
+        //             break;
+        //     }
+        // }
 
         $payment_preference['statement_descriptor'] = 'MERCADOPAGO';
 
@@ -1850,7 +1871,7 @@ class MercadoPago extends PaymentModule
         $products = $cart->getProducts();
         $items = array();
         $summary = '';
-        $round_place = false;
+        $round = false;
 
         if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO') {
             $round = true;
@@ -1958,64 +1979,64 @@ class MercadoPago extends PaymentModule
         );
 
         // PRESTASHOP
-        // if (!$this->mercadopago->isTestUser()) {
-        //     switch (Configuration::get('MERCADOPAGO_COUNTRY')) {
-        //         case 'MLB':
-        //             $data['sponsor_id'] = 236914421;
-        //             break;
-        //         case 'MLM':
-        //             $data['sponsor_id'] = 237793014;
-        //             break;
-        //         case 'MLA':
-        //             $data['sponsor_id'] = 237788409;
-        //             break;
-        //         case 'MCO':
-        //             $data['sponsor_id'] = 237788769;
-        //             break;
-        //         case 'MLV':
-        //             $data['sponsor_id'] = 237789083;
-        //             break;
-        //         case 'MLC':
-        //             $data['sponsor_id'] = 237788173;
-        //             break;
-        //         case 'MPE':
-        //             $data['sponsor_id'] = 237791025;
-        //             break;
-        //         case 'MLU':
-        //             $data['sponsor_id'] = 241729464;
-        //             break;
-        //     }
-        // }
-
-        //GIT HUB
         if (!$this->mercadopago->isTestUser()) {
             switch (Configuration::get('MERCADOPAGO_COUNTRY')) {
                 case 'MLB':
-                    $data['sponsor_id'] = 178326379;
+                    $data['sponsor_id'] = 236914421;
                     break;
                 case 'MLM':
-                    $data['sponsor_id'] = 187899553;
+                    $data['sponsor_id'] = 237793014;
                     break;
                 case 'MLA':
-                    $data['sponsor_id'] = 187899872;
+                    $data['sponsor_id'] = 237788409;
                     break;
                 case 'MCO':
-                    $data['sponsor_id'] = 187900060;
+                    $data['sponsor_id'] = 237788769;
                     break;
                 case 'MLV':
-                    $data['sponsor_id'] = 187900246;
+                    $data['sponsor_id'] = 237789083;
                     break;
                 case 'MLC':
-                    $data['sponsor_id'] = 187900485;
+                    $data['sponsor_id'] = 237788173;
                     break;
                 case 'MPE':
-                    $data['sponsor_id'] = 217182014;
+                    $data['sponsor_id'] = 237791025;
                     break;
                 case 'MLU':
-                    $data['sponsor_id'] = 241730009;
+                    $data['sponsor_id'] = 241729464;
                     break;
             }
         }
+
+        //GIT HUB
+        // if (!$this->mercadopago->isTestUser()) {
+        //     switch (Configuration::get('MERCADOPAGO_COUNTRY')) {
+        //         case 'MLB':
+        //             $data['sponsor_id'] = 178326379;
+        //             break;
+        //         case 'MLM':
+        //             $data['sponsor_id'] = 187899553;
+        //             break;
+        //         case 'MLA':
+        //             $data['sponsor_id'] = 187899872;
+        //             break;
+        //         case 'MCO':
+        //             $data['sponsor_id'] = 187900060;
+        //             break;
+        //         case 'MLV':
+        //             $data['sponsor_id'] = 187900246;
+        //             break;
+        //         case 'MLC':
+        //             $data['sponsor_id'] = 187900485;
+        //             break;
+        //         case 'MPE':
+        //             $data['sponsor_id'] = 217182014;
+        //             break;
+        //         case 'MLU':
+        //             $data['sponsor_id'] = 241730009;
+        //             break;
+        //     }
+        // }
         $data['auto_return'] = Configuration::get('MERCADOPAGO_AUTO_RETURN') == 'approved' ? 'approved' : '';
         $data['back_urls']['success'] = $this->link->getModuleLink(
             'mercadopago',
@@ -2061,8 +2082,6 @@ class MercadoPago extends PaymentModule
         $data['payer'] = $data['customer'];
         unset($data['customer']);
 
-        error_log("checkout === ". Tools::jsonEncode($data));
-
         return $data;
     }
 
@@ -2106,7 +2125,6 @@ class MercadoPago extends PaymentModule
     public function createStandardCheckoutPreference()
     {
         $preferences = $this->getPrestashopPreferencesStandard(null);
-        error_log("Preferences Checkout Básico === " . Tools::jsonEncode($this->mercadopago->createPreference($preferences)));
         if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
             PrestaShopLogger::addLog("=====preferences=====".Tools::jsonEncode($preferences), MPApi::INFO, 0);
         }
@@ -2171,22 +2189,15 @@ class MercadoPago extends PaymentModule
             PrestaShopLogger::addLog('MercadoPago :: listenIPN - topic = '.$topic, MPApi::INFO, 0);
             PrestaShopLogger::addLog('MercadoPago :: listenIPN - id = '.$id, MPApi::INFO, 0);
             PrestaShopLogger::addLog('MercadoPago :: listenIPN - checkout = '.$checkout, MPApi::INFO, 0);
-
-            error_log('MercadoPago :: listenIPN - topic = '.$topic);
-            error_log('MercadoPago :: listenIPN - id = '.$id);
-            error_log('MercadoPago :: listenIPN - checkout = '.$checkout);
         }
-        //henrique
+
         if ($checkout == 'standard' && $topic == 'merchant_order' && $id > 0) {
             $result = $this->mercadopago->getMerchantOrder($id);
             $merchant_order_info = $result['response'];
-            error_log("====merchant_order_info===". Tools::jsonEncode($merchant_order_info ));
             // check value
             $cart = new Cart($merchant_order_info['external_reference']);
             if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO') {
                 $total = floor($cart->getOrderTotal(true, Cart::BOTH));
-
-                error_log("vai formatar  total  ". floor($cart->getOrderTotal(true, Cart::BOTH)));
             } else {
                 $total = (float)$cart->getOrderTotal(true, Cart::BOTH);
             }
@@ -2196,19 +2207,9 @@ class MercadoPago extends PaymentModule
             $order = new Order($id_order);
             $total_amount = $merchant_order_info['total_amount'];
 
-
-            error_log("entrou no retorno total=". $total);
-            error_log("entrou no retorno total_amount=".$total_amount);
-
             if ($total_amount != $total) {
                 PrestaShopLogger::addLog('MercadoPago :: listenIPN - Não atualizou o pedido, valores diferentes'.
                 ' id = '.$id, MPApi::INFO, 0);
-
-                error_log("entrou no retorno=");
-                error_log("entrou no retorno=");
-                error_log("entrou no retorno=");
-                error_log("entrou no retorno=");
-                error_log("entrou no retorno=");
                 return;
             }
             $status_shipment = null;
@@ -2243,7 +2244,6 @@ class MercadoPago extends PaymentModule
 
                 return;
             }
-
             $payments = $merchant_order_info['payments'];
             $external_reference = $merchant_order_info['external_reference'];
             foreach ($payments as $payment) {
@@ -3167,73 +3167,38 @@ class MercadoPago extends PaymentModule
     public function setSettings()
     {
         if ($this->hasCredential()) {
-            $mp = new MPApi(Tools::getValue('MERCADOPAGO_CLIENT_ID'), Tools::getValue('MERCADOPAGO_CLIENT_SECRET'));
-
-            $userResponse = $mp->getAccessTokenResponse();
-
-            $moduleVersion = $this->version;
-            $siteId = Configuration::get('MERCADOPAGO_COUNTRY');
-            $dataCreated = date('Y-m-d H:i:s');
-
-            $collectorId = $userResponse["user_id"];
-
-            $phpVersion = phpversion();
-            $soServer = PHP_OS;
-            $modulesId = "PRESTASHOP " . $this->getPrestashopVersion();
-
-            $status = 0;
-            $statusTwoCards = 0;
-            $statusMe = 0;
-            $statusTicket = 0;
-            $statusCoupon = 0;
-            $statusStandard = 0;
-            $statusCustom = 0;
-
-            if (Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE') == "true" ||
-                Configuration::get('MERCADOPAGO_CUSTOM_BOLETO') == "true" ||
-                Configuration::get('MERCADOPAGO_STANDARD_ACTIVE') == "true"
-            ) {
-                $status = 1;
-            }
-            if (Configuration::get('MERCADOPAGO_TWO_CARDS') == "active") {
-                $statusTwoCards = 1;
-            }
-            if (Configuration::get('MERCADOENVIOS_ACTIVATE') == "true") {
-                $statusMe = 1;
-            }
-            if (Configuration::get('MERCADOPAGO_CUSTOM_BOLETO') == "true") {
-                $statusTicket = 1;
-            }
-            if (Configuration::get('MERCADOPAGO_COUPON_ACTIVE') == "true") {
-                $statusCoupon = 1;
-            }
-            if (Configuration::get('MERCADOPAGO_STANDARD_ACTIVE') == "true") {
-                $statusStandard = 1;
-            }
-            if (Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE') == "true") {
-                $statusCustom = 1;
-            }
+            $mp = new MPApi(
+                Configuration::get('MERCADOPAGO_CLIENT_ID'),
+                Configuration::get('MERCADOPAGO_CLIENT_SECRET')
+            );
 
             $request = array(
-                "ModuleVersion" => $moduleVersion,
-                "SiteId" =>  $siteId,
-                "DataCreated" => $dataCreated,
-                "CollectorId" => $collectorId,
-                "Status" => $status,
-                "StatusTwoCards" => $statusTwoCards,
-                "StatusMe" => $statusMe,
-                "StatusTicket" => $statusTicket,
-                "StatusCoupon" => $statusCoupon,
-                "StatusStandard" => $statusStandard,
-                "StatusCustom" => $statusCustom,
-                "PhpVersion" => $phpVersion,
-                "SoServer" => $soServer,
-                "ModulesId" => $modulesId
+                "platform_version" => _PS_VERSION_,
+                "two_cards" => UtilMercadoPago::checkValueNull(
+                    Configuration::get('MERCADOPAGO_TWO_CARDS')
+                ),
+                "mercado_envios" =>  UtilMercadoPago::checkValueNull(
+                    Configuration::get('MERCADOENVIOS_ACTIVATE')
+                ),
+                "checkout_custom_ticket" =>  UtilMercadoPago::checkValueNull(
+                    Configuration::get('MERCADOPAGO_CUSTOM_BOLETO')
+                ),
+                "checkout_custom_credit_card_coupon" =>  UtilMercadoPago::checkValueNull(
+                    Configuration::get('MERCADOPAGO_COUPON_ACTIVE')
+                ),
+                "checkout_basic" =>  UtilMercadoPago::checkValueNull(
+                    Configuration::get('MERCADOPAGO_STANDARD_ACTIVE')
+                ),
+                "checkout_custom_credit_card" =>  UtilMercadoPago::checkValueNull(
+                    Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE')
+                ),
+                "code_version" => phpversion(),
+                "module_version" =>  $this->version,
+                "platform" => "PrestaShop",
             );
 
             try {
-                $userResponse = $mp->saveSettings($request);
-                error_log("=====setttings=====" . Tools::jsonEncode($userResponse ));
+                $mp->saveSettings($request);
             } catch (Exception $e) {
                 if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
                     PrestaShopLogger::addLog("=====settings=====".$e->getMessage(), MPApi::ERROR, 0);

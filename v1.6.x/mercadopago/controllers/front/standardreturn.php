@@ -77,9 +77,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             }
 
             if (Validate::isLoadedObject($cart)) {
-                $round = false;
                 if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO') {
-                    $round = true;
                     $total = (double) ceil($transaction_amounts);
                     $total_ordem = ceil($cart->getOrderTotal(true, Cart::BOTH));
                 } else {
@@ -119,13 +117,9 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                         $total += $cost_mercadoEnvios;
                     }
 
-                    error_log("=====ENTROU AQUI TOTAL total=====".$total);
-                    error_log("=====ENTROU AQUI TOTAL getOrderTotal=====".$total_ordem);
-
                     if ($total != $total_ordem) {
                         PrestaShopLogger::addLog('Não atualizou o pedido, valores diferentes'.
                         ' merchant_order_id = '.$merchant_order_id, MPApi::INFO, 0);
-                        error_log("entrou no retorno=");
                         return;
                     }
                     if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO') {

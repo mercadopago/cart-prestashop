@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.4.2';
+    const VERSION = '3.4.4';
 
     /* Info */
     const INFO = 1;
@@ -431,7 +431,7 @@ class MPApi
 
     public function getCheckConfigCard()
     {
-        $access_token = $this->getAccessTokenV1();
+        $access_token = $this->getAccessToken();
         $uri = "/settings?access_token=".$access_token;
 
         $result = MPRestCli::getConfig($uri);
@@ -444,7 +444,7 @@ class MPApi
      */
     public function setEnableDisableTwoCard($params)
     {
-        $access_token = $this->getAccessTokenV1();
+        $access_token = $this->getAccessToken();
 
         $params = array(
             "two_cards" => $params
@@ -481,11 +481,22 @@ class MPApi
      */
     public function saveSettings($params)
     {
-        $access_token = $this->getAccessTokenV1();
-        $uri = "/modules/tracking/saveSettings?access_token=" . $access_token;
+        $access_token = $this->getAccessToken();
+        $uri = "/modules/tracking/settings?access_token=" . $access_token;
 
         $result_response = MPRestCli::post($uri, $params);
 
+        return $result_response;
+    }
+
+    /*
+     * Send payment for POINT
+     */
+    public function sendPaymentPoint($data)
+    {
+        $access_token = $this->getAccessTokenV1();
+        $uri = "/point/services/payment_attempt?access_token=" . $access_token;
+        $result_response = MPRestCli::post($uri, $data);
         return $result_response;
     }
 

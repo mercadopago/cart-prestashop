@@ -182,7 +182,8 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
 
     protected function redirectError()
     {
-        error_log("Entrou no redirectError");
+        error_log("Entrou no redirectError ===== " . $this->context->link->getPageLink('order', true, null, array(
+            'step' => '3')));
         $this->errors[] = $this->module->getMappingError("ERROR_PENDING");
         $this->redirectWithNotifications($this->context->link->getPageLink('order', true, null, array(
             'step' => '3')));

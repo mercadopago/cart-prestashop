@@ -274,6 +274,18 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
 
     private function getURLReturn($cart_id, $mercadopagoSettings, $typeReturn)
     {
+
+        error_log("=====URL DE RETORNO=====".$this->context->link->getModuleLink(
+            'mercadopago',
+            'validationstandard',
+            array(),
+            $mercadopagoSettings['ssl_enabled'],
+            Configuration::get('PS_SSL_ENABLED'),
+            null,
+            null,
+            false
+        ).'?checkout=standard&cart_id='.$cart_id.'&typeReturn='.$typeReturn);
+
         return $this->context->link->getModuleLink(
             'mercadopago',
             'validationstandard',
