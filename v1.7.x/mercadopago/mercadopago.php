@@ -82,6 +82,7 @@ class MercadoPago extends PaymentModule
         $returnStatus = $this->createStates();
         return parent::install() &&
             $this->registerHook('paymentOptions') &&
+            $this->registerHook('displayBeforeCarrier') &&
             $this->registerHook('displayPayment') &&
             $this->registerHook('paymentReturn') &&
             $this->registerHook('payment') &&
@@ -253,6 +254,7 @@ class MercadoPago extends PaymentModule
     {
         if (!Configuration::deleteByName("MERCADOPAGO_CHECKOUT_DISPLAY")
             || !Configuration::deleteByName("MERCADOPAGO_STARDAND_ACTIVE")
+            || !Configuration::deleteByName("MERCADOENVIOS_ACTIVATE")
             || !Configuration::deleteByName("MERCADOPAGO_CLIENT_SECRET")
             || !Configuration::deleteByName("MERCADOPAGO_CLIENT_ID")
             || !Configuration::deleteByName("MERCADOPAGO_INSTALLMENTS")
@@ -381,6 +383,7 @@ class MercadoPago extends PaymentModule
             $tplVars = array(
                 "show" => true,
                 "mercadoPagoActive" => Configuration::get("MERCADOPAGO_STARDAND_ACTIVE"),
+                "mercadoEnviosActivate" => Configuration::get("MERCADOENVIOS_ACTIVATE"),
                 "panelTitle" => "teste",
                 "payments" => $payments,
                 "thisPath" => Tools::getShopDomain(true, true).__PS_BASE_URI__."modules/mercadopago/",
@@ -393,6 +396,7 @@ class MercadoPago extends PaymentModule
             $tplVars = array(
                 "show" => false,
                 "mercadoPagoActive" => false,
+                "mercadoEnviosActivate" => false,
                 "panelTitle" => "teste",
                 "payments" => array(),
                 "thisPath" => Tools::getShopDomain(true, true).__PS_BASE_URI__."modules/mercadopago/",
@@ -578,6 +582,8 @@ class MercadoPago extends PaymentModule
             }
 
             Configuration::updateValue("MERCADOPAGO_STARDAND_ACTIVE", Tools::getValue("MERCADOPAGO_STARDAND_ACTIVE"));
+
+            Configuration::updateValue("MERCADOENVIOS_ACTIVATE", Tools::getValue("MERCADOENVIOS_ACTIVATE"));
 
             if ($this->l("SUCCESS_GENERAL_PAYMENTCONFIG") == "SUCCESS_GENERAL_PAYMENTCONFIG") {
                 $successMessage = $this->l("Congratulations, your payments configuration were successfully updated.");
