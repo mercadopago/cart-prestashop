@@ -317,6 +317,10 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         $mercadoPagoSettings['ssl_enabled'] = Configuration::get('PS_SSL_ENABLED');
         $mercadoPagoSettings['installments'] = Configuration::get('MERCADOPAGO_INSTALLMENTS');
 
+
+        error_log("====PS_SSL_ENABLED======".Configuration::get('PS_SSL_ENABLED'));
+
+
         return $mercadoPagoSettings;
     }
 

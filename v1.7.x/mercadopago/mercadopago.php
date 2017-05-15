@@ -51,7 +51,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = "mercadopago";
         $this->tab = "payments_gateways";
-        $this->version = "1.0.3";
+        $this->version = "1.0.4";
         $this->ps_versions_compliancy = array("min" => "1.7", "max" => _PS_VERSION_);
         $this->author = "Mercado Pago";
         $this->controllers = array("validationstandard", "standardreturn");
@@ -997,6 +997,7 @@ class MercadoPago extends PaymentModule
 
     public function getExternalPaymentOption()
     {
+        error_log("URL DE ENVIO DO PAGAMENTO====" . $this->context->link->getModuleLink($this->name, "standard", array(), true));
         $country = strtoupper(MPApi::getInstanceMP()->getCountry());
         $externalOption = new PaymentOption();
         $externalOption->setCallToActionText($this->l("Mercado Pago Redirect"))
