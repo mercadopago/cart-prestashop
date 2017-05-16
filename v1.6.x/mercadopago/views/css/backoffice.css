@@ -1,0 +1,284 @@
+.panel-presentation {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+.mercadopago-tabs {
+    margin: 0;
+    padding: 0;
+}
+.mercadopago-tabs nav {
+    padding: 0;
+    margin: 30px 0 0 0;
+    display: block;
+}
+.mercadopago-tabs nav a {
+    padding: 8px 12px;
+    background-color: none;
+    color: #00aff0;
+    text-decoration: none;
+    margin: 0 5px 0 1px;
+    font-size: 15px;
+    vertical-align: top;
+    position: relative;
+    top: -5px;
+    font-family: "Ubuntu Condensed",Helvetica,Arial,sans-serif;
+    text-transform: uppercase;
+}
+.mercadopago-tabs nav a:hover {
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+    margin: 0 4px 0 0;
+    text-decoration: none;
+    color: #0077a4;
+}
+.mercadopago-tabs nav a.active {
+    border-radius: 3px 3px 0 0;
+    background-color: #F5F8F9;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    margin: 0 4px 0 0;
+    font-size: 15px;
+    color: #000;
+}
+.mercadopago-tabs .content {
+    margin: 0;
+    padding: 10px;
+    background-color: #F5F8F9;
+    border: 1px solid #ccc;
+    border-radius: 0 3px 3px 3px;
+}
+
+.payment-config-logo {
+    height: 35px !important;
+}
+.payment-config-tooltip {
+    height: 30px;
+    width: 30px;
+    padding: 0 0 10px 10px;
+    cursor: pointer;
+}
+.border-none {
+    border: none !important;
+}
+.payment-label {
+    margin-bottom: 0 !important;
+    padding-top: 7px;
+    font-size: 13px;
+    font-weight: normal !important;
+    color: #666;
+}
+.form-group {
+    border-top: 1px solid #eee;
+    padding: 15px 0;
+    margin: 0 !important;
+}
+.logo-wrapper {
+    text-align:right; 
+    padding-right: 10px;
+}
+.switch-label {
+    padding-right: 20px !important;
+}
+
+.general-tooltip {
+    font: 12px "Open Sans",Helvetica,Arial,sans-serif;
+    font-style: italic;
+    color: #959595;
+    font-weight: normal !important;
+    margin-top: 5px;
+}
+
+.clear {
+    clear: both;
+}
+.align-right {
+    text-align: right;
+}
+.pres-header-logo {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 25px;
+    text-align: center;
+}
+.pres-header-group {
+    margin-top: 10px;
+}
+.pres-logo {
+    height: 50px !important;    
+}
+.pres-content {
+    padding-top: 25px;
+}
+.pres-content-img {
+    text-align: center;
+}
+.pres-content-wrapper {
+    padding-bottom: 40px;
+}
+.pres-content-bottom {
+    border-top: 1px solid #eee;
+}
+.pres-header-text {
+    font-family: "Ubuntu Condensed",Helvetica,Arial,sans-serif;
+    font-size: 21px;
+}
+.pres-about-image {
+    width: 100%;
+    max-width: 400px;
+}
+.pres-title {
+    font-family: "Ubuntu Condensed",Helvetica,Arial,sans-serif;
+    font-size: 21px;
+    font-weight: bold;
+    color: #009EE3;
+}
+.pres-content-wrapper p {
+    padding: 15px 0 0;
+    font-size: 13px !important;
+    line-height: 24px;
+}
+.pres-content ul{
+    padding: 0 0 0 20px;
+    font-size: 13px !important;
+    line-height: 24px;
+}
+.pres-signup {
+    text-decoration: none;
+}
+.pres-signup:hover {
+    color: #009EE3 !important;
+    text-decoration: none !important;
+}
+.pres-btn-signup {
+    width: auto;
+    height: 40px;
+    margin-top: 20px;
+    padding: 12px 40px 12px 40px;
+    background-color: #2D3277;
+    font-size: 16px !important;
+    font-weight: bold;
+    color: #fff !important;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+.pres-btn-signup:hover {
+    background-color: #009EE3;
+    color: #fff !important;
+    text-decoration: none !important;
+    transition: all 0.3s;
+}
+.pres-footer {
+    font-family: "Ubuntu Condensed",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    padding-top: 30px;
+    text-align: right;
+    text-transform: lowercase;
+    background: none !important;
+}
+.padtop-20 {
+    padding-top: 20px !important;
+}
+.pres-circle {
+    width: 130px;
+    height: 130px;
+    margin:0 auto;
+    margin-top: 5px;
+    font-size: 61px;
+    font-weight: bold;
+    text-align: center
+}
+.pres-uppercase {
+    text-transform: uppercase;
+}
+.pres-firt-uppercase {
+    display: block;
+    text-transform: uppercase;
+
+}
+.step-title {
+    font-family: "Ubuntu Condensed",Helvetica,Arial,sans-serif;
+    font-size: 21px;
+    font-weight: bold;
+    color: #009EE3;
+    text-align: center;
+    cursor: pointer;
+    padding-top: 40px;
+    height: 100px;
+}
+.step-title a {
+    font-family: "Ubuntu Condensed",Helvetica,Arial,sans-serif;
+    font-size: 21px;
+    font-weight: bold;
+    color: #009EE3;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+.step-title a:hover {
+   text-decoration: none; 
+}
+.step-text {
+    display: none;
+    text-align: center;
+    padding-top: 40px !important;
+    opacity: 0;
+    -webkit-transition: opacity 5s ease-in;
+    -moz-transition: opacity 5s ease-in;
+    -o-transition: opacity 5s ease-in;
+    -ms-transition: opacity 5s ease-in;
+    transition: opacity 5s ease-in;
+}
+.step-title:hover ~ .step-text,
+.pres-circle:hover ~ .step-text  {
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+    opacity: 0.9;
+}
+.panel-footer button {
+    border: none !important;
+    color: #ffffff !important;
+    background-color: #009EE3 !important;
+    width: 40%;
+    margin: 0 30%;
+}
+.panel-footer button i {
+    color: #ffffff !important;
+}
+.panel-footer button:hover {
+    background-color: #53bcc2 !important;
+    transition: all 0.3s;
+}
+
+@media only screen and (max-width: 1199px) {
+    .logo-wrapper {
+        padding: 0 !important;
+        text-align: left !important;
+    }
+    .switch-label {
+        padding: 10px 0 0 0 !important;
+        text-align: left !important;
+        width: 75% !important;
+    }
+}
+
+@media only screen and (min-width: 1200px) and (max-width: 1309px) {
+    .switch-label {
+        padding: 0 !important;
+        text-align: left !important;
+        width: 75% !important;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .pres-header-text {
+        text-align: center;
+    }
+    .pres-content-text {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+}
