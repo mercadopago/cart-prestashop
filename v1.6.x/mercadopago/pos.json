@@ -1,0 +1,21 @@
+{
+	"points": [{
+			"poi": "50894589",
+			"poi_type": "ABECS_PAX_D200_GPRS",
+			"model": "I",
+			"label": "Restaurante 1"
+		},
+		{
+			"poi": "456",
+			"poi_type": "ABECS_PAX_D100",
+			"model": "H",
+			"label": "Restaurante 2"
+		},
+		{
+			"poi": "789",
+			"poi_type": "ABECS_PAX_D80",
+			"model": "H",
+			"label": "Restaurante 3"
+		}
+	]
+}

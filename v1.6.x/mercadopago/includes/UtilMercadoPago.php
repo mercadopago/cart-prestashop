@@ -39,8 +39,6 @@ class UtilMercadoPago
                 null,
                 true
             );
-        } else {
-            error_log($data_hora."===".$mensagem);
         }
     }
 
@@ -118,5 +116,13 @@ class UtilMercadoPago
         $requirements['ssl'] = Configuration::get('PS_SSL_ENABLED') == 0 ? "negative" : "positive";
 
         return $requirements;
+    }
+
+    public static function checkValueNull($value)
+    {
+        if (is_null($value) || empty($value)) {
+            return "false";
+        }
+        return $value;
     }
 }

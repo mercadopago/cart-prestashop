@@ -135,6 +135,7 @@ class MPRestCli
         }
 
         $api_result = curl_exec($connect);
+        error_log("===saida exec====". Tools::jsonEncode($api_result));
         $api_http_code = curl_getinfo($connect, CURLINFO_HTTP_CODE);
         $response = array(
             'status' => $api_http_code,
@@ -177,6 +178,11 @@ class MPRestCli
     public static function post($uri, $data, $content_type = 'application/json')
     {
         return self::exec('POST', $uri, $data, $content_type, self::API_BASE_URL);
+    }
+
+    public static function delete($uri, $data, $content_type = 'application/json')
+    {
+        return self::exec('DELETE', $uri, $data, $content_type, self::API_BASE_URL);
     }
 
     public static function postTracking($uri, $data, $trackingID, $content_type = 'application/json')
