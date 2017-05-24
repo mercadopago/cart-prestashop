@@ -67,5 +67,15 @@ Fix Mercado Envios and discount for one payments.
 V3.3.9 (20/01/2017)
 Fix issues
 
+
+V3.4.6 (24/05/2017)
+- Round para Chile y Colombia
+- Uruguay - Page return after payment approve or pending.
+- Label to customize Checkout Standard
+- Payment with POS 200 (Point I)
+- Fix in Cancel Button of Order in admin
+
+
+
 V1.0.0(04/04/2017)
 Prestashop 1.7
