@@ -24,7 +24,7 @@
 *}
 <div class="mp-module">
 	<div class="return-div">
-		<h4>
+		<h3>
 			<strong>
 				{if $status_detail eq 'accredited'}
 				{l s='Thank for your purchase!' mod='mercadopago'}</br>
@@ -32,13 +32,13 @@
 			</strong>
 			</br>
 			</br>
-			<h5>
+			<h3>
 
 				{if $card_holder_name != null}
 					{l s='Card holder name: ' mod='mercadopago'}
 					{$card_holder_name|escape:'htmlall':'UTF-8'}</br>
 				{/if}
-				
+
 				{if $four_digits != null}
 					{l s='Credit card: ' mod='mercadopago'}
 					{$four_digits|escape:'htmlall':'UTF-8'}</br>
@@ -55,11 +55,14 @@
 					{l s='Installments: ' mod='mercadopago'}
 					{$installments|escape:'htmlall':'UTF-8'}</br>
 				{/if}
-				{l s='Statement descriptor: ' mod='mercadopago'}
-				{$statement_descriptor|escape:'htmlall':'UTF-8'}</br>
+
+				{if $statement_descriptor != null && ! $statement_descriptor eq ''}
+					{l s='Statement descriptor: ' mod='mercadopago'}
+					{$statement_descriptor|escape:'htmlall':'UTF-8'}</br>
+				{/if}
 				{l s='Payment id (MercadoPago): ' mod='mercadopago'}
-				{$payment_id|escape:'htmlall':'UTF-8'}</br>
-			</h5>
+				{$payment_id|escape:'htmlall':'UTF-8'}</br>				
+			</h3>
 			{elseif $status_detail eq 'pending_review_manual' || $status_detail eq 'pending_review'}
 				{l s='We are processing the payment. In less than 2 business days we will tell you by e-mail if it is accredited or if we need more information.' mod='mercadopago'}
 			{elseif $status_detail eq 'pending_contingency'}
@@ -67,16 +70,16 @@
 			{elseif status_detail eq 'expired'}
 				{l s='Payment expired.' mod='mercadopago'}
 			{/if}
-		</h4>
+		</h3>
 		</br>
 		<span class="footer-logo"></span>
 	</div>
 </div>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   ModuleAnalytics.setPublicKey("TEST-a603f517-310f-4956-a00d-93519fc17647")
   ModuleAnalytics.setPaymentId("123456")
   ModuleAnalytics.setPaymentType("credit_card")
   ModuleAnalytics.setCheckoutType("basic")
   ModuleAnalytics.put()
-</script>
+</script> -->

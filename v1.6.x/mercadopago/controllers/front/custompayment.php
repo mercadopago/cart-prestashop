@@ -74,7 +74,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 return;
             }
             $payment_type_id = $response['payment_type_id'];
-            $displayName = UtilMercadoPago::setNamePaymentType($payment_type_id);
+            $displayName = $mercadopago->setNamePaymentType($payment_type_id);
 
             $payment_mode = 'boleto';
             $installments = 1;

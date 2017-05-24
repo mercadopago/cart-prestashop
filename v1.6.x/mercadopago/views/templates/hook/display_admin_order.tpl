@@ -25,7 +25,6 @@
 	<script defer type="text/javascript"
 	src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/jquery.dd.js"></script>	
 	<div class="panel">
-			<input type="hidden" name="token_form" id="token_form" value="{$token_form|escape:'htmlall':'UTF-8'}"/>
 
 			<div class="row">
 				<img class="logo_cupom" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">
@@ -44,11 +43,12 @@
 			<div class="row">
 				{if $statusOrder == "Pendente"}
 					<form action="{$cancel_action_url|escape:'htmlall':'UTF-8'}" method="post" id="frmCancelOrder">
+						<input type="hidden" name="token_form" id="token_form" value="{$token_form|escape:'htmlall':'UTF-8'}"/>
 						<input type="hidden" name="id_order" id="id_order"/>
 						<div class="col-md-4">
 							<button class="btn btn-primary"
 								value="{l s='Cancel the Order' mod='mercadopago'}"
-								type="submit"
+								type="button"
 								id="btoCancelOrder">
 									{l s='Cancel the Order' mod='mercadopago'}
 							</button>
@@ -151,6 +151,30 @@
 				}); -->
 
 <script type="text/javascript">
+
+	// function cancelOrder() {
+	// 	location.reload();
+	// }
+	// 
+
+	{if $statusOrder == "Pendente"}
+		$('#btoCancelOrder').click(function() {
+
+			if (window.confirm("{l s='Do you have sure that want to cancel this order?' mod='mercadopago'}")) {
+				$.get( "{$cancel_action_url|escape:'htmlall':'UTF-8'}" + "?id_order={$id_order|escape:'htmlall':'UTF-8'}" +
+					"&action=get&token_form={$token_form|escape:'htmlall':'UTF-8'}", function(data) {
+				if (data.status == "200") {
+					alert(data.message);
+					location.reload();
+				} else {
+					alert(data.message);
+				}
+			},  "json");
+			}
+
+		});
+	{/if}
+
 	{if $pos_active == "true"}
 	$( document ).ready(function() {
 		$( "#show_message" ).hide();

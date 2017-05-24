@@ -135,7 +135,6 @@ class MPRestCli
         }
 
         $api_result = curl_exec($connect);
-        error_log("===saida exec====". Tools::jsonEncode($api_result));
         $api_http_code = curl_getinfo($connect, CURLINFO_HTTP_CODE);
         $response = array(
             'status' => $api_http_code,

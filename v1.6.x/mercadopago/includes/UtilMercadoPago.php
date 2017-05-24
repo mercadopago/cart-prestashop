@@ -35,29 +35,11 @@ class UtilMercadoPago
                 $data_hora."===".$mensagem,
                 $nivel,
                 0,
-                null,
+                'MercadoPago',
                 null,
                 true
             );
         }
-    }
-
-    public static function setNamePaymentType($payment_type_id)
-    {
-        if ($payment_type_id == "ticket") {
-            $displayName = "Mercado Pago - ticket";
-        } elseif ($payment_type_id == "atm") {
-            $displayName = "Mercado Pago - ATM";
-        } elseif ($payment_type_id == "credit_card") {
-            $displayName = "Mercado Pago - Credit card";
-        } elseif ($payment_type_id == "debit_card") {
-            $displayName = "Mercado Pago - Debit card";
-        } elseif ($payment_type_id == "prepaid_card") {
-            $displayName = "Mercado Pago - Prepaid card";
-        } else {
-            $displayName = "Mercado Pago";
-        }
-        return $displayName;
     }
 
     public static function getPrestashopVersion()
@@ -124,5 +106,22 @@ class UtilMercadoPago
             return "false";
         }
         return $value;
+    }
+
+    public static function getString($value)
+    {
+        if (is_null($value) || empty($value)) {
+            return "";
+        }
+        return $value;
+    }
+
+    public static function getOrderTotalMLC_MCO($value)
+    {
+        error_log("entrou no util");
+        if (is_null($value) || empty($value)) {
+            return 0;
+        }
+        return (double)substr($value, 0, strpos($value,"."));
     }
 }
