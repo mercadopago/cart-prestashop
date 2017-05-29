@@ -87,7 +87,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = "mercadopago";
         $this->tab = "payments_gateways";
-        $this->version = "1.0.4";
+        $this->version = "1.0.5";
         $this->ps_versions_compliancy = array("min" => "1.7", "max" => _PS_VERSION_);
         $this->author = "Mercado Pago";
         $this->controllers = array("validationstandard", "standardreturn");
@@ -119,6 +119,8 @@ class MercadoPago extends PaymentModule
         return parent::install() &&
             $this->registerHook('paymentOptions') &&
             $this->registerHook('displayBeforeCarrier') &&
+            $this->registerHook('displayOrderDetail') &&
+            $this->registerHook('displayAdminOrder') &&
             $this->registerHook('displayPayment') &&
             $this->registerHook('paymentReturn') &&
             $this->registerHook('payment') &&
@@ -135,6 +137,291 @@ class MercadoPago extends PaymentModule
         error_log("entro no hookDisplayPayment");
         return $this->hookPayment($params);
     }
+
+    public function hookDisplayAdminOrder($params)
+    {
+        $order = new Order((int) $params['id_order']);
+
+        $statusOrder = '';
+        $id_order_state = $this->getOrderStatePending($order->id);
+
+        if ($id_order_state == Configuration::get('MERCADOPAGO_STATUS_7')) {
+            $statusOrder = 'Pendente';
+        }
+
+        $token_form = Tools::getAdminToken('AdminOrder'.Tools::getValue('id_order'));
+
+        $data = array(
+            'id_order' => $params['id_order'],
+            'token_form' => $token_form,
+            'statusOrder' => $statusOrder,
+            'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
+                                     htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__,
+            'cancel_action_url' => $this->context->link->getModuleLink(
+                'mercadopago',
+                'cancelorder',
+                array(),
+                Configuration::get('PS_SSL_ENABLED'),
+                null,
+                null,
+                false
+            ),
+        );
+        $data["payment_pos_action_url"] = $this->context->link->getModuleLink(
+            'mercadopago',
+            'paymentpos',
+            array(),
+            Configuration::get('PS_SSL_ENABLED'),
+            null,
+            null,
+            false
+        );
+
+        $this->context->smarty->assign('pos_active', Configuration::get('MERCADOPAGO_POINT'));
+        error_log("==MERCADOPAGO_POINT==" . Configuration::get('MERCADOPAGO_POINT'));
+        error_log("==MERCADOPAGO_POINT==" . $id_order_state);
+        error_log("==MERCADOPAGO_STATUS_11==" . Configuration::get('MERCADOPAGO_STATUS_11'));
+
+        if (Configuration::get('MERCADOPAGO_POINT') == "true" &&
+            $id_order_state == Configuration::get('MERCADOPAGO_STATUS_11')) {
+            $data['pos_options'] = $this->loadPoints();
+            $data['showPoint'] = 'true';
+        } else {
+            $data['showPoint'] = 'false';
+        }
+
+        $id_order_carrier = $order->getIdOrderCarrier();
+
+        $order_carrier = new OrderCarrier($id_order_carrier);
+        $id_mercadoenvios_service_code = $this->isMercadoEnvios($order_carrier->id_carrier);
+        if ($id_mercadoenvios_service_code > 0) {
+            $order_payments = $order->getOrderPayments();
+            foreach ($order_payments as $order_payment) {
+                $result = MPApi::getInstanceMP()->getPaymentStandard($order_payment->transaction_id);
+                error_log(Tools::jsonEncode($result));
+                if ($result['status'] == '200') {
+                    $payment_info = $result['response'];
+                    if (isset($payment_info['collection'])) {
+                        $merchant_order_id = $payment_info['collection']['merchant_order_id'];
+                        $result_merchant = MPApi::getInstanceMP()->getMerchantOrder($merchant_order_id);
+                        $return_tracking = $this->setTracking(
+                            $order,
+                            $result_merchant['response']['shipments'],
+                            false
+                        );
+                        $tag_shipment = MPApi::getInstanceMP()->getTagShipment(
+                            $return_tracking['shipment_id']
+                        );
+                        $tag_shipment_zebra = MPApi::getInstanceMP()->getTagShipmentZebra(
+                            $return_tracking['shipment_id']
+                        );
+
+                        $return_tracking['tag_shipment_zebra'] = $tag_shipment_zebra;
+
+                        $return_tracking['tag_shipment'] = $tag_shipment;
+                        $this->context->smarty->assign($return_tracking);
+                    }
+                }
+                break;
+            }
+        }
+
+        $this->context->smarty->assign($data);
+
+        return $this->display(__file__, '/views/templates/hook/display_admin_order.tpl');
+    }
+
+    private function setTracking($order, $shipments, $update)
+    {
+        error_log("entrou aqui setTracking " . $update);
+        $shipment_id = null;
+        $retorno = null;
+        foreach ($shipments as $shipment) {
+            if ($shipment['shipping_mode'] != 'me2') {
+                continue;
+            }
+
+            $shipment_id = $shipment['id'];
+            $response_shipment = $this->mercadopago->getTracking($shipment_id);
+            $response_shipment = $response_shipment['response'];
+            $tracking_number = $response_shipment['tracking_number'];
+
+            if ($response_shipment['tracking_number'] != 'pending') {
+                $status = '';
+                switch ($response_shipment['status']) {
+                    case 'ready_to_ship':
+                        $status = $this->l('Ready to ship');
+                        break;
+                    default:
+                        $status = $response_shipment['status'];
+                        break;
+                }
+
+                switch ($response_shipment['substatus']) {
+                    case 'ready_to_print':
+                        $substatus_description = $this->l('Tag ready to print');
+                        break;
+                    case 'printed':
+                        $substatus_description = $this->l('Tag printed');
+                        break;
+                    case 'stale':
+                        $substatus_description = $this->l('Unsuccessful');
+                        break;
+                    case 'delayed':
+                        $substatus_description = $this->l('Sending the delayed path');
+                        break;
+                    case 'receiver_absent':
+                        $substatus_description = $this->l('Missing recipient for delivery');
+                        break;
+                    case 'returning_to_sender':
+                        $substatus_description = $this->l('In return to sender');
+                        break;
+                    case 'claimed_me':
+                        $substatus_description = $this->l('Buyer initiates complaint and requested a refund.');
+                        break;
+                    default:
+                        $substatus_description = $response_shipment['substatus'];
+                        break;
+                }
+                $estimated_delivery = new DateTime(
+                    $response_shipment['shipping_option']
+                    ['estimated_delivery_time']
+                    ['date']
+                );
+                $estimated_handling_limit = new DateTime(
+                    $response_shipment['shipping_option']
+                    ['estimated_handling_limit']
+                    ['date']
+                );
+                $estimated_delivery_final = new DateTime(
+                    $response_shipment['shipping_option']
+                    ['estimated_delivery_final']
+                    ['date']
+                );
+                $retorno = array(
+                    'shipment_id' => $shipment_id,
+                    'tracking_number' => $tracking_number,
+                    'name' => $response_shipment['shipping_option']['name'],
+                    'status' => $status,
+                    'substatus' => $response_shipment['substatus'],
+                    'substatus_description' => $substatus_description,
+                    'estimated_delivery' => $estimated_delivery->format('d/m/Y'),
+                    'estimated_handling_limit' => $estimated_handling_limit->format('d/m/Y'),
+                    'estimated_delivery_final' => $estimated_delivery_final->format('d/m/Y'),
+                    'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
+                    htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__,
+                );
+                error_log("entrou aqui setTracking tracking_number = " . $tracking_number);
+                if ($update) {
+                    $id_order_carrier = $order->getIdOrderCarrier();
+                    $order_carrier = new OrderCarrier($id_order_carrier);
+                    $order_carrier->tracking_number = $tracking_number;
+                    $order_carrier->update();
+                }
+            } else {
+                $retorno = array(
+                    'shipment_id' => $shipment_id,
+                    'tracking_number' => '',
+                    'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
+                    htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__,
+                );
+            }
+        }
+
+        return $retorno;
+    }
+
+    private function isMercadoEnvios($id_carrier)
+    {
+        error_log("=====isMercadoEnvios id_carrier=====" . $id_carrier);
+        $lista_shipping = (array) Tools::jsonDecode(
+            Configuration::get('MERCADOPAGO_CARRIER'),
+            true
+        );
+
+        error_log("=====isMercadoEnvios id_carrier=====" . Tools::jsonEncode(Configuration::get('MERCADOPAGO_CARRIER')));
+
+        $id_mercadoenvios_service_code = 0;
+        if (isset($lista_shipping['MP_CARRIER']) &&
+            array_key_exists($id_carrier, $lista_shipping['MP_CARRIER'])) {
+            $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$id_carrier];
+        }
+
+        return $id_mercadoenvios_service_code;
+    }
+
+    public function hookDisplayOrderDetail($params)
+    {
+        error_log("entrou aqui hookDisplayOrderDetail");
+        if ($params['order']->module == 'mercadopago') {
+            $order = new Order(Tools::getValue('id_order'));
+            $order_payments = $order->getOrderPayments();
+            foreach ($order_payments as $order_payment) {
+                $result = MPApi::getInstanceMP()->getPayment($order_payment->transaction_id);
+                if ($result['status'] == '404' || $result['status'] == '401' ) {
+                    $result = MPApi::getInstanceMP()->getPaymentStandard($order_payment->transaction_id);
+
+                    $result_merchant = MPApi::getInstanceMP()->getMerchantOrder(
+                        $result['response']['collection']['merchant_order_id']
+                    );
+                }
+                error_log("entrou aqui hookDisplayOrderDetail status = " .$result['status']);
+                if ($result['status'] == 200) {
+                    $payment_info = $result['response']['collection'];
+
+                    $id_mercadoenvios_service_code = $this->isMercadoEnvios($order->id_carrier);
+                    error_log("entrou aqui hookDisplayOrderDetail id_mercadoenvios_service_code = " .$id_mercadoenvios_service_code);
+                    if ($id_mercadoenvios_service_code > 0) {
+                        $merchant_order_id = $payment_info['merchant_order_id'];
+                        $result_merchant = MPApi::getInstanceMP()->getMerchantOrder($merchant_order_id);
+                        $return_tracking = $this->setTracking(
+                            $order,
+                            $result_merchant['response']['shipments'],
+                            true
+                        );
+                        $this->context->smarty->assign($return_tracking);
+                    }
+
+                    $payment_type_id = isset($payment_info['payment_type_id']) ?
+                    isset($payment_info['payment_type_id']) : $payment_info['payment_type'];
+
+
+                    if ($payment_type_id == 'ticket' || $payment_type_id == 'atm') {
+                        $settings = array(
+                            'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
+                            htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__,
+                            'boleto_url' => urldecode($payment_info['transaction_details']['external_resource_url']),
+                            'payment_type_id' => $payment_type_id,
+                        );
+                        $this->context->smarty->assign($settings);
+                    }
+                }
+                break;
+            }
+            return $this->display(__file__, '/views/templates/hook/print_details_order.tpl');
+        }
+    }
+
+    /**
+     * Verify if there is state approved for order.
+     */
+    public static function getOrderStatePending($id_order)
+    {
+        $select = 'SELECT id_order_state FROM '._DB_PREFIX_.'order_history WHERE id_order = '.
+        (int) $id_order.
+        ' order by date_add desc limit 1;';
+
+        error_log('====select=====' . $select);
+
+        $result = (Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($select));
+
+        if ($result) {
+            return $result[0]['id_order_state'];
+        } else {
+            return 0;
+        }
+    }
+
     /**
      * Create the states, we need to check if doens`t exists.
      */
@@ -1283,9 +1570,11 @@ class MercadoPago extends PaymentModule
             Configuration::deleteByName('MERCADOPAGO_CARRIER');
         }
     }
-    public function hookdisplayBeforeCarrier($params)
+    public function hookDisplayBeforeCarrier($params)
     {
+        error_log("entrou aqui no envios 12");
         if (null == $this->context->cart->getDeliveryOptionList()) {
+            error_log("entrou aqui no envios 123");
             return;
         }
 
@@ -1306,10 +1595,12 @@ class MercadoPago extends PaymentModule
         $retornoCalculadora = $this->calculateListCache($address->postcode);
 
         $mpCarrier = $lista_shipping['MP_SHIPPING'];
-
+        error_log("entrou aqui no envios 11");
         foreach ($delivery_option_list as $id_address) {
             foreach ($id_address as $key) {
+                error_log("entrou aqui no envios 0");
                 foreach ($key['carrier_list'] as $id_carrier) {
+                    error_log("entrou aqui no envios 1");
                     if (in_array($id_carrier['instance']->id, $mpCarrier)) {
                         if (isset($lista_shipping['MP_CARRIER'][(int)$id_carrier['instance']->id])) {
                             $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$id_carrier['instance']->id];
@@ -1318,6 +1609,7 @@ class MercadoPago extends PaymentModule
 
                             $id_carrier['instance']->delay[$this->context->cart->id_lang] =
                                 $this->l('After the post, receive the product ').$msg;
+                            error_log("entrou aqui no envios");
                         }
                     }
                 }
@@ -1326,6 +1618,7 @@ class MercadoPago extends PaymentModule
     }
     public function getOrderShippingCost($params, $shipping_cost)
     {
+        error_log("entrou aqui no getOrderShippingCost");
         $lista_shipping = (array) Tools::jsonDecode(
             Configuration::get('MERCADOPAGO_CARRIER'),
             true
@@ -1336,11 +1629,16 @@ class MercadoPago extends PaymentModule
             $retorno = $this->verifyCache($params, $this->id_carrier);
             $shipping_cost = (float) $retorno['cost'];
             if ($retorno != null) {
+                error_log("entrou aqui no getOrderShippingCost === ". $shipping_cost);
                 return $shipping_cost;
             }
         }
 
         return false;
+    }
+    public function getOrderShippingCostExternal($params)
+    {
+        return $this->getOrderShippingCost($params, 0);
     }
     private function verifyCache($params, $id_carrier)
     {
