@@ -12,7 +12,7 @@
 		<div class="col-lg-3">
 			<div class="col-lg-4 control-label switch-label">{$label.active|escape:'htmlall':'UTF-8'}</div>
 			<div class="col-lg-6 switch prestashop-switch fixed-width-lg">
-				<input type="radio" name="MERCADOPAGO_STARDAND_ACTIVE" id="MERCADOPAGO_STARDAND_ACTIVE_on" value="1"  {if ($mercadoPagoActive == 1)}checked="checked"{/if}">
+				<input type="radio" name="MERCADOPAGO_STARDAND_ACTIVE" id="MERCADOPAGO_STARDAND_ACTIVE_on" value="1"  {if ($mercadoPagoActive == 1)}checked="checked"{/if}>
 				<label for="MERCADOPAGO_STARDAND_ACTIVE_on">{$button.yes|escape:'htmlall':'UTF-8'}</label>
 
 				<input type="radio" name="MERCADOPAGO_STARDAND_ACTIVE" id="MERCADOPAGO_STARDAND_ACTIVE_off" value="0" {if empty($mercadoPagoActive)}checked="checked"{/if}>
@@ -53,7 +53,7 @@
 			</label> -->
 			<div class="col-lg-3">
 				<div class="col-lg-4 control-label switch-label">
-					{if ($payment.active == 1)} 
+					{if ($payment.active == 1)}
 						{$label.active|escape:'htmlall':'UTF-8'}
 					{else}
 						{$label.disable|escape:'htmlall':'UTF-8'}
@@ -72,6 +72,30 @@
 		</div>
 		<div style="clear: both"></div>
 	{/foreach}
+</div>
+<div class="panel">
+	<div class="panel-heading">{l s='Mercado Envios' mod='mercadopago'}</div>
+	<div class="form-group border-none">
+		<label class="payment-label col-lg-3">
+		Enable Mercado Envios
+		</label>
+		<div class="col-lg-3">
+			<div class="col-lg-4 control-label switch-label">{$label.active|escape:'htmlall':'UTF-8'}</div>
+			<div class="col-lg-6 switch prestashop-switch fixed-width-lg">
+				<input type="radio" name="MERCADOENVIOS_ACTIVATE" id="MERCADOENVIOS_ACTIVATE_on" value="1" {if ($mercadoEnviosActivate==1 )}checked="checked" {/if}>
+				<label for="MERCADOENVIOS_ACTIVATE_on">{$button.yes|escape:'htmlall':'UTF-8'}</label>
+
+				<input type="radio" name="MERCADOENVIOS_ACTIVATE" id="MERCADOENVIOS_ACTIVATE_off" value="0" {if empty($mercadoEnviosActivate)}checked="checked" {/if}>
+				<label for="MERCADOENVIOS_off">{$button.no|escape:'htmlall':'UTF-8'}</label>
+				<a class="slide-button btn"></a>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<label class="general-tooltip">
+				{l s='If you enable this, the others payment type will be disable.' mod='mercadopago'}
+			</label>
+		</div>
+		<div style="clear: both"></div>
 	</div>
 	<div class="panel-footer">
 		<button type="submit" value="1" name="btnSubmitPaymentConfig" class="btn btn-default pull-right">
