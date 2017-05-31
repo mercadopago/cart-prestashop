@@ -37,10 +37,11 @@ class Hook extends HookCore
                 true
             );
             $mpCarrier = $lista_shipping['MP_SHIPPING'];
-            if ($hook_name == 'displayPayment') {
+            if ($base && $hook_name == 'displayPayment') {
                 $cart = Context::getContext()->cart;
                 if (in_array($cart->id_carrier, $mpCarrier)) {
                     foreach ($base as $id => $data) {
+                        error_log('==Hook::module=='.$data['module']);
                         if ($data['module'] != 'mercadopago') {
                             unset($base[$id]);
                         }

@@ -56,7 +56,7 @@
 					</form>
 				{/if}
 			</div>
-			{if $pos_active == "true"}
+			{if $showPoint == "true"}
 			<div class="col-sm-2 form-group">
 			    <label for="exampleInputEmail1">Point Mercado Pago</label>
 				<select name="pos_id" id="pos_id" class="form-control">

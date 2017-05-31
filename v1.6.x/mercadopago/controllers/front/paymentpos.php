@@ -130,7 +130,8 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
 
             $result = $this->mercadopago->getPaymentPoint($id_transaction);
             error_log("====result getPaymentPoint====". Tools::jsonEncode($result));
-            if ($result['status'] == '200' && $result['response']['status'] != 'cancelled') {
+            if ($result['status'] == '200' &&
+                $result['response']['status'] == 'created') {
                 $response = array(
                 'status' => '200',
                 'message' => "There is a pending transaction for that device."

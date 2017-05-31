@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.4.6';
+    const VERSION = '3.4.7';
 
     /* Info */
     const INFO = 1;

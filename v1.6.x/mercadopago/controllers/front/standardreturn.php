@@ -81,20 +81,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 }
             }
 
-
-            error_log("".Tools::ps_round(floatval(36.226256), 2) + Tools::ps_round(floatval(36.226256), 2) + Tools::ps_round(floatval(300.502569), 2) + Tools::ps_round(floatval(44.632), 2) + Tools::ps_round(floatval(63.742691), 2));
-            
-            error_log("".Tools::ps_round(floatval(300.502569), 2));
-            error_log("".Tools::ps_round(floatval(44.632), 2));
-            error_log("".Tools::ps_round(floatval(63.742691), 2));
-
-
-            error_log("".number_format(Tools::convertPrice(36.226256, $cart->id_currency), 2, '.', ''));
-            error_log("".number_format(Tools::convertPrice(36.226256, $cart->id_currency), 2, '.', ''));
-            error_log("".number_format(Tools::convertPrice(300.502569, $cart->id_currency), 2, '.', ''));
-            error_log("".number_format(Tools::convertPrice(44.632, $cart->id_currency), 2, '.', ''));
-            error_log("".number_format(Tools::convertPrice(63.742691, $cart->id_currency), 2, '.', ''));
-
             if (Validate::isLoadedObject($cart)) {
                 if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' || Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
                     $total = (double) round($transaction_amounts);

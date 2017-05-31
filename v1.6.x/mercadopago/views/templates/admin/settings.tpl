@@ -388,7 +388,7 @@
 					<br>
 					<h3>{l s='Settings Mercado Envios' mod='mercadopago'}</h3>
 						<ul>
-							<li><span style="color:red;">**** &nbsp;</span>{l s='Mercado Envios works only with Checkout Standard' mod='mercadopago'}</li>
+							<li><h3>{l s='Mercado Envios works only with Checkout Standard' mod='mercadopago'}</h3>
 							{if $country == 'MLA'}
 									<li><a target="_blank" href="https://www.mercadopago.com.ar/envios">Activa MercadoEnvíos</a></li>
 									<li>
@@ -397,18 +397,18 @@
 							{if $country == 'MLM'}
 								<ul>
 									<li>
-										<a target="_blank" href="https://www.mercadopago.com.mx/envios">Activa MercadoEnvíos</a>
+										<h3><a target="_blank" href="https://www.mercadopago.com.mx/envios">Activa MercadoEnvíos</a></h3>
 									</li>
 									<li>
-										Consulta los <a target="_blank" href="http://www.dhl.com.mx/content/dam/downloads/language_masters/express/es/shipping/weights_and_dimensions/weights_and_dimensions_es_lm.pdf">valores admitidos por DHL</a>.
+										<h3>Consulta los <a target="_blank" href="http://www.dhl.com.mx/content/dam/downloads/language_masters/express/es/shipping/weights_and_dimensions/weights_and_dimensions_es_lm.pdf">valores admitidos por DHL</a>.</h3>
 									</li>
 								{/if}
 								{if $country == 'MLB'}
 									<li>
-										<a target="_blank" href="https://www.mercadopago.com.br/envios">Ativar MercadoEnvios</a>
+										<h3><a target="_blank" href="https://www.mercadopago.com.br/envios">Ativar MercadoEnvios</a></h3>
 									</li>
 									<li>
-										Consultar os <a target="_blank" href="http://www.correios.com.br/para-voce/precisa-de-ajuda/limites-de-dimensoes-e-de-peso">valores permitidos pelos Correios</a>.
+										<h3>Consultar os <a target="_blank" href="http://www.correios.com.br/para-voce/precisa-de-ajuda/limites-de-dimensoes-e-de-peso">valores permitidos pelos Correios</a>.</h3>
 									</li>
 								{/if}
 						</ul>

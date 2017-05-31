@@ -16,30 +16,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 <div class="mp-module">
 	<div class="row">
 		<div class="col-xs-12 col-md-6">
-			{if $window_type != 'iframe'} <a
-				href="{$preferences_url|escape:'htmlall':'UTF-8'}" id="id-standard"
-				mp-mode="{$window_type|escape:'htmlall':'UTF-8'}" name="MP-Checkout">
-				<div class="mp-form hover">
-					<div class="row">
-						<div class="col">
-							<img
-								src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo_120_31.png"
-								id="id-standard-logo"> <img
-								src="{$standard_banner|escape:'htmlall':'UTF-8'}"
-								class="mp-standard-banner" /> <span
-								class="payment-label standard">{l s='Pay via MercadoPago
-								and split into up to 24 times' mod='mercadopago'}</span>
-						</div>
-					</div>
-				</div>
-			</a> {else}
-			<div class="mp-form">
-				<iframe src="{$preferences_url|escape:'htmlall':'UTF-8'}" name="MP-Checkout"
-					width="{$iframe_width|escape:'htmlall':'UTF-8'}"
-					height="{$iframe_height|escape:'htmlall':'UTF-8'}" frameborder="0">
-				</iframe>
-			</div>
-			{/if}
+			pagamento de teste
 		</div>
 	</div>
 </div>
