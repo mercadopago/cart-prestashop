@@ -120,8 +120,9 @@ class UtilMercadoPago
     {
         error_log("entrou no util");
         if (is_null($value) || empty($value)) {
+            error_log("=== entrou no if  util====" . $value);
             return 0;
         }
-        return (double)substr($value, 0, strpos($value,"."));
+        return strpos($value,".") ? (double)substr($value, 0, strpos($value,".")) : $value;
     }
 }
