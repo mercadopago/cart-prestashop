@@ -1,0 +1,48 @@
+html {
+  background: #fff;
+}
+
+.CCBackground {
+  padding-top: 50px;
+  height: 50%;
+  background: #fff;
+}
+
+.outercontainer_card, .outercontainer {
+  margin: 0px auto;
+  border: 1px solid #a6a6a6;
+  padding: 20px;
+  border-radius: 3px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+  width: 500px;
+}
+
+.outercontainer  {
+  background: #2D3277;
+}
+
+
+.formcontainer {
+  margin-top: 20px;
+}
+
+.purchasebtn {
+  margin-top: 20px;
+}
+
+.btn-success {
+  backgroun-color: #0032a0;
+}
+
+
+.mp-form__select {
+    height: 36px;
+    margin-top: 5px;
+    background: none;
+    font-size: 100%;
+    width: 100%;
+    color: #666;
+    border: 1px solid #cdcdcd;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}

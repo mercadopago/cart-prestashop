@@ -254,6 +254,7 @@
 
 				<br />
 		</fieldset>
+
 		{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV' || $country == 'MPE'}
 
 			<fieldset>
@@ -286,6 +287,14 @@
 				<label>{l s='Banner:' mod='mercadopago'}</label>
 				<div class="">
 					<input type="text" size="33" name="MERCADOPAGO_CREDITCARD_BANNER" value="{$creditcard_banner|escape:'htmlall':'UTF-8'}" />
+				</div>
+				<br/>
+				<label>{l s='New Checkout: ' mod='mercadopago'}</label>
+				<div class="">
+					<select name="MERCADOPAGO_CHECKOUT_2" id="checkout_2">
+						<option value="true">{l s='Yes' mod='mercadopago'}</option>
+						<option value="false" selected>{l s='No' mod='mercadopago'} </option>
+					</select>
 				</div>
 			</fieldset>
 			{foreach from=$offline_payment_settings key=offline_payment item=value}
@@ -520,6 +529,13 @@
 		if (document.getElementById("creditcard_active")){
 			document.getElementById("creditcard_active").value = "{$creditcard_active|escape:'htmlall':'UTF-8'}";
 		}
+
+		if (document.getElementById("checkout_2")){
+			document.getElementById("checkout_2").value = "{$checkout_2|escape:'htmlall':'UTF-8'}";
+		} else {
+			document.getElementById("checkout_2").value = "false";
+		}
+
 		if (document.getElementById("coupon_active")){
 			document.getElementById("coupon_active").value = "{$coupon_active|escape:'htmlall':'UTF-8'}";
 		}

@@ -85,7 +85,8 @@ class UtilMercadoPago
 
         $sql = "SELECT id_product
                 FROM "._DB_PREFIX_."product
-                WHERE width = 0 OR height = 0 OR depth = 0 OR weight = 0";
+                WHERE width = 0 OR height = 0 OR depth = 0 OR weight = 0 and
+                online_only = 0 and available_for_order = 1;";
 
         $dados = Db::getInstance()->executeS($sql);
 
@@ -118,11 +119,24 @@ class UtilMercadoPago
 
     public static function getOrderTotalMLC_MCO($value)
     {
-        error_log("entrou no util");
         if (is_null($value) || empty($value)) {
-            error_log("=== entrou no if  util====" . $value);
             return 0;
         }
         return strpos($value,".") ? (double)substr($value, 0, strpos($value,".")) : $value;
+    }
+
+
+    public static function getCodigoPostal($value) {
+        error_log('==getCodigoPostal===');
+        if (is_null($value) || empty($value)) {
+            return $value;
+        }
+        if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLB') {
+            $value = str_replace('-', '', $value);
+        } else if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLA') {
+            error_log('==postcode===' . preg_replace("/[^0-9,.]/", "", $value));
+            $value = preg_replace("/[^0-9,.]/", "", $value);
+        }
+        return $value;
     }
 }

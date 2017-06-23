@@ -31,7 +31,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
     public function initContent()
     {
         parent::initContent();
-        error_log("entrou aqui return standard");
         if (Tools::getIsset('collection_id') && Tools::getValue('collection_id') != 'null') {
             // payment variables
             $payment_statuses = array();
@@ -107,7 +106,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                         $order_status = 'MERCADOPAGO_STATUS_7';
                         break;
                 }
-                $order_id = $mercadopago->getOrderByCartId($cart->id);
                 if ($order_status != null) {
                     $result_merchant = $mercadopago_sdk->getMerchantOrder($merchant_order_id);
                     $merchant_order_info = $result_merchant['response'];
@@ -119,23 +117,14 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                         $total += $cost_mercadoEnvios;
                     }
 
-                    error_log("Total===".$total);
-                    error_log("Total_ordem===". $total_ordem);
-                    error_log("id_currency getTotalCart ====".Cart::getTotalCart($cart->id));
-
-                    if ($total != $total_ordem) {
-                        PrestaShopLogger::addLog('Não atualizou o pedido, valores diferentes'.
-                        ' merchant_order_id = '.$merchant_order_id, MPApi::INFO, 0);
-                        error_log("Não atualizou o pedido, valores diferentes'.
-                        ' merchant_order_id = ".$merchant_order_id);
-                        return;
-                    }
-
                     if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' || Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
                         $total = $cart->getOrderTotal(true, Cart::BOTH);
                     }
 
-                    if (!$order_id) {
+                    $order_id = $mercadopago->getOrderByCartId($cart->id);
+
+                    error_log("====OrderExists====".$cart->OrderExists());
+                    if ($cart->OrderExists() == false) {
                         $displayName = $mercadopago->setNamePaymentType($payment_types[0]);
                         $mercadopago->validateOrder(
                             $cart->id,
@@ -156,13 +145,13 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
 
                     $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$order->id_cart.'&id_module='.
                          $mercadopago->id.'&id_order='.$order->id.'&key='.$order->secure_key;
-                    $order_payments = $order->getOrderPayments();
 
+
+                    $order_payments = $order->getOrderPayments();
                     if ($order_payments == null || $order_payments[0] == null) {
-                        error_log("ENTROU AQUI 12===");
                         $order_payments[0] = new stdClass();
                     }
-                    error_log("ENTROU AQUI 1234===");
+
                     $order_payments[0]->transaction_id = Tools::getValue('collection_id');
                     $uri .= '&payment_status='.$payment_statuses[0];
                     $uri .= '&payment_id='.implode(' / ', $payment_ids);
@@ -174,17 +163,17 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                         $uri .= '&four_digits='.implode(' / ', $four_digits_arr);
                         $uri .= '&statement_descriptor='.$statement_descriptors[0];
                         $uri .= '&status_detail='.$status_details[0];
+
+                        $order_payments[0]->transaction_id = implode(' / ', $payment_ids);
                         $order_payments[0]->card_number = empty($four_digits_arr) ? '' :
                             implode(' / ', $four_digits_arr);
                         $order_payments[0]->card_brand = empty($payment_method_ids) ? '' :
                             implode(' / ', $payment_method_ids);
                         $order_payments[0]->card_holder = implode(' / ', $card_holder_names);
                     }
-                    error_log("ENTROU AQUI save===");
                     $order_payments[0]->save();
 
                     $order_payments = $order->getOrderPayments();
-                    error_log("ENTROU AQUI URI===".$uri);
                     Tools::redirectLink($uri);
                 }
             }
