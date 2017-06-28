@@ -83,17 +83,22 @@ class UtilMercadoPago
             $requirements['curl'] = 'positive';
         }
 
-        $sql = "SELECT id_product
-                FROM "._DB_PREFIX_."product
-                WHERE width = 0 OR height = 0 OR depth = 0 OR weight = 0 and
-                online_only = 0 and available_for_order = 1;";
+        if (Configuration::get('MERCADOENVIOS_ACTIVATE') == 'true') {
+            error_log("Mercado envios ativado");
+            $sql = "SELECT id_product
+            FROM "._DB_PREFIX_."product WHERE (width = 0 OR height = 0
+            OR depth = 0
+            OR weight = 0)
+            AND online_only = 0
+            AND available_for_order = 1
+            AND active =1;";
 
-        $dados = Db::getInstance()->executeS($sql);
-
-        if ($dados) {
-            $requirements['dimensoes'] = 'negative';
-        } else {
-            $requirements['dimensoes'] = 'positive';
+            $dados = Db::getInstance()->executeS($sql);
+            if ($dados) {
+                $requirements['dimensoes'] = 'negative';
+            } else {
+                $requirements['dimensoes'] = 'positive';
+            }
         }
 
         $requirements['ssl'] = Configuration::get('PS_SSL_ENABLED') == 0 ? "negative" : "positive";
@@ -117,23 +122,23 @@ class UtilMercadoPago
         return $value;
     }
 
-    public static function getOrderTotalMLC_MCO($value)
+    public static function getOrderTotalWithoutDecimals($value)
     {
         if (is_null($value) || empty($value)) {
             return 0;
         }
-        return strpos($value,".") ? (double)substr($value, 0, strpos($value,".")) : $value;
+        return strpos($value, ".") ? (double)Tools::substr($value, 0, strpos($value, ".")) : $value;
     }
 
 
-    public static function getCodigoPostal($value) {
-        error_log('==getCodigoPostal===');
+    public static function getCodigoPostal($value)
+    {
         if (is_null($value) || empty($value)) {
             return $value;
         }
         if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLB') {
             $value = str_replace('-', '', $value);
-        } else if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLA') {
+        } elseif (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLA') {
             error_log('==postcode===' . preg_replace("/[^0-9,.]/", "", $value));
             $value = preg_replace("/[^0-9,.]/", "", $value);
         }

@@ -1,8 +1,15 @@
-console.info('========console==========');
-console.info($( "input[name='cardNumber'" ));
-console.info($( "input[name='cardNumber'" ));
-console.info('========console==========');
+/**
+*  @author    Mercado pago <modulos@mercadolivre.com>
+*  @copyright modulos 2017
+*  @license   GNU General Public License version 2
+*  @version   1.1
 
+*  www.mercadopago.com.br
+*
+* Languages: EN, PT
+* PS version: 1.6
+*
+**/
 (function e(t, n, r) {
   function s(o, u) {
     if (!n[o]) {

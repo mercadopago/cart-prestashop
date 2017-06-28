@@ -32,6 +32,11 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
     {
         parent::initContent();
         if (Tools::getIsset('collection_id') && Tools::getValue('collection_id') != 'null') {
+            PrestaShopLogger::addLog(
+                'MercadoPago :: standard - topic = '.Tools::getValue('collection_id'),
+                MPApi::INFO,
+                0
+            );
             // payment variables
             $payment_statuses = array();
             $payment_ids = array();
@@ -81,12 +86,11 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             }
 
             if (Validate::isLoadedObject($cart)) {
-                if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' || Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
+                if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' ||
+                    Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
                     $total = (double) round($transaction_amounts);
-                    $total_ordem = UtilMercadoPago::getOrderTotalMLC_MCO($cart->getOrderTotal(true, Cart::BOTH));
                 } else {
                     $total = (double) number_format($transaction_amounts, 2, '.', '');
-                    $total_ordem = $cart->getOrderTotal(true, Cart::BOTH);
                 }
                 $extra_vars = array(
                     '{bankwire_owner}' => $mercadopago->textshowemail,
@@ -117,7 +121,8 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                         $total += $cost_mercadoEnvios;
                     }
 
-                    if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' || Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
+                    if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' ||
+                        Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
                         $total = $cart->getOrderTotal(true, Cart::BOTH);
                     }
 
@@ -158,7 +163,8 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                     $uri .= '&payment_type='.implode(' / ', $payment_types);
                     $uri .= '&payment_method_id='.implode(' / ', $payment_method_ids);
                     $uri .= '&amount='.$total;
-                    if ($payment_info['payment_type'] == 'credit_card' || $payment_info['payment_type'] == 'account_money') {
+                    if ($payment_info['payment_type'] == 'credit_card' ||
+                        $payment_info['payment_type'] == 'account_money') {
                         $uri .= '&card_holder_name='.implode(' / ', $card_holder_names);
                         $uri .= '&four_digits='.implode(' / ', $four_digits_arr);
                         $uri .= '&statement_descriptor='.$statement_descriptors[0];

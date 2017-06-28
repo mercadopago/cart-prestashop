@@ -52,9 +52,9 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
         $response = null;
         if ($action == "post") {
             $response = $this->postTransactionPayment($order, $poi, $typePOS);
-        } else if ($action == "get") {
+        } elseif ($action == "get") {
             $response = $this->getTransactionPayment($id_order);
-        } else if ($action == "delete") {
+        } elseif ($action == "delete") {
             $response = $this->deleteTransactionPayment($poi);
         }
 
@@ -63,7 +63,8 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
         exit;
     }
 
-    private function getPOIAndTypePOS($poi) {
+    private function getPOIAndTypePOS($poi)
+    {
         $json = $this->getJSONPOS();
         $return = null;
         foreach ($json['points'] as $field) {
@@ -74,7 +75,8 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
         }
     }
 
-    private function getTypePOS($poi) {
+    private function getTypePOS($poi)
+    {
         $json = $this->getJSONPOS();
 
         foreach ($json['points'] as $field) {
@@ -84,15 +86,16 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
         }
     }
 
-    public function getJSONPOS() {
-        if ($str = file_get_contents(dirname(__FILE__) . '/../../pos.json')) {
+    public function getJSONPOS()
+    {
+        if ($str = Tools::file_get_contents(dirname(__FILE__) . '/../../pos.json')) {
             return Tools::jsonDecode($str, true);
         }
         return null;
     }
 
-    private function deleteTransactionPayment($poi) {
-        error_log("===deleteTransactionPayment====");
+    private function deleteTransactionPayment($poi)
+    {
         if ($poi_and_type = $this->getPOIAndTypePOS($poi)) {
             error_log("===result poi_and_type====". Tools::jsonEncode($poi_and_type));
             $data = array(
@@ -121,11 +124,11 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
 
 
 
-    private function getTransactionPayment($id_order) {
+    private function getTransactionPayment($id_order)
+    {
         $exist_transaction = false;
         $id_transaction = $this->getIdTransactionPOS($id_order);
         if ($id_transaction) {
-
             $this->mercadopago = MercadoPagoPaymentPOSModuleFrontController::createMP();
 
             $result = $this->mercadopago->getPaymentPoint($id_transaction);
@@ -146,24 +149,20 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
             'message' => "There isn't transaction for that device."
             );
         }
-
         return $response;
     }
 
-
-
-    private function postTransactionPayment($order, $poi, $typePOS) {
-
-        if ($typePOS == "H") {
-
-        } else if($typePOS == "I") {
+    private function postTransactionPayment($order, $poi, $typePOS)
+    {
+        if ($typePOS == "I") {
             return $this->postD200($order, $poi);
         }
         return null;
     }
 
 
-    private function postD200($order, $poi) {
+    private function postD200($order, $poi)
+    {
         $data = array(
             'transaction_amount' => (double) number_format($order->total_paid, 2, '.', ''),
             'payment_type' => 'credit_card',
@@ -175,10 +174,7 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
 
         // populate all payments accoring to country
         $this->mercadopago = MercadoPagoPaymentPOSModuleFrontController::createMP();
-
-        error_log("===data point====". Tools::jsonEncode($data));
         $result = $this->mercadopago->sendPaymentPoint($data);
-        error_log("===result data point====". Tools::jsonEncode($result));
 
         $response = array(
         'status' => $result['status'],
@@ -188,7 +184,8 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
         return $response;
     }
 
-    protected function getMessageAndSave($result, $id_order) {
+    protected function getMessageAndSave($result, $id_order)
+    {
         $message = "";
         switch ($result['status']) {
             case 201:
@@ -210,7 +207,6 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
 
     private function getIdTransactionPOS($id_order)
     {
-
         $sql = 'SELECT MAX(`id_transaction`) AS `id_transaction`
             FROM `'._DB_PREFIX_.'mercadopago_point_order`
             WHERE `id_order` = '.(int) $id_order;

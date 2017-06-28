@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.4.10';
+    const VERSION = '3.4.11';
 
     /* Info */
     const INFO = 1;
@@ -507,7 +507,7 @@ class MPApi
     {
         $access_token = $this->getAccessTokenV1();
         $uri = "/point/services/payment_attempt/?access_token=" . $access_token;
-        $result = MPRestCli::delete($uri,$data);
+        $result = MPRestCli::delete($uri, $data);
         return $result;
     }
 
