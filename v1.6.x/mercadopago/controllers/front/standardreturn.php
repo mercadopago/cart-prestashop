@@ -127,9 +127,11 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                     }
 
                     $order_id = $mercadopago->getOrderByCartId($cart->id);
+                    $existOrderMercadoPago = $mercadopago->selectMercadoPagoOrder($id_cart);
 
-                    error_log("====OrderExists====".$cart->OrderExists());
-                    if ($cart->OrderExists() == false) {
+                    if ($cart->OrderExists() == false &&
+                        ! $existOrderMercadoPago
+                        ) {
                         $displayName = $mercadopago->setNamePaymentType($payment_types[0]);
                         $mercadopago->validateOrder(
                             $cart->id,
@@ -151,18 +153,16 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                     $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$order->id_cart.'&id_module='.
                          $mercadopago->id.'&id_order='.$order->id.'&key='.$order->secure_key;
 
-
-                    $order_payments = $order->getOrderPayments();
-                    if ($order_payments == null || $order_payments[0] == null) {
-                        $order_payments[0] = new stdClass();
-                    }
-
-                    $order_payments[0]->transaction_id = Tools::getValue('collection_id');
                     $uri .= '&payment_status='.$payment_statuses[0];
                     $uri .= '&payment_id='.implode(' / ', $payment_ids);
                     $uri .= '&payment_type='.implode(' / ', $payment_types);
                     $uri .= '&payment_method_id='.implode(' / ', $payment_method_ids);
                     $uri .= '&amount='.$total;
+                    $order_payments = $order->getOrderPayments();
+                    if ($order_payments == null || $order_payments[0] == null) {
+                        $order_payments[0] = new stdClass();
+                    }
+                    $order_payments[0]->transaction_id = Tools::getValue('collection_id');
                     if ($payment_info['payment_type'] == 'credit_card' ||
                         $payment_info['payment_type'] == 'account_money') {
                         $uri .= '&card_holder_name='.implode(' / ', $card_holder_names);
@@ -179,7 +179,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                     }
                     $order_payments[0]->save();
 
-                    $order_payments = $order->getOrderPayments();
                     Tools::redirectLink($uri);
                 }
             }

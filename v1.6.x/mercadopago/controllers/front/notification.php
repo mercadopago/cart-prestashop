@@ -63,9 +63,6 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
                     Tools::getValue('data_id')
                 );
             } else {
-                error_log("retorno ipn === ".Tools::getValue('checkout'));
-                error_log("retorno ipn === ".Tools::getValue('id'));
-                error_log(print_r($_GET, true));
                 $mercadopago->listenIPN(
                     Tools::getValue('checkout'),
                     Tools::getValue('topic'),

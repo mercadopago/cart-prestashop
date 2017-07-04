@@ -27,6 +27,7 @@
 include_once 'MPApi.php';
 class MPRestCli
 {
+    static $check_loop = 0;
     const API_BASE_SETTINGS_URL = 'http://localhost:8080';
 
     const API_BASE_URL = 'https://api.mercadopago.com';
@@ -129,7 +130,10 @@ class MPRestCli
     private static function exec($method, $uri, $data, $content_type, $uri_base)
     {
         $connect = self::getConnect($uri, $method, $content_type, $uri_base);
-
+        $message = null;
+        $payloads = null;
+        $endpoint = null;
+        $errors = array();
         if ($data) {
             self::setData($connect, $data, $content_type);
         }
@@ -150,10 +154,36 @@ class MPRestCli
             $error = 'Can not call the API, status code 0.';
             throw new Exception($error);
         } else {
-            if ($response['status'] > 202) {
-                UtilMercadoPago::logMensagem('MercadoPago::exec = '.$response['response']['message'], MPApi::ERROR);
+            if ($response['status'] > 202 && self::$check_loop == 0) {
+                self::$check_loop = 1;
+
+                if (isset($response['response'])) {
+                    if (isset($response['response']['message'])) {
+                        $message = $response['response']['message'];
+                    }
+                    if (isset($response['response']['cause'])) {
+                        if (isset($response['response']['cause']['code']) && isset($response['response']['cause']['description'])) {
+                            $message .= " - " . $response['response']['cause']['code'] . ': ' . $response['response']['cause']['description'];
+                        } else if (is_array($response['response']['cause'])) {
+                            foreach ($response['response']['cause'] as $cause) {
+                                $message .= " - " . $cause['code'] . ': ' . $cause['description'];
+                            }
+                        }
+                    }
+                }
+                if ($data != null) {
+                    $payloads = Tools::jsonEncode($data);
+                }
+                $errors[] = array(
+                    "endpoint" => $uri_base,
+                    "message" => $message,
+                    "payloads" => $payloads
+                );
+                MPApi::sendErrorLog($response['status'], $errors);
+                UtilMercadoPago::logMensagem('MercadoPago::exec = '.Tools::jsonEncode($response['response']), MPApi::ERROR);
             }
         }
+        self::$check_loop = 0;
         curl_close($connect);
 
         return $response;

@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.4.11';
+    const VERSION = '3.4.12';
 
     /* Info */
     const INFO = 1;
@@ -146,7 +146,6 @@ class MPApi
         $uri .= $this->buildQuery($params);
 
         $result = MPRestCli::get($uri);
-
         return  $result;
     }
 
@@ -522,6 +521,20 @@ class MPApi
         return $result;
     }
 
+    public static function sendErrorLog($code, $errors) {
+
+        $data = array(
+            "code" => $code,
+            "module" => "PrestaShop",
+            "module_version" => "3.4.12",
+            "url_store" => $_SERVER['HTTP_HOST'],
+            "errors" => $errors
+        );
+
+        $result_response = MPRestCli::post("/modules/log", $data);
+
+        return $result_response;
+    }
 
     private function buildQuery($params)
     {

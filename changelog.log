@@ -82,5 +82,9 @@ V3.4.8 (01/06/2017)
 V3.4.10 (23/06/2017)
 - Fix about duplicate order
 
+V3.4.11 (04/07/2017)
+- Fix about duplicate order, there is a problem with multiple notification in prestashop. So i needed to implement a solution using a table in database.
+Forum with the same problem: https://www.prestashop.com/forums/topic/293374-duplicate-shopping-cart-and-orders/page-3#entry2171973
+
 V1.0.0(04/04/2017)
 Prestashop 1.7
