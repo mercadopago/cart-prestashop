@@ -144,4 +144,23 @@ class UtilMercadoPago
         }
         return $value;
     }
+
+    public static function getAttributesProduct($combinations)
+    {
+        $color  = "";
+        $size  = "";
+        foreach ($combinations as $value) {
+            error_log('==group_name===' . $value['group_name']);
+            error_log('==attribute_name===' . $value['attribute_name']);
+            if ($value['group_name'] == 'Color') {
+                $color = ' Color = ' .$value['attribute_name']. ' ';
+                continue;
+            }
+            if ($value['group_name'] == 'Size') {
+                $size = ' Size = ' .$value['attribute_name']. ' ';
+                continue;
+            }
+        }
+        return $color + $size;
+    }
 }

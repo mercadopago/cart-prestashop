@@ -30,6 +30,7 @@ if (!defined('_PS_VERSION_')) {
 
 function_exists('curl_init');
 include dirname(__FILE__).'/includes/MPApi.php';
+include dirname(__FILE__).'/includes/CheckoutCustom.php';
 
 class MercadoPago extends PaymentModule
 {
@@ -88,7 +89,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
-        $this->version = '3.4.12';
+        $this->version = '3.4.13';
         $this->currencies = true;
         //$this->currencies_mode = 'radio';
         $this->need_instance = 0;
@@ -394,6 +395,17 @@ class MercadoPago extends PaymentModule
                 false
             ),
         );
+
+        PrestaShopLogger::addLog("==== getModuleLink ==== ". $this->link->getModuleLink(
+            'mercadopago',
+            'paymentpos',
+            array(),
+            Configuration::get('PS_SSL_ENABLED'),
+            null,
+            null,
+            false
+        ), MPApi::ERROR, 0);
+
         $data["payment_pos_action_url"] = $this->link->getModuleLink(
             'mercadopago',
             'paymentpos',
@@ -1451,14 +1463,25 @@ class MercadoPago extends PaymentModule
                 $data['payment_methods_credit'] = array();
             }
 
-            $this->context->smarty->assign($data);
-            $this->context->smarty->assign($this->setPreModuleAnalytics());
-
+            $pageReturn = '/views/templates/hook/checkout.tpl';
             if (Configuration::get('MERCADOPAGO_CHECKOUT_2') == "true") {
-                return $this->display(__file__, '/views/templates/hook/credit_card_form.tpl');
+                $checkout = new CheckoutCustom();
+                $form_labels = $checkout->getFormLabels();
+
+                $customer_fields = Context::getContext()->customer->getFields();
+                $data['payer_email'] = $customer_fields['email'];
+                $data['form_labels'] = $form_labels;
+                $data['site_id'] = Configuration::get('MERCADOPAGO_COUNTRY');
+                $pageReturn = '/views/templates/hook/credit_card_form.tpl';
             }
 
-            return $this->display(__file__, '/views/templates/hook/checkout.tpl');
+
+            error_log(print_r($data, true));
+
+            $this->context->smarty->assign($data);
+            //$this->context->smarty->assign($this->setPreModuleAnalytics());
+
+            return $this->display(__file__, $pageReturn);
         }
     }
 
@@ -1905,6 +1928,9 @@ class MercadoPago extends PaymentModule
                     break;
             }
         }
+        if (Configuration::get('MERCADOPAGO_BINARY_MODE') == "true") {
+            $payment_preference['binary_mode'] = 'true';
+        }
 
         $payment_preference['statement_descriptor'] = 'MERCADOPAGO';
 
@@ -2258,7 +2284,6 @@ class MercadoPago extends PaymentModule
         $transaction_amounts = 0;
         $cardholders = array();
         $external_reference = '';
-        $cost_mercadoEnvios = 0;
         $isMercadoEnvios = 0;
 
         PrestaShopLogger::addLog('MercadoPago :: listenIPN - topic = '.$topic, MPApi::INFO, 0);
@@ -2268,6 +2293,7 @@ class MercadoPago extends PaymentModule
         if ($checkout == 'standard' && $topic == 'merchant_order' && $id > 0) {
             $result = $this->mercadopago->getMerchantOrder($id);
             $merchant_order_info = $result['response'];
+            error_log(print_r($merchant_order_info,true));
             // check value
             $cart = new Cart($merchant_order_info['external_reference']);
 
@@ -2327,14 +2353,9 @@ class MercadoPago extends PaymentModule
                 $merchant_order_info['shipments'][0]['status'] == "shipped" ||
                 $merchant_order_info['shipments'][0]['status'] == "delivered")
                 ) {
-                error_log('MercadoPago :: listenIPN - isMercadoEnvios  == ');
-                error_log('MercadoPago :: listenIPN === ' . Tools::jsonEncode($merchant_order_info));
-
                 $isMercadoEnvios = true;
-                $cost_mercadoEnvios = $merchant_order_info['shipments'][0]['shipping_option']['cost'];
                 $status_shipment = $merchant_order_info['shipments'][0]['status'];
                 $order_status = null;
-                error_log("=======status_shipment======".$status_shipment);
                 switch ($status_shipment) {
                     case 'ready_to_ship':
                         $order_status = 'MERCADOPAGO_STATUS_8';
@@ -2432,6 +2453,7 @@ class MercadoPago extends PaymentModule
         $checkout
     ) {
         $order = null;
+        PrestaShopLogger::addLog('MercadoPago :: updateOrder - id = '.Tools::jsonEncode($payment_ids), MPApi::INFO, 0);
         // if has two creditcard validate whether payment has same status in order to continue validating order
         if (count($payment_statuses) == 1 ||
              (count($payment_statuses) == 2 && $payment_statuses[0] == $payment_statuses[1])) {
@@ -2490,6 +2512,7 @@ class MercadoPago extends PaymentModule
                         Configuration::get($order_status)
                     );
                     if ($existStates) {
+                        PrestaShopLogger::addLog('MercadoPago :: existStates - id = '.$external_reference, MPApi::INFO, 0);
                         return;
                     }
                 }
@@ -2521,7 +2544,8 @@ class MercadoPago extends PaymentModule
                         ! $existOrderMercadoPago
                         ) {
                         $this->insertMercadoPagoOrder($id_cart, 0, 0, $payment_status);
-                        error_log("======VALIDAR validateOrder======");
+                        error_log("======VALIDAR validateOrder======id_cart==".$id_cart);
+                        PrestaShopLogger::addLog('MercadoPago :: ======VALIDAR validateOrder ID_CART====== = '.$id_cart, MPApi::INFO, 0);
                         $this->validateOrder(
                             $id_cart,
                             Configuration::get($order_status),
@@ -2535,7 +2559,7 @@ class MercadoPago extends PaymentModule
                         );
                         $this->insertMercadoPagoOrder($id_cart, $this->currentOrder, 1, $payment_status);
                         error_log("===currentOrder====".$this->currentOrder);
-
+                        PrestaShopLogger::addLog("===currentOrder====".$this->currentOrder, MPApi::INFO, 0);
                         $order = new Order((int)$this->currentOrder);
                         $payments = $order->getOrderPaymentCollection();
                         $payments[0]->transaction_id = 1234;
@@ -3299,18 +3323,32 @@ class MercadoPago extends PaymentModule
         _DB_PREFIX_ . 'mercadopago_orders` WHERE `cart_id` = ' . (int) $cart_id;
         error_log("====sql selectMercadoPagoOrder=====" . $sql);
 
+        PrestaShopLogger::addLog('MercadoPago :: ======VALIDAR selectMercadoPagoOrder====== '.$cart_id.'=='.$sql, MPApi::INFO, 0);
+
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow(
             $sql
         );
-        return isset($result['mercadopago_orders_id']) ? $result['mercadopago_orders_id'] : false;;
+        PrestaShopLogger::addLog('MercadoPago :: ======VALIDAR SELECT ORDER====== = '.$result['mercadopago_orders_id'], MPApi::INFO, 0);
+        return isset($result['mercadopago_orders_id']) ? $result['mercadopago_orders_id'] : false;
     }
 
     public function insertMercadoPagoOrder($cart_id, $order_id, $valid, $ipn_status)
     {
         $insertOrder = 'INSERT INTO ' .
-        _DB_PREFIX_ . 'mercadopago_orders (cart_id, order_id, create_date, valid, ipn_status) VALUES(' .
+        _DB_PREFIX_ . 'mercadopago_orders (cart_id, order_id, added, valid, ipn_status) VALUES(' .
         $cart_id . ','   . $order_id. ',\'' . pSql(date('Y-m-d h:i:s')) . '\','.$valid.',\''.$ipn_status.'\')';
-        $returnInsert = Db::getInstance(_PS_USE_SQL_SLAVE_)->Execute($insertOrder);
+
+        PrestaShopLogger::addLog('MercadoPago :: ======VALIDAR insertMercadoPagoOrder====== = '.$insertOrder, MPApi::INFO, 0);
+
+        try {
+            $returnInsert = Db::getInstance(_PS_USE_SQL_SLAVE_)->Execute($insertOrder);
+            PrestaShopLogger::addLog('MercadoPago :: ======returnInsert===== = ', MPApi::INFO, 0);
+        } catch (Exception $e) {
+            PrestaShopLogger::addLog('MercadoPago :: ======returnInsert erro===== = '.$e->getMessage(), MPApi::ERROR, 0);
+        }
+
+
+        PrestaShopLogger::addLog('MercadoPago :: ======VALIDAR insertMercadoPagoOrder====== = '.$returnInsert, MPApi::INFO, 0);
 
         return $returnInsert;
     }
