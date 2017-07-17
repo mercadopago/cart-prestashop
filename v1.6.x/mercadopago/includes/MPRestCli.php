@@ -27,7 +27,7 @@
 include_once 'MPApi.php';
 class MPRestCli
 {
-    static $check_loop = 0;
+    private static $check_loop = 0;
     const API_BASE_SETTINGS_URL = 'http://localhost:8080';
 
     const API_BASE_URL = 'https://api.mercadopago.com';
@@ -132,7 +132,6 @@ class MPRestCli
         $connect = self::getConnect($uri, $method, $content_type, $uri_base);
         $message = null;
         $payloads = null;
-        $endpoint = null;
         $errors = array();
         if ($data) {
             self::setData($connect, $data, $content_type);
@@ -146,8 +145,8 @@ class MPRestCli
             );
 
         if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
-            UtilMercadoPago::logMensagem('MercadoPago.exec :: data = '.Tools::jsonEncode($data), MPApi::INFO);
-            UtilMercadoPago::logMensagem('MercadoPago.exec :: response = '.$api_result, MPApi::INFO);
+            //UtilMercadoPago::logMensagem('MercadoPago.exec :: data = '.Tools::jsonEncode($data), MPApi::INFO);
+            //UtilMercadoPago::logMensagem('MercadoPago.exec :: response = '.$api_result, MPApi::INFO);
         }
 
         if ($response['status'] == 0) {
@@ -162,9 +161,11 @@ class MPRestCli
                         $message = $response['response']['message'];
                     }
                     if (isset($response['response']['cause'])) {
-                        if (isset($response['response']['cause']['code']) && isset($response['response']['cause']['description'])) {
-                            $message .= " - " . $response['response']['cause']['code'] . ': ' . $response['response']['cause']['description'];
-                        } else if (is_array($response['response']['cause'])) {
+                        if (isset($response['response']['cause']['code']) &&
+                        isset($response['response']['cause']['description'])) {
+                            $message .= " - " . $response['response']['cause']['code'] . ': ' .
+                            $response['response']['cause']['description'];
+                        } elseif (is_array($response['response']['cause'])) {
                             foreach ($response['response']['cause'] as $cause) {
                                 $message .= " - " . $cause['code'] . ': ' . $cause['description'];
                             }
@@ -175,12 +176,13 @@ class MPRestCli
                     $payloads = Tools::jsonEncode($data);
                 }
                 $errors[] = array(
-                    "endpoint" => $uri_base,
+                    "endpoint" => $uri,
                     "message" => $message,
                     "payloads" => $payloads
                 );
                 MPApi::sendErrorLog($response['status'], $errors);
-                UtilMercadoPago::logMensagem('MercadoPago::exec = '.Tools::jsonEncode($response['response']), MPApi::ERROR);
+                UtilMercadoPago::logMensagem('MercadoPago::exec = '.
+                Tools::jsonEncode($response['response']), MPApi::ERROR);
             }
         }
         self::$check_loop = 0;

@@ -292,10 +292,10 @@
 				<div class="">
 					<input type="text" size="33" name="MERCADOPAGO_CREDITCARD_BANNER" value="{$creditcard_banner|escape:'htmlall':'UTF-8'}" />
 				</div>
-				<br/>
-				<!-- <label>{l s='New Checkout: ' mod='mercadopago'}</label>
+				<!--<br/>
+				<label>{l s='New Checkout: ' mod='mercadopago'}</label>
 				<div class="">
-					<select name="MERCADOPAGO_CHECKOUT_2" id="checkout_2" disabled="true">
+					<select name="MERCADOPAGO_CHECKOUT_2" id="checkout_2">
 						<option value="true">{l s='Yes' mod='mercadopago'}</option>
 						<option value="false" selected>{l s='No' mod='mercadopago'} </option>
 					</select>
@@ -401,14 +401,13 @@
 					<br>
 					<h3>{l s='Settings Mercado Envios' mod='mercadopago'}</h3>
 						<ul>
-							<li><h4>{l s='Mercado Envios works only with Checkout Standard' mod='mercadopago'}</h4>
+							<li><h3>{l s='Mercado Envios works only with Checkout Standard' mod='mercadopago'}</h3>
 							{if $country == 'MLA'}
-									<li><h4><a target="_blank" href="https://www.mercadopago.com.ar/envios">Activa MercadoEnvíos</a></h4></li>
-									<li><h4>
-									Consulta los <a target="_blank" href="https://www1.oca.com.ar/ocaexpresspak/help/serviviosbasicos.asp">valores admitidos por OCA</a>.</h4> </li>
+									<li><h3><a target="_blank" href="https://www.mercadopago.com.ar/envios">Activa MercadoEnvíos</a></h3></li>
+									<li><h3>
+									Consulta los <a target="_blank" href="https://www1.oca.com.ar/ocaexpresspak/help/serviviosbasicos.asp">valores admitidos por OCA</a>.</h3> </li>
 							{/if}
 							{if $country == 'MLM'}
-								<ul>
 									<li>
 										<h3><a target="_blank" href="https://www.mercadopago.com.mx/envios">Activa MercadoEnvíos</a></h3>
 									</li>

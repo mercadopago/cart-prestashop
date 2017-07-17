@@ -23,14 +23,15 @@
 	*  International Registered Trademark & Property of MercadoPago
 	*}
 	<script defer type="text/javascript"
-	src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/jquery.dd.js"></script>	
+	src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/jquery.dd.js"></script>
 	<div class="panel">
-
+			{if $statusOrder == "Pendente" || $showPoint == "true" || isset($status)}
 			<div class="row">
 				<img class="logo_cupom" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">
 			</div>
 			<br>
 			<br>
+			{/if}
 			<div class="row">
 				<div class="col-md-12"> <span id="show_message" style="display: none;"> </span> </div>
 				<div class="col-md-12" style="display: none;" id="show_message_waiting">

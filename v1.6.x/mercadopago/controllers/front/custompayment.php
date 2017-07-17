@@ -29,6 +29,10 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 {
     public function initContent()
     {
+        error_log("entrou aqui no initContent");
+        error_log(print_r($_REQUEST['mercadopago_custom']));
+        die;
+
         $this->display_column_left = false;
         parent::initContent();
         $this->placeOrder();

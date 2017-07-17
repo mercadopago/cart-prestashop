@@ -413,5 +413,12 @@
     margin-bottom: 10px;
 }
 
+.card{
+	margin-left:0px !important;
+}
+
+.boleto-frame{
+	width: 100% !important;
+}
 
 
