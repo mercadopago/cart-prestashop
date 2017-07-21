@@ -89,7 +89,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
-        $this->version = '3.4.13';
+        $this->version = '3.4.14';
         $this->currencies = true;
         //$this->currencies_mode = 'radio';
         $this->need_instance = 0;
@@ -306,7 +306,7 @@ class MercadoPago extends PaymentModule
 
             return false;
         }
-
+        $this->dropTables();
         if (!parent::install() || !$this->createStates() || !$this->registerHook('payment') ||
             !$this->registerHook('paymentReturn') || !$this->registerHook('displayHeader') ||
             !$this->registerHook('displayOrderDetail')
@@ -673,10 +673,19 @@ class MercadoPago extends PaymentModule
         }
     }
 
+    private function dropTables()
+    {
+        // Exclui as tabelas
+        $sql = "DROP TABLE IF EXISTS `"._DB_PREFIX_."mercadopago_orders`;";
+        Db::getInstance()->execute($sql);
+    }
+
     public function uninstall()
     {
         $this->removeMercadoEnvios();
         $this->uninstallModule();
+        $this->dropTables();
+
         // continue the states
         if (!$this->uninstallPaymentSettings() || !Configuration::deleteByName('MERCADOPAGO_PUBLIC_KEY') ||
              !Configuration::deleteByName('MERCADOPAGO_CATEGORY') ||
@@ -2540,9 +2549,7 @@ class MercadoPago extends PaymentModule
                     $displayName = $this->setNamePaymentType($payment_type);
                     $existOrderMercadoPago = $this->selectMercadoPagoOrder($id_cart);
 
-                    if ($cart->OrderExists() == false &&
-                        ! $existOrderMercadoPago
-                        ) {
+                    if (! $existOrderMercadoPago) {
                         $this->insertMercadoPagoOrder($id_cart, 0, 0, $payment_status);
                         error_log("======VALIDAR validateOrder======id_cart==".$id_cart);
                         PrestaShopLogger::addLog('MercadoPago :: ======VALIDAR validateOrder ID_CART====== = '.$id_cart, MPApi::INFO, 0);

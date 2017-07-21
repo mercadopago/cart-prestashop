@@ -139,10 +139,9 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                         PrestaShopLogger::addLog("====carregou o status 1=====", MPApi::INFO, 0);
                     }
                     PrestaShopLogger::addLog("====1=====", MPApi::INFO, 0);
-                    if (!$existOrderMercadoPago ||
-                        !$cart->OrderExists()) {
-                        PrestaShopLogger::addLog("====2=====", MPApi::INFO, 0);
+                    if (!$existOrderMercadoPago) {
                         $mercadopago->insertMercadoPagoOrder($id_cart, 0, 0, $payment_status);
+                        PrestaShopLogger::addLog("====insert =====".$id_cart, MPApi::INFO, 0);
                         PrestaShopLogger::addLog("====3=====", MPApi::INFO, 0);
                         UtilMercadoPago::logMensagem(
                             '=====MercadoPagoStandardReturnModuleFrontController::status===='.Configuration::get($order_status),
