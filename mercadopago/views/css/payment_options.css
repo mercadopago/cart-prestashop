@@ -1,0 +1,8 @@
+.payment-option {
+	margin-bottom: 1.5em !important;
+	width: 105%;
+}
+.payment-option img {
+	height: 40px;
+	margin-top: -5px;
+}
