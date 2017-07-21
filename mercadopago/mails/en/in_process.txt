@@ -1,0 +1,13 @@
+Olá {firstname} {lastname},
+
+Pedido {order_name} - Pagamento em análise. 
+
+O pedido {order_name} foi processado com sucesso. Em menos de 2 dias úteis você será avisado por e-mail se foi creditado ou se precisarmos de mais informações.
+
+Você pode revisar o seu pedido e fazer o download de sua fatura na seção "Histórico de Pedidos" de sua conta clicando em "Minha conta" pelo nosso shop.
+
+Se você possui conta de convidado, você pode seguir sua ordem através do link: {guest_tracking_url}
+
+{shop_name} - {shop_url}
+
+{shop_url} powered by PrestaShop&trade;
