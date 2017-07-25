@@ -22,7 +22,7 @@
 		</div>
 		<div class="col-lg-4">
 			<label class="general-tooltip">
-				{l s='When enabled, all single payment methods will be disabled44.' mod='mercadopago'}
+				{l s='When enabled, all single payment methods will be disabled.' mod='mercadopago'}
 			</label>
 		</div>
 		<div style="clear: both"></div>

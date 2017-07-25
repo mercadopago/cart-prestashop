@@ -87,7 +87,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = "mercadopago";
         $this->tab = "payments_gateways";
-        $this->version = "1.0.5";
+        $this->version = "1.0.6";
         $this->ps_versions_compliancy = array("min" => "1.7", "max" => _PS_VERSION_);
         $this->author = "Mercado Pago";
         $this->controllers = array("validationstandard", "standardreturn");
@@ -1239,13 +1239,15 @@ class MercadoPago extends PaymentModule
         error_log("======ENTROU NO hookPaymentOptions=======");
 
         if (!$this->active) {
+            error_log("======saiu 1=======");
             return;
         }
-
+        error_log("======saiu 2=======");
         if (!$this->checkCurrency($params["cart"])) {
+            error_log("======saiu 3=======");
             return;
         }
-
+        error_log("======saiu 4=======");
         $payment_options = [
             $this->getExternalPaymentOption()
         ];

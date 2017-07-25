@@ -274,13 +274,13 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
 
     private function getURLReturn($cart_id, $mercadopagoSettings, $typeReturn)
     {
-
         error_log("=====URL DE RETORNO=====".$this->context->link->getModuleLink(
             'mercadopago',
             'validationstandard',
-            array(),
-            $mercadopagoSettings['ssl_enabled'],
-            Configuration::get('PS_SSL_ENABLED'),
+            array('checkout' => 'standard',
+            'cart_id' => $cart_id,
+            'typeReturn' => $typeReturn),
+            (bool)$mercadopagoSettings['ssl_enabled'] && (bool)Configuration::get('PS_SSL_ENABLED'),
             null,
             null,
             false
@@ -289,9 +289,10 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         return $this->context->link->getModuleLink(
             'mercadopago',
             'validationstandard',
-            array(),
-            $mercadopagoSettings['ssl_enabled'],
-            Configuration::get('PS_SSL_ENABLED'),
+            array('checkout' => 'standard',
+            'cart_id' => $cart_id,
+            'typeReturn' => $typeReturn),
+            (bool)$mercadopagoSettings['ssl_enabled'] && (bool)Configuration::get('PS_SSL_ENABLED'),
             null,
             null,
             false
