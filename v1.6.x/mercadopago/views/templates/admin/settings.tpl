@@ -308,7 +308,7 @@
 					</legend>
 					<label>{l s='Active: ' mod='mercadopago'}</label>
 					<div class="">
-						<select name="MERCADOPAGO_{$offline_payment|upper|escape:'htmlall':'UTF-8'}_ACTIVE" class="ticket" id="{$offline_payment|escape:'htmlall':'UTF-8'}_active">
+						<select name="MERCADOPAGO_{$offline_payment|upper|escape:'htmlall':'UTF-8'}_ACTIVE" class="ticket" id="MERCADOPAGO_{$offline_payment|escape:'htmlall':'UTF-8'}_ACTIVE">
 							<option value="true">{l s='Yes' mod='mercadopago'} </option>
 							<option value="false">{l s='No' mod='mercadopago'} </option>
 						</select>
@@ -574,7 +574,7 @@
 		{/foreach}
 
 		{foreach from=$offline_payment_settings key=offline_payment item=value}
-			document.getElementById("{$offline_payment|escape:'htmlall':'UTF-8'}_active").value = "{$value.active|escape:'htmlall':'UTF-8'}";
+			document.getElementById("MERCADOPAGO_{$offline_payment|escape:'htmlall':'UTF-8'}_ACTIVE").value = "{$value.active|escape:'htmlall':'UTF-8'}";
 		{/foreach}
 	}
 

@@ -89,7 +89,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
-        $this->version = '3.4.14';
+        $this->version = '3.4.15';
         $this->currencies = true;
         //$this->currencies_mode = 'radio';
         $this->need_instance = 0;
@@ -1012,6 +1012,9 @@ class MercadoPago extends PaymentModule
 
                     $op_active = Tools::getValue($op_active_variable);
                     // save setting per payment_method
+                    error_log("==submit == " . $op_active_variable);
+                    error_log("==submit == " . $op_active);
+
                     Configuration::updateValue($op_active_variable, $op_active);
 
                     $offline_payment_settings[$offline_payment['id']] = array(
@@ -1073,7 +1076,13 @@ class MercadoPago extends PaymentModule
             if ($offline_payment['payment_type_id'] == "ticket") {
                 $ticket_active = Configuration::get('MERCADOPAGO_'.
                 Tools::strtoupper($offline_payment['id'].'_ACTIVE'));
-                Configuration::updateValue('MERCADOPAGO_ACTIVE_BOLETO', $ticket_active);
+                // Configuration::updateValue('MERCADOPAGO_ACTIVE_BOLETO', $ticket_active);
+
+                error_log("=====ticket======" . 'MERCADOPAGO_'.
+                Tools::strtoupper($offline_payment['id'].'_ACTIVE') . " ===== ativo =====" . $ticket_active);
+
+                Configuration::updateValue('MERCADOPAGO_'.
+                Tools::strtoupper($offline_payment['id'].'_ACTIVE'), $ticket_active);
             }
         }
         $test_user = '';

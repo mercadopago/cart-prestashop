@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.4.14';
+    const VERSION = '3.4.15';
 
     /* Info */
     const INFO = 1;
@@ -526,7 +526,7 @@ class MPApi
         $data = array(
             "code" => $code,
             "module" => "PrestaShop",
-            "module_version" => "3.4.14",
+            "module_version" => "3.4.15",
             "url_store" => $_SERVER['HTTP_HOST'],
             "errors" => $errors
         );
