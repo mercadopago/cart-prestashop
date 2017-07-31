@@ -254,15 +254,15 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         $data['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentMethods();
         $data['payment_methods']['excluded_payment_types'] = array();
         $data['payment_methods']['installments'] = (integer) $mercadopagoSettings['installments'];
+
         $data['notification_url'] = $this->context->link->getModuleLink(
             'mercadopago',
             'standardreturn',
-            array(),
-            $mercadopagoSettings['ssl_enabled'],
-            null,
-            null,
-            false
-        ).'?checkout=standard&cart_id='.$cart->id;
+            array('checkout' => 'standard',
+            'cart_id' => $cart_id),
+            true
+        );
+
         // swap to payer index since customer is only for transparent
         $data['customer']['name'] = $data['customer']['first_name'];
         $data['customer']['surname'] = $data['customer']['last_name'];
@@ -274,29 +274,18 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
 
     private function getURLReturn($cart_id, $mercadopagoSettings, $typeReturn)
     {
-        error_log("=====URL DE RETORNO=====".$this->context->link->getModuleLink(
+        $statusUrl = $this->context->link->getModuleLink(
             'mercadopago',
             'validationstandard',
             array('checkout' => 'standard',
             'cart_id' => $cart_id,
             'typeReturn' => $typeReturn),
-            (bool)$mercadopagoSettings['ssl_enabled'] && (bool)Configuration::get('PS_SSL_ENABLED'),
-            null,
-            null,
-            false
-        ).'?checkout=standard&cart_id='.$cart_id.'&typeReturn='.$typeReturn);
+            true
+        );
 
-        return $this->context->link->getModuleLink(
-            'mercadopago',
-            'validationstandard',
-            array('checkout' => 'standard',
-            'cart_id' => $cart_id,
-            'typeReturn' => $typeReturn),
-            (bool)$mercadopagoSettings['ssl_enabled'] && (bool)Configuration::get('PS_SSL_ENABLED'),
-            null,
-            null,
-            false
-        ).'?checkout=standard&cart_id='.$cart_id.'&typeReturn='.$typeReturn;
+        error_log("=====URL DE RETORNO NOVA=====".$statusUrl);
+
+        return $statusUrl;
     }
 
     private function redirectError($returnMessage)

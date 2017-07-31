@@ -161,11 +161,8 @@ class MercadoPago extends PaymentModule
                 'mercadopago',
                 'cancelorder',
                 array(),
-                Configuration::get('PS_SSL_ENABLED'),
-                null,
-                null,
-                false
-            ),
+                true
+            )
         );
         $data["payment_pos_action_url"] = $this->context->link->getModuleLink(
             'mercadopago',
