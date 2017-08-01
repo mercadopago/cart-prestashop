@@ -151,7 +151,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 {if $mercadoenvios_activate == 'false' && $creditcard_active == 'true'}
 
 	<div class="card row">
-		<div class="col-xs-12 col-md-6">
+		<div class="col-xs-12">
 			<div class="mp-form-custom">
 
 				<div class="row">
@@ -387,7 +387,135 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	</div>
 	{/if}
 
-	{if $country == 'MLB' || $country == 'MLM' || $country == 'MPE' || $country ==
+	{if $country == 'MLB'}
+		{foreach from=$offline_payment_settings key=offline_payment item=value}
+			{if $value.active == "true" && $mercadoenvios_activate == 'false'}
+			<form action="{$custom_action_url|escape:'htmlall':'UTF-8'}" method="post"
+							id="form-{$offline_payment|escape:'htmlall':'UTF-8'}" class="formTicket">
+				<input name="email" type="hidden" value="{$ticket.email|escape:'htmlall':'UTF-8'}"/> 
+				<input name="mercadopago_coupon" type="hidden"
+					class="mercadopago_coupon_ticket" /> 
+				<input
+					name="payment_method_id" type="hidden"
+					value="{$offline_payment|escape:'htmlall':'UTF-8'}" />
+				<div class="col-xs-12">
+						<div class="mp-form-custom">
+
+						<div class="row">
+							<div class="col title">
+								<span class="payment-label">{l s='BOLETO'
+									mod='mercadopago'} </span> <br/> <span class="poweredby">{l s='Powered
+									by' mod='mercadopago'}</span> <img class="logo"
+									src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">
+							</div>
+							<div class="col title">
+								<img src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/boleto.png" />
+							</div>
+						</div>
+
+						<div class="alert">
+						  INFORMAÇÕES SOLICITADAS EM CONFORMIDADE COM AS NORMAS DAS CIRCULARES NRO. 3.461/09, 3.598/12 E 3.656/13 DO BANCO CENTRAL DO BRASIL.
+						</div>
+						<div class="container">
+						    <div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="firstname">Nome:<em>*</em>
+										</label> <input  class="form-control" id="firstname" name="firstname" required="true" type="text" maxlength="50" value="{$ticket.firstname|escape:'htmlall':'UTF-8'}" />
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="lastname">Sobrenome:<em>*</em>
+										</label> <input  class="form-control" id="lastname" name="lastname" required="true" type="text" maxlength="50" value="{$ticket.lastname|escape:'htmlall':'UTF-8'}"/>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="cpf">CPF:<em>*</em>
+										</label> <input  class="form-control" id="cpf" name="cpf" required="true" type="text" maxlength="50" value="{$ticket.cpf|escape:'htmlall':'UTF-8'}"/>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-8">
+									<div class="form-group">
+										<label for="address">Endereço:<em>*</em>
+										</label> <input class="form-control" id="address"  name="address" required="true" type="text" maxlength="50" value="{$ticket.address|escape:'htmlall':'UTF-8'}"/>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="number">Número:<em>*</em>
+										</label> <input  class="form-control" id="number" name="number" required="true" type="text" maxlength="50" value="{$ticket.number|escape:'htmlall':'UTF-8'}"/>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="city">Cidade:<em>*</em>
+										</label> <input  class="form-control" required="true" id="city" name="city" type="text" maxlength="50" value="{$ticket.city|escape:'htmlall':'UTF-8'}"/>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="state">Estado</label>
+									    <select class="form-control" id="state" required="true" name="state">
+			                              <option value="{$ticket.state|escape:'htmlall':'UTF-8'}" selected="selected">{$ticket.state|escape:'htmlall':'UTF-8'}</option>
+			                              <option value="AC">Acre</option>
+			                              <option value="AL">Alagoas</option>
+			                              <option value="AP">Amapá</option>
+			                              <option value="AM">Amazonas</option>
+			                              <option value="BA">Bahia</option>
+			                              <option value="CE">Ceará</option>
+			                              <option value="DF">Distrito Federal</option>
+			                              <option value="ES">Espírito Santo</option>
+			                              <option value="GO">Goiás</option>
+			                              <option value="MA">Maranhão</option>
+			                              <option value="MT">Mato Grosso</option>
+			                              <option value="MS">Mato Grosso do Sul</option>
+			                              <option value="MG">Minas Gerais</option>
+			                              <option value="PA">Pará</option>
+			                              <option value="PB">Paraíba</option>
+			                              <option value="PR">Paraná</option>
+			                              <option value="PE">Pernambuco</option>
+			                              <option value="PI">Piauí</option>
+			                              <option value="RJ">Rio de Janeiro</option>
+			                              <option value="RN">Rio Grande do Norte</option>
+			                              <option value="RS">Rio Grande do Sul</option>
+			                              <option value="RO">Rondônia</option>
+			                              <option value="RA">Roraima</option>
+			                              <option value="SC">Santa Catarina</option>
+			                              <option value="SP">São Paulo</option>
+			                              <option value="SE">Sergipe</option>
+			                              <option value="TO">Tocantins</option>
+									    </select>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="postcode">Cep:<em>*</em>
+										</label> <input  class="form-control" required="true" id="postcode" name="postcode" type="text" maxlength="50" value="{$ticket.postcode|escape:'htmlall':'UTF-8'}"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-bottom">
+								<button class="ch-btn ch-btn-big es-button submit"
+									value="Gerar Boleto" type="submit" class="create-boleto"
+									id="btnSubmit">Gerar Boleto</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+			{/if}
+		{/foreach}
+	{/if}
+
+	{if $country == 'MLM' || $country == 'MPE' || $country ==
 	'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV'}
 	{foreach from=$offline_payment_settings key=offline_payment item=value}
 	{if $value.active == "true" && $mercadoenvios_activate == 'false'}
@@ -1571,7 +1699,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				var cards = response.cards;
 
 				if (cards.length > 0) {
-					html_options += "<optgroup label='Seu cartão'>";
+					html_options += "<optgroup label='{l s='Your card' mod='mercadopago'}'>";
 					for (var i = 0; i < cards.length; i++) {
 						html_options += "<option value='"+ cards[i].id +
 								"'  payment_type_id='" + cards[i].payment_method.payment_type_id +

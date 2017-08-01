@@ -36,10 +36,11 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 
     private function placeOrder()
     {
-        // card_token_id
         $mercadopago = $this->module;
 
         $response = $mercadopago->execPayment($_POST);
+
+        error_log("===response====" . Tools::jsonEncode($response));
 
         $order_status = null;
         if (array_key_exists('status', $response)) {
@@ -134,6 +135,9 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 $uri .= '&payment_method_id='.$response['payment_method_id'].'&payment_type='.
                      $response['payment_type_id'].'&boleto_url='.
                      urlencode($response['transaction_details']['external_resource_url']);
+                if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLB') {
+                    $this->insertOrUpdateInformationsTicket($_POST, $cart->id);
+                }
             }
             $order_payments[0]->save();
             Tools::redirectLink($uri);
@@ -173,6 +177,49 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
             }
             $this->context->smarty->assign($data);
             $this->setTemplate('error.tpl');
+        }
+    }
+    public function insertOrUpdateInformationsTicket($post, $cart_id)
+    {
+        error_log("=====insertOrUpdateInformationsTicket=====");
+        $mercadopago = $this->module;
+        $resultFieldsTicket = $mercadopago->getFieldsTicket($post['email']);
+
+        if ($resultFieldsTicket) {
+
+            $update = 'UPDATE ps_6_13_mercadopago_boleto SET '.
+            'cart_id = \''.$cart_id . '\', ' .
+            'added = \''.pSql(date('Y-m-d h:i:s')) . '\', ' .
+            'firstname = \''.$post['firstname'] . '\', ' .
+            'lastname = \''.$post['lastname'] . '\', ' .
+            'address = \''.$post['address'] . '\', ' .
+            'number = '.$post['number'] . ','.
+            'city = \''.$post['city'] . '\',' .
+            'state = \''.$post['state'] . '\',' .
+            'postcode = \''.$post['postcode'] . '\'' .
+            'WHERE email = \''. $post['email'] . '\';';
+
+            error_log('===update ticket===' . $update);
+            Db::getInstance(_PS_USE_SQL_SLAVE_)->Execute($update);
+
+        } else {
+            error_log("=====insertOrUpdateInformationsTicket 111=====");
+            $insert = 'INSERT INTO ' .
+            _DB_PREFIX_ . 'mercadopago_boleto (cpf, email, cart_id, added, firstname,
+            lastname, address, number, city, state, postcode) VALUES(' .
+            '\''.$post['cpf'] .'\',\'' .$post['email']. '\'' .
+            ',' . $cart_id . ',\'' . pSql(date('Y-m-d h:i:s')) . '\'' .
+            ',\''.$post['firstname'] . '\',\'' .$post['lastname']. '\''.
+            ',\''.$post['address'] . '\',\'' .$post['number']. '\''.
+            ',\''.$post['city'] . '\',\'' .$post['state']. '\''.
+            ',\'' .$post['postcode']. '\''.
+            ')';
+
+            error_log('===insert ticket===' . $insert);
+
+            Db::getInstance(_PS_USE_SQL_SLAVE_)->Execute($insert);
+            //error_log('===update ticket===' , $insert);
+            //update()
         }
     }
 }

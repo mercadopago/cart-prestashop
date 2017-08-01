@@ -89,7 +89,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
-        $this->version = '3.4.15';
+        $this->version = '3.5.0';
         $this->currencies = true;
         //$this->currencies_mode = 'radio';
         $this->need_instance = 0;
@@ -510,6 +510,89 @@ class MercadoPago extends PaymentModule
         return true;
     }
 
+    private function createTableBoleto()
+    {
+        $sql = " CREATE TABLE IF NOT EXISTS " . _DB_PREFIX_ .  "mercadopago_boleto (
+              `mercadopago_id` int(11) unsigned NOT NULL auto_increment,
+              `cpf` varchar(30),
+              `email` varchar(50),
+              `cart_id` int(15),
+              `added` datetime,
+              `firstname` varchar(100),
+              `lastname` varchar(100),
+              `address` varchar(100),
+              `number` int(15),
+              `city` varchar(50),
+              `state` varchar(5),
+              `postcode` varchar(30),
+              PRIMARY KEY  (`mercadopago_id`, `email`)
+            ) ENGINE=". _MYSQL_ENGINE_ .
+            ' DEFAULT CHARSET=utf8  auto_increment=1;';
+        error_log( $sql);
+        try {
+            if (! Db::getInstance()->Execute($sql)) {
+                error_log("ocorreu um erro na criação das tabelas de boleto");
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log("Exception === " .$e->getMessage());
+        }
+        error_log("criação das tabelas de boleto");
+        return true;
+    }
+
+    private function getInfomationsForTicket($id_address_invoice)
+    {
+        $retorno = array();
+        $fields = $this->getFields($id_address_invoice);
+        $email = $fields['email'];
+        $resultFieldsTicket = $this->getFieldsTicket($email);
+        error_log("=== retorno do Select resultFieldsTicket === " . Tools::jsonEncode($resultFieldsTicket));
+        if ($resultFieldsTicket) {
+            $retorno = $resultFieldsTicket;
+            error_log("retorno do Select");
+        } else {
+           $retorno = $fields;
+        }
+        return $retorno;
+    }
+
+    private function getFields($id_address_invoice)
+    {
+        $customer_fields = Context::getContext()->customer->getFields();
+
+        $address_invoice = new Address((integer) $id_address_invoice);
+
+        error_log("===id_state====" . $address_invoice->id_state);
+        error_log("===getIsoById====" . UtilMercadoPago::getIsoCodeStateById($address_invoice->id_state));
+
+        $retorno = array(
+            'email' => $customer_fields['email'],
+            'firstname' => $customer_fields['firstname'],
+            'cpf' => isset($customer_fields['document']) ? $customer_fields['document'] : '',
+            'lastname' => $customer_fields['lastname'],
+            'lastname' => $customer_fields['lastname'],
+            'address' => $address_invoice->address1,
+            'number' => '',
+            'city' => $address_invoice->city,
+            'postcode' => $address_invoice->postcode,
+            'state' => UtilMercadoPago::getIsoCodeStateById($address_invoice->id_state)
+        );
+
+        return $retorno;
+    }
+
+    public function getFieldsTicket($email)
+    {
+        $select = 'SELECT cpf, email, firstname, '.
+        'lastname, address, number, city, state, postcode FROM '. _DB_PREFIX_ .
+        'mercadopago_boleto where email = \''. $email . '\'';
+
+        $result = Db::getInstance()->executeS($select);
+
+        return isset($result[0]['cpf']) ? $result[0] : false;
+    }
+
     public function hookDisplayOrderDetail($params)
     {
         if ($params['order']->module == 'mercadopago') {
@@ -708,7 +791,6 @@ class MercadoPago extends PaymentModule
              !Configuration::deleteByName('MERCADOPAGO_CARRIER') ||
              !Configuration::deleteByName('MERCADOPAGO_CARRIER_ID_1') ||
              !Configuration::deleteByName('MERCADOPAGO_CARRIER_ID_2') ||
-
              !Configuration::deleteByName('MERCADOPAGO_DISCOUNT_PERCENT') ||
              !Configuration::deleteByName('MERCADOPAGO_ACTIVE_CREDITCARD') ||
              !Configuration::deleteByName('MERCADOPAGO_ACTIVE_BOLETO') ||
@@ -894,6 +976,12 @@ class MercadoPago extends PaymentModule
 
                     $two_cards = $configCard['response']['two_cards'];
                     Configuration::updateValue('MERCADOPAGO_TWO_CARDS', $two_cards);
+
+                    error_log("current_country === " . $current_country);
+                    if ($current_country == 'MLB') {
+
+                        $this->createTableBoleto();
+                    }
                 }
             } catch (Exception $e) {
                 PrestaShopLogger::addLog(
@@ -957,6 +1045,7 @@ class MercadoPago extends PaymentModule
                 // current settings
                 $payment_methods_settings[$payment_method['id']] = Configuration::get($pm_variable_name);
             }
+
 
             if (!$exclude_all) {
                 $payment_methods_settings = array();
@@ -1341,7 +1430,10 @@ class MercadoPago extends PaymentModule
 
         $creditcard_active = Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE');
         $mercadoenvios_activate = Configuration::get('MERCADOENVIOS_ACTIVATE');
-        $boleto_active = Configuration::get('MERCADOPAGO_BOLETO_ACTIVE');
+        $boleto_active = Configuration::get('MERCADOPAGO_CUSTOM_BOLETO');
+
+        error_log("TICKET ATIVO ==== " . $boleto_active);
+
         if ($mercadoenvios_activate == 'true') {
             $creditcard_active = 'false';
             $boleto_active = 'false';
@@ -1469,8 +1561,10 @@ class MercadoPago extends PaymentModule
                 );
             }
 
-
             $data['offline_payment_settings'] = $offline_payment_settings;
+            if ($boleto_active == "true" && Configuration::get('MERCADOPAGO_COUNTRY') == 'MLB') {
+                $data['ticket'] = $this->getInfomationsForTicket($cart->id_address_invoice);
+            }
 
             if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLM' ||
                 Configuration::get('MERCADOPAGO_COUNTRY') == 'MPE'
@@ -1492,10 +1586,6 @@ class MercadoPago extends PaymentModule
                 $data['site_id'] = Configuration::get('MERCADOPAGO_COUNTRY');
                 $pageReturn = '/views/templates/hook/credit_card_form.tpl';
             }
-
-
-            error_log(print_r($data, true));
-
             $this->context->smarty->assign($data);
             //$this->context->smarty->assign($this->setPreModuleAnalytics());
 
@@ -1618,6 +1708,36 @@ class MercadoPago extends PaymentModule
         $result = $this->mercadopago->createCustomPayment($preferences);
 
         return $result['response'];
+    }
+
+    public function getViewInfomationsTicket($post)
+    {
+        $email = $post['email'];
+        $firstname = $post['firstname'];
+        $cpf = $post['cpf'];
+        $lastname = $post['lastname'];
+        $address = $post['address'];
+        $number = $post['number'];
+        $city = $post['city'];
+        $postcode = UtilMercadoPago::getCodigoPostal($post['postcode']);
+        $state = $post['state'];
+        $retorno = array();
+
+        $retorno['first_name'] = $firstname;
+        $retorno['last_name'] = $lastname;
+        $retorno['email'] = $email;
+
+        $retorno['identification']['type'] = "CPF";
+        $retorno['identification']['number'] = $cpf;
+
+        $retorno['address']['zip_code'] = $postcode;
+        $retorno['address']['street_name'] = $address;
+        $retorno['address']['street_number'] = (int) $number;
+        $retorno['address']['neighborhood'] = $state;
+        $retorno['address']['city'] = $city;
+        $retorno['address']['federal_unit'] = $state;
+
+        return $retorno;
     }
 
     /**
@@ -1836,6 +1956,13 @@ class MercadoPago extends PaymentModule
             //$payment_preference['payer']['entity_type'] = "individual";
         }
 
+        error_log("payment_method_id===".$post['payment_method_id']);
+
+        if ($post['payment_method_id'] == 'bolbradesco') {
+            $payment_preference['payer'] = $this->getViewInfomationsTicket($post);
+        }
+
+
         if (isset($post['opcaoPagamentoCreditCard']) && $post['opcaoPagamentoCreditCard'] == 'Cards') {
             // salva o cartão
             $payment_preference['metadata'] = array(
@@ -1952,9 +2079,10 @@ class MercadoPago extends PaymentModule
 
         $payment_preference['statement_descriptor'] = 'MERCADOPAGO';
 
+        error_log(Tools::jsonEncode($payment_preference));
+
         return $payment_preference;
     }
-
 
     private function getPrestashopPreferencesStandard()
     {
@@ -2311,7 +2439,6 @@ class MercadoPago extends PaymentModule
         if ($checkout == 'standard' && $topic == 'merchant_order' && $id > 0) {
             $result = $this->mercadopago->getMerchantOrder($id);
             $merchant_order_info = $result['response'];
-            error_log(print_r($merchant_order_info,true));
             // check value
             $cart = new Cart($merchant_order_info['external_reference']);
 
@@ -2617,7 +2744,6 @@ class MercadoPago extends PaymentModule
                     error_log("OBJETO ORDER ESTA INSTANCIADO");
                     // update order payment information
                     $order_payments = $order->getOrderPayments();
-                    error_log(print_r($order_payments));
                     foreach ($order_payments as $order_payment) {
                         $order_payment->transaction_id = implode(' / ', $payment_ids);
                         if ($payment_type == 'credit_card') {
@@ -2954,9 +3080,7 @@ class MercadoPago extends PaymentModule
             if ($status == 200) {
                 $mensagem = $this->l('Mercado Envios not loading.');
             } else {
-                error_log(print_r($response['response'], true));
                 $error = $response['response']['error'];
-                error_log(print_r($response['response'], true));
                 if ($error == 'invalid_zip_code') {
                     $mensagem = $this->l('Invalid zip code.');
 

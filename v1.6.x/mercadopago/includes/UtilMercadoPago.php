@@ -163,4 +163,13 @@ class UtilMercadoPago
         }
         return $color + $size;
     }
+
+    public static function getIsoCodeStateById($id_state)
+    {
+        $result = Db::getInstance()->getRow('
+        SELECT s.`iso_code` AS iso_code
+        FROM `'._DB_PREFIX_.'state` s
+        WHERE s.`id_state` = '.intval($id_state));
+        return isset($result['iso_code']) ? $result['iso_code'] : false;
+    }
 }
