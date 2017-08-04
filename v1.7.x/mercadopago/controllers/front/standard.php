@@ -258,11 +258,12 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         $data['notification_url'] = $this->context->link->getModuleLink(
             'mercadopago',
             'standardreturn',
-            array('checkout' => 'standard',
-            'cart_id' => $cart_id),
-            true
-        );
-
+            array(),
+            $mercadopagoSettings['ssl_enabled'],
+            null,
+            null,
+            false
+        ).'?checkout=standard&cart_id='.$cart->id;
         // swap to payer index since customer is only for transparent
         $data['customer']['name'] = $data['customer']['first_name'];
         $data['customer']['surname'] = $data['customer']['last_name'];
