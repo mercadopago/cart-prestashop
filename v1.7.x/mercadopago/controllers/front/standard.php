@@ -259,7 +259,7 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
             'mercadopago',
             'standardreturn',
             array('checkout' => 'standard',
-            'cart_id' => $cart_id),
+            'cart_id' => $cart->id),
             true
         );
 
