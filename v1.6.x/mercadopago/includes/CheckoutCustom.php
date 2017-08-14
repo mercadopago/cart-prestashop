@@ -41,7 +41,6 @@ class CheckoutCustom
             "label_installments" => "Installments",
             "label_choose" => "Choose",
             "label_cpf" => "CPF",
-            
             "coupon_empty" => "Please, inform your coupon code",
             'apply' => "Apply",
             'remove' => "Remove",

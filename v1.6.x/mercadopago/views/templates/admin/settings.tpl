@@ -31,22 +31,22 @@
 	<div id="settings" style="display: none">
 
 	<div id="alerts">
-	{if $version eq 6}
-		{if $success eq 'true'}
+		{if $success eq 'true' and $errors|@count == 0}
 		<div id="alert" class="bootstrap">
 			<div class="alert alert-success">
 				<button type="button" class="close" data-dismiss="alert">×</button>
 				{l s='Settings changed successfully.' mod='mercadopago'}
 			</div>
 		</div>
-		{elseif $errors|@count > 0}
-			{foreach from=$errors item=error}
+		{/if}
+		{if $errors|@count > 0}
 			<div class="bootstrap">
 				<div class="alert alert-danger">
 					<button type="button" class="close" data-dismiss="alert">×</button>
 					{l s='Settings failed to change.' mod='mercadopago'}
 				</div>
 			</div>
+			{foreach from=$errors item=error}
 			<div class="bootstrap">
 				<div class="alert alert-danger">
 					<button type="button" class="close" data-dismiss="alert">×</button>
@@ -55,23 +55,6 @@
 			</div>
 			{/foreach}
 		{/if}
-	{elseif $version eq 5}
-		{if $success eq 'true'}
-			<div class="conf">
-				{l s='Settings changed successfully.' mod='mercadopago'}
-			</div>
-		</div>
-		{elseif $errors|@count > 0}
-			<div class="error">
-				{l s='Settings failed to change.' mod='mercadopago'}
-			</div>
-			{foreach from=$errors item=error}
-			<div class="error">
-				{$error|escape:'htmlall':'UTF-8'}
-			</div>
-			{/foreach}
-		{/if}
-	{/if}
 	</div>
 	<img class="logo" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo_large.png">
 	<br>
@@ -190,23 +173,25 @@
 		<p><strong><a href="https://www.facebook.com/groups/modulos.mercadopago" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/facebook.png" width="20px;" height="20px">Facebook</a> </strong></p> 
 
 
-		<p><a href="mailto:developers@mercadopago.com.br?subject=Suport - Prestashop"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/email.png" width="20px;" height="20px">developers@mercadopago.com.br</a> </p>
+		<p><a href="mailto:modulos@mercadopago.com.br?subject=Suport - Prestashop"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/email.png" width="20px;" height="20px">modulos@mercadopago.com.br</a> </p>
 
 		<p><a href="https://www.mercadopago.com.br/developers/pt/solutions/payments/basic-checkout/test/test-payments/" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/credit_card.png" width="20px;" height="20px">{l s='Credit Card for test' mod='mercadopago'}</a></p>
 	</div>
 
 	<br>
-
-	<h3> {l s='Notes:' mod='mercadopago'}</h3>
-	<h4>{l s='- To obtain your Client Id, Client Secret, Public Key and Access Token please click on your country:' mod='mercadopago'}</h4>
-		<a href="https://www.mercadopago.com/mla/account/credentials" target="_blank"><u>{l s='Argentina' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mlb/account/credentials" target="_blank"><u>{l s='Brazil' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mco/account/credentials" target="_blank"><u>{l s='Colombia' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mlc/account/credentials" target="_blank"><u>{l s='Chile' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mlm/account/credentials" target="_blank"><u>{l s='Mexico' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mpe/account/credentials" target="_blank"><u>{l s='Peru' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank"><u>{l s='Venezuela' mod='mercadopago'}</u></a> |
-		<a href="https://www.mercadopago.com/mlu/account/credentials" target="_blank"><u>{l s='Uruguay' mod='mercadopago'}</u></a>
+	<div class="bootstrap">
+		<div class="alert alert-info">
+			<h4>{l s='- To obtain your Client Id, Client Secret, Public Key and Access Token please click on your country:' mod='mercadopago'}</h4>
+			<h3><a href="https://www.mercadopago.com/mla/account/credentials" target="_blank"><u>{l s='Argentina' mod='mercadopago'}</u></a> |
+			<a href="https://www.mercadopago.com/mlb/account/credentials" target="_blank"><u>{l s='Brazil' mod='mercadopago'}</u></a> |
+			<a href="https://www.mercadopago.com/mco/account/credentials" target="_blank"><u>{l s='Colombia' mod='mercadopago'}</u></a> |
+			<a href="https://www.mercadopago.com/mlc/account/credentials" target="_blank"><u>{l s='Chile' mod='mercadopago'}</u></a> |
+			<a href="https://www.mercadopago.com/mlm/account/credentials" target="_blank"><u>{l s='Mexico' mod='mercadopago'}</u></a> |
+			<a href="https://www.mercadopago.com/mpe/account/credentials" target="_blank"><u>{l s='Peru' mod='mercadopago'}</u></a> |
+			<a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank"><u>{l s='Venezuela' mod='mercadopago'}</u></a> |
+			<a href="https://www.mercadopago.com/mlu/account/credentials" target="_blank"><u>{l s='Uruguay' mod='mercadopago'}</u></a> </h3>
+		</div>
+	</div>
 	<form action="{$uri|escape:'htmlall':'UTF-8'}" method="post">
 		<fieldset>
 			<legend>
@@ -267,13 +252,14 @@
 				</legend>
 				<label>{l s='Public Key:' mod='mercadopago'}</label>
 				<div class="">
-					<input type="text" size="33" name="MERCADOPAGO_PUBLIC_KEY" value="{$public_key|escape:'htmlall':'UTF-8'}" />
+					<input type="text" size="60" name="MERCADOPAGO_PUBLIC_KEY" value="{$public_key|escape:'htmlall':'UTF-8'}" />
 				</div>
 				<br />
 				<label>{l s='Access Token:' mod='mercadopago'}</label>
 				<div class="">
 					<input type="text" size="60" name="MERCADOPAGO_ACCESS_TOKEN" value="{$access_token|escape:'htmlall':'UTF-8'}" />
 				</div>
+				<h3><a href="https://www.mercadopago.com/{$country|lower|escape:'htmlall':'UTF-8'}/account/credentials?type=custom" target="_blank"><u>{l s='To obtain your Public Key and Access Token please click here' mod='mercadopago'}</u></a></h3>
 			</fieldset>
 
 			<fieldset>
@@ -292,14 +278,16 @@
 				<div class="">
 					<input type="text" size="33" name="MERCADOPAGO_CREDITCARD_BANNER" value="{$creditcard_banner|escape:'htmlall':'UTF-8'}" />
 				</div>
-				<!--<br/>
+				{if $country == 'MLB'}
+				<br/>
 				<label>{l s='New Checkout: ' mod='mercadopago'}</label>
 				<div class="">
 					<select name="MERCADOPAGO_CHECKOUT_2" id="checkout_2">
 						<option value="true">{l s='Yes' mod='mercadopago'}</option>
 						<option value="false" selected>{l s='No' mod='mercadopago'} </option>
 					</select>
-				</div>-->
+				</div>
+				{/if}
 			</fieldset>
 			{foreach from=$offline_payment_settings key=offline_payment item=value}
 				<fieldset>
@@ -471,6 +459,7 @@
 					</div>
 				</fieldset>
 			{/if}
+			{if $country == 'MLB'}
 			<fieldset>
 				<legend>
 					<img src="../img/admin/contact.gif"/>{l s='Point' mod='mercadopago'}
@@ -491,6 +480,7 @@
 					</tr>
 				</table>
 			</fieldset>
+			{/if}
 			<fieldset>
 				<legend>
 					<img src="../img/admin/contact.gif" />{l s='Settings' mod='mercadopago'}

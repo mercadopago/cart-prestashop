@@ -1,3 +1,17 @@
+{** * 2007-2015 PrestaShop * * NOTICE OF LICENSE * * This source file is
+subject to the Open Software License (OSL 3.0) * that is bundled with
+this package in the file LICENSE.txt. * It is also available through the
+world-wide-web at this URL: * http://opensource.org/licenses/osl-3.0.php
+* If you did not receive a copy of the license and are unable to *
+obtain it through the world-wide-web, please send an email * to
+license@prestashop.com so we can send you a copy immediately. * *
+DISCLAIMER * * Do not edit or add to this file if you wish to upgrade
+PrestaShop to newer * versions in the future. If you wish to customize
+PrestaShop for your * needs please refer to http://www.prestashop.com
+for more information. * * @author MercadoPago * @copyright Copyright
+(c) MercadoPago [http://www.mercadopago.com] * @license
+http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
+3.0) * International Registered Trademark & Property of MercadoPago *}
 <html class="" data-ember-extension="1">
   <head>
     <link rel="stylesheet prefetch" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -45,7 +59,7 @@
               <div class="row">
                 <div class="col-xs-12 form-group">
                     <label for="cardNumber">{$form_labels.form.label_number_cart|escape:'quotes':'UTF-8'}: *</label>
-                    <input class="form-control" type="text" class="form-control" id="cardNumber" name="cardNumber" data-checkout="cardNumber">
+                    <input class="form-control" type="text" class="form-control" id="cardNumber" name="cardNumber" data-checkout="cardNumber" style="max-width:none;">
                     <span class="mp-error" id="mp-error-205" data-main="#cardNumber"> {$form_labels.error.205|escape:'quotes':'UTF-8'}  </span>
                     <span class="mp-error" id="mp-error-E301" data-main="#cardNumber"> {$form_labels.error.E301|escape:'quotes':'UTF-8'} </span>
                 </div>
@@ -54,8 +68,8 @@
               <div class="row">
                 <div class="col-xs-12 form-group">
                     <label for="cardholderName">{$form_labels.form.label_name_surname|escape:'quotes':'UTF-8'}: *</label>
-                    <input class="form-control" type="text" class="form-control" id="cardholderName" name="cardholderName" data-checkout="cardholderName">
-                    <span class="mp-form__hint">{$form_labels.form.label_alt_name_surname|escape:'quotes':'UTF-8'}.</span>
+                    <input class="form-control" type="text" class="form-control" id="cardholderName" name="cardholderName" data-checkout="cardholderName" style="max-width:none;">
+                    <em class="mp-form__hint">{$form_labels.form.label_alt_name_surname|escape:'quotes':'UTF-8'}.</em>
                     <span class="mp-error" id="mp-error-221" data-main="#cardholderName"> {$form_labels.error.221|escape:'quotes':'UTF-8'}</span>
                     <span class="mp-error" id="mp-error-316" data-main="#cardholderName"> {$form_labels.error.316|escape:'quotes':'UTF-8'} </span>
                 </div>
@@ -64,7 +78,7 @@
               <div class="row">
                 <div class="col-xs-4 form-group">
                     <label for="expiry">{$form_labels.form.label_expiration_date|escape:'quotes':'UTF-8'}: *</label>
-                    <input class="form-control" placeholder="MM/YY" type="text" id="expiry" name="expiry" data-checkout="expiry"/>
+                    <input class="form-control" placeholder="MM/YY" type="text" id="expiry" name="expiry" data-checkout="expiry" style="max-width:none;"/>
                     <span class="mp-error" id="mp-error-208" data-main="#cardExpirationMonth"> {$form_labels.error.208|escape:'quotes':'UTF-8'} </span>
                     <span class="mp-error" id="mp-error-209" data-main="#cardExpirationYear"> </span>
                     <span class="mp-error" id="mp-error-325" data-main="#cardExpirationMonth"> {$form_labels.error.325|escape:'quotes':'UTF-8'} </span>
@@ -72,7 +86,7 @@
                 </div>
                 <div class="col-xs-4 form-group">
                     <label for="securityCode">{$form_labels.form.label_security_code|escape:'quotes':'UTF-8'}: *</label>
-                    <input class="form-control" placeholder="CVC" type="text" id="securityCode" name="securityCode" data-checkout="securityCode" autocomplete="off"/>
+                    <input class="form-control" placeholder="CVC" type="text" id="securityCode" name="securityCode" data-checkout="securityCode" autocomplete="off" style="max-width:none;" />
                     <span class="mp-error" id="mp-error-224" data-main="#securityCode"> {$form_labels.error.224|escape:'quotes':'UTF-8'} </span>
                     <span class="mp-error" id="mp-error-E302" data-main="#securityCode"> {$form_labels.error.E302|escape:'quotes':'UTF-8'} </span>
                 </div>
@@ -130,7 +144,7 @@
 
               <div class="row">
                 <div class="col-xs-12 text-right">
-                  <input type="submit" class="btn btn-primary" id="btnSubmit" value="Pay" name="btnSubmit">
+                  <input type="submit" class="btn btn-primary btn-block" id="btnSubmit" value="Pagar" name="btnSubmit">
                   <!-- NOT DELETE LOADING-->
                   <div class="mp-box-inputs mp-col-25">
                     <div id="mp-box-loading">
@@ -164,21 +178,17 @@
     <div class="col-xs-12 col-md-6">
     {if $standard_active eq 'true' &&
     $preferences_url != null}
-      <div class="row">
+      <div class="row mp-form-custom">
         {if $window_type != 'iframe'} <a
           href="{$preferences_url|escape:'htmlall':'UTF-8'}" id="id-standard"
           mp-mode="{$window_type|escape:'htmlall':'UTF-8'}" name="MP-Checkout">
-          <div class="mp-form hover">
-            <div class="row">
-              <div class="col">
-                <img
-                  src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo_120_31.png"
-                  id="id-standard-logo"> <img
-                  src="{$standard_banner|escape:'htmlall':'UTF-8'}"
-                  class="mp-standard-banner" /> <span
-                  class="payment-label standard">{$custom_text|escape:'htmlall':'UTF-8'}</span>
-              </div>
-            </div>
+          <div class="col-md-12">
+            <img
+              src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo_120_31.png"
+              id="id-standard-logo"> <img
+              src="{$standard_banner|escape:'htmlall':'UTF-8'}"
+              class="mp-standard-banner" /> <span
+              class="payment-label standard">{$custom_text|escape:'htmlall':'UTF-8'}</span>
           </div>
         </a> {else}
         <div class="mp-form">
@@ -190,11 +200,11 @@
         {/if}
       </div>
     {/if}
-    {if $country == 'MLB' || $country == 'MLM' || $country == 'MPE' || $country ==
+    {if $country == 'MLM' || $country == 'MPE' || $country ==
     'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV'}
     {foreach from=$offline_payment_settings key=offline_payment item=value}
     {if $value.active == "true" && $mercadoenvios_activate == 'false'}
-    
+
       <div class="row">
         <a href="javascript:void(0);"
           id="id-{$offline_payment|escape:'htmlall':'UTF-8'}" class="offline-payment">
@@ -227,6 +237,141 @@
     {/if}
     {/foreach}
     {/if}
+
+    {if $country == 'MLB'}
+      {foreach from=$offline_payment_settings key=offline_payment item=value}
+        {if $value.active == "true" && $mercadoenvios_activate == 'false'}
+        <div class="row">
+          <form action="{$custom_action_url|escape:'htmlall':'UTF-8'}" method="post"
+                  id="form-{$offline_payment|escape:'htmlall':'UTF-8'}" class="formTicket" onsubmit="return submitBoletoFebraban();">
+            <input name="email" type="hidden" value="{$ticket.email|escape:'htmlall':'UTF-8'}"/> 
+            <input name="mercadopago_coupon" type="hidden"
+              class="mercadopago_coupon_ticket" /> 
+            <input
+              name="payment_method_id" type="hidden"
+              value="{$offline_payment|escape:'htmlall':'UTF-8'}" />
+              <div class="mp-form-custom">
+                <div class="row">
+                  <div class="col title col-md-6">
+                    <span class="payment-label">{l s='BOLETO'
+                      mod='mercadopago'} </span> <br/> <span class="poweredby">{l s='Powered
+                      by' mod='mercadopago'}</span> <img class="logo"
+                      src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">
+                  </div>
+                  <div class="col title col-md-6">
+                    <img src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/boleto.png" />
+                  </div>
+                </div>
+
+                <div class="alert">
+                  INFORMAÇÕES SOLICITADAS EM CONFORMIDADE COM AS NORMAS DAS CIRCULARES NRO. 3.461/09, 3.598/12 E 3.656/13 DO BANCO CENTRAL DO BRASIL.
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="firstname">Nome:<em style="color: red;">*</em>
+                      </label> <input  class="form-control" id="firstname" name="firstname" required="true" type="text" maxlength="50" value="{$ticket.firstname|escape:'htmlall':'UTF-8'}" />
+                      <div id="firstname-status" class="status">Campo obrigatório</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="lastname">Sobrenome:<em style="color: red;">*</em>
+                      </label> <input  class="form-control" id="lastname" name="lastname" required="true" type="text" maxlength="50" value="{$ticket.lastname|escape:'htmlall':'UTF-8'}"/>
+                      <div id="lastname-status" class="status">Campo obrigatório</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="cpf">CPF:<em style="color: red;">*</em>
+                      </label> <input  class="form-control" id="cpf" name="cpf" required="true" type="text" maxlength="50" value="{$ticket.cpf|escape:'htmlall':'UTF-8'}"/>
+                      <div id="cpf-status" class="status">Campo obrigatório</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-8">
+                    <div class="form-group">
+                      <label for="address">Endereço:<em style="color: red;">*</em>
+                      </label> <input class="form-control" id="address"  name="address" style="max-width: none;" required="true" type="text" maxlength="50" value="{$ticket.address|escape:'htmlall':'UTF-8'}"/>
+                      <div id="address-status" class="status">Campo obrigatório</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="number">Número:<em style="color: red;">*</em>
+                      </label> <input  class="form-control" id="number" name="number" required="true" type="text" maxlength="50" value="{$ticket.number|escape:'htmlall':'UTF-8'}"/>
+                      <div id="number-status" class="status">Campo obrigatório</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="city">Cidade:<em style="color: red;">*</em>
+                      </label> <input  class="form-control" required="true" id="city" name="city" type="text" maxlength="50" value="{$ticket.city|escape:'htmlall':'UTF-8'}"/>
+                      <div id="city-status" class="status">Campo obrigatório</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="state">Estado:<em style="color: red;">*</em></label>
+                        <select class="form-control" id="state" required="true" name="state">
+                                      <option value="{$ticket.state|escape:'htmlall':'UTF-8'}" selected="selected">{$ticket.state|escape:'htmlall':'UTF-8'}</option>
+                                      <option value="AC">Acre</option>
+                                      <option value="AL">Alagoas</option>
+                                      <option value="AP">Amapá</option>
+                                      <option value="AM">Amazonas</option>
+                                      <option value="BA">Bahia</option>
+                                      <option value="CE">Ceará</option>
+                                      <option value="DF">Distrito Federal</option>
+                                      <option value="ES">Espírito Santo</option>
+                                      <option value="GO">Goiás</option>
+                                      <option value="MA">Maranhão</option>
+                                      <option value="MT">Mato Grosso</option>
+                                      <option value="MS">Mato Grosso do Sul</option>
+                                      <option value="MG">Minas Gerais</option>
+                                      <option value="PA">Pará</option>
+                                      <option value="PB">Paraíba</option>
+                                      <option value="PR">Paraná</option>
+                                      <option value="PE">Pernambuco</option>
+                                      <option value="PI">Piauí</option>
+                                      <option value="RJ">Rio de Janeiro</option>
+                                      <option value="RN">Rio Grande do Norte</option>
+                                      <option value="RS">Rio Grande do Sul</option>
+                                      <option value="RO">Rondônia</option>
+                                      <option value="RA">Roraima</option>
+                                      <option value="SC">Santa Catarina</option>
+                                      <option value="SP">São Paulo</option>
+                                      <option value="SE">Sergipe</option>
+                                      <option value="TO">Tocantins</option>
+                        </select>
+                        <div id="state-status" class="status">Campo obrigatório</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="postcode">Cep:<em style="color: red;">*</em>
+                      </label> <input  class="form-control" required="true" id="postcode" name="postcode" type="text" maxlength="50" value="{$ticket.postcode|escape:'htmlall':'UTF-8'}"/>
+                      <div id="postcode-status" class="status">Campo obrigatório</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-bottom">
+                    <button class="ch-btn ch-btn-big es-button submit"
+                      value="Gerar Boleto" type="submit" class="create-boleto-febraban"
+                      id="btnSubmit">Gerar Boleto</button>
+                  </div>
+                </div>
+              </div>
+          </form>
+        </div>
+        {/if}
+      {/foreach}
+    {/if}
+
+
     </div>
   </div>
 </div>
@@ -240,6 +385,7 @@
 <script type="text/javascript" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/MPv1.js?no_cache={$smarty.now|date_format:'%Y-%m-%d %H:%M:%S'}"></script>
 
 <script type="text/javascript">
+  var country = "{$country|escape:'javascript':'UTF-8'}";
 
   $('input[data-checkout=expiry]').change(function() {
     if (this.value.length == 9) {
@@ -277,6 +423,61 @@
   }
 
   createModal();
+
+  $(".create-boleto .create-boleto-febraban").click(function(e) {
+    $(".lightbox").show();
+    e.stopImmediatePropagation();
+  });
+
+  if (country == "MLB") {
+    $(".status").hide();
+    function submitBoletoFebraban() {
+      // var $form = $('.formTicket');
+      // $form
+      //     .append($(
+      //         '<input type="hidden" id="mercadopago_coupon" name="mercadopago_coupon"/>')
+      //         .val($("#mercadopago_coupon").val()));
+      return validateFieldsFebraban();
+    }
+
+    function validateFieldsFebraban() {
+      $(".status").hide();
+      var fiedsValid = true;
+      if ($("#firstname").val().trim() == "") {
+        $("#firstname-status").show();
+        fiedsValid = false;
+      }
+      if ($("#lastname").val().trim() == "") {
+        $("#lastname-status").show();
+        fiedsValid = false;
+      }
+      if ($("#cpf").val().trim() == "") {
+        $("#cpf-status").show();
+        fiedsValid = false;
+      }
+      if ($("#address").val().trim() == "") {
+        $("#address-status").show();
+        fiedsValid = false;
+      }
+      if ($("#number").val().trim() == "") {
+        $("#number-status").show();
+        fiedsValid = false;
+      }
+      if ($("#city").val().trim() == "") {
+        $("#city-status").show();
+        fiedsValid = false;
+      }
+      if ($("#state").val().trim() == "") {
+        $("#state-status").show();
+        fiedsValid = false;
+      }
+      if ($("#postcode").val().trim() == "") {
+        $("#postcode-status").show();
+        fiedsValid = false;
+      }
+      return fiedsValid;
+    }
+  }
 
 </script>
 <script type="text/javascript" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/credit_card_form.js"></script>

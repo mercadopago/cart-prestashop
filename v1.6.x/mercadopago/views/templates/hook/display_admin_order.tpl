@@ -75,7 +75,7 @@
 			</div>
 			{/if}
 	<br>
-{if isset($status)}
+	{if isset($status)}
 	<div id="formAddPaymentPanel" class="panel">
 		<div class="panel-heading">
 			<i class="icon-truck"></i>
@@ -102,11 +102,13 @@
 				<a href="#" onClick="window.open('{$tag_shipment_zebra|escape:'htmlall':'UTF-8'}', '_blank')" class="button btn btn-info button-medium">
 				<span><i class="icon-ticket"></i>&nbsp;{l s='Open Tag for printer' mod='mercadopago'}</span></a>
 			</p>
-		{else}
-			<p class="alert alert-danger">
+		{else if $status == "pending"}
+			<p class="alert alert-warning">
 				{l s='Warning' mod='mercadopago'}
-				<strong>{$substatus_description|escape:'htmlall':'UTF-8'}</strong><br>
+				<strong>{l s='The tag is pending' mod='mercadopago'}</strong><br>
 			</p>
+		{else}
+			<strong>{$substatus_description|escape:'htmlall':'UTF-8'}</strong><br>
 		{/if}
 		 <ul>
 			<li>

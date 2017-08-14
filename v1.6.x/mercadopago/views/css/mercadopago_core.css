@@ -23,10 +23,21 @@
 *  International Registered Trademark & Property of MercadoPago
 */
 .mp-module .return-div h4 {
-	font-size: 16px;
+	font-size: 20px;
+    color: #95a6f4;
+    margin-top: 50px;
+    display: -webkit-box;
+    border-bottom: 3px dotted #f8b508;
+    margin-bottom: 25px;
+    padding: 10px;
 }
 .mp-module .return-div h5 {
-	font-size: 12px;
+	font-size: 20px;
+    display: -webkit-inline-box;
+    border: 4px solid #43ad54;
+    padding: 10px;
+    border-radius: 40px;
+    box-shadow: 0px 6px 20px rgba(67, 173, 84, 0.67);
 }
 .mp-module .form-error {
 	outline: rgb(215, 5, 5) solid thin;
@@ -48,6 +59,7 @@
 .mp-module .boleto-frame {
 	width: 780px;
 	height: 845px;
+	display:none;
 }
 
 .mp-module .MLM {

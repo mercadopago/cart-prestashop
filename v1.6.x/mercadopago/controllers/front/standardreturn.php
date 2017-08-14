@@ -55,11 +55,20 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             $mercadopago_sdk = $mercadopago->mercadopago;
 
             foreach ($collection_ids as $collection_id) {
-                PrestaShopLogger::addLog("=====MercadoPagoStandardReturnModuleFrontController::entrou no for===", MPApi::INFO, 0);
+                PrestaShopLogger::addLog(
+                    "=====MercadoPagoStandardReturnModuleFrontController::entrou no for===",
+                    MPApi::INFO,
+                    0
+                );
                 $result = $mercadopago_sdk->getPaymentStandard($collection_id);
                 error_log(print_r($result, true));
                 $payment_info = $result['response']['collection'];
-                PrestaShopLogger::addLog("=====MercadoPagoStandardReturnModuleFrontController::for==external_reference===".$payment_info['external_reference'], MPApi::INFO, 0);
+                PrestaShopLogger::addLog(
+                    "=====MercadoPagoStandardReturnModuleFrontController::for==external_reference===".
+                    $payment_info['external_reference'],
+                    MPApi::INFO,
+                    0
+                );
                 $id_cart = $payment_info['external_reference'];
                 $cart = new Cart($id_cart);
                 $payment_statuses[] = $payment_info['status'];
@@ -87,6 +96,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 }
             }
 
+            error_log("1");
             if (Validate::isLoadedObject($cart)) {
                 if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' ||
                     Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
@@ -101,6 +111,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 );
                 $order_status = null;
                 $payment_status = $payment_info['status'];
+                error_log("==payment_statu=== ".$payment_status);
                 switch ($payment_status) {
                     case 'in_process':
                         $order_status = 'MERCADOPAGO_STATUS_0';
@@ -112,7 +123,9 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                         $order_status = 'MERCADOPAGO_STATUS_7';
                         break;
                 }
+                error_log("1");
                 if ($order_status != null) {
+                    error_log("2");
                     $result_merchant = $mercadopago_sdk->getMerchantOrder($merchant_order_id);
                     $merchant_order_info = $result_merchant['response'];
 
@@ -128,31 +141,45 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                         $total = $cart->getOrderTotal(true, Cart::BOTH);
                     }
                     $existOrderMercadoPago = $mercadopago->selectMercadoPagoOrder($id_cart);
-                    PrestaShopLogger::addLog("=====MercadoPagoStandardReturnModuleFrontController::existOrderMercadoPago=====".$existOrderMercadoPago, MPApi::INFO, 0);
-                    PrestaShopLogger::addLog("=====MercadoPagoStandardReturnModuleFrontController::OrderExists=====".$cart->OrderExists(), MPApi::INFO, 0);
+                    PrestaShopLogger::addLog(
+                        "=====MercadoPagoStandardReturnModuleFrontController::existOrderMercadoPago=====".
+                        $existOrderMercadoPago,
+                        MPApi::INFO,
+                        0
+                    );
+                    PrestaShopLogger::addLog(
+                        "=====MercadoPagoStandardReturnModuleFrontController::OrderExists=====".
+                        $cart->OrderExists(),
+                        MPApi::INFO,
+                        0
+                    );
 
-                    $status = new OrderState((int)Configuration::get($order_status), (int)$this->context->language->id);
+                    $status = new OrderState(
+                        (int)Configuration::get($order_status),
+                        (int)$this->context->language->id
+                    );
                     if (!Validate::isLoadedObject($status)) {
                         PrestaShopLogger::addLog("====ERRRORRR 1=====", MPApi::INFO, 0);
-                        PrestaShopLogger::addLog("=====MercadoPagoStandardReturnModuleFrontController::ERROR order_status====", MPApi::INFO, 0);
-                    } else {
-                        PrestaShopLogger::addLog("====carregou o status 1=====", MPApi::INFO, 0);
+                        PrestaShopLogger::addLog(
+                            "=====MercadoPagoStandardReturnModuleFrontController::ERROR order_status====",
+                            MPApi::INFO,
+                            0
+                        );
                     }
-                    PrestaShopLogger::addLog("====1=====", MPApi::INFO, 0);
                     if (!$existOrderMercadoPago) {
                         $mercadopago->insertMercadoPagoOrder($id_cart, 0, 0, $payment_status);
                         PrestaShopLogger::addLog("====insert =====".$id_cart, MPApi::INFO, 0);
-                        PrestaShopLogger::addLog("====3=====", MPApi::INFO, 0);
                         UtilMercadoPago::logMensagem(
-                            '=====MercadoPagoStandardReturnModuleFrontController::status===='.Configuration::get($order_status),
+                            '=====MercadoPagoStandardReturnModuleFrontController::status===='.
+                            Configuration::get($order_status),
                             MPApi::INFO
                         );
 
-                       UtilMercadoPago::logMensagem(
-                            '=====MercadoPagoStandardReturnModuleFrontController::language===='.(int)$this->context->language->id,
+                        UtilMercadoPago::logMensagem(
+                            '=====MercadoPagoStandardReturnModuleFrontController::language===='.
+                            (int)$this->context->language->id,
                             MPApi::INFO
                         );
-
                         try {
                             $displayName = $mercadopago->setNamePaymentType($payment_types[0]);
                             $customer = new Customer($cart->id_customer);
@@ -170,19 +197,35 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                             error_log("====standard validateOrder::currentOrder===".$currentOrder);
                             $mercadopago->insertMercadoPagoOrder($id_cart, $currentOrder, 1, $payment_status);
                             UtilMercadoPago::logMensagem(
-                            '=====MercadoPagoStandardReturnModuleFrontController::validateOrder==currentOrder===='.$currentOrder,
-                            MPApi::INFO
-                        );
-                            PrestaShopLogger::addLog("====4=====", MPApi::INFO, 0);
+                                '=====MercadoPagoStandardReturnModuleFrontController::validateOrder==currentOrder===='.
+                                $currentOrder,
+                                MPApi::INFO
+                            );
                         } catch (Exception $e) {
-                            PrestaShopLogger::addLog("====ERRRORRR 6=====", MPApi::INFO, 0);
-                            PrestaShopLogger::addLog("=====MERCADOPAGO_ERRO::validateOrder=====".$e->getMessage(), MPApi::ERROR, 0);
+                            error_log(" MERCADOPAGO_ERRO 1");
+                            PrestaShopLogger::addLog(
+                                "=====MERCADOPAGO_ERRO::validateOrder=====".
+                                $e->getMessage(),
+                                MPApi::ERROR,
+                                0
+                            );
                         }
                     }
+                    error_log("3");
                     $order_id = $mercadopago->getOrderByCartId($cart->id);
 
-                    PrestaShopLogger::addLog("=====MercadoPagoStandardReturnModuleFrontController::cart_id=====".$cart->id, MPApi::INFO, 0);
-                    PrestaShopLogger::addLog("=====MercadoPagoStandardReturnModuleFrontController::order_id=====".$order_id, MPApi::INFO, 0);
+                    PrestaShopLogger::addLog(
+                        "=====MercadoPagoStandardReturnModuleFrontController::cart_id=====".
+                        $cart->id,
+                        MPApi::INFO,
+                        0
+                    );
+                    PrestaShopLogger::addLog(
+                        "=====MercadoPagoStandardReturnModuleFrontController::order_id=====".
+                        $order_id,
+                        MPApi::INFO,
+                        0
+                    );
 
                     $order = new Order($order_id);
 
@@ -221,11 +264,22 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                             $order_payments[0]->card_holder = implode(' / ', $card_holder_names);
                         }
                         $returnSave = $order_payments[0]->save();
-                        PrestaShopLogger::addLog("=====MercadoPagoStandardReturnModuleFrontController::save=====".$returnSave, MPApi::INFO, 0);
+                        PrestaShopLogger::addLog(
+                            "=====MercadoPagoStandardReturnModuleFrontController::save=====".
+                            $returnSave,
+                            MPApi::INFO,
+                            0
+                        );
                     } else {
-                        PrestaShopLogger::addLog("=====MERCADOPAGO_ERRO::order_payments é nulo da order =====".$order->id, MPApi::ERROR, 0);
+                        PrestaShopLogger::addLog(
+                            "=====MERCADOPAGO_ERRO::order_payments é nulo da order =====".
+                            $order->id,
+                            MPApi::ERROR,
+                            0
+                        );
+                        error_log(" MERCADOPAGO_ERRO 2");
                     }
-
+                    error_log("==uri==".$uri);
                     Tools::redirectLink($uri);
                 }
             }

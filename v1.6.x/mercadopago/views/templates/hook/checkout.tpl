@@ -391,7 +391,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		{foreach from=$offline_payment_settings key=offline_payment item=value}
 			{if $value.active == "true" && $mercadoenvios_activate == 'false'}
 			<form action="{$custom_action_url|escape:'htmlall':'UTF-8'}" method="post"
-							id="form-{$offline_payment|escape:'htmlall':'UTF-8'}" class="formTicket">
+							id="form-{$offline_payment|escape:'htmlall':'UTF-8'}" class="formTicket" onsubmit="return submitBoletoFebraban();">
 				<input name="email" type="hidden" value="{$ticket.email|escape:'htmlall':'UTF-8'}"/> 
 				<input name="mercadopago_coupon" type="hidden"
 					class="mercadopago_coupon_ticket" /> 
@@ -420,47 +420,53 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 						    <div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="firstname">Nome:<em>*</em>
+										<label for="firstname">Nome:<em style="color: red;">*</em>
 										</label> <input  class="form-control" id="firstname" name="firstname" required="true" type="text" maxlength="50" value="{$ticket.firstname|escape:'htmlall':'UTF-8'}" />
+										<div id="firstname-status" class="status">Campo obrigatório</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="lastname">Sobrenome:<em>*</em>
+										<label for="lastname">Sobrenome:<em style="color: red;">*</em>
 										</label> <input  class="form-control" id="lastname" name="lastname" required="true" type="text" maxlength="50" value="{$ticket.lastname|escape:'htmlall':'UTF-8'}"/>
+										<div id="lastname-status" class="status">Campo obrigatório</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="cpf">CPF:<em>*</em>
+										<label for="cpf">CPF:<em style="color: red;">*</em>
 										</label> <input  class="form-control" id="cpf" name="cpf" required="true" type="text" maxlength="50" value="{$ticket.cpf|escape:'htmlall':'UTF-8'}"/>
+										<div id="cpf-status" class="status">Campo obrigatório</div>
 									</div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-md-8">
 									<div class="form-group">
-										<label for="address">Endereço:<em>*</em>
-										</label> <input class="form-control" id="address"  name="address" required="true" type="text" maxlength="50" value="{$ticket.address|escape:'htmlall':'UTF-8'}"/>
+										<label for="address">Endereço:<em style="color: red;">*</em>
+										</label> <input class="form-control" id="address"  name="address" style="max-width: none;" required="true" type="text" maxlength="50" value="{$ticket.address|escape:'htmlall':'UTF-8'}"/>
+										<div id="address-status" class="status">Campo obrigatório</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="number">Número:<em>*</em>
+										<label for="number">Número:<em style="color: red;">*</em>
 										</label> <input  class="form-control" id="number" name="number" required="true" type="text" maxlength="50" value="{$ticket.number|escape:'htmlall':'UTF-8'}"/>
+										<div id="number-status" class="status">Campo obrigatório</div>
 									</div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="city">Cidade:<em>*</em>
+										<label for="city">Cidade:<em style="color: red;">*</em>
 										</label> <input  class="form-control" required="true" id="city" name="city" type="text" maxlength="50" value="{$ticket.city|escape:'htmlall':'UTF-8'}"/>
+										<div id="city-status" class="status">Campo obrigatório</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="state">Estado</label>
+										<label for="state">Estado:<em style="color: red;">*</em></label>
 									    <select class="form-control" id="state" required="true" name="state">
 			                              <option value="{$ticket.state|escape:'htmlall':'UTF-8'}" selected="selected">{$ticket.state|escape:'htmlall':'UTF-8'}</option>
 			                              <option value="AC">Acre</option>
@@ -491,12 +497,14 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			                              <option value="SE">Sergipe</option>
 			                              <option value="TO">Tocantins</option>
 									    </select>
+									    <div id="state-status" class="status">Campo obrigatório</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="postcode">Cep:<em>*</em>
+										<label for="postcode">Cep:<em style="color: red;">*</em>
 										</label> <input  class="form-control" required="true" id="postcode" name="postcode" type="text" maxlength="50" value="{$ticket.postcode|escape:'htmlall':'UTF-8'}"/>
+										<div id="postcode-status" class="status">Campo obrigatório</div>
 									</div>
 								</div>
 							</div>
@@ -504,7 +512,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 						<div class="row">
 							<div class="col-bottom">
 								<button class="ch-btn ch-btn-big es-button submit"
-									value="Gerar Boleto" type="submit" class="create-boleto"
+									value="Gerar Boleto" type="submit" class="create-boleto-febraban"
 									id="btnSubmit">Gerar Boleto</button>
 							</div>
 						</div>
@@ -1665,22 +1673,71 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		}
 	});
 
-	$(".offline-payment")
-			.click(
-					function(e) {
-						var $form = $('.formTicket');
-						$form
-								.append($(
-										'<input type="hidden" id="mercadopago_coupon" name="mercadopago_coupon"/>')
-										.val($("#mercadopago_coupon").val()));
-						$(".create-boleto", this).click();
+	$(".offline-payment").click(
+		function(e) {
+			var $form = $('.formTicket');
+			$form
+					.append($(
+							'<input type="hidden" id="mercadopago_coupon" name="mercadopago_coupon"/>')
+							.val($("#mercadopago_coupon").val()));
+			$(".create-boleto", this).click();
+	});
 
-					});
-
-	$(".create-boleto").click(function(e) {
+	$(".create-boleto .create-boleto-febraban").click(function(e) {
 		$(".lightbox").show();
 		e.stopImmediatePropagation();
 	});
+
+	if (country == "MLB") {
+		$(".status").hide();
+		function submitBoletoFebraban() {
+			var $form = $('.formTicket');
+			$form
+					.append($(
+							'<input type="hidden" id="mercadopago_coupon" name="mercadopago_coupon"/>')
+							.val($("#mercadopago_coupon").val()));
+			return validateFieldsFebraban();
+		}
+
+		function validateFieldsFebraban() {
+			$(".status").hide();
+			var fiedsValid = true;
+			if ($("#firstname").val().trim() == "") {
+				$("#firstname-status").show();
+				fiedsValid = false;
+			}
+			if ($("#lastname").val().trim() == "") {
+				$("#lastname-status").show();
+				fiedsValid = false;
+			}
+			if ($("#cpf").val().trim() == "") {
+				$("#cpf-status").show();
+				fiedsValid = false;
+			}
+			if ($("#address").val().trim() == "") {
+				$("#address-status").show();
+				fiedsValid = false;
+			}
+			if ($("#number").val().trim() == "") {
+				$("#number-status").show();
+				fiedsValid = false;
+			}
+			if ($("#city").val().trim() == "") {
+				$("#city-status").show();
+				fiedsValid = false;
+			}
+			if ($("#state").val().trim() == "") {
+				$("#state-status").show();
+				fiedsValid = false;
+			}
+			if ($("#postcode").val().trim() == "") {
+				$("#postcode-status").show();
+				fiedsValid = false;
+			}
+			return fiedsValid;
+		}
+	}
+
 
 	loadCustomerCard();
 

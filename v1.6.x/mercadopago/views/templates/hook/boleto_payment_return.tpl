@@ -26,7 +26,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	<div class="row">
 		{if $boleto_url != null}
 		<iframe src="{$boleto_url|escape:'htmlall':'UTF-8'}"
-			class="boleto-frame {$country|escape:'html':'UTF-8'}" id="boletoframe">
+			class="boleto-frame" id="boletoframe" name="boletoframe">
 			<div class="lightbox" id="text">
 				<div class="box">
 					<div class="content">
@@ -43,10 +43,23 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	</div>
 </div>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   ModuleAnalytics.setPublicKey("TEST-a603f517-310f-4956-a00d-93519fc17647")
   ModuleAnalytics.setPaymentId("123456")
   ModuleAnalytics.setPaymentType("credit_card")
   ModuleAnalytics.setCheckoutType("basic")
   ModuleAnalytics.put()
+</script> -->
+
+<script type="text/javascript">
+	$( document ).ready(function() {
+		printFrame("boletoframe");
+	});
+
+	function printFrame(id) {
+        var frm = document.getElementById(id).contentWindow;
+        frm.focus();// focus on contentWindow is needed on some ie versions
+        frm.print();
+        return false;
+	}
 </script>

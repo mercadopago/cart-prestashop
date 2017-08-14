@@ -169,7 +169,7 @@ class UtilMercadoPago
         $result = Db::getInstance()->getRow('
         SELECT s.`iso_code` AS iso_code
         FROM `'._DB_PREFIX_.'state` s
-        WHERE s.`id_state` = '.intval($id_state));
+        WHERE s.`id_state` = '.(int)$id_state);
         return isset($result['iso_code']) ? $result['iso_code'] : false;
     }
 }

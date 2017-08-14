@@ -110,6 +110,37 @@ class MPApi
         return trim(Configuration::get('MERCADOPAGO_ACCESS_TOKEN'));
     }
 
+    /**
+     * isValidPublicKey
+     * @param  $public_key
+     * @return boolean
+     */
+    public function isValidPublicKey($public_key)
+    {
+        $result = MPRestCli::get('/v1/payment_methods?public_key=' . $public_key);
+        if ($result != null && isset($result['status'])) {
+            if ($result['status'] > 202) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * isValidAccessToken
+     * @return boolean
+     */
+    public function isValidAccessToken($access_token)
+    {
+        $result = MPRestCli::get('/users/me?access_token=' . $access_token);
+        if ($result != null && isset($result['status'])) {
+            if ($result['status'] > 202) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /*
      * v0
      */
@@ -117,7 +148,6 @@ class MPApi
     {
         $access_token = $this->getAccessToken();
         $result = MPRestCli::get('/users/me?access_token=' . $access_token);
-
         return in_array('test_user', $result['response']['tags']);
     }
 
@@ -145,7 +175,12 @@ class MPApi
         $uri .= (strpos($uri, "?") === false) ? "?" : "&";
         $uri .= $this->buildQuery($params);
 
+        error_log("====MERCADO ENVIOS=====" . Tools::jsonEncode($uri));
+
         $result = MPRestCli::get($uri);
+
+        error_log("====MERCADO ENVIOS=====" . Tools::jsonEncode($result));
+
         return  $result;
     }
 
@@ -317,13 +352,18 @@ class MPApi
         $access_token = $this->getAccessTokenV1();
         $result = MPRestCli::get('/v1/payment_methods/?access_token=' . $access_token);
         $result = $result['response'];
-        // remove account_money
-        foreach ($result as $key => $value) {
-            if ($value['payment_type_id'] == 'ticket' ||
-                $value['payment_type_id'] == 'bank_transfer') {
-                unset($result[$key]);
+        error_log(print_r($result, true));
+        if (isset($result['status']) != 201) {
+            // remove account_money
+            foreach ($result as $key => $value) {
+                if (isset($value['payment_type_id']) &&
+                    $value['payment_type_id'] == 'ticket' ||
+                    $value['payment_type_id'] == 'bank_transfer') {
+                    unset($result[$key]);
+                }
             }
         }
+
         return $result;
     }
 

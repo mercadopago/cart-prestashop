@@ -34,11 +34,11 @@
 	}
 
 	.mp-form {
-		border: 1px solid #808080;
+		border: 5px solid #808080;
 		border-radius: 20px;
 		padding: 10px;
 		width: 625px;
-		background: white;
+		background: rgba(0, 124, 255, 0.08);
 		margin-bottom: 20px;
 	}
 
@@ -46,7 +46,7 @@
 		border: 1px solid #d6d4d4;
 		border-radius: 4px;
 		padding: 10px;
-		width: 570px;
+		/*width: 100%;*/
 		background: white;
 		margin-bottom: 20px;
 	}
@@ -89,6 +89,10 @@
 		margin-left: 20px;
 	}
 
+	.mp-module {
+    	margin-left: -15px;
+    	margin-right: 15px;
+	}
 	.mp-module .ch-btn-big, .mp-module .ch-btn-big:focus {
 		float: right;
 		margin-right: 155px;
@@ -101,7 +105,7 @@
 
 	.mp-module .col-bottom {
 		width: 100%;
-		margin-right: -15px;
+		margin-right: -150px;
 		margin-top: 20px;
 		margin-left: -15px;
 		margin-bottom: -10px;
