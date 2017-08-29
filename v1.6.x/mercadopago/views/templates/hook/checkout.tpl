@@ -149,201 +149,67 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 	{/if}
 {if $mercadoenvios_activate == 'false' && $creditcard_active == 'true'}
-
 	<div class="card row">
-		<div class="col-xs-12">
-			<div class="mp-form-custom">
-
-				<div class="row">
-					<div class="col title">
-						<span class="payment-label">{l s='CREDIT CARD'
-							mod='mercadopago'} </span> <br/> <span class="poweredby">{l s='Powered
-							by' mod='mercadopago'}</span> <img class="logo"
-							src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">
-					</div>
-					{if !empty($creditcard_banner)}
-					<div class="col title">
-						<img src="{$creditcard_banner|escape:'htmlall':'UTF-8'}"
-							class="mp-creditcard-banner" />
-					</div>
-					{/if}
+		<div class="mp-form">
+			<div class="row">
+				<div class="col title">
+					<span class="payment-label">{l s='CREDIT CARD'
+						mod='mercadopago'} </span> <br/> <span class="poweredby">{l s='Powered
+						by' mod='mercadopago'}</span> <img class="logo"
+						src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">
 				</div>
-				<div class="row">
-					<label class="ch-form-hint">* {l s='Required fields'
-						mod='mercadopago'}</label>
+				{if !empty($creditcard_banner)}
+				<div class="col title">
+					<img src="{$creditcard_banner|escape:'htmlall':'UTF-8'}"
+						class="mp-creditcard-banner" />
 				</div>
-				<form action="" method="post" id="form-pagar-mp">
+				{/if}
+			</div>
+			<div class="row">
+				<label class="ch-form-hint">* {l s='Required fields'
+					mod='mercadopago'}</label>
+			</div>
+			<form action="" method="post" id="form-pagar-mp">
 
-					<input id="opcaoPagamentoCreditCard" type="hidden"
-						name="opcaoPagamentoCreditCard" value="" /> <input
-						id="customerID" type="hidden" name="customerID"
-						value="{$customerID|escape:'htmlall':'UTF-8'}" /> <input id="amount"
-						type="hidden" value="{$amount|escape:'htmlall':'UTF-8'}" /> <input
-						id="payment_method_id" type="hidden" name="payment_method_id" />
-					<input id="payment_type_id" type="hidden" name="payment_type_id" />
-					<input name="mercadopago_coupon" type="hidden" class="mercadopago_coupon_ticket" />
-					<input type="hidden" id="card_token_id" name="card_token_id"/>
+				<input id="opcaoPagamentoCreditCard" type="hidden"
+					name="opcaoPagamentoCreditCard" value="" /> <input
+					id="customerID" type="hidden" name="customerID"
+					value="{$customerID|escape:'htmlall':'UTF-8'}" /> <input id="amount"
+					type="hidden" value="{$amount|escape:'htmlall':'UTF-8'}" /> <input
+					id="payment_method_id" type="hidden" name="payment_method_id" />
+				<input id="payment_type_id" type="hidden" name="payment_type_id" />
+				<input name="mercadopago_coupon" type="hidden" class="mercadopago_coupon_ticket" />
+				<input type="hidden" id="card_token_id" name="card_token_id"/>
 
-					<div id="customerCardsAll">
-						<div class="row" id="myCreditCard">
-							<div class="col">
-								<label for="id-card-number">{l s='My credit cards: '
-									mod='mercadopago'}<em>*</em>
-								</label>&nbsp;<select id="id-customerCards" name="customerCards" type="text"  data-checkout='cardId'></select>
-								<div id="id-card-number-status-cust" class="status"></div>
-							</div>
-						</div>
-
-						<div id="customerCardsDiv">
-
-							<div class="row">
-								<div class="col">
-									<label for="id-security-code-cust" style="font-weight: 700;">{l
-										s='Security Code: ' mod='mercadopago'}<em>*</em>
-									</label> <input id="id-security-code-cust" data-checkout="securityCode" data-checkout="securityCode"
-										type="text" maxlength="4" /> <img
-										src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/cvv.png"
-										class="cvv" />
-									<div id="id-security-code-status-cust" class="status"></div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col">
-									<label for="id-installments">{l s='Installments: '
-										mod='mercadopago'}<em>*</em>
-									</label> <select id="id-installments-cust" name="installmentsCust" type="text"></select>
-									<div id="id-installments-status-cust" class="status"></div>
-								</div>
-
-								<div class="col">
-									<div class="mp-text-cft">
-									</div>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col">
-									<div class="mp-text-tea">
-									</div>
-								</div>
-							</div>
-
+				<div id="customerCardsAll">
+					<div class="row" id="myCreditCard">
+						<div class="col">
+							<label for="id-card-number">{l s='My credit cards: '
+								mod='mercadopago'}<em>*</em>
+							</label>&nbsp;<select id="id-customerCards" name="customerCards" type="text"  data-checkout='cardId'></select>
+							<div id="id-card-number-status-cust" class="status"></div>
 						</div>
 					</div>
 
-					<div id="cardDiv">
-						{if $country == 'MLM' || $country == 'MPE'}
-						<div class="row">
-							<div class="col">
-								<label for="id-card-number">{l s='Card Type: '
-									mod='mercadopago'}<em>*</em>
-								</label>
-									<select id="credit_option" name="credit_option" type="text"></select>
-							</div>
-						</div>
-						{/if}
-
+					<div id="customerCardsDiv">
 
 						<div class="row">
 							<div class="col">
-								<label for="id-card-number">{l s='Card number: '
-									mod='mercadopago'}<em>*</em>
-								</label> <input id="id-card-number" data-checkout="cardNumber"
-									type="text" />
-								<div id="id-card-number-status" class="status"></div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<label for="id-card-expiration-month">{l s='Expiration:'
-									mod='mercadopago'}<em>*</em>
-								</label> <select id="id-card-expiration-month" class="small-select"
-									data-checkout="cardExpirationMonth" type="text"></select>
-							</div>
-							<div class="col">
-								<select id="id-card-expiration-year" class="small-select"
-									data-checkout="cardExpirationYear" type="text"></select>
-								<div id="id-card-expiration-year-status" class="status"></div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<label for="id-card-holder-name">{l s='Card Holder Name:' mod='mercadopago'}<em>*</em>
-								</label> <input id="id-card-holder-name" data-checkout="cardholderName"
-									type="text" name="cardholderName" />
-								<div id="id-card-holder-name-status" class="status"></div>
-
-							</div>
-
-						</div>
-						<div class="row">
-							<div class="col">
-								<label for="id-security-code" style="font-weight: 700;">{l
+								<label for="id-security-code-cust" style="font-weight: 700;">{l
 									s='Security Code: ' mod='mercadopago'}<em>*</em>
-								</label> <input id="id-security-code" data-checkout="securityCode"
-									type="text" maxlength="4" //> <img
+								</label> <input id="id-security-code-cust" data-checkout="securityCode" data-checkout="securityCode"
+									type="text" maxlength="4" /> <img
 									src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/cvv.png"
 									class="cvv" />
-								<div id="id-security-code-status" class="status"></div>
+								<div id="id-security-code-status-cust" class="status"></div>
 							</div>
 						</div>
-						{if $country == 'MLB'}
-						<div class="row">
-							<div class="col">
-								<label for="id-doc-number">{l s='CPF: '
-									mod='mercadopago'}<em>*</em>
-								</label> <input id="id-doc-number" data-checkout="docNumber" type="text"
-									maxlength="11" />
-								<div id="id-doc-number-status" class="status"></div>
-								<input name="docType" data-checkout="docType" type="hidden"
-									id="id-docType" value="CPF" />
-							</div>
-						</div>
-						{elseif $country == 'MLM' || $country == 'MLA' || $country == 'MPE'}
-						<div class="row">
-							<div class="col">
-								<label class="issuers-options" for="id-issuers-options">{l
-									s='Bank: ' mod='mercadopago'}
-								</label> <select class="issuers-options" id="id-issuers-options"
-									name="issuersOptions" type="text"></select>
-							</div>
-						</div>
-						{/if} {if $country == 'MLA' || $country == 'MCO' || $country ==
-						'MLV'  || $country == 'MPE'}
-						<div class="row">
-							<div class="col">
-								<label for="docType">{l s='Document type: '
-									mod='mercadopago'}<em>*</em>
-								</label> <select name="docType" type="text" class="document-type"
-									id="id-docType" style="width: 92px;" data-checkout="docType"></select>
-							</div>
-							<div class="col">
-								<input id="id-doc-number" name="docNumber" style="width: 102px;"
-									data-checkout="docNumber" type="text" />
-								<div id="id-doc-number-status" class="status"></div>
-							</div>
-						</div>
-
-						<div class="row"></div>
-						{/if} {if $country == 'MLC'}
-						<div class="row">
-							<div class="col">
-								<label for="id-doc-number">RUT: <em>*</em></label> <input
-									type="hidden" name="docType" id="docType" value="RUT"
-									id="id-docType" data-checkout="docType"> <input
-									type="text" id="id-doc-number" data-checkout="docNumber"
-									maxlength="10" size="14" placeholder="11111111-1">
-								<div id="id-doc-number-status" class="status"></div>
-							</div>
-						</div>
-						{/if}
-
 						<div class="row">
 							<div class="col">
 								<label for="id-installments">{l s='Installments: '
 									mod='mercadopago'}<em>*</em>
-								</label> <select id="id-installments" name="installments" type="text"></select>
-								<div id="id-installments-status" class="status"></div>
+								</label> <select id="id-installments-cust" name="installmentsCust" type="text"></select>
+								<div id="id-installments-status-cust" class="status"></div>
 							</div>
 
 							<div class="col">
@@ -359,30 +225,157 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 							</div>
 						</div>
 
-						<div class="row" style="display: none;">
-							<div class="col-xs-12">
-								<p class="payment-errors"></p>
-							</div>
+					</div>
+				</div>
+
+				<div id="cardDiv">
+					{if $country == 'MLM' || $country == 'MPE'}
+					<div class="row">
+						<div class="col">
+							<label for="id-card-number">{l s='Card Type: '
+								mod='mercadopago'}<em>*</em>
+							</label>
+								<select id="credit_option" name="credit_option" type="text"></select>
+						</div>
+					</div>
+					{/if}
+
+
+					<div class="row">
+						<div class="col">
+							<label for="id-card-number">{l s='Card number: '
+								mod='mercadopago'}<em>*</em>
+							</label> <input id="id-card-number" data-checkout="cardNumber"
+								type="text" />
+							<div id="id-card-number-status" class="status"></div>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-bottom">
-							{if $country != "MLB"}
-							<button class="ch-btn ch-btn-big submit"
-								value="{l s=' Confirm payment' mod='mercadopago'}" type="submit"
-								id="btnSubmit">{l s=' Confirm payment'
-								mod='mercadopago'}</button>
-							{else}
-							<button class="ch-btn ch-btn-big es-button submit"
-								value="{l s=' Confirm payment' mod='mercadopago'}" type="submit"
-								id="btnSubmit">{l s=' Confirm payment'
-								mod='mercadopago'}</button>
-							{/if}
+						<div class="col">
+							<label for="id-card-expiration-month">{l s='Expiration:'
+								mod='mercadopago'}<em>*</em>
+							</label> <select id="id-card-expiration-month" class="small-select"
+								data-checkout="cardExpirationMonth" type="text"></select>
+						</div>
+						<div class="col">
+							<select id="id-card-expiration-year" class="small-select"
+								data-checkout="cardExpirationYear" type="text"></select>
+							<div id="id-card-expiration-year-status" class="status"></div>
 						</div>
 					</div>
-				</form>
-			</div>
-			</p>
+					<div class="row">
+						<div class="col">
+							<label for="id-card-holder-name">{l s='Card Holder Name:' mod='mercadopago'}<em>*</em>
+							</label> <input id="id-card-holder-name" data-checkout="cardholderName"
+								type="text" name="cardholderName" />
+							<div id="id-card-holder-name-status" class="status"></div>
+
+						</div>
+
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="id-security-code" style="font-weight: 700;">{l
+								s='Security Code: ' mod='mercadopago'}<em>*</em>
+							</label> <input id="id-security-code" data-checkout="securityCode"
+								type="text" maxlength="4" //> <img
+								src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/cvv.png"
+								class="cvv" />
+							<div id="id-security-code-status" class="status"></div>
+						</div>
+					</div>
+					{if $country == 'MLB'}
+					<div class="row">
+						<div class="col">
+							<label for="id-doc-number">{l s='CPF: '
+								mod='mercadopago'}<em>*</em>
+							</label> <input id="id-doc-number" data-checkout="docNumber" type="text"
+								maxlength="11" />
+							<div id="id-doc-number-status" class="status"></div>
+							<input name="docType" data-checkout="docType" type="hidden"
+								id="id-docType" value="CPF" />
+						</div>
+					</div>
+					{elseif $country == 'MLM' || $country == 'MLA' || $country == 'MPE'}
+					<div class="row">
+						<div class="col">
+							<label class="issuers-options" for="id-issuers-options">{l
+								s='Bank: ' mod='mercadopago'}
+							</label> <select class="issuers-options" id="id-issuers-options"
+								name="issuersOptions" type="text"></select>
+						</div>
+					</div>
+					{/if} {if $country == 'MLA' || $country == 'MCO' || $country ==
+					'MLV'  || $country == 'MPE'}
+					<div class="row">
+						<div class="col">
+							<label for="docType">{l s='Document type: '
+								mod='mercadopago'}<em>*</em>
+							</label> <select name="docType" type="text" class="document-type"
+								id="id-docType" style="width: 92px;" data-checkout="docType"></select>
+						</div>
+						<div class="col">
+							<input id="id-doc-number" name="docNumber" style="width: 102px;"
+								data-checkout="docNumber" type="text" />
+							<div id="id-doc-number-status" class="status"></div>
+						</div>
+					</div>
+
+					<div class="row"></div>
+					{/if} {if $country == 'MLC'}
+					<div class="row">
+						<div class="col">
+							<label for="id-doc-number">RUT: <em>*</em></label> <input
+								type="hidden" name="docType" id="docType" value="RUT"
+								id="id-docType" data-checkout="docType"> <input
+								type="text" id="id-doc-number" data-checkout="docNumber"
+								maxlength="10" size="14" placeholder="11111111-1">
+							<div id="id-doc-number-status" class="status"></div>
+						</div>
+					</div>
+					{/if}
+
+					<div class="row">
+						<div class="col">
+							<label for="id-installments">{l s='Installments: '
+								mod='mercadopago'}<em>*</em>
+							</label> <select id="id-installments" name="installments" type="text"></select>
+							<div id="id-installments-status" class="status"></div>
+						</div>
+
+						<div class="col">
+							<div class="mp-text-cft">
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col">
+							<div class="mp-text-tea">
+							</div>
+						</div>
+					</div>
+
+					<div class="row" style="display: none;">
+						<div class="col-xs-12">
+							<p class="payment-errors"></p>
+						</div>
+					</div>
+				</div>
+				<div style="text-align: center;">
+					{if $country != "MLB"}
+					<button class="ch-btn ch-btn-big"
+						value="{l s=' Confirm payment' mod='mercadopago'}" type="submit"
+						id="btnSubmit">{l s=' Confirm payment'
+						mod='mercadopago'}</button>
+					{else}
+					<button class="ch-btn ch-btn-big es-button submit"
+						value="{l s=' Confirm payment' mod='mercadopago'}" type="submit"
+						id="btnSubmit">{l s=' Confirm payment'
+						mod='mercadopago'}</button>
+					{/if}
+				</div>
+			</form>
 		</div>
 	</div>
 	{/if}
@@ -530,9 +523,10 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	<div class="row">
 		<div class="col-xs-12 col-md-6">
 			<a href="javascript:void(0);"
-				id="id-{$offline_payment|escape:'htmlall':'UTF-8'}" class="offline-payment">
+				id="id-{$offline_payment|escape:'htmlall':'UTF-8'}"
+				onclick="enviarBoleto(this, 'id-create-{$offline_payment|escape:'htmlall':'UTF-8'}')">
 
-				<div class="mp-form-boleto">
+				<div class="mp-form-boleto hover">
 					<div class="row boleto">
 						<div class="col">
 							<img src="{$value.thumbnail|escape:'htmlall':'UTF-8'}">
@@ -1673,20 +1667,44 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		}
 	});
 
-	$(".offline-payment").click(
-		function(e) {
-			var $form = $('.formTicket');
-			$form
-					.append($(
-							'<input type="hidden" id="mercadopago_coupon" name="mercadopago_coupon"/>')
-							.val($("#mercadopago_coupon").val()));
-			$(".create-boleto", this).click();
-	});
+	// $(".offline-payment").click(
+	// 	function(e) {
+	// 		console.info("entrou aqui 3");
+	// 		var $form = $('.formTicket');
+	// 		console.info("entrou aqui 4");
+	// 		$form
+	// 				.append($(
+	// 						'<input type="hidden" id="mercadopago_coupon" name="mercadopago_coupon"/>')
+	// 						.val($("#mercadopago_coupon").val()));
+	// 		console.info("entrou aqui 5");
+	// 		$(".createboleto2", this).click();
+	// });
 
-	$(".create-boleto .create-boleto-febraban").click(function(e) {
-		$(".lightbox").show();
-		e.stopImmediatePropagation();
-	});
+	function enviarBoleto(e, id) {
+		console.info(id);
+		var $form = $('.formTicket', e);
+		"{if $coupon_active == 'true' }"
+			$form
+			.append($(
+					'<input type="hidden" id="mercadopago_coupon" name="mercadopago_coupon"/>')
+					.val($("#mercadopago_coupon").val()));
+		"{/if}"
+		console.info("entrou aqui no return");
+		document.getElementById(id).click();
+	}
+
+	 $(".create-boleto").click(function(e) {
+	 	console.info("entrou aqui 6");		
+	 	$(".lightbox").show();
+	 	e.stopImmediatePropagation();
+	 });
+
+
+	 $(".create-boleto-febraban").click(function(e) {
+	 	console.info("entrou aqui 6");		
+	 	$(".lightbox").show();
+	 	e.stopImmediatePropagation();
+	 });
 
 	if (country == "MLB") {
 		$(".status").hide();

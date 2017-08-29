@@ -89,17 +89,27 @@ class MPRestCli
             'response' => Tools::jsonDecode($api_result, true),
             );
 
-        if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
-            UtilMercadoPago::logMensagem('MercadoPago.exec :: data = '.Tools::jsonEncode($data), MPApi::INFO);
-            UtilMercadoPago::logMensagem('MercadoPago.exec :: response = '.$api_result, MPApi::INFO);
-        }
-
         if ($response['status'] == 0) {
             $error = 'Can not call the API, status code 0.';
+            UtilMercadoPago::logMensagem(
+                $error,
+                MPApi::ERROR,
+                "",
+                true,
+                null,
+                "MPRestCli->execTracking"
+            );
             throw new Exception($error);
         } else {
             if ($response['status'] > 202) {
-                UtilMercadoPago::logMensagem('MercadoPago::exec = '.$response['response']['message'], MPApi::ERROR);
+                UtilMercadoPago::logMensagem(
+                    "An ocurred error in exec transacions REST ",
+                    MPApi::ERROR,
+                    $response['response']['message'],
+                    true,
+                    $data,
+                    $uri
+                );
             }
         }
         curl_close($connect);
@@ -136,7 +146,6 @@ class MPRestCli
         if ($data) {
             self::setData($connect, $data, $content_type);
         }
-
         $api_result = curl_exec($connect);
         $api_http_code = curl_getinfo($connect, CURLINFO_HTTP_CODE);
         $response = array(
@@ -144,13 +153,16 @@ class MPRestCli
             'response' => Tools::jsonDecode($api_result, true),
             );
 
-        if (Configuration::get('MERCADOPAGO_LOG') == 'true') {
-            //UtilMercadoPago::logMensagem('MercadoPago.exec :: data = '.Tools::jsonEncode($data), MPApi::INFO);
-            //UtilMercadoPago::logMensagem('MercadoPago.exec :: response = '.$api_result, MPApi::INFO);
-        }
-
         if ($response['status'] == 0) {
             $error = 'Can not call the API, status code 0.';
+            UtilMercadoPago::logMensagem(
+                $error,
+                MPApi::ERROR,
+                "",
+                true,
+                null,
+                "MPRestCli->exec"
+            );
             throw new Exception($error);
         } else {
             if ($response['status'] > 202 && self::$check_loop == 0) {
@@ -180,9 +192,8 @@ class MPRestCli
                     "message" => $message,
                     "payloads" => $payloads
                 );
-                MPApi::sendErrorLog($response['status'], $errors);
-                UtilMercadoPago::logMensagem('MercadoPago::exec = '.
-                Tools::jsonEncode($response['response']), MPApi::ERROR);
+
+                UtilMercadoPago::logMensagem($message, MPApi::ERROR, "", true, $payloads, $uri);
             }
         }
         self::$check_loop = 0;

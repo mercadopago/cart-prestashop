@@ -68,7 +68,8 @@
 			</div>
 		</div>
 	</section>
-	<section class="padding-1">
+	<br>
+<!-- 	<section class="padding-1">
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-12 text-center">
@@ -78,7 +79,7 @@
 				</div>
 			</div>
 		</div>
-	</section>
+	</section> -->
 	<section class="bgblue2 padding-1">
 		<div class="container">
 			<div class="row">

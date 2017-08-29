@@ -22,7 +22,7 @@
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of MercadoPago
 */
-.mp-module .return-div h4 {
+/*.mp-module .return-div h4 {
 	font-size: 20px;
     color: #95a6f4;
     margin-top: 50px;
@@ -38,7 +38,7 @@
     padding: 10px;
     border-radius: 40px;
     box-shadow: 0px 6px 20px rgba(67, 173, 84, 0.67);
-}
+}*/
 .mp-module .form-error {
 	outline: rgb(215, 5, 5) solid thin;
 	border: solid 1px rgb(215, 5, 5);
@@ -170,7 +170,7 @@
 	line-height: 1.25em;
 	padding: 6px 10px;
 	outline: 0;
-	float: left;
+	/*float: left;*/
 	margin-bottom: 5px;
 }
 

@@ -34,8 +34,8 @@
 	}
 
 	.mp-form {
-		border: 1px solid #808080;
-		border-radius: 20px;
+		border: 1px solid #d6d4d4;
+		border-radius: 4px;
 		padding: 10px;
 		width: 625px;
 		background: white;
@@ -55,7 +55,7 @@
 		border: 1px solid #d6d4d4;
 		border-radius: 4px;
 		padding: 10px;
-		width: 570px;
+		width: 625px;
 		/*height: 100px;*/
 		background: white;
 		margin-bottom: 20px;
@@ -89,11 +89,6 @@
 		margin-left: 20px;
 	}
 
-	.mp-module .ch-btn-big, .mp-module .ch-btn-big:focus {
-		float: right;
-		margin-right: 155px;
-		padding: 6px 24px;
-	}
 
 	.mp-module .es-button {
 		padding: 6px 48px!important;
@@ -190,7 +185,7 @@
 	}
 
 	.mp-module .boleto {
-		background: url('../img/boleto.png') 80% no-repeat;
+		background: url('../img/boleto.png') 70% no-repeat;
 		background-size: 137px 61px;
 		height: 61px;
 	}
@@ -266,10 +261,10 @@
 
 	.mp-module .ch-btn-big, .mp-module .ch-btn-big:focus {
 		font-size: 14px !important;
-		min-width: 175px;
+/*		min-width: 175px;
 		text-align: right;
 		float: right;
-		padding: 7px 15px !important;
+		padding: 7px 15px !important;*/
 	}
 
 	.mp-module .col-bottom {

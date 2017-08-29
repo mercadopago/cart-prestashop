@@ -26,20 +26,34 @@
 
 class UtilMercadoPago
 {
-    public static function logMensagem($mensagem, $nivel)
+
+    public static function logMensagem($message, $nivel, $exceptionMessage, $logApi, $data, $methodOrUri)
     {
-        $version = UtilMercadoPago::getPrestashopVersion();
-        $data_hora = date("F j, Y, g:i a");
-        if ($version >= 6) {
-            PrestaShopLogger::addLog(
-                $data_hora."===".$mensagem,
-                $nivel,
-                0,
-                'MercadoPago',
-                null,
-                true
+        UtilMercadoPago::log($message, $exceptionMessage);
+
+        if ($logApi) {
+            $errors[] = array(
+                "endpoint" => $methodOrUri,
+                "message" => $message,
+                "payloads" => $data
             );
+            MPApi::sendErrorLog($nivel, $errors);
         }
+    }
+
+    /*
+    User Errors...
+    */
+    public static function log($msg, $exceptionMessage)
+    {
+        error_log("entrou aqui no log");
+        $date = date('d.m.Y h:i:s');
+        $log = "Date:  ".$date."  | ".$msg.
+        "|  Exception:  " . $exceptionMessage . "\n";
+
+        error_log("entrou aqui no log === " . $log);
+
+        error_log($log, 3, realpath(__DIR__ . '/..') . '/logs/mercadopago.log');
     }
 
     public static function getPrestashopVersion()

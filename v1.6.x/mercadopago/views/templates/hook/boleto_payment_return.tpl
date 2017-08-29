@@ -17,10 +17,10 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		<h4 id="id-confirmation-boleto">
 			<strong> {l s='Thank you for your purchase! We are awaiting the payment.' mod='mercadopago'} <br> <br>
 			</strong>
-			<h5>
-				{l s='Payment Id (MercadoPago): ' mod='mercadopago'}
+			<p><strong>
+				{l s='Payment Id (MercadoPago): ' mod='mercadopago'}</strong>
 				{$payment_id|escape:'htmlall':'UTF-8'}<br>
-			</h5>
+			</p>
 	</div>
 	<br>
 	<div class="row">

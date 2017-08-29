@@ -22,6 +22,7 @@
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of MercadoPago
 *}
+
 <div class="mp-module">
 	<div class="return-div">
 		<h3>
@@ -32,37 +33,36 @@
 			</strong>
 			</br>
 			</br>
-			<h3>
 
 				{if $card_holder_name != null}
-					{l s='Card holder name: ' mod='mercadopago'}
-					{$card_holder_name|escape:'htmlall':'UTF-8'}</br>
+					<p><strong>{l s='Card holder name: ' mod='mercadopago'}</strong>
+					{$card_holder_name|escape:'htmlall':'UTF-8'}</p>
 				{/if}
 
 				{if $four_digits != null}
-					{l s='Credit card: ' mod='mercadopago'}
-					{$four_digits|escape:'htmlall':'UTF-8'}</br>
+					<p class="text"><strong>{l s='Credit card: ' mod='mercadopago'}</strong>
+					{$four_digits|escape:'htmlall':'UTF-8'}</p>
 				{/if}
 
 				{if $payment_method_id != null}
-					{l s='Payment method: ' mod='mercadopago'}
-					{$payment_method_id|escape:'htmlall':'UTF-8'}</br>
+					<p><strong>{l s='Payment method: ' mod='mercadopago'}</strong>
+					{$payment_method_id|escape:'htmlall':'UTF-8'}</p>
 				{/if}
 
-				{l s='Amount: ' mod='mercadopago'}
-				{$amount|escape:'htmlall':'UTF-8'}</br>
+				<p><strong>{l s='Amount: ' mod='mercadopago'}</strong>
+				{$amount|escape:'htmlall':'UTF-8'}
+				<p/>
 				{if $installments != null}
-					{l s='Installments: ' mod='mercadopago'}
-					{$installments|escape:'htmlall':'UTF-8'}</br>
+					<p><strong>{l s='Installments: ' mod='mercadopago'}</strong>
+					{$installments|escape:'htmlall':'UTF-8'}</p>
 				{/if}
 
 				{if $statement_descriptor != null && ! $statement_descriptor eq ''}
-					{l s='Statement descriptor: ' mod='mercadopago'}
-					{$statement_descriptor|escape:'htmlall':'UTF-8'}</br>
+					<p><strong>{l s='Statement descriptor: ' mod='mercadopago'}</strong>
+					{$statement_descriptor|escape:'htmlall':'UTF-8'}</p>
 				{/if}
-				{l s='Payment id (MercadoPago): ' mod='mercadopago'}
-				{$payment_id|escape:'htmlall':'UTF-8'}</br>				
-			</h3>
+				<p><strong>{l s='Payment id (MercadoPago):' mod='mercadopago'}</strong>
+				{$payment_id|escape:'htmlall':'UTF-8'}</p>				
 			{elseif $status_detail eq 'pending_review_manual' || $status_detail eq 'pending_review'}
 				{l s='We are processing the payment. In less than 2 business days we will tell you by e-mail if it is accredited or if we need more information.' mod='mercadopago'}
 			{elseif $status_detail eq 'pending_contingency'}

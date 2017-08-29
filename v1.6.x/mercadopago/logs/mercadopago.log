@@ -1,0 +1,200 @@
+Date:  23.08.2017 03:00:44  | invalid client_id or client_secret.|  Exception:  
+Date:  23.08.2017 03:00:45  | invalid client_id or client_secret.|  Exception:  invalid_client
+Date:  23.08.2017 03:05:07  | invalid client_id or client_secret.|  Exception:  
+Date:  23.08.2017 03:05:08  | invalid client_id or client_secret.|  Exception:  invalid_clientLine=MPApi->getAccessToken@85
+Date:  24.08.2017 07:03:49  | invalid client_id or client_secret.|  Exception:  
+Date:  24.08.2017 07:03:49  | invalid client_id or client_secret.|  Exception:  invalid_client==MPApi->getAccessToken@85
+Date:  24.08.2017 02:52:49  | invalid_token|  Exception:  
+Date:  24.08.2017 03:01:08  | Invalid status|  Exception:  
+Date:  24.08.2017 03:01:22  | invalid_token|  Exception:  
+Date:  24.08.2017 03:04:43  | Invalid status|  Exception:  
+Date:  24.08.2017 03:06:13  | Invalid status|  Exception:  
+Date:  24.08.2017 03:06:24  | invalid_token|  Exception:  
+Date:  24.08.2017 03:08:06  | Invalid status|  Exception:  
+Date:  24.08.2017 03:08:18  | invalid_token|  Exception:  
+Date:  24.08.2017 03:14:03  | Invalid status|  Exception:  
+Date:  24.08.2017 03:14:12  | invalid_token|  Exception:  
+Date:  24.08.2017 03:16:17  | Invalid status|  Exception:  
+Date:  24.08.2017 03:16:25  | invalid_token|  Exception:  
+Date:  24.08.2017 03:18:44  | Invalid status|  Exception:  
+Date:  24.08.2017 03:18:52  | invalid_token|  Exception:  
+Date:  24.08.2017 03:21:11  | Invalid status|  Exception:  
+Date:  24.08.2017 03:21:18  | invalid_token|  Exception:  
+Date:  24.08.2017 03:22:36  | Invalid status|  Exception:  
+Date:  24.08.2017 03:22:47  | invalid_token|  Exception:  
+Date:  24.08.2017 03:24:18  | Invalid status|  Exception:  
+Date:  24.08.2017 03:24:27  | invalid_token|  Exception:  
+Date:  24.08.2017 03:25:05  | |  Exception:  
+Date:  24.08.2017 03:25:11  | |  Exception:  
+Date:  24.08.2017 03:25:13  | invalid_token|  Exception:  
+Date:  24.08.2017 03:25:39  | |  Exception:  
+Date:  24.08.2017 03:25:46  | |  Exception:  
+Date:  24.08.2017 03:25:48  | invalid_token|  Exception:  
+Date:  24.08.2017 03:28:30  | |  Exception:  
+Date:  24.08.2017 03:28:37  | |  Exception:  
+Date:  24.08.2017 03:28:39  | invalid_token|  Exception:  
+Date:  24.08.2017 03:31:43  | Invalid status|  Exception:  
+Date:  24.08.2017 03:31:51  | invalid_token|  Exception:  
+Date:  24.08.2017 03:34:43  | Invalid status|  Exception:  
+Date:  24.08.2017 03:34:55  | invalid_token|  Exception:  
+Date:  24.08.2017 03:35:28  | Invalid status|  Exception:  
+Date:  24.08.2017 03:35:37  | invalid_token|  Exception:  
+Date:  24.08.2017 03:36:46  | Invalid status|  Exception:  
+Date:  24.08.2017 03:36:54  | invalid_token|  Exception:  
+Date:  24.08.2017 03:37:23  | Invalid status|  Exception:  
+Date:  24.08.2017 03:37:31  | invalid_token|  Exception:  
+Date:  24.08.2017 03:38:23  | Invalid status|  Exception:  
+Date:  24.08.2017 03:38:37  | invalid_token|  Exception:  
+Date:  24.08.2017 03:39:37  | Invalid status|  Exception:  
+Date:  24.08.2017 03:39:47  | invalid_token|  Exception:  
+Date:  24.08.2017 03:42:52  | Invalid status|  Exception:  
+Date:  24.08.2017 03:43:01  | invalid_token|  Exception:  
+Date:  24.08.2017 03:43:51  | Invalid status|  Exception:  
+Date:  24.08.2017 03:43:58  | invalid_token|  Exception:  
+Date:  24.08.2017 03:45:42  | Invalid status|  Exception:  
+Date:  24.08.2017 03:45:42  | Invalid status|  Exception:  
+Date:  24.08.2017 03:45:52  | invalid_token|  Exception:  
+Date:  24.08.2017 03:45:52  | invalid_token|  Exception:  
+Date:  24.08.2017 03:46:16  | Invalid status|  Exception:  
+Date:  24.08.2017 03:46:24  | invalid_token|  Exception:  
+Date:  24.08.2017 03:47:19  | Invalid status|  Exception:  
+Date:  24.08.2017 03:47:28  | invalid_token|  Exception:  
+Date:  24.08.2017 03:48:41  | Invalid status|  Exception:  
+Date:  24.08.2017 03:48:53  | invalid_token|  Exception:  
+Date:  24.08.2017 03:51:02  | Invalid status|  Exception:  
+Date:  24.08.2017 03:51:12  | invalid_token|  Exception:  
+Date:  24.08.2017 03:52:18  | Invalid status|  Exception:  
+Date:  24.08.2017 03:52:26  | invalid_token|  Exception:  
+Date:  24.08.2017 03:52:56  | Invalid status|  Exception:  
+Date:  24.08.2017 03:53:07  | invalid_token|  Exception:  
+Date:  24.08.2017 03:54:28  | Invalid status|  Exception:  
+Date:  24.08.2017 03:54:38  | invalid_token|  Exception:  
+Date:  24.08.2017 03:55:20  | Invalid status|  Exception:  
+Date:  24.08.2017 03:55:29  | invalid_token|  Exception:  
+Date:  24.08.2017 03:55:50  | Invalid status|  Exception:  
+Date:  24.08.2017 03:56:03  | invalid_token|  Exception:  
+Date:  24.08.2017 03:57:35  | Invalid status|  Exception:  
+Date:  24.08.2017 03:57:53  | invalid_token|  Exception:  
+Date:  24.08.2017 03:58:22  | Invalid status|  Exception:  
+Date:  24.08.2017 03:58:36  | invalid_token|  Exception:  
+Date:  24.08.2017 03:59:21  | Invalid status|  Exception:  
+Date:  24.08.2017 03:59:33  | invalid_token|  Exception:  
+Date:  24.08.2017 04:00:02  | Invalid status|  Exception:  
+Date:  24.08.2017 04:00:12  | invalid_token|  Exception:  
+Date:  24.08.2017 04:01:18  | Invalid status|  Exception:  
+Date:  24.08.2017 04:01:31  | invalid_token|  Exception:  
+Date:  24.08.2017 04:02:30  | Invalid status|  Exception:  
+Date:  24.08.2017 04:02:39  | invalid_token|  Exception:  
+Date:  24.08.2017 04:03:17  | Invalid status|  Exception:  
+Date:  24.08.2017 04:03:24  | invalid_token|  Exception:  
+Date:  24.08.2017 04:03:58  | Invalid status|  Exception:  
+Date:  24.08.2017 04:04:11  | invalid_token|  Exception:  
+Date:  28.08.2017 10:42:25  | Invalid status|  Exception:  
+Date:  28.08.2017 10:42:38  | invalid_token|  Exception:  
+Date:  28.08.2017 11:06:06  | invalid_token|  Exception:  
+Date:  28.08.2017 12:47:47  | invalid_token|  Exception:  
+Date:  28.08.2017 12:54:06  | invalid_token|  Exception:  
+Date:  28.08.2017 12:54:51  | invalid_token|  Exception:  
+Date:  28.08.2017 12:58:59  | invalid_token|  Exception:  
+Date:  28.08.2017 01:00:14  | invalid_token|  Exception:  
+Date:  28.08.2017 01:08:54  | invalid_token|  Exception:  
+Date:  28.08.2017 03:23:22  | Invalid status|  Exception:  
+Date:  28.08.2017 03:23:35  | invalid_token|  Exception:  
+Date:  28.08.2017 03:28:51  | Invalid status|  Exception:  
+Date:  28.08.2017 03:29:01  | invalid_token|  Exception:  
+Date:  28.08.2017 04:10:56  | |  Exception:  
+Date:  28.08.2017 04:11:53  | |  Exception:  
+Date:  28.08.2017 04:12:32  | |  Exception:  
+Date:  28.08.2017 04:13:12  | |  Exception:  
+Date:  28.08.2017 04:24:16  | Invalid status|  Exception:  
+Date:  28.08.2017 04:24:30  | invalid_token|  Exception:  
+Date:  28.08.2017 04:28:19  | Invalid status|  Exception:  
+Date:  28.08.2017 04:28:30  | invalid_token|  Exception:  
+Date:  28.08.2017 04:29:31  | Invalid status|  Exception:  
+Date:  28.08.2017 04:29:48  | invalid_token|  Exception:  
+Date:  28.08.2017 04:31:38  | Invalid status|  Exception:  
+Date:  28.08.2017 04:31:57  | invalid_token|  Exception:  
+Date:  28.08.2017 04:37:05  | Invalid status|  Exception:  
+Date:  28.08.2017 04:37:16  | invalid_token|  Exception:  
+Date:  28.08.2017 04:39:52  | Invalid status|  Exception:  
+Date:  28.08.2017 04:40:02  | invalid_token|  Exception:  
+Date:  28.08.2017 04:42:19  | Invalid status|  Exception:  
+Date:  28.08.2017 04:42:29  | invalid_token|  Exception:  
+Date:  28.08.2017 04:44:41  | Invalid status|  Exception:  
+Date:  28.08.2017 04:45:00  | invalid_token|  Exception:  
+Date:  28.08.2017 04:50:22  | Invalid status|  Exception:  
+Date:  28.08.2017 04:50:37  | invalid_token|  Exception:  
+Date:  28.08.2017 04:56:14  | Invalid status|  Exception:  
+Date:  28.08.2017 04:56:29  | invalid_token|  Exception:  
+Date:  28.08.2017 04:57:35  | Invalid status|  Exception:  
+Date:  28.08.2017 04:57:45  | invalid_token|  Exception:  
+Date:  28.08.2017 07:13:30  | Invalid status|  Exception:  
+Date:  28.08.2017 07:13:46  | invalid_token|  Exception:  
+Date:  28.08.2017 09:24:27  | Can not call the API, status code 0.|  Exception:  
+Date:  28.08.2017 09:44:52  | Invalid status|  Exception:  
+Date:  28.08.2017 09:45:07  | invalid_token|  Exception:  
+Date:  28.08.2017 10:09:44  | |  Exception:  
+Date:  28.08.2017 10:21:12  | Invalid status|  Exception:  
+Date:  28.08.2017 10:21:24  | invalid_token|  Exception:  
+Date:  28.08.2017 10:48:12  | |  Exception:  
+Date:  28.08.2017 10:48:37  | |  Exception:  
+Date:  28.08.2017 10:48:47  | |  Exception:  
+Date:  28.08.2017 10:48:50  | invalid_token|  Exception:  
+Date:  29.08.2017 08:27:18  | invalid_token|  Exception:  
+Date:  29.08.2017 09:19:28  | Invalid status|  Exception:  
+Date:  29.08.2017 09:23:11  | Invalid status|  Exception:  
+Date:  29.08.2017 09:23:50  | Invalid status|  Exception:  
+Date:  29.08.2017 09:24:13  | Invalid status|  Exception:  
+Date:  29.08.2017 09:25:38  | Invalid status|  Exception:  
+Date:  29.08.2017 09:26:07  | Invalid status|  Exception:  
+Date:  29.08.2017 10:18:35  | Invalid status|  Exception:  
+Date:  29.08.2017 10:19:25  | MercadoPago::createCustomerCard - Error: Doens't possibled to create the Customer|  Exception:  
+Date:  29.08.2017 10:20:19  | Notification is come with id 554200747|  Exception:  
+Date:  29.08.2017 11:16:40  | |  Exception:  
+Date:  29.08.2017 11:17:45  | |  Exception:  
+Date:  29.08.2017 11:17:55  | |  Exception:  
+Date:  29.08.2017 11:19:53  | |  Exception:  
+Date:  29.08.2017 11:20:03  | |  Exception:  
+Date:  29.08.2017 11:20:47  | Notification is come with id 554230124|  Exception:  
+Date:  29.08.2017 11:21:55  | Notification is come with id |  Exception:  
+Date:  29.08.2017 12:23:52  | Notification is come with id |  Exception:  
+Date:  29.08.2017 12:47:38  | Notification is come with id |  Exception:  
+Date:  29.08.2017 01:14:58  | Notification Custom is come with id 6291048|  Exception:  
+Date:  29.08.2017 01:23:39  | Notification Custom is come with id 6291564|  Exception:  
+Date:  29.08.2017 01:26:30  | Notification Custom is come with id 6291564|  Exception:  
+Date:  29.08.2017 01:46:23  | Notification Custom is come with id 6291932|  Exception:  
+Date:  29.08.2017 01:46:24  | FATAL ERROR, error on insert mercadopago_orders. |  Exception:  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''2017-08-29 01:46:24',1,'approved')' at line 1<br /><br /><pre>INSERT INTO ps_6_13_mercadopago_orders (cart_id, order_id, added, valid, ipn_status) VALUES(140,,'2017-08-29 01:46:24',1,'approved')</pre>
+Date:  29.08.2017 02:35:41  | Invalid status|  Exception:  
+Date:  29.08.2017 02:37:54  | Invalid status|  Exception:  
+Date:  29.08.2017 02:39:13  | Invalid status|  Exception:  
+Date:  29.08.2017 02:41:31  | Notification Custom is come with id 6293283|  Exception:  
+Date:  29.08.2017 02:52:21  | Notification Custom is come with id 6293490|  Exception:  
+Date:  29.08.2017 02:55:04  | Notification Custom is come with id 6293527|  Exception:  
+Date:  29.08.2017 03:12:02  | Invalid status|  Exception:  
+Date:  29.08.2017 03:14:57  | Invalid status|  Exception:  
+Date:  29.08.2017 03:16:24  | Invalid status|  Exception:  
+Date:  29.08.2017 03:16:48  | |  Exception:  
+Date:  29.08.2017 03:18:12  | access denied - 100: the credentials are required|  Exception:  
+Date:  29.08.2017 03:18:15  | access denied - 100: the credentials are required|  Exception:  
+Date:  29.08.2017 03:18:15  | MercadoPago::createCustomerCard - Error: Doens't possibled to create the Customer|  Exception:  
+Date:  29.08.2017 03:30:06  | Invalid status|  Exception:  
+Date:  29.08.2017 04:20:57  | invalid public_key - 1001: public_key not found|  Exception:  
+Date:  29.08.2017 04:20:59  | Malformed access_token: null|  Exception:  
+Date:  29.08.2017 04:21:06  | Invalid status|  Exception:  
+Date:  29.08.2017 04:26:21  | Invalid status|  Exception:  
+Date:  29.08.2017 04:28:45  | Invalid status|  Exception:  
+Date:  29.08.2017 04:29:48  | Notification Custom is come with id 6294768|  Exception:  
+Date:  29.08.2017 04:31:25  | Invalid status|  Exception:  
+Date:  29.08.2017 04:31:31  | Error converting access token|  Exception:  
+Date:  29.08.2017 04:39:12  | Invalid status|  Exception:  
+Date:  29.08.2017 04:40:04  | Invalid status|  Exception:  
+Date:  29.08.2017 04:45:26  | Notification Standard is come with id 554438046|  Exception:  
+Date:  29.08.2017 04:48:35  | Notification Standard is come with id 2953249828|  Exception:  
+Date:  29.08.2017 04:48:35  | Notification Standard is come with id 554438046|  Exception:  
+Date:  29.08.2017 04:52:13  | Notification Custom is come with id 6293527|  Exception:  
+Date:  29.08.2017 05:01:42  | Notification Standard is come with id 554446598|  Exception:  
+Date:  29.08.2017 05:02:31  | Notification Standard is come with id 2953258190|  Exception:  
+Date:  29.08.2017 05:02:32  | Notification Standard is come with id 554446598|  Exception:  
+Date:  29.08.2017 05:03:27  | Payment not found - 2000: Payment not found|  Exception:  
+Date:  29.08.2017 05:03:32  | Notification Standard is come with id 2953258190|  Exception:  
+Date:  29.08.2017 05:03:37  | Notification Standard is come with id 554446598|  Exception:  

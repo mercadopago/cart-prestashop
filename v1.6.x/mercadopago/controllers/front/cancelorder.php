@@ -73,10 +73,14 @@ class MercadoPagoCancelOrderModuleFrontController extends ModuleFrontController
                     'status' => '404',
                     'message' => $this->module->l('Cannnot cancel the payment, please see the PrestaShop Log.')
                 );
+
                 UtilMercadoPago::logMensagem(
-                    'Cannnot cancel the payment = ' .
-                    Tools::jsonEncode($responseCancel),
-                    MPApi::WARNING
+                    'Cannnot cancel the payment, please see the PrestaShop Log.',
+                    MPApi::WARNING,
+                    'Cannnot cancel the payment, please see the PrestaShop Log.',
+                    true,
+                    null,
+                    'CancelOrder->cancelOrder'
                 );
             }
         }

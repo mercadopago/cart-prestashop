@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.5.0';
+    const VERSION = '3.5.1';
 
     /* Info */
     const INFO = 1;
@@ -76,8 +76,20 @@ class MPApi
             $access_data = MPRestCli::post('/oauth/token', $app_client_values, 'application/x-www-form-urlencoded');
 
             $this->access_data = $access_data['response'];
-
-            return $this->access_data['access_token'];
+            error_log(print_r($access_data['response'], true));
+            if (isset($access_data['response']['status']) &&
+                $access_data['response']['status'] > 201) {
+                UtilMercadoPago::logMensagem(
+                    $access_data['response']['message'],
+                    MPApi::ERROR,
+                    $access_data['response']['error'] . "==" . __CLASS__.'->'.__FUNCTION__.'@'.__LINE__,
+                    true,
+                    $app_client_values,
+                    '/oauth/token'
+                );
+            } else {
+                return $this->access_data['access_token'];
+            }
         }
         return null;
     }
@@ -442,8 +454,13 @@ class MPApi
 
         if ($customerResponse == null || $customerResponse["status"] != "200") {
             UtilMercadoPago::logMensagem(
-                'MercadoPago::createCustomerCard - Error: Doens\'t possibled to create the Customer',
-                MPApi::WARNING
+                'MercadoPago::createCustomerCard - '.
+                'Error: Doens\'t possibled to create the Customer',
+                MPApi::ERROR,
+                '',
+                false,
+                null,
+                "mercadopago->getContent"
             );
         }
         return $customerResponse;
@@ -566,7 +583,7 @@ class MPApi
         $data = array(
             "code" => $code,
             "module" => "PrestaShop",
-            "module_version" => "3.5.0",
+            "module_version" => "3.5.1",
             "url_store" => $_SERVER['HTTP_HOST'],
             "errors" => $errors
         );

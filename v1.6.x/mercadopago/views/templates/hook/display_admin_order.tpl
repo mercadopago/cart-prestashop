@@ -32,31 +32,34 @@
 			<br>
 			<br>
 			{/if}
-			<div class="row">
-				<div class="col-md-12"> <span id="show_message" style="display: none;"> </span> </div>
-				<div class="col-md-12" style="display: none;" id="show_message_waiting">
-					<span class="alert alert-warning">Please waiting...</span>
+			{if $pos_active == "true"}
+				<div class="row">
+					<div class="col-md-12"> <span id="show_message" style="display: none;"> </span> </div>
+					<div class="col-md-12" style="display: none;" id="show_message_waiting">
+						<span class="alert alert-warning">Please waiting...</span>
+					</div>
 				</div>
-			</div>
-			<br>
-			<br>
-
+				<br>
+				<br>
+			{/if}
+			{if $statusOrder == "Pendente"}
 			<div class="row">
-				{if $statusOrder == "Pendente"}
-					<form action="{$cancel_action_url|escape:'htmlall':'UTF-8'}" method="post" id="frmCancelOrder">
-						<input type="hidden" name="token_form" id="token_form" value="{$token_form|escape:'htmlall':'UTF-8'}"/>
-						<input type="hidden" name="id_order" id="id_order"/>
-						<div class="col-md-4">
-							<button class="btn btn-primary"
-								value="{l s='Cancel the Order' mod='mercadopago'}"
-								type="button"
-								id="btoCancelOrder">
-									{l s='Cancel the Order' mod='mercadopago'}
-							</button>
-						</div>
-					</form>
-				{/if}
+				<h3>{l s='You can cancel the order and the payment in Mercado Pago.' mod='mercadopago'}</h3>
+				<br>
+				<form action="{$cancel_action_url|escape:'htmlall':'UTF-8'}" method="post" id="frmCancelOrder">
+					<input type="hidden" name="token_form" id="token_form" value="{$token_form|escape:'htmlall':'UTF-8'}"/>
+					<input type="hidden" name="id_order" id="id_order"/>
+					<div class="col-md-4">
+						<button class="btn btn-primary"
+							value="{l s='Cancel the Order' mod='mercadopago'}"
+							type="button"
+							id="btoCancelOrder">
+								{l s='Cancel the Order' mod='mercadopago'}
+						</button>
+					</div>
+				</form>
 			</div>
+			{/if}
 			{if $showPoint == "true"}
 			<div class="col-sm-2 form-group">
 			    <label for="exampleInputEmail1">Point Mercado Pago</label>
@@ -74,6 +77,7 @@
 				<button type="button" name="payment_pos_cancel_action" id="payment_pos_cancel_action" class="btn btn-danger">{l s='Cancel payment' mod='mercadopago'}</button>
 			</div>
 			{/if}
+	</div>
 	<br>
 	{if isset($status)}
 	<div id="formAddPaymentPanel" class="panel">

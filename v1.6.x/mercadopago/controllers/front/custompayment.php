@@ -90,18 +90,27 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 $id_cart_rule = $mercadopago->applyDiscount($cart, $payment_mode, $installments);
             }
 
-            $mercadopago->validateOrder(
-                $cart->id,
-                Configuration::get($order_status),
-                $total,
-                $displayName,
-                null,
-                $extra_vars,
-                $cart->id_currency,
-                false,
-                $cart->secure_key
-            );
-
+            $existOrderMercadoPago = $mercadopago->selectMercadoPagoOrder($cart->id);
+            error_log('===existOrderMercadoPago===' . $existOrderMercadoPago);
+            if (! $existOrderMercadoPago) {
+                $mercadopago->insertMercadoPagoOrder($cart->id, 0, 0, $response['status']);
+                try {
+                    $mercadopago->validateOrder(
+                        $cart->id,
+                        Configuration::get($order_status),
+                        $total,
+                        $displayName,
+                        null,
+                        $extra_vars,
+                        $cart->id_currency,
+                        false,
+                        $cart->secure_key
+                    );
+                }catch(Exception $e){
+                    error_log("Exception custom payment === " .$e->getMessage());
+                }
+                $mercadopago->insertMercadoPagoOrder($cart->id, $mercadopago->currentOrder, 1, $response['status']);
+            }
             if ($id_cart_rule != null) {
                 $cartRule = new CartRule($id_cart_rule);
                 $cartRule->active = false;
@@ -110,6 +119,14 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 
             $order = new Order($mercadopago->currentOrder);
             $order_payments = $order->getOrderPayments();
+            error_log("===order_payments===".Tools::jsonEncode($order_payments));
+            error_log("===reference===".$order->reference);
+
+            if (! Validate::isLoadedObject($order)) {
+                error_log("=====erro log esta null=====");
+            }
+            error_log("vai imprimir o order_payments");
+            error_log(print_r($order_payments, true));
             $order_payments[0]->transaction_id = $response['id'];
 
             $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$cart->id.'&id_module='.$mercadopago->id.
