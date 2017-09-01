@@ -245,7 +245,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 						<div class="col">
 							<label for="id-card-number">{l s='Card number: '
 								mod='mercadopago'}<em>*</em>
-							</label> <input id="id-card-number" data-checkout="cardNumber"
+							</label> <input id="id-card-number" Isso dta-checkout="cardNumber"
 								type="text" />
 							<div id="id-card-number-status" class="status"></div>
 						</div>
@@ -391,9 +391,8 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				<input
 					name="payment_method_id" type="hidden"
 					value="{$offline_payment|escape:'htmlall':'UTF-8'}" />
-				<div class="col-xs-12">
-						<div class="mp-form-custom">
-
+				
+				<div class="mp-form">
 						<div class="row">
 							<div class="col title">
 								<span class="payment-label">{l s='BOLETO'
@@ -502,14 +501,12 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 								</div>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-bottom">
-								<button class="ch-btn ch-btn-big es-button submit"
-									value="Gerar Boleto" type="submit" class="create-boleto-febraban"
-									id="btnSubmit">Gerar Boleto</button>
-							</div>
+						<br/>
+						<div style="text-align: center;">
+							<button class="ch-btn ch-btn-big es-button submit"
+								value="Gerar Boleto" type="submit" class="create-boleto-febraban"
+								id="btnSubmit">Gerar Boleto</button>
 						</div>
-					</div>
 				</div>
 			</form>
 			{/if}

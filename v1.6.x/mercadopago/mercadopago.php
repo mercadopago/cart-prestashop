@@ -96,7 +96,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
-        $this->version = '3.5.1';
+        $this->version = '3.5.2';
         $this->currencies = true;
         //$this->currencies_mode = 'radio';
         $this->need_instance = 0;
@@ -641,7 +641,12 @@ class MercadoPago extends PaymentModule
                         $settings = array(
                             'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
                             htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__,
-                            'boleto_url' => urldecode($payment_info['transaction_details']['external_resource_url']),
+
+                            'boleto_url' => isset($payment_info['transaction_details']) ?
+                            urldecode(
+                                $payment_info['transaction_details']['external_resource_url']
+                            ) : "",
+
                             'payment_type_id' => $payment_type_id,
                         );
                         $this->context->smarty->assign($settings);
@@ -1771,6 +1776,7 @@ class MercadoPago extends PaymentModule
     public function execPayment($post)
     {
         $preferences = $this->getPreferencesCustom($post);
+        error_log("prefencias de pagamento===". Tools::jsonEncode($preferences));
         try {
             //$conciliation = new Conciliation();
             //$conciliation->insertMercadoPagoOrder();
@@ -1855,8 +1861,20 @@ class MercadoPago extends PaymentModule
      */
     private function getPreferencesCustom($post)
     {
+        $customer_fields = null;
+        try {
+            $customer_fields = Context::getContext()->customer->getFields();
+        } catch (Exception $e) {
+            UtilMercadoPago::logMensagem(
+                "FATAL ERROR, getFields",
+                MPApi::ERROR,
+                $e->getMessage(),
+                true,
+                null,
+                "mercadopago->getPreferencesCustom"
+            );
+        }
 
-        $customer_fields = Context::getContext()->customer->getFields();
         $cart = Context::getContext()->cart;
 
         // items

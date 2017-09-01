@@ -667,6 +667,8 @@
 						$( "#creditcard_active" ).val("false");
 						$( ".ticket" ).val("false");
 						$('[name=MERCADOPAGO_PUBLIC_KEY]').val("");
+						$('[name=MERCADOPAGO_ACCESS_TOKEN]').val("");
+						loadCustom();
 					}
 				}
 		});
@@ -719,18 +721,18 @@
 
 
 	$('#MERCADOPAGO_PUBLIC_KEY').on("change", function(){
-		verificarCustom();
+		loadCustom();
 	});
 
 	$('#MERCADOPAGO_ACCESS_TOKEN').on("change", function(){
-		verificarCustom();
+		loadCustom();
 	});
 
 	$('#custom-list input:checkbox:checked').each(function(){
 		console.info("entrou aqui");
 	});
 
-	function verificarCustom() {
+	function loadCustom() {
 		if($('#MERCADOPAGO_ACCESS_TOKEN').val() == ""
 			|| $('#MERCADOPAGO_PUBLIC_KEY').val() == "") {
 
@@ -749,7 +751,7 @@
 				$(".ticket").attr('disabled', false);
 		}
 	}
-	verificarCustom();
+	loadCustom();
 
     $('.ticket').change(function() {
         if($(this).is(":checked")) {

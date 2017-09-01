@@ -23,10 +23,11 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			</p>
 	</div>
 	<br>
+
 	<div class="row">
 		{if $boleto_url != null}
-		<iframe src="{$boleto_url|escape:'htmlall':'UTF-8'}"
-			class="boleto-frame" id="boletoframe" name="boletoframe">
+		<iframe src="{$boleto_url|escape:'htmlall':'UTF-8'}" width="100%" height="600px"
+			id="boletoframe2" name="boletoframe2">
 			<div class="lightbox" id="text">
 				<div class="box">
 					<div class="content">
@@ -50,16 +51,3 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
   ModuleAnalytics.setCheckoutType("basic")
   ModuleAnalytics.put()
 </script> -->
-
-<script type="text/javascript">
-	$( document ).ready(function() {
-		printFrame("boletoframe");
-	});
-
-	function printFrame(id) {
-        var frm = document.getElementById(id).contentWindow;
-        frm.focus();// focus on contentWindow is needed on some ie versions
-        frm.print();
-        return false;
-	}
-</script>
