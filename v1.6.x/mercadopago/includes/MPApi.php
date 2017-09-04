@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.5.2';
+    const VERSION = '3.5.3';
 
     /* Info */
     const INFO = 1;
@@ -76,7 +76,6 @@ class MPApi
             $access_data = MPRestCli::post('/oauth/token', $app_client_values, 'application/x-www-form-urlencoded');
 
             $this->access_data = $access_data['response'];
-            error_log(print_r($access_data['response'], true));
             if (isset($access_data['response']['status']) &&
                 $access_data['response']['status'] > 201) {
                 UtilMercadoPago::logMensagem(
@@ -187,12 +186,7 @@ class MPApi
         $uri .= (strpos($uri, "?") === false) ? "?" : "&";
         $uri .= $this->buildQuery($params);
 
-        error_log("====MERCADO ENVIOS=====" . Tools::jsonEncode($uri));
-
         $result = MPRestCli::get($uri);
-
-        error_log("====MERCADO ENVIOS=====" . Tools::jsonEncode($result));
-
         return  $result;
     }
 
@@ -364,7 +358,6 @@ class MPApi
         $access_token = $this->getAccessTokenV1();
         $result = MPRestCli::get('/v1/payment_methods/?access_token=' . $access_token);
         $result = $result['response'];
-        error_log(print_r($result, true));
         if (isset($result['status']) != 201) {
             // remove account_money
             foreach ($result as $key => $value) {

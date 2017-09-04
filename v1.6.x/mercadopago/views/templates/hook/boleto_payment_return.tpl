@@ -12,6 +12,20 @@ for more information. * * @author MercadoPago * @copyright Copyright
 (c) MercadoPago [http://www.mercadopago.com] * @license
 http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 3.0) * International Registered Trademark & Property of MercadoPago *}
+
+<style type="text/css">
+	
+	a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+}
+
+</style>
+
 <div class="mp-module">
 	<div class="return-div">
 		<h4 id="id-confirmation-boleto">
@@ -23,7 +37,9 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			</p>
 	</div>
 	<br>
-
+	<div>
+		<a href="{$boleto_url|escape:'htmlall':'UTF-8'}" class="ch-btn ch-btn-big" target="_blank">{l s='Print ticket' mod='mercadopago'}</a>
+	</div>
 	<div class="row">
 		{if $boleto_url != null}
 		<iframe src="{$boleto_url|escape:'htmlall':'UTF-8'}" width="100%" height="600px"

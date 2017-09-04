@@ -245,7 +245,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 						<div class="col">
 							<label for="id-card-number">{l s='Card number: '
 								mod='mercadopago'}<em>*</em>
-							</label> <input id="id-card-number" Isso dta-checkout="cardNumber"
+							</label> <input id="id-card-number" data-checkout="cardNumber"
 								type="text" />
 							<div id="id-card-number-status" class="status"></div>
 						</div>
@@ -408,27 +408,27 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 						<div class="alert">
 						  INFORMAÇÕES SOLICITADAS EM CONFORMIDADE COM AS NORMAS DAS CIRCULARES NRO. 3.461/09, 3.598/12 E 3.656/13 DO BANCO CENTRAL DO BRASIL.
 						</div>
-						<div class="container">
+						<div class="">
 						    <div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
 										<label for="firstname">Nome:<em style="color: red;">*</em>
 										</label> <input  class="form-control" id="firstname" name="firstname" required="true" type="text" maxlength="50" value="{$ticket.firstname|escape:'htmlall':'UTF-8'}" />
-										<div id="firstname-status" class="status">Campo obrigatório</div>
+										<div id="firstname-status" class="status_febraban">Campo obrigatório</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label for="lastname">Sobrenome:<em style="color: red;">*</em>
 										</label> <input  class="form-control" id="lastname" name="lastname" required="true" type="text" maxlength="50" value="{$ticket.lastname|escape:'htmlall':'UTF-8'}"/>
-										<div id="lastname-status" class="status">Campo obrigatório</div>
+										<div id="lastname-status" class="status_febraban">Campo obrigatório</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label for="cpf">CPF:<em style="color: red;">*</em>
 										</label> <input  class="form-control" id="cpf" name="cpf" required="true" type="text" maxlength="50" value="{$ticket.cpf|escape:'htmlall':'UTF-8'}"/>
-										<div id="cpf-status" class="status">Campo obrigatório</div>
+										<div id="cpf-status" class="status_febraban">Campo obrigatório</div>
 									</div>
 								</div>
 							</div>
@@ -437,14 +437,14 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 									<div class="form-group">
 										<label for="address">Endereço:<em style="color: red;">*</em>
 										</label> <input class="form-control" id="address"  name="address" style="max-width: none;" required="true" type="text" maxlength="50" value="{$ticket.address|escape:'htmlall':'UTF-8'}"/>
-										<div id="address-status" class="status">Campo obrigatório</div>
+										<div id="address-status" class="status_febraban">Campo obrigatório</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label for="number">Número:<em style="color: red;">*</em>
 										</label> <input  class="form-control" id="number" name="number" required="true" type="text" maxlength="50" value="{$ticket.number|escape:'htmlall':'UTF-8'}"/>
-										<div id="number-status" class="status">Campo obrigatório</div>
+										<div id="number-status" class="status_febraban">Campo obrigatório</div>
 									</div>
 								</div>
 							</div>
@@ -453,7 +453,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 									<div class="form-group">
 										<label for="city">Cidade:<em style="color: red;">*</em>
 										</label> <input  class="form-control" required="true" id="city" name="city" type="text" maxlength="50" value="{$ticket.city|escape:'htmlall':'UTF-8'}"/>
-										<div id="city-status" class="status">Campo obrigatório</div>
+										<div id="city-status" class="status_febraban">Campo obrigatório</div>
 									</div>
 								</div>
 								<div class="col-md-4">
@@ -489,23 +489,23 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			                              <option value="SE">Sergipe</option>
 			                              <option value="TO">Tocantins</option>
 									    </select>
-									    <div id="state-status" class="status">Campo obrigatório</div>
+									    <div id="state-status" class="status_febraban">Campo obrigatório</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
 										<label for="postcode">Cep:<em style="color: red;">*</em>
 										</label> <input  class="form-control" required="true" id="postcode" name="postcode" type="text" maxlength="50" value="{$ticket.postcode|escape:'htmlall':'UTF-8'}"/>
-										<div id="postcode-status" class="status">Campo obrigatório</div>
+										<div id="postcode-status" class="status_febraban">Campo obrigatório</div>
 									</div>
 								</div>
 							</div>
 						</div>
 						<br/>
 						<div style="text-align: center;">
-							<button class="ch-btn ch-btn-big es-button submit"
-								value="Gerar Boleto" type="submit" class="create-boleto-febraban"
-								id="btnSubmit">Gerar Boleto</button>
+							<button class="ch-btn ch-btn-big es-button submit create-boleto-febraban"
+								value="Gerar Boleto" type="submit"
+								id="btnSubmitFebraban">Gerar Boleto</button>
 						</div>
 				</div>
 			</form>
@@ -1698,13 +1698,14 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 
 	 $(".create-boleto-febraban").click(function(e) {
-	 	console.info("entrou aqui 6");		
-	 	$(".lightbox").show();
-	 	e.stopImmediatePropagation();
+	 	if (validateFieldsFebraban()) {
+	 		$(".lightbox").show();
+	 		e.stopImmediatePropagation();
+	 	}
 	 });
 
 	if (country == "MLB") {
-		$(".status").hide();
+		$(".status_febraban").hide();
 		function submitBoletoFebraban() {
 			var $form = $('.formTicket');
 			$form
@@ -1715,7 +1716,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		}
 
 		function validateFieldsFebraban() {
-			$(".status").hide();
+			$(".status_febraban").hide();
 			var fiedsValid = true;
 			if ($("#firstname").val().trim() == "") {
 				$("#firstname-status").show();

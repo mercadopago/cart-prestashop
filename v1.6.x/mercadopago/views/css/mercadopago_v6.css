@@ -330,6 +330,11 @@
 		font-size: 7px !important;
 	}
 
+
+	.mp-module .status_febraban {
+		font-size: 7px !important;
+	}
+
 	.mp-module .boleto {
 		background-size: 109px 51px;
 		height: 51px;
@@ -389,6 +394,12 @@
 }
 
 .mp-module .status {
+	color: rgb(215, 5, 5);
+	font-weight: bold;
+	font-size: 10px;
+	display: inline;
+}
+.mp-module .status_febraban {
 	color: rgb(215, 5, 5);
 	font-weight: bold;
 	font-size: 10px;
