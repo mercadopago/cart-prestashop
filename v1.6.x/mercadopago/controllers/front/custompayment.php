@@ -161,11 +161,13 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 $uri .= '&payment_method_id='.$response['payment_method_id'].'&payment_type='.
                      $response['payment_type_id'].'&boleto_url='.
                      urlencode($response['transaction_details']['external_resource_url']);
+
                 if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLB') {
                     $this->insertOrUpdateInformationsTicket($_POST, $cart->id);
                 }
             }
             $order_payments[0]->save();
+
             Tools::redirectLink($uri);
         } else {
             $this->context->controller->addCss(

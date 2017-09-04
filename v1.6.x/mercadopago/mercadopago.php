@@ -1696,7 +1696,7 @@ class MercadoPago extends PaymentModule
         if (Tools::getValue('payment_method_id') == 'bolbradesco' ||
             Tools::getValue('payment_type') == 'bank_transfer' ||
             Tools::getValue('payment_type') == 'atm' || Tools::getValue('payment_type') == 'ticket') {
-            $this->context->controller->addCss($this->_path.'views/css/mercadopago_core.css', 'all');
+            // $this->context->controller->addCss($this->_path.'views/css/mercadopago_core.css', 'all');
 
             $boleto_url = Tools::getValue('boleto_url');
             if (Configuration::get('PS_SSL_ENABLED')) {
@@ -1763,14 +1763,6 @@ class MercadoPago extends PaymentModule
     public function execPayment($post)
     {
         $preferences = $this->getPreferencesCustom($post);
-        UtilMercadoPago::logMensagem(
-            'Preferences payment ==== '. $preferences['external_reference'],
-            MPApi::WARNING,
-            Tools::jsonEncode($preferences),
-            false,
-            null,
-            'MercadoPago->execPayment'
-        );
         try {
             //$conciliation = new Conciliation();
             //$conciliation->insertMercadoPagoOrder();
@@ -1785,16 +1777,6 @@ class MercadoPago extends PaymentModule
                 'MercadoPago->execPayment'
             );
         }
-
-        UtilMercadoPago::logMensagem(
-            'Return payment ==== '. $preferences['external_reference'],
-            MPApi::WARNING,
-            Tools::jsonEncode($result['response']),
-            false,
-            null,
-            'MercadoPago->execPayment'
-        );
-
         return $result['response'];
     }
 
