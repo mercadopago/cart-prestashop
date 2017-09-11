@@ -553,13 +553,13 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	{/if}
 	{/foreach}
 	{/if}
-	{if $standard_active eq 'true' &&
-	$preferences_url != null}
+
+	{if $standard_active eq 'true'}
 
 	<div class="row">
 		<div class="col-xs-12 col-md-6">
 			{if $window_type != 'iframe'} <a
-				href="{$preferences_url|escape:'htmlall':'UTF-8'}" id="id-standard"
+				href="{$standard_action_url|escape:'htmlall':'UTF-8'}" id="id-standard"
 				mp-mode="{$window_type|escape:'htmlall':'UTF-8'}" name="MP-Checkout">
 				<div class="mp-form hover">
 					<div class="row">
@@ -584,6 +584,8 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		</div>
 	</div>
 	{/if}
+
+	
 </div>
 
 

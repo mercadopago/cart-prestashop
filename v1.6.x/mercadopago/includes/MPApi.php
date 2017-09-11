@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.5.3';
+    const VERSION = '3.5.5';
 
     /* Info */
     const INFO = 1;
@@ -369,6 +369,26 @@ class MPApi
             }
         }
 
+        return $result;
+    }
+
+    /**
+     * Create a checkout preference
+     *
+     * @param array $preference
+     * @return array(json)
+     */
+    public function getPreference($preferences)
+    {
+        $access_token = $this->getAccessToken();
+        $uri = "/checkout/preferences/".$preferences;
+        $params["access_token"] = $access_token;
+
+        if (count($params) > 0) {
+            $uri .= (strpos($uri, "?") === false) ? "?" : "&";
+            $uri .= $this->buildQuery($params);
+        }
+        $result = MPRestCli::get($uri);
         return $result;
     }
 

@@ -27,6 +27,22 @@
 class UtilMercadoPago
 {
 
+    public static $statusMercadoPagoPresta = array(
+                                                'in_process' => 'MERCADOPAGO_STATUS_0',
+                                                'approved' => 'MERCADOPAGO_STATUS_1',
+                                                'cancelled' => 'MERCADOPAGO_STATUS_2',
+                                                'refunded' => 'MERCADOPAGO_STATUS_4',
+                                                'charged_back' => 'MERCADOPAGO_STATUS_5',
+                                                'in_mediation' => 'MERCADOPAGO_STATUS_6',
+                                                'pending' => 'MERCADOPAGO_STATUS_7',
+                                                'rejected' => 'MERCADOPAGO_STATUS_3',
+                                                'ready_to_ship' => 'MERCADOPAGO_STATUS_8',
+                                                'shipped' => 'MERCADOPAGO_STATUS_9',
+                                                'delivered' => 'MERCADOPAGO_STATUS_10',
+                                                'waiting_POS' => 'MERCADOPAGO_STATUS_11',
+                                                'started' => 'MERCADOPAGO_STATUS_12'
+                                            );
+
     public static function logMensagem($message, $nivel, $exceptionMessage, $logApi, $data, $methodOrUri)
     {
         UtilMercadoPago::log($message, $exceptionMessage);
