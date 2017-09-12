@@ -62,12 +62,9 @@ class UtilMercadoPago
     */
     public static function log($msg, $exceptionMessage)
     {
-        error_log("entrou aqui no log");
         $date = date('d.m.Y h:i:s');
         $log = "Date:  ".$date."  | ".$msg.
         "|  Exception:  " . $exceptionMessage . "\n";
-
-        error_log("entrou aqui no log === " . $log);
 
         error_log($log, 3, realpath(__DIR__ . '/..') . '/logs/mercadopago.log');
     }

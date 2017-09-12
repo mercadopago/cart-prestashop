@@ -31,7 +31,6 @@
 }
 </style>
 
-  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
 <div class="mp-module">
 	{if empty($client_id)}
 		{include file='./marketing.tpl'
@@ -40,6 +39,8 @@
 	<div id="settings" style="display: none">
 
 	<div id="alerts">
+
+
 		{if $success eq 'true' and $errors|@count == 0}
 		<div id="alert" class="bootstrap">
 			<div class="alert alert-success">

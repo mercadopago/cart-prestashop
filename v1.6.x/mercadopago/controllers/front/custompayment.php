@@ -39,6 +39,9 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
         $mercadopago = $this->module;
         $cart = Context::getContext()->cart;
         $response = $mercadopago->execPayment($_POST);
+
+        error_log("====RETORNO execPayment======".Tools::jsonEncode($response));
+
         if (!isset($response['error'])) {
             $displayName = 'Mercado Pago';
             $total = $cart->getOrderTotal(true, Cart::BOTH);
@@ -83,6 +86,8 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 
                 error_log("====start validateOrder=====");
                 error_log("====order_status=====".Configuration::get($order_status));
+                error_log("====id pagamento=====".$response['id']);
+                $extra_vars = array('transaction_id' => $response['id']);
 
                 $mercadopago->validateOrder(
                     $cart->id,
@@ -90,7 +95,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                     $total,
                     $displayName,
                     null,
-                    array(),
+                    $extra_vars,
                     (int)$cart->id_currency,
                     false,
                     $customer->secure_key
@@ -114,10 +119,10 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                          $response['payment_type_id'].'&boleto_url='.
                          urlencode($response['transaction_details']['external_resource_url']);
                 }
-                $order = new Order(Order::getOrderByCartId($cart->id));
-                $payments = $order->getOrderPaymentCollection();
-                $payments[0]->transaction_id = $response['id'];
-                $payments[0]->update();
+                // $order = new Order(Order::getOrderByCartId($cart->id));
+                // $payments = $order->getOrderPaymentCollection();
+                // $payments[0]->transaction_id = $response['id'];
+                // $payments[0]->update();
                 Tools::redirectLink($uri);
             }
         }

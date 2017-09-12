@@ -571,7 +571,6 @@ class MercadoPago extends PaymentModule
         } catch (Exception $e) {
             error_log("Exception === " .$e->getMessage());
         }
-        error_log("criação das tabelas de boleto");
         return true;
     }
 
@@ -581,10 +580,8 @@ class MercadoPago extends PaymentModule
         $fields = $this->getFields($id_address_invoice);
         $email = $fields['email'];
         $resultFieldsTicket = $this->getFieldsTicket($email);
-        error_log("=== retorno do Select resultFieldsTicket === " . Tools::jsonEncode($resultFieldsTicket));
         if ($resultFieldsTicket) {
             $retorno = $resultFieldsTicket;
-            error_log("retorno do Select");
         } else {
             $retorno = $fields;
         }
@@ -630,6 +627,7 @@ class MercadoPago extends PaymentModule
             $order_payments = $order->getOrderPayments();
             foreach ($order_payments as $order_payment) {
                 $result = $this->mercadopago->getPayment($order_payment->transaction_id);
+
                 if ($result['status'] == '404' || $result['status'] == '401') {
                     $result = $this->mercadopago->getPaymentStandard($order_payment->transaction_id);
 
@@ -638,7 +636,12 @@ class MercadoPago extends PaymentModule
                     );
                 }
                 if ($result['status'] == 200) {
-                    $payment_info = $result['response']['collection'];
+
+                    if(isset($result['response']['collection'])) {
+                        $payment_info = $result['response']['collection'];
+                    } else {
+                        $payment_info = $result['response'];
+                    }
 
                     $id_mercadoenvios_service_code = $this->isMercadoEnvios($order->id_carrier);
                     if ($id_mercadoenvios_service_code > 0) {
@@ -653,8 +656,7 @@ class MercadoPago extends PaymentModule
                     }
 
                     $payment_type_id = isset($payment_info['payment_type_id']) ?
-                    isset($payment_info['payment_type_id']) : $payment_info['payment_type'];
-
+                    $payment_info['payment_type_id'] : $payment_info['payment_type'];
 
                     if ($payment_type_id == 'ticket' || $payment_type_id == 'atm') {
                         $settings = array(
@@ -673,6 +675,7 @@ class MercadoPago extends PaymentModule
                 }
                 break;
             }
+
             return $this->display(__file__, '/views/templates/hook/print_details_order.tpl');
         }
     }
@@ -873,8 +876,6 @@ class MercadoPago extends PaymentModule
 
     public function getContent()
     {
-
-        error_log("entrou aqui");
         $errors = array();
         $success = false;
         $payment_methods = null;
@@ -912,19 +913,18 @@ class MercadoPago extends PaymentModule
             }
 
             if (!$this->validateCredential($client_id, $client_secret)) {
+
+                error_log("entrou aqui no validateCredential invalido");
+
                 $errors[] = $this->l('Client Id or Client Secret invalid.');
                 $success = false;
             } else {
+                error_log("entrou aqui no validateCredential valido");
                 $this->setDefaultValues($client_id, $client_secret);
             }
         } elseif (Tools::getValue('viewPayments')) {
 
         } elseif (Tools::getValue('submitmercadopago')) {
-
-            error_log("===MERCADOPAGO_CREDITCARD_ACTIVE====".Tools::getValue('MERCADOPAGO_CREDITCARD_ACTIVE'));
-
-            error_log("===MERCADOPAGO_PAGOFACIL_ACTIVE====".Tools::getValue('MERCADOPAGO_PAGOFACIL_ACTIVE'));
-
             $client_id = Tools::getValue('MERCADOPAGO_CLIENT_ID');
             $client_secret = Tools::getValue('MERCADOPAGO_CLIENT_SECRET');
             $access_token = Tools::getValue('MERCADOPAGO_ACCESS_TOKEN');
@@ -1001,12 +1001,9 @@ class MercadoPago extends PaymentModule
                     Configuration::updateValue('MERCADOPAGO_PUBLIC_KEY', $public_key);
                     Configuration::updateValue('MERCADOPAGO_ACCESS_TOKEN', $access_token);
 
-                    error_log("====public_key===". $public_key);
-                    error_log("====access_token====".$access_token);
                     if ($public_key != "") {
                         $returnValidPublicKey = $this->mercadopago->isValidPublicKey($public_key);
                         if (!$returnValidPublicKey) {
-                            error_log("invalido = ".$returnValidPublicKey);
                             $errors[] = $this->l('Please, check your public key because it is invalid.');
                             $success = false;
                             Configuration::updateValue('MERCADOPAGO_PUBLIC_KEY', "");
@@ -1015,7 +1012,6 @@ class MercadoPago extends PaymentModule
                     if ($access_token != "") {
                         $returnValidAccessToken = $this->mercadopago->isValidAccessToken($access_token);
                         if (!$returnValidAccessToken) {
-                            error_log("invalido = ".$returnValidAccessToken);
                             $errors[] = $this->l('Please, check your access token because it is invalid.');
                             $success = false;
                             Configuration::updateValue('MERCADOPAGO_ACCESS_TOKEN', "");
@@ -1063,7 +1059,9 @@ class MercadoPago extends PaymentModule
                         $client_id,
                         $client_secret
                     );
+                    error_log('===getPaymentMethods start==='. $current_country);
                     $payment_methods = $this->mercadopago->getPaymentMethods();
+                    error_log('===getPaymentMethods end==='. $current_country);
                     $configCard = $this->mercadopago->setEnableDisableTwoCard(Tools::getValue('MERCADOPAGO_TWO_CARDS'));
 
                     if (isset($configCard['response']['two_cards'])) {
@@ -1107,9 +1105,6 @@ class MercadoPago extends PaymentModule
                     }
                 }
             } catch (Exception $e) {
-
-                error_log("entrou aqui no erro");
-
                 UtilMercadoPago::logMensagem(
                     "An installation error occurred",
                     MPApi::ERROR,
@@ -1272,10 +1267,12 @@ class MercadoPago extends PaymentModule
             $offline_methods_payments = $this->mercadopago->getOfflinePaymentMethods();
             $payment_methods = $this->mercadopago->getPaymentMethods();
             $configCard = $this->mercadopago->getCheckConfigCard();
+        } else {
+            $errors[] = $this->l('Client Id or Client Secret invalid.');
+            $success = false;
         }
         // load all offline payment method settings
         //$offline_methods_payments = $mp->getOfflinePaymentMethods();
-
         $offline_payment_settings = array();
         if (isset($offline_methods_payments)) {
             foreach ($offline_methods_payments as $offline_payment) {
@@ -1301,7 +1298,6 @@ class MercadoPago extends PaymentModule
         $test_user = '';
 
         $requirements = UtilMercadoPago::checkRequirements();
-
         if (isset($configCard['response']['status'])) {
             $two_cards = $configCard['response']['two_cards'];
             Configuration::updateValue('MERCADOPAGO_TWO_CARDS', $two_cards);
@@ -1316,7 +1312,6 @@ class MercadoPago extends PaymentModule
             null,
             false
         );
-
         $settings = array(
             'test_user' => $test_user,
             'requirements' => $requirements,
@@ -1375,14 +1370,14 @@ class MercadoPago extends PaymentModule
                  htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__,
                 'version' => $this->getPrestashopVersion(),
         );
-
         if (Tools::getValue('login') ||
             Tools::getValue('submitmercadopago')) {
             $this->setSettings();
         }
 
-        $this->context->smarty->assign($settings);
+        error_log(print_r($settings, true));
 
+        $this->context->smarty->assign($settings);
         return $this->display(__file__, '/views/templates/admin/settings.tpl');
     }
 
@@ -1485,9 +1480,15 @@ class MercadoPago extends PaymentModule
     {
         $mp = new MPApi($client_id, $client_secret);
 
-        error_log("====getAccessToken====".Tools::jsonEncode($mp->getAccessToken()));
+        $access_token = $mp->getAccessToken();
+        $returnValidAccessToken = $this->mercadopago->isValidAccessToken($access_token);
+        if ($returnValidAccessToken) {
+            error_log("retorno válido returnValidAccessToken");
+        } else {
+            error_log("retorno inválido returnValidAccessToken");
+        }
 
-        return $mp->getAccessToken() ? true : false;
+        return $returnValidAccessToken;
     }
 
     public function hookDisplayHeader()
@@ -1783,8 +1784,6 @@ class MercadoPago extends PaymentModule
                     htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__,
                 )
             );
-
-            error_log("====vai retornar para o boleto====");
 
             return $this->display(__file__, '/views/templates/hook/boleto_payment_return.tpl');
         } else {
@@ -2587,7 +2586,6 @@ class MercadoPago extends PaymentModule
                     $credit_cards[] = '**** **** **** '.$payment_info['card']['last_four_digits'];
                     $cardholders[] = $payment_info['card']['cardholder']['name'];
                 }
-                error_log("===updateOrder jfkldjlasdjfklas djfklas checkout===");
                 $this->updateOrder(
                     $payment_ids,
                     $payment_statuses,
@@ -2646,7 +2644,6 @@ class MercadoPago extends PaymentModule
         $result,
         $checkout
     ) {
-        error_log("entrou aqui updateOrder");
         $order = null;
         // if has two creditcard validate whether payment has same status in order to continue validating order
         if (count($payment_statuses) == 1 ||
@@ -2687,20 +2684,14 @@ class MercadoPago extends PaymentModule
                 }
             }
 
-            error_log(print_r($payment_ids, true));
-
-            error_log("entrou aqui!!!! transaction_id ====" . implode(' / ', $payment_ids));
-
             $statusPS = (int)$order->getCurrentState();
             $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta[$payment_status]);
             if ($payment_status != $statusPS) {
                 $order->setCurrentState($payment_status);
             }
             $payments = $order->getOrderPaymentCollection();
-            error_log("VAI REALIZAR O UPDATE ====");
             $payments[0]->transaction_id = implode(' / ', $payment_ids);
             $payments[0]->update();
-            error_log("UPDAT RELIZADO====");
         }
     }
 
