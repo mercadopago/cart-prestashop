@@ -36,7 +36,6 @@ class MercadoPagoStandardPaymentModuleFrontController extends ModuleFrontControl
 
     private function placeOrder()
     {
-        error_log("entrou aqui no MercadoPagoStandardPaymentModuleFrontController");
         $mercadopago = $this->module;
         $cart = Context::getContext()->cart;
         $result = $mercadopago->createStandardCheckoutPreference();

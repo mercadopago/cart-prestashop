@@ -2,10 +2,7 @@
 
 global $_MODULE;
 $_MODULE = array();
-$_MODULE['<{mercadopago}prestashop>mercadopago_d21821fb8ed16059938596bd7174704a'] = 'Tem certeza que deseja desinstalar o Mercado Pago?';
-$_MODULE['<{mercadopago}prestashop>mercadopago_7073affec8627453605b38510c741380'] = 'Para suas compras serem aprovadas por favor siga os requisitos do Mercado Pago.';
-$_MODULE['<{mercadopago}prestashop>mercadopago_a5db4b986c1ab7bbad3502c35ea3e5e2'] = 'Tem certeza que deseja desinstalar o Mercado Pago?';
-$_MODULE['<{mercadopago}prestashop>mercadopago_1e11d66f3b3766b8bee9f1277ab0c055'] = 'Para suas compras serem aprovadas por favor siga os requisitos do Mercado Pago.';
+$_MODULE['<{mercadopago}prestashop>mercadopago_55d75d0dde853b5b4d22616358f09abb'] = 'O Mercado Pago é o maior meio de pagamento da América Latina e oferece a maior variedade de meios de  pagamentos no mercado. Seus clientes podem pagar com cartão de crédito, boleto, e saldo da conta Mercado Pago.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_6f65bd2d4642c6c333afa152859a391d'] = 'Você tem certeza que deseja desinstalar o Mercado Pago?';
 $_MODULE['<{mercadopago}prestashop>mercadopago_69ac2c43655bbbe45d94baf6c760e257'] = 'Você deve seguir regras MercadoPago para a compra de ser válida';
 $_MODULE['<{mercadopago}prestashop>mercadopago_4bd15f1199b9b5111234bb6fe76f03b3'] = 'MERCADOPAGO.COM Representações LTDA.';
@@ -282,6 +279,7 @@ $_MODULE['<{mercadopago}prestashop>checkout_1310b13ab4d6d11df3bf5fc80654d9ce'] =
 $_MODULE['<{mercadopago}prestashop>checkout_32dffc4f97fec972c7ffd50a24fa3267'] = 'Seu cartão';
 $_MODULE['<{mercadopago}prestashop>checkout_7c62a37aa03ed3d91eccad8154bb26ca'] = 'Outro cartão de crédito';
 $_MODULE['<{mercadopago}prestashop>checkout_0a90b1bc4078f74b6f0d117ec7df65af'] = 'Crédito';
+$_MODULE['<{mercadopago}prestashop>credit_card_form_21d104a54fc71a19a325c7305327f1d2'] = 'Em procedimiento...';
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_eee1be1ba8fc835d1415b887959f8b4f'] = 'Obrigado pela sua compra!';
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_db396895853073f83657c627867c969e'] = 'O seu pagamento foi aprovado.';
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_f45555a69528d72f0fb4cfbb2c43b3ba'] = 'Titular do cartão de crédito:';
@@ -302,6 +300,17 @@ $_MODULE['<{mercadopago}prestashop>display_admin_order_0f16c7d65dacd35f8da4cad89
 $_MODULE['<{mercadopago}prestashop>display_admin_order_82fa418cc1503e9c1a5da75296ee5ecd'] = 'Cancelar pagamento';
 $_MODULE['<{mercadopago}prestashop>display_admin_order_b8ed1287ef68546a8d9132bbf131a712'] = 'Rastrear sua entrega';
 $_MODULE['<{mercadopago}prestashop>display_admin_order_0eaadb4fcb48a0a0ed7bc9868be9fbaa'] = 'Atenção';
+$_MODULE['<{mercadopago}prestashop>display_admin_order_80856f4cbeb11f3c4f21b569855f60d3'] = 'Tag listo para imprimir';
+$_MODULE['<{mercadopago}prestashop>display_admin_order_757600c04de96515d048b42eafebf78c'] = 'Abrir etiqueta PDF';
+$_MODULE['<{mercadopago}prestashop>display_admin_order_7e828a7f460c5a163d96a78a203ee723'] = 'Etiqueta abierta para la impresora';
+$_MODULE['<{mercadopago}prestashop>display_admin_order_23e0074ad595205611cd164d226f23ba'] = 'Etiqueta impresa';
+$_MODULE['<{mercadopago}prestashop>display_admin_order_92e45ddbf118cd248285a808ef0a27f4'] = 'La etiqueta está pendiente';
+$_MODULE['<{mercadopago}prestashop>display_admin_order_29b4a5a076773d37c4a8ab8699811b13'] = 'Estado de entrega';
+$_MODULE['<{mercadopago}prestashop>display_admin_order_12fd8876cda2d6e1b87b7dc976256a6f'] = 'Estado de la etiqueta';
+$_MODULE['<{mercadopago}prestashop>display_admin_order_d122a7f6900a9e3e7967c0b91c7e48c1'] = 'Tipo de envío';
+$_MODULE['<{mercadopago}prestashop>display_admin_order_df0c1d76b598fd56dd89636f11d68f96'] = 'Límite estimado de manejo';
+$_MODULE['<{mercadopago}prestashop>display_admin_order_7e30feabb6a45c032f0d7d8adb785312'] = 'Entrega estimada';
+$_MODULE['<{mercadopago}prestashop>display_admin_order_5e01cdfe6b47e8dd7813c41f9891588f'] = 'Entrega estimada final';
 $_MODULE['<{mercadopago}prestashop>display_admin_order_525e0a39d27d41a90eece5b66f1685b5'] = 'Você tem certeza que deseja cancelar esse pedido?';
 $_MODULE['<{mercadopago}prestashop>print_details_order_d71658741a5b685ca8387218c85bad9b'] = 'Antes de imprimir verifique a data da expiração.';
 $_MODULE['<{mercadopago}prestashop>print_details_order_f09e6eb90dd3737379763942f47df81c'] = 'Abrir Boleto';

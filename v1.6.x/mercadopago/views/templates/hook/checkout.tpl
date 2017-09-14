@@ -569,7 +569,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 								id="id-standard-logo"> <img
 								src="{$standard_banner|escape:'htmlall':'UTF-8'}"
 								class="mp-standard-banner" /> <span
-								class="payment-label standard">{$custom_text|escape:'htmlall':'UTF-8'}</span>
+								class="payment-label standard"><h5> {$custom_text|escape:'htmlall':'UTF-8'}</h5> </span>
 						</div>
 					</div>
 				</div>

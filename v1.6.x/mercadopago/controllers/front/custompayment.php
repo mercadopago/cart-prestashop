@@ -40,12 +40,9 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
         $cart = Context::getContext()->cart;
         $response = $mercadopago->execPayment($_POST);
 
-        error_log("====RETORNO execPayment======".Tools::jsonEncode($response));
-
         if (!isset($response['error'])) {
             $displayName = 'Mercado Pago';
             $total = $cart->getOrderTotal(true, Cart::BOTH);
-            $statusMP = $response['status'];
             $order_status = null;
             if (array_key_exists('status', $response)) {
                 switch ($response['status']) {
@@ -61,7 +58,6 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 }
             }
             if ($order_status != null) {
-
                 $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
                 $id_cart_rule = null;
                 if ($percent > 0) {
@@ -78,15 +74,10 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                         $cartRule->save();
                     }
                 }
-
                 $customer = new Customer((int)$cart->id_customer);
                 $payment_type_id = $response['payment_type_id'];
                 $displayName = $mercadopago->setNamePaymentType($payment_type_id);
 
-
-                error_log("====start validateOrder=====");
-                error_log("====order_status=====".Configuration::get($order_status));
-                error_log("====id pagamento=====".$response['id']);
                 $extra_vars = array('transaction_id' => $response['id']);
 
                 $mercadopago->validateOrder(
@@ -132,13 +123,13 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
         $this->setTemplate('error.tpl');
     }
 
-    private function getError($mercadopago, $response, $cart_id){
+    private function getError($mercadopago, $response, $cart_id)
+    {
         $data = array();
         $status_detail = "";
         $messageAPI = "";
         $payment_method_id = "";
         if (isset($response['error'])) {
-            $status = $response['status'];
             $messageAPI = $response['message'];
         } else {
             $data['message'] = $mercadopago->l('Occurred an error in payment, please try again.');

@@ -36,10 +36,12 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				{$payment_id|escape:'htmlall':'UTF-8'}<br>
 			</p>
 	</div>
+	{if $boleto_url != null}
 	<br>
 	<div>
 		<a href="{$boleto_url|escape:'htmlall':'UTF-8'}" class="ch-btn ch-btn-big" target="_blank">{l s='Print ticket' mod='mercadopago'}</a>
 	</div>
+	{/if}
 	<div class="row">
 		{if $boleto_url != null}
 		<iframe src="{$boleto_url|escape:'htmlall':'UTF-8'}" width="100%" height="600px"

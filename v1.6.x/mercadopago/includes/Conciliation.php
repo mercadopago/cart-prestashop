@@ -31,10 +31,9 @@ class Conciliation
 {
     public function getPayments($date_start, $date_end)
     {
-        error_log("====date_start====".$date_start );
-        error_log("====date_end====".$date_end );
-        $return = array('' => , );
-        return $return;
+        error_log("====insertMercadoPagoOrder====".$date_start);
+        error_log("====insertMercadoPagoOrder====".$date_end);
+        return "";
     }
 
     public function insertMercadoPagoOrder($values)
@@ -61,15 +60,4 @@ class Conciliation
         }*/
         return $returnInsert;
     }
-
-              // `cart_id` int(15),
-              // `order_id` int(15),
-              // `added` datetime,
-              // `valid` tinyint(1),
-              // `ipn_status` varchar(65),
-              // `transaction_id` int(15),
-              // `email_client` varchar(50),
-              // `payment_method` varchar(20),
-              // `product` varchar(50),
-              // `update` datetime,
 }

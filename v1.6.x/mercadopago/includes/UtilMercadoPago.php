@@ -48,7 +48,7 @@ class UtilMercadoPago
         UtilMercadoPago::log($message, $exceptionMessage);
 
         if ($logApi) {
-            $errors[] = array(
+            $errors = array(
                 "endpoint" => $methodOrUri,
                 "message" => $message,
                 "payloads" => $data
@@ -65,8 +65,7 @@ class UtilMercadoPago
         $date = date('d.m.Y h:i:s');
         $log = "Date:  ".$date."  | ".$msg.
         "|  Exception:  " . $exceptionMessage . "\n";
-
-        error_log($log, 3, realpath(__DIR__ . '/..') . '/logs/mercadopago.log');
+        error_log($log, 3, _PS_ROOT_DIR_ . '/modules/mercadopago/logs/mercadopago.log');
     }
 
     public static function getPrestashopVersion()
@@ -166,7 +165,6 @@ class UtilMercadoPago
         if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLB') {
             $value = str_replace('-', '', $value);
         } elseif (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLA') {
-            error_log('==postcode===' . preg_replace("/[^0-9,.]/", "", $value));
             $value = preg_replace("/[^0-9,.]/", "", $value);
         }
         return $value;

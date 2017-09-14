@@ -119,8 +119,7 @@
 		</div>
 	{else}
 		<div class="cart_navigation">
-
-			<a href="{$link->getPageLink('history.php', true)}" title="{l s='Orders'}" class="button-exclusive btn btn-default">
+			<a href="{$link->getPageLink('history.php', true)|escape:'htmlall':'UTF-8'}" title="{l s='Orders' mod='mercadopago'}" class="button-exclusive btn btn-default">
 				<i class="icon-chevron-left"></i>
 				{l s='Return to orders history methods' mod='mercadopago'}
 			</a>

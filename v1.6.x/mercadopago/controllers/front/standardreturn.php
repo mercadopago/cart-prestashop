@@ -39,7 +39,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
     public function placeOrder()
     {
         $collection_status = Tools::getValue('collection_status');
-        $merchant_order_id = Tools::getValue('merchant_order_id');
         $typeReturn = Tools::getValue('typeReturn');
         $mercadopago = $this->module;
         $mercadopago_sdk = $mercadopago->mercadopago;
@@ -85,8 +84,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
         }
 
         if (Tools::getIsset('collection_id') && Tools::getValue('collection_id') != 'null') {
-            $result_merchant = $mercadopago_sdk->getMerchantOrder($merchant_order_id);
-            // payment variables
             $payment_statuses = array();
             $payment_ids = array();
             $payment_types = array();
@@ -126,19 +123,16 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                     $status_details[] = $payment_info['status_detail'];
                 }
             }
-            $extra_vars = array();
-            $order_status = null;
-            $payment_status = $payment_info['status'];
 
             $order_id = $mercadopago->getOrderByCartId($cart->id);
             $order = new Order($order_id);
 
             $statusPS = (int)$order->getCurrentState();
+            $payment_status = $payment_info['status'];
             $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta[$payment_status]);
             if ($payment_status != $statusPS) {
                 $order->setCurrentState($payment_status);
             }
-            $merchant_order_info = $result_merchant['response'];
 
             $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$order->id_cart.'&id_module='.
                  $mercadopago->id.'&id_order='.$order->id.'&key='.$order->secure_key;

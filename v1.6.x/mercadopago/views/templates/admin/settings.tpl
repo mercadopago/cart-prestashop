@@ -460,6 +460,14 @@
 					<input type="text" size="50" name="MERCADOPAGO_CUSTOM_TEXT" value="{$custom_text|escape:'htmlall':'UTF-8'}" />
 				</div>
 				<br>
+
+				{if $country == 'MLA'}
+					<label>Añadir valor:</label>
+					<div class="">
+						<input type="text" size="2" type="number" name="MERCADOPAGO_PERCENT_EXTRA" value="{$percent_extra|escape:'htmlall':'UTF-8'}" /><span class="important">%</span>
+					</div>
+					<br>
+				{/if}
 				<label>{l s='Payments with two cards: ' mod='mercadopago'}</label>
 				<div class="">
 					<select name="MERCADOPAGO_TWO_CARDS" id="two_cards" alt="Checkout Standard">

@@ -143,9 +143,7 @@ class MPApi
      */
     public function isValidAccessToken($access_token)
     {
-        error_log("===isValidAccessToken===".$access_token);
         $result = MPRestCli::get('/users/me?access_token=' . $access_token);
-        error_log(print_r($result, true));
         if ($result != null && isset($result['status'])) {
             if ($result['status'] > 202) {
                 return false;
@@ -384,6 +382,7 @@ class MPApi
     {
         $access_token = $this->getAccessToken();
         $uri = "/checkout/preferences/".$preferences;
+        $params = array();
         $params["access_token"] = $access_token;
 
         if (count($params) > 0) {

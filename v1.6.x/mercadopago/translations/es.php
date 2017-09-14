@@ -2,10 +2,7 @@
 
 global $_MODULE;
 $_MODULE = array();
-$_MODULE['<{mercadopago}prestashop>mercadopago_d21821fb8ed16059938596bd7174704a'] = '¿Está seguro de que desea desinstalar MercadoPago?';
-$_MODULE['<{mercadopago}prestashop>mercadopago_7073affec8627453605b38510c741380'] = 'Usted debe seguir las reglas de Mercado Pago  para la compra a ser válida';
-$_MODULE['<{mercadopago}prestashop>mercadopago_a5db4b986c1ab7bbad3502c35ea3e5e2'] = '¿Está seguro de que desea desinstalar MercadoPago?';
-$_MODULE['<{mercadopago}prestashop>mercadopago_1e11d66f3b3766b8bee9f1277ab0c055'] = 'Usted debe seguir las reglas de Mercado Pago  para la compra a ser válida';
+$_MODULE['<{mercadopago}prestashop>mercadopago_55d75d0dde853b5b4d22616358f09abb'] = 'Mercado Pago es el mayor medio de pago de América Latina y ofrece la mayor variedad de medios de pago en el mercado. Sus clientes pueden pagar con tarjeta de crédito, ticket, y saldo de la cuenta Mercado Pago.';
 $_MODULE['<{mercadopago}prestashop>mercadopago_6f65bd2d4642c6c333afa152859a391d'] = '¿Está seguro de que desea desinstalar MercadoPago';
 $_MODULE['<{mercadopago}prestashop>mercadopago_69ac2c43655bbbe45d94baf6c760e257'] = 'Debe seguir las reglas MercadoPago para su compra sea válida';
 $_MODULE['<{mercadopago}prestashop>mercadopago_4bd15f1199b9b5111234bb6fe76f03b3'] = 'MERCADOPAGO.COM Representações LTDA.';
