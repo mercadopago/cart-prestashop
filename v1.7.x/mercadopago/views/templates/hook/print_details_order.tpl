@@ -22,7 +22,6 @@
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of MercadoPago
 *}
-
 {if isset($boleto_url)}
 <div class="col-xs-12 col-sm-6 box">
 	<div class="row">

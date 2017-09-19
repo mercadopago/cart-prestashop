@@ -22,7 +22,7 @@
 		</div>
 		<div class="col-lg-4">
 			<label class="general-tooltip">
-				{l s='When enabled, all single payment methods will be disabled.' mod='mercadopago'}
+				{l s='When enabled, all single payment methods will be disabled.' d='Modules.MercadoPago.Admin'}
 			</label>
 		</div>
 		<div style="clear: both"></div>
@@ -30,15 +30,15 @@
 	<div style="clear: both"></div>
 	{else}
 		<div class="alert alert-danger">
-	  		<strong>{l s='Danger!' mod='mercadopago'}</strong> {l s='Please, fill your credentials to enable the module.' mod='mercadopago'}
+	  		<strong>{l s='Danger!' d='Modules.MercadoPago.Admin'}</strong> {l s='Please, fill your credentials to enable the module.' d='Modules.MercadoPago.Admin'}
 		</div>
 	{/if}
 </div>
 {if $show}
 <div class="panel panel-default">
-	<div class="panel-heading">{l s='Payment Methods' mod='mercadopago'}</div>
+	<div class="panel-heading">{l s='Payment Methods' d='Modules.MercadoPago.Admin'}</div>
 	<div class="alert alert-info">
-	  {l s='Enable and disable your payment methods.' mod='mercadopago'}
+	  {l s='Enable and disable your payment methods.' d='Modules.MercadoPago.Admin'}
 	</div>
 	{foreach from=$payments key=sort item=payment}
 		<div class="form-group">
@@ -73,8 +73,9 @@
 		<div style="clear: both"></div>
 	{/foreach}
 </div>
+{if $country eq 'MLB'}
 <div class="panel">
-	<div class="panel-heading">{l s='Mercado Envios' mod='mercadopago'}</div>
+	<div class="panel-heading">{l s='Mercado Envios' d='Modules.MercadoPago.Admin'}</div>
 	<div class="form-group border-none">
 		<label class="payment-label col-lg-3">
 		Enable Mercado Envios
@@ -86,13 +87,13 @@
 				<label for="MERCADOENVIOS_ACTIVATE_on">{$button.yes|escape:'htmlall':'UTF-8'}</label>
 
 				<input type="radio" name="MERCADOENVIOS_ACTIVATE" id="MERCADOENVIOS_ACTIVATE_off" value="0" {if empty($mercadoEnviosActivate)}checked="checked" {/if}>
-				<label for="MERCADOENVIOS_off">{$button.no|escape:'htmlall':'UTF-8'}</label>
+				<label for="MERCADOENVIOS_ACTIVATE_off">{$button.no|escape:'htmlall':'UTF-8'}</label>
 				<a class="slide-button btn"></a>
 			</div>
 		</div>
 		<div class="col-lg-4">
 			<label class="general-tooltip">
-				{l s='If you enable this, the others payment type will be disable.' mod='mercadopago'}
+				{l s='If you enable this, the others payment type will be disable.' d='Modules.MercadoPago.Admin'}
 			</label>
 		</div>
 		<div style="clear: both"></div>
@@ -102,7 +103,7 @@
 			<i class="process-icon-save"></i> {$button.save|escape:'htmlall':'UTF-8'}
 		</button>
 	</div>
-
 </div>
+{/if}
 {/if}
 </form>

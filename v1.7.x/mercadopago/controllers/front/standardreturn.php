@@ -28,13 +28,15 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
 {
     public function postProcess()
     {
-        error_log("ENTROU NO RETORNO da IPN");
-        error_log("checkout=====".Tools::getValue('checkout'));
-        error_log("topic=====".Tools::getValue('topic'));
+        parent::initContent();
+        error_log("===listenIPN postProcess====");
 		$checkout = Tools::getValue('checkout');
 		$topic = Tools::getValue('topic');
+
+        error_log("===listenIPN postProcess checkout====".$checkout);
+        error_log("===listenIPN postProcess topic====".$topic);
+
 		if ($checkout == 'standard' && $topic == 'merchant_order') {
-            error_log("====notification id ==== ".Tools::getValue('id'));
 	        $this->listenIPN(
 	            $checkout,
 	            $topic,
@@ -45,8 +47,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
 
     public function listenIPN($checkout, $topic, $id)
     {
-        $mercadopago_sdk = MPApi::getInstanceMP();
-		$mercadopago = $this->module;
+        error_log("===listenIPN====");
         $payment_method_ids = array();
         $payment_ids = array();
         $payment_statuses = array();
@@ -55,260 +56,152 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
         $transaction_amounts = 0;
         $cardholders = array();
         $external_reference = '';
-        $cost_mercadoEnvios = 0;
         $isMercadoEnvios = 0;
+        error_log("===listenIPN 1====");
+        if ($checkout == 'standard' && $topic == 'merchant_order' && $id > 0) {
+            $result = $this->mercadopago->getMerchantOrder($id);
+            $merchant_order_info = $result['response'];
+            // check value
+            $cart = new Cart($merchant_order_info['external_reference']);
 
-        $result = $mercadopago_sdk->getMerchantOrder($id);
-        $merchant_order_info = $result['response'];
-        if (isset($merchant_order_info['status']) && $merchant_order_info['status'] == 404) {
-        	error_log("==return==merchant_order_info===". Tools::jsonEncode($merchant_order_info ));
-        	return;
-        }
-        error_log("====merchant_order_info===". Tools::jsonEncode($merchant_order_info ));
-        // check value
-        $cart = new Cart($merchant_order_info['external_reference']);
-        if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO') {
-            $total = floor($cart->getOrderTotal(true, Cart::BOTH));
-
-            error_log("vai formatar  total  ". floor($cart->getOrderTotal(true, Cart::BOTH)));
-        } else {
-            $total = (float)$cart->getOrderTotal(true, Cart::BOTH);
-        }
-
-        // check the module
-        $id_order = $mercadopago->getOrderByCartId($merchant_order_info['external_reference']);
-        $order = new Order($id_order);
-        $total_amount = $merchant_order_info['total_amount'];
-
-        error_log("entrou no retorno total=". $total);
-        error_log("entrou no retorno total_amount=".$total_amount);
-
-        if ($total_amount != $total) {
-            PrestaShopLogger::addLog('MercadoPago :: listenIPN - Não atualizou o pedido, valores diferentes'.
-            ' id = '.$id, MPApi::INFO, 0);
-
-            error_log("entrou no retorno=");
-            error_log("entrou no retorno=");
-            return;
-        }
-        $status_shipment = null;
-        if (isset($merchant_order_info['shipments'][0]) &&
-            $merchant_order_info['shipments'][0]['shipping_mode'] == 'me2') {
-            $isMercadoEnvios = true;
-            $cost_mercadoEnvios = $merchant_order_info['shipments'][0]['shipping_option']['cost'];
-
-            $status_shipment = $merchant_order_info['shipments'][0]['status'];
-
-            $id_order = $mercadopago->getOrderByCartId($merchant_order_info['external_reference']);
-            $order = new Order($id_order);
-            $order_status = null;
-            switch ($status_shipment) {
-                case 'ready_to_ship':
-                    $order_status = 'MERCADOPAGO_STATUS_8';
-                    break;
-                case 'shipped':
-                    $order_status = 'MERCADOPAGO_STATUS_9';
-                    break;
-                case 'delivered':
-                    $order_status = 'MERCADOPAGO_STATUS_10';
-                    break;
-            }
-            if ($order_status != null) {
-                $existStates = $this->checkStateExist($id_order, Configuration::get($order_status));
-                if ($existStates) {
-                    return;
+            $payments = $merchant_order_info['payments'];
+            $external_reference = $merchant_order_info['external_reference'];
+            foreach ($payments as $payment) {
+                // get payment info
+                $result = $this->mercadopago->getPaymentStandard($payment['id']);
+                $payment_info = $result['response']['collection'];
+                // colect payment details
+                $payment_ids[] = $payment_info['id'];
+                $payment_statuses[] = $payment_info['status'];
+                $payment_types[] = $payment_info['payment_type'];
+                $transaction_amounts += $payment_info['transaction_amount'];
+                if ($payment_info['payment_type'] == 'credit_card') {
+                    $payment_method_ids[] = isset($payment_info['payment_method_id']) ?
+                                            $payment_info['payment_method_id'] : '';
+                    $credit_cards[] = isset($payment_info['card']['last_four_digits']) ?
+                                            '**** **** **** '.$payment_info['card']['last_four_digits'] : '';
+                    $cardholders[] = isset($payment_info['card']['cardholder']['name']) ?
+                                    $payment_info['card']['cardholder']['name'] : '';
                 }
-                $this->updateOrderHistory($order->id, Configuration::get($order_status));
             }
-
-            return;
-        }
-        $payments = $merchant_order_info['payments'];
-        $external_reference = $merchant_order_info['external_reference'];
-        foreach ($payments as $payment) {
-            // get payment info
-            $result = $mercadopago_sdk->getPaymentStandard($payment['id']);
-            $payment_info = $result['response']['collection'];
-            // colect payment details
-            $payment_ids[] = $payment_info['id'];
-            $payment_statuses[] = $payment_info['status'];
-            $payment_types[] = $payment_info['payment_type'];
-            $transaction_amounts += $payment_info['transaction_amount'];
-            if ($payment_info['payment_type'] == 'credit_card') {
-                $payment_method_ids[] = isset($payment_info['payment_method_id']) ?
-                                        $payment_info['payment_method_id'] : '';
-                $credit_cards[] = isset($payment_info['card']['last_four_digits']) ?
-                                        '**** **** **** '.$payment_info['card']['last_four_digits'] : '';
-                $cardholders[] = isset($payment_info['card']['cardholder']['name']) ?
-                                $payment_info['card']['cardholder']['name'] : '';
+            error_log("===listenIPN 3====");
+            if ($merchant_order_info['total_amount'] == $transaction_amounts) {
+                if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' ||
+                    Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
+                    $transaction_amounts = $cart->getOrderTotal(true, Cart::BOTH);
+                }
+                if ($isMercadoEnvios ||
+                    (isset($merchant_order_info['shipments']) &&
+                    isset($merchant_order_info['shipments'][0]) &&
+                    $merchant_order_info['shipments'][0]['shipping_mode'] == 'me2')
+                    ) {
+                    $transaction_amounts += $merchant_order_info['shipments'][0]['shipping_option']['cost'];
+                }
+                error_log("===listenIPN 4====");
+                $this->updateOrder(
+                    $payment_ids,
+                    $payment_statuses,
+                    $payment_types,
+                    $external_reference,
+                    $result,
+                    $checkout
+                );
             }
-        }
-
-        if ($merchant_order_info['total_amount'] == $transaction_amounts) {
-            if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO') {
-                $transaction_amounts = $cart->getOrderTotal(true, Cart::BOTH);
+            // check the module
+            $id_order = $this->getOrderByCartId($merchant_order_info['external_reference']);
+            $order = new Order($id_order);
+            $status_shipment = null;
+            if (isset($merchant_order_info['shipments'][0]) &&
+                $merchant_order_info['shipments'][0]['shipping_mode'] == 'me2' &&
+                ($merchant_order_info['shipments'][0]['status'] == "ready_to_ship" ||
+                $merchant_order_info['shipments'][0]['status'] == "shipped" ||
+                $merchant_order_info['shipments'][0]['status'] == "delivered")
+                ) {
+                $isMercadoEnvios = true;
+                $status_shipment = $merchant_order_info['shipments'][0]['status'];
+                $order_status = null;
+                switch ($status_shipment) {
+                    case 'ready_to_ship':
+                        $order_status = 'MERCADOPAGO_STATUS_8';
+                        break;
+                    case 'shipped':
+                        $order_status = 'MERCADOPAGO_STATUS_9';
+                        break;
+                    case 'delivered':
+                        $order_status = 'MERCADOPAGO_STATUS_10';
+                        break;
+                }
+                if ($order_status != null) {
+                    $existStates = $this->checkStateExist($id_order, Configuration::get($order_status));
+                    if ($existStates) {
+                        return;
+                    }
+                    $this->updateOrderHistory($order->id, Configuration::get($order_status));
+                }
             }
-            $this->updateOrder(
-                $payment_ids,
-                $payment_statuses,
-                $payment_method_ids,
-                $payment_types,
-                $credit_cards,
-                $cardholders,
-                $transaction_amounts,
-                $external_reference,
-                $result
-            );
         }
     }
 
     private function updateOrder(
         $payment_ids,
         $payment_statuses,
-        $payment_method_ids,
         $payment_types,
-        $credit_cards,
-        $cardholders,
-        $transaction_amounts,
         $external_reference,
-        $result
+        $result,
+        $checkout
     ) {
+        error_log("===updateOrder====");
         $order = null;
-		$mercadopago = $this->module;
         // if has two creditcard validate whether payment has same status in order to continue validating order
         if (count($payment_statuses) == 1 ||
-             (count($payment_statuses) == 2 && $payment_statuses[0] == $payment_statuses[1])) {
+            (count($payment_statuses) == 2 &&
+            $payment_statuses[0] == $payment_statuses[1])
+        ) {
             $order = null;
-            $order_status = null;
             $payment_status = $payment_statuses[0];
             $payment_type = $payment_types[0];
 
-            switch ($payment_status) {
-                case 'in_process':
-                    $order_status = 'MERCADOPAGO_STATUS_0';
-                    break;
-                case 'approved':
-                    $order_status = 'MERCADOPAGO_STATUS_1';
-                    break;
-                case 'cancelled':
-                    $order_status = 'MERCADOPAGO_STATUS_2';
-                    break;
-                case 'refunded':
-                    $order_status = 'MERCADOPAGO_STATUS_4';
-                    break;
-                case 'charged_back':
-                    $order_status = 'MERCADOPAGO_STATUS_5';
-                    break;
-                case 'in_mediation':
-                    $order_status = 'MERCADOPAGO_STATUS_6';
-                    break;
-                case 'pending':
-                    $order_status = 'MERCADOPAGO_STATUS_7';
-                    break;
-                case 'rejected':
-                    $order_status = 'MERCADOPAGO_STATUS_3';
-                    break;
-                case 'ready_to_ship':
-                    $order_status = 'MERCADOPAGO_STATUS_8';
-                    break;
-                case 'shipped':
-                    $order_status = 'MERCADOPAGO_STATUS_9';
-                    break;
-                case 'delivered':
-                    $order_status = 'MERCADOPAGO_STATUS_10';
-                    break;
-            }
             // just change if there is an order status
-            if ($order_status) {
-                $id_cart = $external_reference;
-                $id_order = $mercadopago->getOrderByCartId($id_cart);
-                if ($id_order) {
-                    $order = new Order($id_order);
-
-                    $existStates = $this->checkStateExist(
-                        $id_order,
-                        Configuration::get($order_status)
-                    );
-                    if ($existStates) {
+            $id_cart = $external_reference;
+            $id_order = $this->getOrderByCartId($id_cart);
+            $order = new Order($id_order);
+            if ($id_order) {
+                if ($this->checkStateExist($id_order, $payment_status)) {
+                    return;
+                }
+            }
+            if ($payment_status == 'cancelled' || $payment_status == 'rejected') {
+                if ($order->module == "mercadopago" || $checkout == 'pos') {
+                    $retorno = $this->getOrderStateApproved($id_order);
+                    if ($retorno) {
                         return;
                     }
+                } else {
+                    return;
                 }
-                // If order wasn't created yet and payment is approved or pending or in_process, create it.
-                // This can happen when user closes checkout standard
-                if (empty($id_order) && ($payment_status == 'in_process' || $payment_status == 'approved' ||
-                    $payment_status == 'pending')
-                    ) {
-                    $cart = new Cart($id_cart);
-                    $total = (double) number_format($transaction_amounts, 2, '.', '');
-                    $extra_vars = array(
-                        '{bankwire_owner}' => $this->l('You must follow MercadoPago rules for purchase to be valid'),
-                        '{bankwire_details}' => '',
-                        '{bankwire_address}' => '',
-                    );
-                    $id_order = !$id_order ? $mercadopago->getOrderByCartId($id_cart) : $id_order;
-                    $order = new Order($id_order);
-                    $existStates = $this->checkStateExist($id_order, Configuration::get($order_status));
-                    if ($existStates) {
-                        return;
-                    }
+            }
+            $statusPS = (int)$order->getCurrentState();
+            $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta[$payment_status]);
+            if ($payment_status != $statusPS) {
+                $order->setCurrentState($payment_status);
+            }
 
-                    $displayName = UtilMercadoPago::setNamePaymentType($payment_type);
-
-                    $this->module->validateOrder(
-                        $id_cart,
-                        Configuration::get($order_status),
-                        $total,
-                        $displayName,
-                        null,
-                        $extra_vars,
-                        $cart->id_currency,
-                        false,
-                        $cart->secure_key
-                    );
-                } elseif (!empty($order) && $order->current_state != null &&
-                     $order->current_state != Configuration::get($order_status)) {
-                    $id_order = !$id_order ? $mercadopago->getOrderByCartId($id_cart) : $id_order;
-                    $order = new Order($id_order);
-                    /*
-                     * this is necessary to ignore the transactions with the same
-                     * external reference and states diferents
-                     * the transaction approved cant to change the status, except refunded.
-                     */
-                    if ($payment_status == 'cancelled' || $payment_status == 'rejected') {
-                        // check if is mercadopago
-                        if ($order->module == "mercadopago") {
-                            $retorno = $this->getOrderStateApproved($id_order);
-                            if ($retorno) {
-                                return;
-                            }
-                        } else {
-                            return;
-                        }
-                    }
-                    $this->updateOrderHistory($order->id, Configuration::get($order_status));
-
-                    // Cancel the order to force products to go to stock.
-                    switch ($payment_status) {
-                        case 'cancelled':
-                        case 'refunded':
-                        case 'rejected':
-                            $this->updateOrderHistory($id_order, Configuration::get('PS_OS_CANCELED'), false);
-                            break;
-                    }
-                }
-                if ($order) {
-                    // update order payment information
-                    $order_payments = $order->getOrderPayments();
-                    foreach ($order_payments as $order_payment) {
-                        $order_payment->transaction_id = implode(' / ', $payment_ids);
-                        if ($payment_type == 'credit_card') {
-                            $order_payment->card_number = implode(' / ', $credit_cards);
-                            $order_payment->card_brand = implode(' / ', $payment_method_ids);
-                            $order_payment->card_holder = implode(' / ', $cardholders);
-                        }
-                        $order_payment->save();
-                    }
-                }
+            try {
+                error_log('vai atualizar');
+                $payments = $order->getOrderPaymentCollection();
+                $payments[0]->transaction_id = implode(' / ', $payment_ids);
+                $payments[0]->update();
+                error_log('vai atualizar');
+            } catch (Exception $e) {
+                error_log('Occured a error during the process the update order, payments is null = '.$id_cart);
+                UtilMercadoPago::logMensagem(
+                    'Occured a error during the process the update order, payments is null = '.$id_cart,
+                    MPApi::ERROR,
+                    $e->getMessage(),
+                    true,
+                    null,
+                    'MercadoPago->updateOrder'
+                );
             }
         }
     }
@@ -323,6 +216,21 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             $extra_vars = array();
             $history->addWithemail(true, $extra_vars);
         }
+    }
+
+    /**
+     * Verify if there is state approved for order.
+     */
+    public static function getOrderStateApproved($id_order)
+    {
+        return (bool) Db::getInstance()->getValue(
+            '
+        SELECT `id_order_state`
+        FROM '._DB_PREFIX_.'order_history
+        WHERE `id_order` = '.(int) $id_order.'
+        AND `id_order_state` = '.
+            (int) Configuration::get('MERCADOPAGO_STATUS_1')
+        );
     }
 
     /**

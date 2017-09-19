@@ -30,6 +30,7 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
     protected $templateIframeName = 'module:mercadopago/views/templates/front/iframe.tpl';
     public $ssl = true;
     public $display_column_left = false;
+    private $settings = null;
 
     /**
      * @see FrontController::postProcess()
@@ -42,7 +43,7 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         if ($cart->id_customer == 0 || $cart->id_address_delivery == 0 || $cart->id_address_invoice == 0 || !$this->module->active) {
             Tools::redirect('index.php?controller=order&step=1');
         }
-
+        $mercadopago = $this->module;
         // Check that this payment option is still available in case the customer changed his address just before the end of the checkout process
         $authorized = false;
         foreach (Module::getPaymentModules() as $module) {
@@ -51,32 +52,18 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
                 break;
             }
         }
-
         if (!$authorized) {
             die($this->module->l('This payment method is not available.', 'standard'));
         }
 
         $cart = $this->context->cart;
-        $messageLog =
-            'MercadoPago - start payment process, method : '. $this->paymentMethod .
-            ' by customer id : ' . $cart->id_customer;
-        PrestaShopLogger::addLog($messageLog, 1, null, 'Cart', $cart->id, true);
-
-        PrestaShopLogger::addLog('MercadoPago - get post parameters', 1, null, 'Cart', $cart->id, true);
         $postParameters = $this->getPreferencesStandard();
-
-        $messageLog = 'MercadoPago - post parameters : ' . print_r($postParameters, true);
-        PrestaShopLogger::addLog($messageLog, 1, null, 'Cart', $cart->id, true);
-
-        PrestaShopLogger::addLog('MercadoPago - request sid', 1, null, 'Cart', $cart->id, true);
-
-        error_log("=======postParameters=====".Tools::jsonEncode($postParameters));
 
         try {
             $result = MPApi::getInstanceMP()->createPreference($postParameters);
-            error_log("=====RESULT====".Tools::jsonEncode($result));
             if (array_key_exists('init_point', $result['response'])) {
-                $data['preferences_url'] = $result['response']['init_point'];
+                $init_point = $result['response']['init_point'];
+                $data['preferences_url'] = $init_point;
             } else {
                 $data['preferences_url'] = null;
                 PrestaShopLogger::addLog(
@@ -91,8 +78,27 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
             $this->redirectError('ERROR_GENERAL_REDIRECT');
         }
 
-        Tools::redirect($result['response']['init_point']);
+        $customer = new Customer((int)$cart->id_customer);
+        $displayName = $mercadopago->l('Mercado Pago Redirect');
+        $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta['started']);
 
+        try {
+            $mercadopago->validateOrder(
+                $cart->id,
+                $payment_status,
+                $cart->getOrderTotal(true, Cart::BOTH),
+                $displayName,
+                null,
+                array(),
+                (int)$cart->id_currency,
+                false,
+                $customer->secure_key
+            );
+            Tools::redirectLink($init_point);
+
+        } catch(Exception $e) {
+            error_log($e->getMessage());
+        }
     }
 
     public function createStandardCheckoutPreference()
@@ -108,7 +114,7 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
     {
         $customer_fields = Context::getContext()->customer->getFields();
         $cart = Context::getContext()->cart;
-
+        $mercadopago = $this->module;
         $mercadopagoSettings = $this->getMercadoPagoSettings();
 
         // Get costumer data
@@ -137,15 +143,15 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
             ),
         );
 
+        $round = false;
+        if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' || Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
+            $round = true;
+        }
+
         // items
         $products = $cart->getProducts();
         $items = array();
         $summary = '';
-        $round_place = 2;
-
-        if ($mercadopagoSettings['country'] == 'MCO') {
-            $round_place = 0;
-        }
 
         foreach ($products as $key => $product) {
             $image = Image::getCover($product['id_product']);
@@ -162,10 +168,11 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
                 'title' => $product['name'],
                 'description' => $product['description_short'],
                 'quantity' => $product['quantity'],
-                'unit_price' => round($product['price_wt'], $round_place),
+                'unit_price' => $round ? round($product['price_wt']) : $product['price_wt'],
                 'picture_url' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').$imagePath,
                 'category_id' => $mercadopagoSettings['category_id'],
             );
+
             if ($key == 0) {
                 $summary .= $product['name'];
             } else {
@@ -199,18 +206,50 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
             $items[] = $item;
         }
 
+        $lista_shipping = (array) Tools::jsonDecode(
+            Configuration::get('MERCADOPAGO_CARRIER'),
+            true
+        );
         $shipments = array();
         // include shipping cost
-        $shipping_cost = (double) $cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
-        if ($shipping_cost > 0) {
-            $item = array(
-                'title' => 'Shipping',
-                'description' => 'Shipping service used by store',
-                'quantity' => 1,
-                'unit_price' => $shipping_cost,
-                'category_id' => $mercadopagoSettings['category_id'],
+        if ((int)Configuration::get('MERCADOENVIOS_ACTIVATE') == 1 &&
+            isset($lista_shipping['MP_CARRIER'][$cart->id_carrier])
+            ) {
+            $dimensions = $mercadopago->getDimensions($products);
+
+            error_log("=====MERCADOENVIOS_ACTIVATE= dimensions...====". Tools::jsonEncode ($dimensions));
+
+            $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$cart->id_carrier];
+            $address_delivery = new Address((integer) $cart->id_address_delivery);
+            $shipments = array(
+                'mode' => 'me2',
+                'zip_code' => UtilMercadoPago::getCodigoPostal($address_invoice->postcode),
+                'default_shipping_method' => $id_mercadoenvios_service_code,
+                'dimensions' =>
+                "{$dimensions['width']}x{$dimensions['height']}x".
+                "{$dimensions['depth']},{$dimensions['weight']}",
+                'receiver_address' => array(
+                    'floor' => '-',
+                    'zip_code' => UtilMercadoPago::getCodigoPostal($address_delivery->postcode),
+                    'street_name' => $address_delivery->address1.' - '.$address_delivery->address2.' - '.
+                         $address_delivery->city.'/'.$address_delivery->country,
+                        'apartment' => '-',
+                        'street_number' => '-',
+                ),
             );
-            $items[] = $item;
+        } else {
+            // include shipping cost
+            $shipping_cost = (double) $cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
+            if ($shipping_cost > 0) {
+                $item = array(
+                    'title' => 'Shipping',
+                    'description' => 'Shipping service used by store',
+                    'quantity' => 1,
+                    'unit_price' => $round ? round($shipping_cost) : $shipping_cost,
+                    'category_id' => Configuration::get('MERCADOPAGO_CATEGORY'),
+                );
+                $items[] = $item;
+            }
         }
 
         $data = array(
@@ -247,6 +286,7 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
                     break;
             }
         }
+
         $data['auto_return'] = $mercadopagoSettings['auto_return'] == 'approved' ? 'approved' : '';
         $data['back_urls']['success'] = $this->getURLReturn($cart->id, $mercadopagoSettings, 'success');
         $data['back_urls']['failure'] = $this->getURLReturn($cart->id, $mercadopagoSettings, 'failure');
@@ -259,8 +299,9 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
             'mercadopago',
             'standardreturn',
             array('checkout' => 'standard',
-            'cart_id' => $cart->id),
-            true
+            'cart_id' => $cart->id,
+            'notification' => "ipn"),
+            $this->module->isSSLEnabled()
         );
 
         // swap to payer index since customer is only for transparent
@@ -268,7 +309,6 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         $data['customer']['surname'] = $data['customer']['last_name'];
         $data['payer'] = $data['customer'];
         unset($data['customer']);
-
         return $data;
     }
 
@@ -279,11 +319,10 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
             'validationstandard',
             array('checkout' => 'standard',
             'cart_id' => $cart_id,
-            'typeReturn' => $typeReturn),
-            true
+            'typeReturn' => $typeReturn,
+            'notification' => "back_urls"),
+            $this->module->isSSLEnabled()
         );
-
-        error_log("=====URL DE RETORNO NOVA=====".$statusUrl);
 
         return $statusUrl;
     }
@@ -307,10 +346,6 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         $mercadoPagoSettings['ssl_enabled'] = Configuration::get('PS_SSL_ENABLED');
         $mercadoPagoSettings['installments'] = Configuration::get('MERCADOPAGO_INSTALLMENTS');
 
-
-        error_log("====PS_SSL_ENABLED======".Configuration::get('PS_SSL_ENABLED'));
-
-
         return $mercadoPagoSettings;
     }
 
@@ -324,7 +359,6 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
 
             $value = Configuration::get($pm_variable_name);
 
-            error_log("=====value payment ===" . $value);
             if ($value == '0') {
                 $excluded_payment_methods[] = array(
                     'id' => $payment_method['id'],

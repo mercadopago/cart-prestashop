@@ -26,6 +26,20 @@
 
 class UtilMercadoPago
 {
+    public static $statusMercadoPagoPresta = array(
+                                                'in_process' => 'MERCADOPAGO_STATUS_0',
+                                                'approved' => 'MERCADOPAGO_STATUS_1',
+                                                'cancelled' => 'MERCADOPAGO_STATUS_2',
+                                                'refunded' => 'MERCADOPAGO_STATUS_4',
+                                                'charged_back' => 'MERCADOPAGO_STATUS_5',
+                                                'in_mediation' => 'MERCADOPAGO_STATUS_6',
+                                                'pending' => 'MERCADOPAGO_STATUS_7',
+                                                'rejected' => 'MERCADOPAGO_STATUS_3',
+                                                'ready_to_ship' => 'MERCADOPAGO_STATUS_8',
+                                                'shipped' => 'MERCADOPAGO_STATUS_9',
+                                                'delivered' => 'MERCADOPAGO_STATUS_10',
+                                                'started' => 'MERCADOPAGO_STATUS_11'
+                                            );
     public static function logMensagem($mensagem, $nivel)
     {
         $version = UtilMercadoPago::getPrestashopVersion();
@@ -118,6 +132,20 @@ class UtilMercadoPago
         $requirements['ssl'] = Configuration::get('PS_SSL_ENABLED') == 0 ? "negative" : "positive";
 
         return $requirements;
+    }
+
+
+    public static function getCodigoPostal($value)
+    {
+        if (is_null($value) || empty($value)) {
+            return $value;
+        }
+        if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLB') {
+            $value = str_replace('-', '', $value);
+        } elseif (Configuration::get('MERCADOPAGO_COUNTRY') == 'MLA') {
+            $value = preg_replace("/[^0-9,.]/", "", $value);
+        }
+        return $value;
     }
 
     public static function getOrderTotalMLC_MCO($value)

@@ -23,39 +23,43 @@
 	*  International Registered Trademark & Property of MercadoPago
 	*}
 	<script defer type="text/javascript"
-	src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/jquery.dd.js"></script>	
+	src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/jquery.dd.js"></script>
 	<div class="panel">
-
+			{if $statusOrder == "Pendente" || $showPoint == "true" || isset($status)}
 			<div class="row">
 				<img class="logo_cupom" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">
 			</div>
 			<br>
 			<br>
-			<div class="row">
-				<div class="col-md-12"> <span id="show_message" style="display: none;"> </span> </div>
-				<div class="col-md-12" style="display: none;" id="show_message_waiting">
-					<span class="alert alert-warning">Please waiting...</span>
+			{/if}
+			{if $pos_active == "true"}
+				<div class="row">
+					<div class="col-md-12"> <span id="show_message" style="display: none;"> </span> </div>
+					<div class="col-md-12" style="display: none;" id="show_message_waiting">
+						<span class="alert alert-warning">Please waiting...</span>
+					</div>
 				</div>
-			</div>
-			<br>
-			<br>
-
+				<br>
+				<br>
+			{/if}
+			{if $statusOrder == "Pendente"}
 			<div class="row">
-				{if $statusOrder == "Pendente"}
-					<form action="{$cancel_action_url|escape:'htmlall':'UTF-8'}" method="post" id="frmCancelOrder">
-						<input type="hidden" name="token_form" id="token_form" value="{$token_form|escape:'htmlall':'UTF-8'}"/>
-						<input type="hidden" name="id_order" id="id_order"/>
-						<div class="col-md-4">
-							<button class="btn btn-primary"
-								value="{l s='Cancel the Order' mod='mercadopago'}"
-								type="button"
-								id="btoCancelOrder">
-									{l s='Cancel the Order' mod='mercadopago'}
-							</button>
-						</div>
-					</form>
-				{/if}
+				<h3>{l s='You can cancel the order and the payment in Mercado Pago.' mod='mercadopago'}</h3>
+				<br>
+				<form action="{$cancel_action_url|escape:'htmlall':'UTF-8'}" method="post" id="frmCancelOrder">
+					<input type="hidden" name="token_form" id="token_form" value="{$token_form|escape:'htmlall':'UTF-8'}"/>
+					<input type="hidden" name="id_order" id="id_order"/>
+					<div class="col-md-4">
+						<button class="btn btn-primary"
+							value="{l s='Cancel the Order' mod='mercadopago'}"
+							type="button"
+							id="btoCancelOrder">
+								{l s='Cancel the Order' mod='mercadopago'}
+						</button>
+					</div>
+				</form>
 			</div>
+			{/if}
 			{if $showPoint == "true"}
 			<div class="col-sm-2 form-group">
 			    <label for="exampleInputEmail1">Point Mercado Pago</label>
@@ -73,14 +77,18 @@
 				<button type="button" name="payment_pos_cancel_action" id="payment_pos_cancel_action" class="btn btn-danger">{l s='Cancel payment' mod='mercadopago'}</button>
 			</div>
 			{/if}
+	</div>
 	<br>
-{if isset($status)}
+	{if isset($status)}
 	<div id="formAddPaymentPanel" class="panel">
 		<div class="panel-heading">
 			<i class="icon-truck"></i>
 			MercadoEnvios - {l s='Track your delivery' mod='mercadopago'}
 		</div>
-
+		<div class="row">
+			<img class="logo_cupom" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/carrier.jpg">
+		</div>
+		<br/>
 		{if $substatus == "ready_to_print"}
 			<p class="alert alert-warning">
 				{l s='Warning' mod='mercadopago'}
@@ -101,11 +109,13 @@
 				<a href="#" onClick="window.open('{$tag_shipment_zebra|escape:'htmlall':'UTF-8'}', '_blank')" class="button btn btn-info button-medium">
 				<span><i class="icon-ticket"></i>&nbsp;{l s='Open Tag for printer' mod='mercadopago'}</span></a>
 			</p>
-		{else}
-			<p class="alert alert-danger">
+		{else if $status == "pending"}
+			<p class="alert alert-warning">
 				{l s='Warning' mod='mercadopago'}
-				<strong>{$substatus_description|escape:'htmlall':'UTF-8'}</strong><br>
+				<strong>{l s='The tag is pending' mod='mercadopago'}</strong><br>
 			</p>
+		{else}
+			<strong>{$substatus_description|escape:'htmlall':'UTF-8'}</strong><br>
 		{/if}
 		 <ul>
 			<li>

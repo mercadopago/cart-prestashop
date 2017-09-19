@@ -30,15 +30,11 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
     public function initContent()
     {
         parent::initContent();
-        error_log("entrou aqui orderConfirmationUrl " . Tools::getValue('collection_id'));
-        error_log("entrou aqui orderConfirmationUrl  typeReturn == " . Tools::getValue('typeReturn'));
 
         if (Tools::getValue('typeReturn') == 'failure') {
-            error_log("entrou aqui failure ");
             $this->redirectError();
         }
         if (Tools::getIsset('collection_id') && Tools::getValue('collection_id') != 'null') {
-            error_log("entrou aqui 1 ");
             // payment variables
             $payment_statuses = array();
             $payment_ids = array();
@@ -58,7 +54,6 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
             error_log("entrou aqui 2 ");
             foreach ($collection_ids as $collection_id) {
                 $result = $mercadopago_sdk->getPaymentStandard($collection_id);
-                error_log("===result standard=====".Tools::jsonEncode($result));
                 $payment_info = $result['response']['collection'];
                 $id_cart = $payment_info['external_reference'];
                 $cart = new Cart($id_cart);
@@ -84,12 +79,7 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
             }
 
             if (Validate::isLoadedObject($cart)) {
-                $total = (double) number_format($transaction_amounts, 2, '.', '');
-                $extra_vars = array(
-                    '{bankwire_owner}' => 'teste',
-                    '{bankwire_details}' => '',
-                    '{bankwire_address}' => '',
-                );
+                $total = $cart->getOrderTotal(true, Cart::BOTH);
                 $order_status = null;
                 $payment_status = $payment_info['status'];
                 switch ($payment_status) {
@@ -105,47 +95,36 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
                 }
 
                 $order_id = $mercadopago->getOrderByCartId($cart->id);
-
+                $order = new Order($order_id);
                 if ($order_status != null) {
-                    $result_merchant = $mercadopago_sdk->getMerchantOrder($merchant_order_id);
-                    $merchant_order_info = $result_merchant['response'];
-
-                    if (isset($merchant_order_info['shipments'][0]) &&
-                        $merchant_order_info['shipments'][0]['shipping_mode'] == 'me2') {
-                        $cost_mercadoEnvios = $merchant_order_info['shipments'][0]['shipping_option']['cost'];
-
-                        $total += $cost_mercadoEnvios;
+                    $statusPS = (int)$order->getCurrentState();
+                    $payment_status = $payment_info['status'];
+                    $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta[$payment_status]);
+                    if ($payment_status != $statusPS) {
+                        $order->setCurrentState($payment_status);
                     }
 
-                    if (!$order_id) {
-                        $displayName = UtilMercadoPago::setNamePaymentType($payment_types[0]);
-
-                        $mercadopago->validateOrder(
-                            $cart->id,
-                            Configuration::get($order_status),
-                            $total,
-                            $displayName,
+                    try {
+                        error_log('vai atualizar');
+                        $payments = $order->getOrderPaymentCollection();
+                        $payments[0]->transaction_id = implode(' / ', $payment_ids);
+                        $payments[0]->update();
+                        error_log('vai atualizar');
+                    } catch (Exception $e) {
+                        error_log('Occured a error during the process the update order, payments is null = '.$id_cart);
+                        UtilMercadoPago::logMensagem(
+                            'Occured a error during the process the update order, payments is null = '.$id_cart,
+                            MPApi::ERROR,
+                            $e->getMessage(),
+                            true,
                             null,
-                            $extra_vars,
-                            $cart->id_currency,
-                            false,
-                            $cart->secure_key
+                            'MercadoPago->updateOrder'
                         );
                     }
 
-                    $order_id = !$mercadopago->currentOrder ?
-                    Order::getOrderByCartId($cart->id) : $mercadopago->currentOrder;
-                    $order = new Order($order_id);
-
                     $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$order->id_cart.'&id_module='.
                          $mercadopago->id.'&id_order='.$order->id.'&key='.$order->secure_key;
-                    $order_payments = $order->getOrderPayments();
 
-                    if ($order_payments == null || $order_payments[0] == null) {
-                        $order_payments[0] = new stdClass();
-                    }
-
-                    $order_payments[0]->transaction_id = Tools::getValue('collection_id');
                     $uri .= '&payment_status='.$payment_statuses[0];
                     $uri .= '&payment_id='.implode(' / ', $payment_ids);
                     $uri .= '&payment_type='.implode(' / ', $payment_types);
@@ -156,18 +135,7 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
                         $uri .= '&four_digits='.implode(' / ', $four_digits_arr);
                         $uri .= '&statement_descriptor='.$statement_descriptors[0];
                         $uri .= '&status_detail='.$status_details[0];
-                        $order_payments[0]->card_number = empty($four_digits_arr) ? '' :
-                            implode(' / ', $four_digits_arr);
-                        $order_payments[0]->card_brand = empty($payment_method_ids) ? '' :
-                            implode(' / ', $payment_method_ids);
-                        $order_payments[0]->card_holder = implode(' / ', $card_holder_names);
                     }
-                    $order_payments[0]->save();
-                    $order_payments = $order->getOrderPayments();
-
-
-                    error_log("====vai fazer o redirect====". $uri);
-
                     Tools::redirectLink($uri);
                 }
             }
