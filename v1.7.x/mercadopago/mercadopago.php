@@ -153,7 +153,6 @@ class MercadoPago extends PaymentModule
             $this->registerHook('header');
     }
 
-
     public function hookPayment($params)
     {
         error_log("entro no hookPayment");
@@ -765,6 +764,7 @@ class MercadoPago extends PaymentModule
                 "show" => true,
                 "mercadoPagoActive" => Configuration::get("MERCADOPAGO_STARDAND_ACTIVE"),
                 "mercadoEnviosActivate" => Configuration::get("MERCADOENVIOS_ACTIVATE"),
+                "MERCADOPAGO_DEFAULT_SHIPMENT" => Configuration::get("MERCADOPAGO_DEFAULT_SHIPMENT"),
                 "panelTitle" => "teste",
                 "payments" => $payments,
                 "thisPath" => Tools::getShopDomain(true, true).__PS_BASE_URI__."modules/mercadopago/",
@@ -779,6 +779,7 @@ class MercadoPago extends PaymentModule
                 "mercadoPagoActive" => false,
                 "mercadoEnviosActivate" => false,
                 "panelTitle" => "teste",
+                "MERCADOPAGO_DEFAULT_SHIPMENT" => '',
                 "payments" => array(),
                 "thisPath" => Tools::getShopDomain(true, true).__PS_BASE_URI__."modules/mercadopago/",
                 "fieldsValue" => $this->getPaymentConfiguration(),
@@ -968,6 +969,7 @@ class MercadoPago extends PaymentModule
             }
 
             Configuration::updateValue("MERCADOPAGO_STARDAND_ACTIVE", Tools::getValue("MERCADOPAGO_STARDAND_ACTIVE"));
+            Configuration::updateValue("MERCADOPAGO_DEFAULT_SHIPMENT", Tools::getValue("MERCADOPAGO_DEFAULT_SHIPMENT"));
 
             $mercadoenvios_activate = Tools::getValue("MERCADOENVIOS_ACTIVATE");
             Configuration::updateValue("MERCADOENVIOS_ACTIVATE", $mercadoenvios_activate);
@@ -1468,6 +1470,8 @@ class MercadoPago extends PaymentModule
         $normal = self::$countryOptions[$country]['normal'];
         $expresso = self::$countryOptions[$country]['expresso'];
 
+        $custom_text = Configuration::get('MERCADOPAGO_DEFAULT_SHIPMENT');
+
         $carrierConfig = array(
             0 => array('name' => $normal['label'],
                 'carrier_code' => $normal['value'],
@@ -1477,16 +1481,16 @@ class MercadoPago extends PaymentModule
                 'shipping_handling' => false,
                 'range_behavior' => 0,
                 'delay' => array(
-                    'ar' => "Después de la publicación, recibirá el producto en",
-                    'br' => "Após a postagem, você o receberá o produto em até",
-                    'mx' => "Después de la publicación, recibirá el producto en",
-                    'es' => "After the posting, you will receive the product within",
+                    'ar' => $custom_text,
+                    'br' => $custom_text,
+                    'mx' => $custom_text,
+                    'es' => $custom_text,
                     Language::getIsoById(Configuration::get('PS_LANG_DEFAULT')) => $normal['description'],
                 ),
                 'id_zone' => 1,
                 'is_module' => true,
                 'shipping_external' => true,
-                'external_module_name' => 'mercadopago',
+                'external_module_name' => $this->name,
                 'need_range' => true,
             ),
             1 => array('name' => $expresso['label'],
@@ -1497,16 +1501,16 @@ class MercadoPago extends PaymentModule
                 'shipping_handling' => false,
                 'range_behavior' => 0,
                 'delay' => array(
-                    'ar' => "Después de la publicación, recibirá el producto en",
-                    'br' => "Após a postagem, você o receberá o produto em até",
-                    'mx' => "Después de la publicación, recibirá el producto en",
-                    'es' => "After the posting, you will receive the product within",
+                    'ar' => $custom_text,
+                    'br' => $custom_text,
+                    'mx' => $custom_text,
+                    'es' => $custom_text,
                     Language::getIsoById(Configuration::get('PS_LANG_DEFAULT')) => $expresso['description'],
                 ),
                 'id_zone' => 1,
                 'is_module' => true,
                 'shipping_external' => true,
-                'external_module_name' => 'mercadopago',
+                'external_module_name' => $this->name,
                 'need_range' => true,
             ),
         );

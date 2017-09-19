@@ -73,37 +73,50 @@
 		<div style="clear: both"></div>
 	{/foreach}
 </div>
-{if $country eq 'MLB'}
 <div class="panel">
 	<div class="panel-heading">{l s='Mercado Envios' d='Modules.MercadoPago.Admin'}</div>
-	<div class="form-group border-none">
-		<label class="payment-label col-lg-3">
-		Enable Mercado Envios
-		</label>
-		<div class="col-lg-3">
-			<div class="col-lg-4 control-label switch-label">{$label.active|escape:'htmlall':'UTF-8'}</div>
-			<div class="col-lg-6 switch prestashop-switch fixed-width-lg">
-				<input type="radio" name="MERCADOENVIOS_ACTIVATE" id="MERCADOENVIOS_ACTIVATE_on" value="1" {if ($mercadoEnviosActivate==1 )}checked="checked" {/if}>
-				<label for="MERCADOENVIOS_ACTIVATE_on">{$button.yes|escape:'htmlall':'UTF-8'}</label>
-
-				<input type="radio" name="MERCADOENVIOS_ACTIVATE" id="MERCADOENVIOS_ACTIVATE_off" value="0" {if empty($mercadoEnviosActivate)}checked="checked" {/if}>
-				<label for="MERCADOENVIOS_ACTIVATE_off">{$button.no|escape:'htmlall':'UTF-8'}</label>
-				<a class="slide-button btn"></a>
+	<div class="panel-body">
+		<div class="form-group">
+			<label class="control-label col-lg-3 required"> {l s='Custom text to use with delivery.' mod='mercadopago'} </label>
+			<div class="col-lg-5">
+				<input type="text" name="MERCADOPAGO_DEFAULT_SHIPMENT" id="MERCADOPAGO_DEFAULT_SHIPMENT" value="{$MERCADOPAGO_DEFAULT_SHIPMENT|escape:'htmlall':'UTF-8'}" class="">
+				<p class="help-block">{l s='Ex: The product will be send in 3 a 8 days.' mod='mercadopago'}.</p>
 			</div>
 		</div>
-		<div class="col-lg-4">
-			<label class="general-tooltip">
-				{l s='If you enable this, the others payment type will be disable.' d='Modules.MercadoPago.Admin'}
-			</label>
+
+		<div class="form-group">
+			<div id="conf_MERCADOENVIOS_ACTIVATE">
+				<label class="control-label col-lg-3">{l s='Enable Mercado envios.' mod='mercadopago'}</label>
+				<div class="col-lg-9">
+					<span class="switch prestashop-switch fixed-width-lg">
+						<input type="radio" name="MERCADOENVIOS_ACTIVATE" id="MERCADOENVIOS_ACTIVATE_on" value="1" checked="checked" {if ($mercadoEnviosActivate == 1)}checked="checked"{/if}>
+						<label for="MERCADOENVIOS_ACTIVATE_on" class="radioCheck">{$button.yes|escape:'htmlall':'UTF-8'}</label>
+						<input type="radio" name="MERCADOENVIOS_ACTIVATE" id="MERCADOENVIOS_ACTIVATE_off" value="0" {if empty($mercadoEnviosActivate)}checked="checked"{/if}>
+						<label for="MERCADOENVIOS_ACTIVATE_off" class="radioCheck">{$button.no|escape:'htmlall':'UTF-8'}</label>
+						<a class="slide-button btn"></a>
+					</span>
+				</div>
+				<div class="col-lg-9 col-lg-offset-3">
+					<div class="help-block">{l s='Use Mercado Envios with Mercado Pago standard' mod='mercadopago'}</div>
+				</div>
+			</div>
 		</div>
-		<div style="clear: both"></div>
 	</div>
-	<div class="panel-footer">
-		<button type="submit" value="1" name="btnSubmitPaymentConfig" class="btn btn-default pull-right">
-			<i class="process-icon-save"></i> {$button.save|escape:'htmlall':'UTF-8'}
+</div>
+
+<div class="row">
+	<div class="col-md-12 text-center"> 
+		<button type="submit" value="1" name="btnSubmitPaymentConfig" class="btn btn-primary btn-lg">
+			{l s='Save' mod='mercadopago'}
 		</button>
 	</div>
 </div>
-{/if}
+
 {/if}
 </form>
+
+<script type="text/javascript">
+	{if $mercadoPagoActive == 1}
+		$("#MERCADOPAGO_STARDAND_ACTIVE_on").attr("checked", true);
+	{/if}
+</script>
