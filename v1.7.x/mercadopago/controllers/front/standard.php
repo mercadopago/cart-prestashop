@@ -300,6 +300,11 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         $data['payment_methods']['excluded_payment_types'] = array();
         $data['payment_methods']['installments'] = (integer) $mercadopagoSettings['installments'];
 
+        // $ipn = $this->getURLSite().
+        // 'index.php?fc=module&module=mercadopago&controller=standardreturn&notification=ipn&cart_id='.$cart->id;
+
+        // error_log("==ipnURL==".$ipn);
+
         $data['notification_url'] = $this->context->link->getModuleLink(
             'mercadopago',
             'standardreturn',
@@ -308,12 +313,16 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
             'notification' => "ipn"),
             $this->module->isSSLEnabled()
         );
+        // $data['notification_url'] = $ipn;
 
         // swap to payer index since customer is only for transparent
         $data['customer']['name'] = $data['customer']['first_name'];
         $data['customer']['surname'] = $data['customer']['last_name'];
         $data['payer'] = $data['customer'];
         unset($data['customer']);
+
+        error_log(print_r($data, true));
+
         return $data;
     }
 
@@ -331,6 +340,18 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
 
         return $statusUrl;
     }
+
+    private function getURLSite()
+    {
+        $url = Tools::htmlentitiesutf8(
+            ((bool)Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
+            .$_SERVER['HTTP_HOST'].__PS_BASE_URI__
+        );
+        error_log($url);
+
+        return $url;
+    }
+
 
     private function redirectError($returnMessage)
     {

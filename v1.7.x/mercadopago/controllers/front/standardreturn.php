@@ -48,6 +48,8 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
     public function listenIPN($checkout, $topic, $id)
     {
         error_log("===listenIPN====");
+        error_log("entrou aqui no listenIPN ipn.php");
+
         $payment_method_ids = array();
         $payment_ids = array();
         $payment_statuses = array();
