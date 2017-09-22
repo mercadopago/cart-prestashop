@@ -33,3 +33,106 @@ function cpfCnpj(v){
 
     return v
 }
+
+function validaCNPJ(strCNPJ){
+    strCNPJ = strCNPJ.replace('.','');
+    strCNPJ = strCNPJ.replace('.','');
+    strCNPJ = strCNPJ.replace('.','');
+    strCNPJ = strCNPJ.replace('-','');
+    strCNPJ = strCNPJ.replace('/','');
+
+    var numeros, digitos, soma, i, resultado, pos, tamanho, digitos_iguais;
+    digitos_iguais = 1;
+
+    if (strCNPJ.length < 14 && strCNPJ.length < 15){
+      return false;
+    }
+
+    for (i = 0; i < strCNPJ.length - 1; i++){
+      if (strCNPJ.charAt(i) != strCNPJ.charAt(i + 1)){
+        digitos_iguais = 0;
+        break;
+      }
+    }
+
+    if (!digitos_iguais){
+      tamanho = strCNPJ.length - 2
+      numeros = strCNPJ.substring(0,tamanho);
+      digitos = strCNPJ.substring(tamanho);
+      soma = 0;
+      pos = tamanho - 7;
+      for (i = tamanho; i >= 1; i--){
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2){
+          pos = 9;
+        }
+
+      }
+      resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+      if (resultado != digitos.charAt(0)){
+        return false;
+      }
+
+      tamanho = tamanho + 1;
+      numeros = strCNPJ.substring(0,tamanho);
+      soma = 0;
+      pos = tamanho - 7;
+      for (i = tamanho; i >= 1; i--) {
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2){
+          pos = 9;
+        }
+
+      }
+      resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+      if (resultado != digitos.charAt(1)){
+        return false;
+      }
+
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  function validaCPF(strCPF){
+    var Soma;
+    var Resto;
+    strCPF = strCPF.replace(/[.-\s]/g, '')
+    Soma = 0;
+
+    if (strCPF == "00000000000"){
+      return false;
+    }
+
+    for (i=1; i<=9; i++){
+      Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (11 - i);
+    }
+
+    Resto = (Soma * 10) % 11;
+
+    if ((Resto == 10) || (Resto == 11)){
+      Resto = 0;
+    }
+
+    if (Resto != parseInt(strCPF.substring(9, 10)) ){
+      return false;
+    }
+
+    Soma = 0;
+    for (i = 1; i <= 10; i++){
+      Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (12 - i);
+    }
+
+    Resto = (Soma * 10) % 11;
+
+    if ((Resto == 10) || (Resto == 11)){
+      Resto = 0;
+    }
+
+    if (Resto != parseInt(strCPF.substring(10, 11) ) ){
+      return false;
+    }
+
+    return true;
+  }

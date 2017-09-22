@@ -430,7 +430,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 								<div class="col-md-4">
 									<div class="form-group">
 										<label for="lastname" id="labelLastname">Sobrenome:<em style="color: red;">*</em>
-										</label> <input  class="form-control" id="lastname" name="lastname" required="true" type="text" maxlength="50" value="{$ticket.lastname|escape:'htmlall':'UTF-8'}"/>
+										</label> <input  class="form-control" id="lastname" name="lastname" type="text" maxlength="50" value="{$ticket.lastname|escape:'htmlall':'UTF-8'}"/>
 										<div id="lastname-status" class="status_febraban">Campo obrigatório</div>
 									</div>
 								</div>
@@ -1725,16 +1725,28 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				$("#firstname-status").show();
 				fiedsValid = false;
 			}
+			if ($("#cpfcnpj").val().trim() == "") {
+				$("#cpf-status").show();
+				fiedsValid = false;
+			}
 			if ($("#typeDocument").val() == "CPF")  {
 				if ($("#lastname").val().trim() == "") {
 					$("#lastname-status").show();
 					fiedsValid = false;
 				}
+
+				if(!validaCPF($("#cpfcnpj").val())){
+					$("#cpf-status").show();
+					fiedsValid = false;
+				}
+
+			} else if ($("#typeDocument").val() == "CNPJ")  {
+				if(!validaCNPJ($("#cpfcnpj").val())){
+					$("#cpf-status").show();
+					fiedsValid = false;
+				}
 			}
-			if ($("#cpfcnpj").val().trim() == "") {
-				$("#cpf-status").show();
-				fiedsValid = false;
-			}
+
 			if ($("#address").val().trim() == "") {
 				$("#address-status").show();
 				fiedsValid = false;
@@ -1758,25 +1770,32 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			return fiedsValid;
 		}
 
+		$("#cpfcnpj").bind("change", function() {
+			cpfCNPJ(this);
+		});
+
 		$("#cpfcnpj").bind("keypress", function() {
-			console.info("entrou");
-			this.value=cpfCnpj(this.value)
+			cpfCNPJ(this);
+		});
+
+		function cpfCNPJ(obj) {
+			$("#cpfcnpj").val(cpfCnpj(obj.value));
 		    var tamanho = $("#cpfcnpj").val().length;
-		    if(tamanho < 14){
-		        console.info("CPF");
+		    if(tamanho <= 14){
+				$("#lastname").attr('required',true);
 		        $("#lastname").show();
 		        $("#labelLastname").show();
 				$("#labelFirstname").text("Nome");
 				$("#typeDocument").val("CPF");
-		    } else if(tamanho >= 14){
-		        console.info("CNPJ");
+		    } else if(tamanho > 14){
+		        $("#lastname").attr('required',false);
 		        $("#lastname").val("");
 		        $("#lastname").hide();
 		        $("#labelLastname").hide();
 		        $("#labelFirstname").text("Razão Social");
 		        $("#typeDocument").val("CNPJ");
 		    }
-		});
+		}
 
 	}
 

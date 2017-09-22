@@ -1879,6 +1879,7 @@ class MercadoPago extends PaymentModule
     public function execPayment($post)
     {
         $preferences = $this->getPreferencesCustom($post);
+        error_log(print_r($preferences, true));
         try {
             //$conciliation = new Conciliation();
             //$conciliation->insertMercadoPagoOrder();
@@ -2216,7 +2217,9 @@ class MercadoPago extends PaymentModule
             $payment_preference['binary_mode'] = 'true';
         }
 
-        $payment_preference['statement_descriptor'] = 'MERCADOPAGO';
+        error_log("===PS_SHOP_NAME=====".Configuration::get('PS_SHOP_NAME'));
+
+        $payment_preference['statement_descriptor'] = 'MERCADOPAGO - '.Configuration::get('PS_SHOP_NAME');
 
         return $payment_preference;
     }
