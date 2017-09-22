@@ -34,6 +34,7 @@ class MercadoPagoStandardPaymentModuleFrontController extends ModuleFrontControl
         $this->placeOrder();
     }
 
+
     private function placeOrder()
     {
         $mercadopago = $this->module;
@@ -42,23 +43,26 @@ class MercadoPagoStandardPaymentModuleFrontController extends ModuleFrontControl
 
         if (array_key_exists('init_point', $result['response'])) {
             $init_point = $result['response']['init_point'];
-            error_log($init_point);
-
             $customer = new Customer((int)$cart->id_customer);
             $displayName = $mercadopago->l('Mercado Pago Redirect');
             $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta['started']);
-            $mercadopago->validateOrder(
-                $cart->id,
-                $payment_status,
-                $cart->getOrderTotal(true, Cart::BOTH),
-                $displayName,
-                null,
-                array(),
-                (int)$cart->id_currency,
-                false,
-                $customer->secure_key
-            );
-            Tools::redirectLink($init_point);
+            try {
+                $mercadopago->validateOrder(
+                    $cart->id,
+                    $payment_status,
+                    $cart->getOrderTotal(true, Cart::BOTH),
+                    $displayName,
+                    null,
+                    array(),
+                    (int)$cart->id_currency,
+                    false,
+                    $customer->secure_key
+                );
+                Tools::redirectLink($init_point);
+
+            } catch(Exception $e) {
+                error_log($e->getMessage());
+            }
         } else {
             $data = array();
             $data['standard'] = "true";

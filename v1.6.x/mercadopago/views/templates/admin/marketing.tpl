@@ -238,7 +238,7 @@
 					<h6>{l s='More information' mod='mercadopago'}</h6>
 					<p>
 						<a target="_blank" href="mailto:comercial@mercadopago.com.br">comercial@mercadopago.com.br </a><br>
-						<a target="_blank" href="mailto:developers@mercadopago.com.br">developers@mercadopago.com.br </a>
+						<a target="_blank" href="mailto:modulos@mercadopago.com.br">modulos@mercadopago.com </a>
 					</p>
 				</div>
 			</div>

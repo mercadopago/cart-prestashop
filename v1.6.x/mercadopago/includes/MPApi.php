@@ -597,7 +597,8 @@ class MPApi
         $data = array(
             "code" => $code,
             "module" => "PrestaShop",
-            "module_version" => "3.5.1",
+            "module_version" => "3.5.5",
+            "email_admin" => Configuration::get('MERCADOPAGO_EMAIL_ADMIN'),
             "url_store" => $_SERVER['HTTP_HOST'],
             "errors" => $errors
         );

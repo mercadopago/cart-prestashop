@@ -153,39 +153,4 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
 
         return $data;
     }
-
-    public function insertOrUpdateInformationsTicket($post, $cart_id)
-    {
-        $mercadopago = $this->module;
-        $resultFieldsTicket = $mercadopago->getFieldsTicket($post['email']);
-
-        if ($resultFieldsTicket) {
-            $update = 'UPDATE '. _DB_PREFIX_ .'mercadopago_boleto SET '.
-            'cart_id = \''.$cart_id . '\', ' .
-            'added = \''.pSql(date('Y-m-d h:i:s')) . '\', ' .
-            'firstname = \''.$post['firstname'] . '\', ' .
-            'lastname = \''.$post['lastname'] . '\', ' .
-            'address = \''.$post['address'] . '\', ' .
-            'number = '.$post['number'] . ','.
-            'city = \''.$post['city'] . '\',' .
-            'state = \''.$post['state'] . '\',' .
-            'postcode = \''.$post['postcode'] . '\'' .
-            'WHERE email = \''. $post['email'] . '\';';
-
-            error_log('===update ticket===' . $update);
-            Db::getInstance()->Execute($update);
-        } else {
-            $insert = 'INSERT INTO ' .
-            _DB_PREFIX_ . 'mercadopago_boleto (cpf, email, cart_id, added, firstname,
-            lastname, address, number, city, state, postcode) VALUES(' .
-            '\''.$post['cpf'] .'\',\'' .$post['email']. '\'' .
-            ',' . $cart_id . ',\'' . pSql(date('Y-m-d h:i:s')) . '\'' .
-            ',\''.$post['firstname'] . '\',\'' .$post['lastname']. '\''.
-            ',\''.$post['address'] . '\',\'' .$post['number']. '\''.
-            ',\''.$post['city'] . '\',\'' .$post['state']. '\''.
-            ',\'' .$post['postcode']. '\''.
-            ')';
-            Db::getInstance()->Execute($insert);
-        }
-    }
 }

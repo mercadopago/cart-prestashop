@@ -388,6 +388,9 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				<input name="email" type="hidden" value="{$ticket.email|escape:'htmlall':'UTF-8'}"/> 
 				<input name="mercadopago_coupon" type="hidden"
 					class="mercadopago_coupon_ticket" /> 
+
+				<input type="hidden" name="typeDocument" id="typeDocument" value="CPF" />
+
 				<input
 					name="payment_method_id" type="hidden"
 					value="{$offline_payment|escape:'htmlall':'UTF-8'}" />
@@ -412,23 +415,23 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 						    <div class="row">
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="firstname">Nome:<em style="color: red;">*</em>
-										</label> <input  class="form-control" id="firstname" name="firstname" required="true" type="text" maxlength="50" value="{$ticket.firstname|escape:'htmlall':'UTF-8'}" />
+										<label for="cpf">CPF/CNPJ:<em style="color: red;">*</em>
+										</label> <input  class="form-control" name="cpfcnpj" id="cpfcnpj" required="true" type="text" maxlength="18" value="{$ticket.cpf|escape:'htmlall':'UTF-8'}"/>
+										<div id="cpf-status" class="status_febraban">Campo obrigatório</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="firstname" id="labelFirstname">Nome:</label> <em style="color: red;">*</em>
+										<input  class="form-control" id="firstname" name="firstname" required="true" type="text" maxlength="50" value="{$ticket.firstname|escape:'htmlall':'UTF-8'}" />
 										<div id="firstname-status" class="status_febraban">Campo obrigatório</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="lastname">Sobrenome:<em style="color: red;">*</em>
+										<label for="lastname" id="labelLastname">Sobrenome:<em style="color: red;">*</em>
 										</label> <input  class="form-control" id="lastname" name="lastname" required="true" type="text" maxlength="50" value="{$ticket.lastname|escape:'htmlall':'UTF-8'}"/>
 										<div id="lastname-status" class="status_febraban">Campo obrigatório</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="cpf">CPF:<em style="color: red;">*</em>
-										</label> <input  class="form-control" id="cpf" name="cpf" required="true" type="text" maxlength="50" value="{$ticket.cpf|escape:'htmlall':'UTF-8'}"/>
-										<div id="cpf-status" class="status_febraban">Campo obrigatório</div>
 									</div>
 								</div>
 							</div>
@@ -584,15 +587,13 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 		</div>
 	</div>
 	{/if}
-
-	
 </div>
-
-
 
 <script type="text/javascript"
 	src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/jquery.dd.js"></script>
 
+<script type="text/javascript"
+	src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/util.js"></script>
 
 <script type="text/javascript">
 
@@ -1724,11 +1725,13 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				$("#firstname-status").show();
 				fiedsValid = false;
 			}
-			if ($("#lastname").val().trim() == "") {
-				$("#lastname-status").show();
-				fiedsValid = false;
+			if ($("#typeDocument").val() == "CPF")  {
+				if ($("#lastname").val().trim() == "") {
+					$("#lastname-status").show();
+					fiedsValid = false;
+				}
 			}
-			if ($("#cpf").val().trim() == "") {
+			if ($("#cpfcnpj").val().trim() == "") {
 				$("#cpf-status").show();
 				fiedsValid = false;
 			}
@@ -1754,6 +1757,27 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			}
 			return fiedsValid;
 		}
+
+		$("#cpfcnpj").bind("keypress", function() {
+			console.info("entrou");
+			this.value=cpfCnpj(this.value)
+		    var tamanho = $("#cpfcnpj").val().length;
+		    if(tamanho < 14){
+		        console.info("CPF");
+		        $("#lastname").show();
+		        $("#labelLastname").show();
+				$("#labelFirstname").text("Nome");
+				$("#typeDocument").val("CPF");
+		    } else if(tamanho >= 14){
+		        console.info("CNPJ");
+		        $("#lastname").val("");
+		        $("#lastname").hide();
+		        $("#labelLastname").hide();
+		        $("#labelFirstname").text("Razão Social");
+		        $("#typeDocument").val("CNPJ");
+		    }
+		});
+
 	}
 
 

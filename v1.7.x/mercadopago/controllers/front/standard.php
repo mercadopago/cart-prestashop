@@ -212,10 +212,6 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         );
         $shipments = array();
 
-        error_log("=====MERCADOENVIOS_ACTIVATE= dimensions...====".Configuration::get('MERCADOENVIOS_ACTIVATE'));
-        error_log(print_r($lista_shipping['MP_CARRIER'], true));
-        error_log("===id_carrier===".$cart->id_carrier);
-
         // include shipping cost
         if ((int)Configuration::get('MERCADOENVIOS_ACTIVATE') == 1 &&
             isset($lista_shipping['MP_CARRIER'][$cart->id_carrier])

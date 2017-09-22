@@ -18,7 +18,7 @@
  * versions in the future. If you wish to customize PrestaShop for your
  * needs please refer to http://www.prestashop.com for more information.
  *
- *  @author    MERCADOPAGO.COM REPRESENTA&Ccedil;&Otilde;ES LTDA.
+ *  @author    MERCAupdateOrderDOPAGO.COM REPRESENTA&Ccedil;&Otilde;ES LTDA.
  *  @copyright Copyright(c) MercadoPago [http://www.mercadopago.com]
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License(OSL 3.0)
  *  International Registered Trademark & Property of MercadoPago
@@ -236,11 +236,19 @@ class MercadoPago extends PaymentModule
 
         );
 
+        if (!is_null($this->orderStateAvailable(Configuration::get('MERCADOPAGO_STATUS_12')))) {
+            Db::getInstance()->update(
+                'order_state',
+                array(
+                    'logable' => 1
+                ),
+                'module_name = "mercadopago" and id_order_state = '.Configuration::get('MERCADOPAGO_STATUS_12'),
+                1
+            );
+        }
+
         foreach ($order_states as $key => $value) {
             if (!is_null($this->orderStateAvailable(Configuration::get('MERCADOPAGO_STATUS_'.$key)))) {
-                if ($value[2] == 'started') {
-                    $order_state->logable = true;
-                }
                 continue;
             } else {
                 $order_state = new OrderState();
@@ -304,18 +312,6 @@ class MercadoPago extends PaymentModule
         }
     }
 
-    private function deleteStates()
-    {
-        for ($index = 0; $index <= 10; ++$index) {
-            $order_state = new OrderState(Configuration::get('MERCADOPAGO_STATUS_'.$index));
-            if (!$order_state->delete()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     /**
      * install module.
      */
@@ -328,7 +324,7 @@ class MercadoPago extends PaymentModule
             return false;
         }
 
-        //$this->uninstallOverrideMercadoEnvios();
+        $this->uninstallOverrideMercadoEnvios();
         $this->dropTables();
         if (!parent::install() || !$this->createStates() || !$this->registerHook('payment') ||
             !$this->registerHook('paymentReturn') || !$this->registerHook('displayHeader') ||
@@ -358,11 +354,10 @@ class MercadoPago extends PaymentModule
 
     public function hookDisplayAdminOrderTabOrder($params)
     {
-        if (!$this->active){
+        if (!$this->active) {
             return;
         }
         $order = $params['order'];
-        $statusOrder = '';
         $id_order_state = $this->getOrderStatePending($order->id);
         $ticket = $this->getURLTicket($order);
         if ($order->module == $this->name &&
@@ -385,7 +380,6 @@ class MercadoPago extends PaymentModule
             $this->smarty->assign($ticket);
             return $this->display(__FILE__, 'views/templates/hook/admin-order-content.tpl');
         }
-        return;
     }
 
     private function isMercadoEnvios($id_carrier)
@@ -593,22 +587,22 @@ class MercadoPago extends PaymentModule
     private function getInfomationsForTicket($id_address_invoice)
     {
         $retorno = array();
-        $fields = $this->getFields($id_address_invoice);
-        $email = $fields['email'];
-        $resultFieldsTicket = $this->getFieldsTicket($email);
-        if ($resultFieldsTicket) {
-            $retorno = $resultFieldsTicket;
-        } else {
-            $retorno = $fields;
-        }
+        $retorno = $this->getFields($id_address_invoice);
+        // $email = $fields['email'];
+        // $resultFieldsTicket = $this->getFieldsTicket($email);
+        // if ($resultFieldsTicket) {
+        //     $retorno = $resultFieldsTicket;
+        // } else {
+        //     $retorno = $fields;
+        // }
         return $retorno;
     }
 
     private function getFields($id_address_invoice)
     {
         $customer_fields = Context::getContext()->customer->getFields();
-
         $address_invoice = new Address((integer) $id_address_invoice);
+        error_log("===address_invoice====".UtilMercadoPago::getIsoCodeStateById($address_invoice->id_state));
         $retorno = array(
             'email' => $customer_fields['email'],
             'firstname' => $customer_fields['firstname'],
@@ -625,16 +619,16 @@ class MercadoPago extends PaymentModule
         return $retorno;
     }
 
-    public function getFieldsTicket($email)
-    {
-        $select = 'SELECT cpf, email, firstname, '.
-        'lastname, address, number, city, state, postcode FROM '. _DB_PREFIX_ .
-        'mercadopago_boleto where email = \''. $email . '\'';
+    // public function getFieldsTicket($email)
+    // {
+    //     $select = 'SELECT cpf, email, firstname, '.
+    //     'lastname, address, number, city, state, postcode FROM '. _DB_PREFIX_ .
+    //     'mercadopago_boleto where email = \''. $email . '\'';
 
-        $result = Db::getInstance()->executeS($select);
+    //     $result = Db::getInstance()->executeS($select);
 
-        return isset($result[0]['cpf']) ? $result[0] : false;
-    }
+    //     return isset($result[0]['cpf']) ? $result[0] : false;
+    // }
 
     public function hookDisplayOrderDetail($params)
     {
@@ -730,8 +724,7 @@ class MercadoPago extends PaymentModule
             }
             break;
         }
-
-        return $settings;;
+        return $settings;
     }
 
     private function setTracking($order, $shipments, $update)
@@ -834,19 +827,19 @@ class MercadoPago extends PaymentModule
 
     private function removeMercadoEnvios()
     {
-        // $lista_shipping = (array) Tools::jsonDecode(
-        //     Configuration::get('MERCADOPAGO_CARRIER')
-        // );
-        // if (isset($lista_shipping['MP_SHIPPING'])) {
-        //     foreach ($lista_shipping['MP_SHIPPING'] as $id_carrier) {
-        //         $carrier = new Carrier($id_carrier);
-        //         $carrier->deleted = true;
-        //         $carrier->active = false;
-        //         $carrier->save();
-        //     }
-        // }
+        $lista_shipping = (array) Tools::jsonDecode(
+            Configuration::get('MERCADOPAGO_CARRIER')
+        );
+        if (isset($lista_shipping['MP_SHIPPING'])) {
+            foreach ($lista_shipping['MP_SHIPPING'] as $id_carrier) {
+                $carrier = new Carrier($id_carrier);
+                $carrier->deleted = false;
+                $carrier->active = false;
+                $carrier->save();
+            }
+        }
         Configuration::deleteByName('MERCADOPAGO_CARRIER');
-        //$this->uninstallOverrideMercadoEnvios();
+        $this->uninstallOverrideMercadoEnvios();
     }
 
     private function dropTables()
@@ -858,17 +851,18 @@ class MercadoPago extends PaymentModule
 
     public function uninstall()
     {
-        $this->uninstallOverrides();
+        $this->uninstallOverrideMercadoEnvios();
         $this->removeMercadoEnvios();
         $this->uninstallModule();
         $this->dropTables();
 
         // continue the states
-        if (!$this->uninstallPaymentSettings() || !Configuration::deleteByName('MERCADOPAGO_PUBLIC_KEY') ||
+        if (!$this->uninstallPaymentSettings() ||
+             // !Configuration::deleteByName('MERCADOPAGO_PUBLIC_KEY') ||
              !Configuration::deleteByName('MERCADOPAGO_CATEGORY') ||
              !Configuration::deleteByName('MERCADOPAGO_CREDITCARD_BANNER') ||
              !Configuration::deleteByName('MERCADOPAGO_CREDITCARD_ACTIVE') ||
-             !Configuration::deleteByName('MERCADOPAGO_ACCESS_TOKEN') ||
+             // !Configuration::deleteByName('MERCADOPAGO_ACCESS_TOKEN') ||
              !Configuration::deleteByName('MERCADOPAGO_STANDARD_ACTIVE') ||
              !Configuration::deleteByName('MERCADOPAGO_STANDARD_BANNER') ||
              !Configuration::deleteByName('MERCADOPAGO_WINDOW_TYPE') ||
@@ -948,6 +942,11 @@ class MercadoPago extends PaymentModule
             'active_credicard' => Configuration::get('MERCADOPAGO_ACTIVE_CREDITCARD'),
             'active_boleto' => Configuration::get('MERCADOPAGO_ACTIVE_BOLETO')
         ));
+
+        Configuration::updateValue(
+            'MERCADOPAGO_EMAIL_ADMIN',
+            Configuration::get('PS_SHOP_EMAIL')
+        );
 
         if (Tools::getValue('login')) {
             $client_id = Tools::getValue('MERCADOPAGO_CLIENT_ID');
@@ -1074,8 +1073,6 @@ class MercadoPago extends PaymentModule
                     Configuration::updateValue('MERCADOPAGO_CLIENT_SECRET', $client_secret);
                     Configuration::updateValue('MERCADOPAGO_COUNTRY', $this->getCountry($client_id, $client_secret));
 
-                    Configuration::updateValue('MERCADOENVIOS_ACTIVATE', $mercadoenvios_activate);
-
                     if ($mercadoenvios_activate == 'true') {
                         $paramsMP = array(
                             'dimensions' => '30x30x30,500',
@@ -1089,24 +1086,27 @@ class MercadoPago extends PaymentModule
                             $errors[] = $this->l(
                                 'Please, enable your Mercado Envios in your settings of Mercado Pago.'
                             );
-                            Configuration::updateValue('MERCADOENVIOS_ACTIVATE', 'false');
+                            $mercadoenvios_activate = 'false';
                             Configuration::updateValue('MERCADOPAGO_CARRIER', 0);
                             $success = false;
                         }
-                        //$this->installOverrideMercadoEnvios();
+                    } else {
+                        $this->removeMercadoEnvios();
                     }
 
                     if ($mercadoenvios_activate == 'true' &&
                         count(Tools::jsonDecode(Configuration::get('MERCADOPAGO_CARRIER'))) == 0) {
                         $this->setCarriers();
-                    } else {
-                        $this->removeMercadoEnvios();
+                        $this->installOverrideMercadoEnvios();
                     }
                     /*elseif (count(Tools::jsonDecode(Configuration::get('MERCADOPAGO_CARRIER'))) > 0) {
                         $this->removeMercadoEnvios();
                     }*/
 
+                    Configuration::updateValue('MERCADOENVIOS_ACTIVATE', $mercadoenvios_activate);
+
                     // populate all payments accoring to country
+                    //
                     $this->mercadopago = new MPApi(
                         $client_id,
                         $client_secret
@@ -1900,7 +1900,7 @@ class MercadoPago extends PaymentModule
     {
         $email = $post['email'];
         $firstname = $post['firstname'];
-        $cpf = $post['cpf'];
+        $cpf = $post['cpfcnpj'];
         $lastname = $post['lastname'];
         $address = $post['address'];
         $number = $post['number'];
@@ -1913,7 +1913,10 @@ class MercadoPago extends PaymentModule
         $retorno['last_name'] = $lastname;
         $retorno['email'] = $email;
 
-        $retorno['identification']['type'] = "CPF";
+        error_log('===typeDocument==='.$post['typeDocument']);
+
+        $retorno['identification']['type'] = $post['typeDocument'];
+
         $retorno['identification']['number'] = $cpf;
 
         $retorno['address']['zip_code'] = $postcode;
@@ -2725,7 +2728,7 @@ class MercadoPago extends PaymentModule
                 $payments = $order->getOrderPaymentCollection();
                 $payments[0]->transaction_id = implode(' / ', $payment_ids);
                 $payments[0]->update();
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 UtilMercadoPago::logMensagem(
                     'Occured a error during the process the update order, payments is null = '.$id_cart,
                     MPApi::ERROR,
@@ -2867,7 +2870,7 @@ class MercadoPago extends PaymentModule
         );
     }
 
-    public function hookdisplayBeforeCarrier($params)
+    public function hookDisplayBeforeCarrier($params)
     {
         if (!isset($this->context->smarty->tpl_vars['delivery_option_list'])) {
             return;
@@ -3498,46 +3501,46 @@ class MercadoPago extends PaymentModule
         return $displayName;
     }
 
-    // public function installOverrideMercadoEnvios()
-    // {
-    //     if (version_compare(_PS_VERSION_, '1.5.0.0') < 0) {
-    //         return true;
-    //     }
+    public function installOverrideMercadoEnvios()
+    {
+        error_log("===MERCADOENVIOS_ACTIVATE===installOverrideMercadoEnvios=====");
+        @copy(
+            dirname(__FILE__).'/override/classes/Hook_Envios.php',
+            dirname(__FILE__).'/override/classes/Hook.php'
+        );
 
-    //     @copy(
-    //         dirname(__FILE__).'/override/classes/Hook_old.php',
-    //         dirname(__FILE__).'/override/classes/Hook.php'
-    //     );
+        @copy(
+            dirname(__FILE__).'/override/classes/Hook.php',
+            dirname(__FILE__).'/../../override/classes/Hook.php'
+        );
+        try {
+            return $this->installOverrides();
+        } catch (Exception $e) {
+            $this->uninstallOverrides();
+            return false;
+        }
+    }
 
-    //     @copy(
-    //         dirname(__FILE__).'/../../override/classes/Hook.php',
-    //         dirname(__FILE__).'/override/'.time().'-old_hook.txt'
-    //     );
-    //     $this->uninstallOverrideMercadoEnvios();
-    //     try {
-    //         return $this->installOverrides();
-    //     } catch (Exception $e) {
-    //         $this->_errors[] = sprintf(Tools::displayError('Unable to install override: %s'), $e->getMessage());
-    //         $this->uninstallOverrides();
-    //         return false;
-    //     }
-    // }
-
-    // public function uninstallOverrideMercadoEnvios()
-    // //$mp->checkOverride();
-    // {
-    //     error_log("remove uninstallOverrideMercadoEnvios");
-    //     try {
-    //         @copy(
-    //             dirname(__FILE__).'/override/classes/Hook.php',
-    //             dirname(__FILE__).'/override/classes/Hook_old.php'
-    //         );
-    //         $this->uninstallOverrides();
-    //     } catch (Exception $e) {
-    //         error_log($e->getMessage());
-    //     }
-    // }
-
+    public function uninstallOverrideMercadoEnvios()
+    //$mp->checkOverride();
+    {
+        error_log("===MERCADOENVIOS_ACTIVATE===". Configuration::get('MERCADOENVIOS_ACTIVATE'));
+        if (Configuration::get('MERCADOENVIOS_ACTIVATE') == 'true'){
+            if (file_exists(dirname(__FILE__).'/override/classes/Hook.php')) {
+                error_log("remove hook modulo");
+                unlink(dirname(__FILE__).'/override/classes/Hook.php');
+            }
+            if (file_exists(dirname(__FILE__).'/../../override/classes/Hook.php')) {
+                error_log("remove hook modulo prestashop");
+                unlink(dirname(__FILE__).'/../../override/classes/Hook.php');
+            }
+        }
+        try {
+            $this->uninstallOverrides();
+        } catch (Exception $e) {
+            //Se ignora...
+        }
+    }
 
     public function getSourceModule()
     {
