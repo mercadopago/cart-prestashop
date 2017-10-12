@@ -1,4 +1,4 @@
-# Prestashop - Mercado Pago Module (v1.3.6 - 1.4.7.3x, 1.5.x, 1.6.x, 1.7.x)
+# Prestashop - Mercado Pago Module (1.6.x, 1.7.x)
 ---
 
 * [Features](#features)
@@ -43,7 +43,7 @@ Great for merchants who want to get going quickly and easily.
 
 <a name="requirements"></a>
 ##Requirements##
-Basically, the requirements of this plugin are same as you need to run WooCommerce. Your machine should have:
+Basically, the requirements of this plugin are same as you need to run Prestashop. Your machine should have:
 
 **Platforms**
 
@@ -73,17 +73,7 @@ During the sandbox mode tests, you can operate over HTTP, but for homologation y
   <thead>
   <tbody>
     <tr>
-      <td><a href="https://github.com/mercadopago/cart-prestashop/tree/master/v1.3.6%20-%201.4.7.3x">v1.3.6 - 1.4.7.3x</a></td>
-      <td>Deprecated (Old Version)</td>
-      <td>Prestashop v1.3.6 - 1.4.7.3x</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/mercadopago/cart-prestashop/tree/master/v1.5.x/mercadopago">v1.5.x</a></td>
-      <td>Deprecated (Old Version)</td>
-      <td>Prestashop v1.5.x</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/mercadopago/cart-prestashop/tree/master/v1.6.x">v1.6.x</a></td>
+      <td><a href="https://addons.prestashop.com/pt/pagamento-carta-carteira/23962-mercado-pago.html">v1.6.x</a></td>
       <td>Stable (Current Version)</td>
       <td>Prestashop v1.6.x</td>
      </tr>
@@ -99,8 +89,6 @@ During the sandbox mode tests, you can operate over HTTP, but for homologation y
 ##Installation##
 
 1. Download Prestashop: https://www.prestashop.com/es/versiones-para-programadores#previous-version
-    * Prestashop v1.3.6 - 1.4.7.3x
-    * Prestashop v1.5.x
     * Prestashop v1.6.x
     * Prestashop v1.7.x
 

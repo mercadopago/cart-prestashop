@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.5.5';
+    const VERSION = '3.5.6';
 
     /* Info */
     const INFO = 1;
@@ -57,6 +57,26 @@ class MPApi
     {
         $this->client_id = $client_id;
         $this->client_secret = $client_secret;
+    }
+
+    /*
+     * getPaymentByOrder
+     */
+    public function getPaymentByOrder($external_reference)
+    {
+        $access_token = $this->getAccessToken();
+        $params = array(
+            'access_token' => $access_token,
+            'external_reference' => $external_reference,
+        );
+        $uri = "/v1/payments/search?";
+
+        $uri .= (strpos($uri, "?") === false) ? "?" : "&";
+        $uri .= $this->buildQuery($params);
+
+        $payment = MPRestCli::get($uri);
+
+        return $payment;
     }
 
     /**
@@ -282,6 +302,20 @@ class MPApi
         return $payment_info;
     }
 
+    public function getPaymentsID($id_order) {
+        $payment_ids = array();
+        $result = $this->getPaymentByOrder($id_order);
+
+        error_log("==result===".Tools::jsonEncode($result));
+
+        if (isset($result ['response']['results'])) {
+            foreach ($result ['response']['results'] as $payments) {
+                $payment_ids[] = $payments['id'];
+            }
+        }
+        return $payment_ids;
+    }
+
     /**
      * Get information for specific payment
      *
@@ -342,6 +376,10 @@ class MPApi
         foreach ($result as $key => $value) {
             if ($value['payment_type_id'] == 'account_money' || $value['payment_type_id'] == 'credit_card' ||
                  $value['payment_type_id'] == 'debit_card' || $value['payment_type_id'] == 'prepaid_card') {
+                unset($result[$key]);
+            }
+            if ($value['payment_type_id'] == 'bank_transfer' &&
+                Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO') {
                 unset($result[$key]);
             }
         }
@@ -592,12 +630,15 @@ class MPApi
         return $result;
     }
 
+    /*
+     * Send Error Log
+     */
     public static function sendErrorLog($code, $errors)
     {
         $data = array(
             "code" => $code,
             "module" => "PrestaShop",
-            "module_version" => "3.5.5",
+            "module_version" => MPApi::VERSION,
             "email_admin" => Configuration::get('MERCADOPAGO_EMAIL_ADMIN'),
             "url_store" => $_SERVER['HTTP_HOST'],
             "errors" => $errors

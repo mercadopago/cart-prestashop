@@ -41,8 +41,16 @@ class MercadoPagoStandardPaymentModuleFrontController extends ModuleFrontControl
         $cart = Context::getContext()->cart;
         $result = $mercadopago->createStandardCheckoutPreference();
 
+        error_log(print_r($result, true));
+
         if (array_key_exists('init_point', $result['response'])) {
             $init_point = $result['response']['init_point'];
+
+            Db::getInstance()->insert('mercadopago_orders_initpoint', array(
+                'cart_id' => (int)$cart->id,
+                'init_point'      => pSQL($init_point),
+            ));
+
             $customer = new Customer((int)$cart->id_customer);
             $displayName = $mercadopago->l('Mercado Pago Redirect');
             $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta['started']);
@@ -65,6 +73,8 @@ class MercadoPagoStandardPaymentModuleFrontController extends ModuleFrontControl
             }
         } else {
             $data = array();
+            $data['typeReturn'] = "failure";
+            $data['init_point'] = "";
             $data['standard'] = "true";
             $data['status_detail'] = '';
             $data['one_step'] = Configuration::get('PS_ORDER_PROCESS_TYPE');

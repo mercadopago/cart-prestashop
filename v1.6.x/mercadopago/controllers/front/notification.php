@@ -37,11 +37,13 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
 
     public function displayAjax()
     {
+
         if (Tools::getValue('checkout') && Tools::getValue('data_id') || Tools::getValue('id')) {
             $mercadopago = $this->module;
             if (Tools::getValue('checkout') == "custom") {
                 $message = "Notification Custom is come with id " . Tools::getValue('data_id');
                 UtilMercadoPago::logMensagem($message, MPApi::INFO, "", false, null, "notification->displayAjax");
+
                 $mercadopago->listenIPN(
                     Tools::getValue('checkout'),
                     Tools::getValue('type'),

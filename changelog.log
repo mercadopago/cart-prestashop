@@ -97,6 +97,10 @@ V3.5.5 (11/09/2017)
 - Creation of request for redirect before finalizing the payment
 - Redirect opening faster, now preference is created after the click on the banner
 
+V3.5.6 (12/10/2017)
+- View the ticket pending payment in admin
+- Payment option to status "started" in client details
+- Show configuration video in modulo admin
 
 V1.0.0(04/04/2017)
 Prestashop 1.7

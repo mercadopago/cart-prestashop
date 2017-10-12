@@ -32,40 +32,34 @@
 </style>
 
 <div class="mp-module">
-	{if empty($client_id)}
-		{include file='./marketing.tpl'
-		this_path_ssl=$this_path_ssl|escape:'htmlall':'UTF-8'}
-	{/if}
-	<div id="settings" style="display: none">
+	<div>
+		<div id="alerts">
 
-	<div id="alerts">
-
-
-		{if $success eq 'true' and $errors|@count == 0}
-		<div id="alert" class="bootstrap">
-			<div class="alert alert-success">
-				<button type="button" class="close" data-dismiss="alert">×</button>
-				{l s='Settings changed successfully.' mod='mercadopago'}
+			{if $success eq 'true' and $errors|@count == 0}
+			<div id="alert" class="bootstrap">
+				<div class="alert alert-success">
+					<button type="button" class="close" data-dismiss="alert">×</button>
+					{l s='Settings changed successfully.' mod='mercadopago'}
+				</div>
 			</div>
+			{/if}
+			{if $errors|@count > 0}
+				<div class="bootstrap">
+					<div class="alert alert-danger">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						{l s='Settings failed to change.' mod='mercadopago'}
+					</div>
+				</div>
+				{foreach from=$errors item=error}
+				<div class="bootstrap">
+					<div class="alert alert-danger">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						{$error|escape:'htmlall':'UTF-8'}
+					</div>
+				</div>
+				{/foreach}
+			{/if}
 		</div>
-		{/if}
-		{if $errors|@count > 0}
-			<div class="bootstrap">
-				<div class="alert alert-danger">
-					<button type="button" class="close" data-dismiss="alert">×</button>
-					{l s='Settings failed to change.' mod='mercadopago'}
-				</div>
-			</div>
-			{foreach from=$errors item=error}
-			<div class="bootstrap">
-				<div class="alert alert-danger">
-					<button type="button" class="close" data-dismiss="alert">×</button>
-					{$error|escape:'htmlall':'UTF-8'}
-				</div>
-			</div>
-			{/foreach}
-		{/if}
-	</div>
 	<img class="logo" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo_large.png">
 	<br>
 	<br>
@@ -74,8 +68,6 @@
 
 	<ul class="tab">
 	  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Requisitos')" id="defaultOpen">{l s='Requirements' mod='mercadopago'}</a></li>
-	  <!--<li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Testes')">Testes</a></li>-->
-	  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Pagamentos')">{l s='Payments of Mercado Pago' mod='mercadopago'}</a></li>
 	  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Duvidas')">{l s='Question' mod='mercadopago'}</a></li>
 	</ul>
 
@@ -109,86 +101,6 @@
 
 	</div>
 
-	<!--<div id="Testes" class="tabcontent">
-	  	<h3>Dados para testes</h3>
-
-	  	<p>
-	  		<strong>Utilizar esses dados de teste?</strong>
-	  	</p>
-	  	<p>
-	  		<input type="radio" name="usuarioTeste" value="Sim"> Sim  
-	  		&nbsp;<input type="radio" name="usuarioTeste" value="Nao" checked="true"> Não 
-	  	</p>
-	  	<table>
-	  		<tr>
-	  			<td width="300px;">
-				  	<table>
-					  	<tr>
-					 		<td>
-								<strong>Email Vendedor:</strong> teste@teste.com.br
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<strong>Senha Vendedor</strong> @#$%ˆ&
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<strong>Client ID</strong> 123456789
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<strong>Client Secret</strong> lkhgid5r
-							</td>
-						</tr>	
-						<tr>
-							<td>
-								<strong>Access Token</strong> fkljdksjf3456787456yfsd543436576uhg
-							</td>
-						</tr>	
-					</table>	  			
-	  			</td>
-	  			<td>
-					<table>
-					  	<tr>
-					 		<td>
-								<strong>Email comprador:</strong> teste@teste.com.br
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<strong>Senha comprador</strong> @#$%ˆ&
-							</td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-						</tr>										
-				  	</table>
-	  			</td>
-	  		</tr>
-
-	  		<tfoot align="center">
-	  			<tr>
-	  				<td colspan="2" height="50px">
-	  					<button value="Carregar Usuários" class="ch-btn-user">{l s='Load users' mod='mercadopago'}</button>
-	  				</td>
-	  			</tr>
-	  		</tfoot>
-	  	</table>
-
-		<p>
-			<strong><a href="https://www.mercadopago.com.br/developers/pt/solutions/payments/custom-checkout/test-cards/" target="_blank"> {l s='Credit Card for test' mod='mercadopago'}</a> </strong>
-		</p>
-	</div>-->
-
 	<div id="Duvidas" class="tabcontent">
 	  	<h3>{l s='Question' mod='mercadopago'}</h3>
 		<p><strong><a href="https://www.youtube.com/playlist?list=PLl8LGzRu2_sXxChIJm1e0xY6dU3Dj_tNi" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/youtube.png" width="20px;" height="20px">YouTube</a> </strong></p>
@@ -198,110 +110,9 @@
 		<p><a href="mailto:modulos@mercadopago.com.br?subject=Suport - Prestashop"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/email.png" width="20px;" height="20px">modulos@mercadopago.com.br</a> </p>
 
 		<p><a href="https://www.mercadopago.com.br/developers/pt/solutions/payments/basic-checkout/test/test-payments/" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/credit_card.png" width="20px;" height="20px">{l s='Credit Card for test' mod='mercadopago'}</a></p>
-	</div>
-
-	<div id="Pagamentos" class="tabcontent">
-	  	<h3>{l s='Here you can visualize your Payments of Mercado Pago' mod='mercadopago'}</h3>
-
-	<!-- inicio -->
-
-
-		<div class="container">
-		  <!--<h2>Contextual Classes</h2>
-		  <p>Contextual classes can be used to color table rows or table cells. The classes that can be used are: .active, .success, .info, .warning, and .danger.</p>-->
-<!--		  <table class="table">
-		    <thead>
-		      <tr>
-		        <th>Cart ID</th>
-		        <th>Order ID</th>
-		        <th>Email</th>
-		        <th>Product</th>
-		        <th>Value</th>
-		        <th>Payment Method</th>
-		        <th>Transaction ID</th>
-		        <th>Date Created</th>
-		        <th>Date Updated</th>
-		       	<th>Status</th>
-		      </tr>
-		    </thead>
-		    <tbody>
-		      <tr>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		       	<td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		      </tr>
-		      <tr class="success">
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		       	<td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		      </tr>
-		      <tr class="danger">
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		       	<td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		      </tr>
-		      <tr class="info">
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		       	<td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		      </tr>
-		      <tr class="warning">
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		       	<td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		      </tr>
-		      <tr class="active">
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		       	<td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		        <td>Default</td>
-		       	<td>Default</td>
-		      </tr>
-		    </tbody>
-		  </table>
-		  -->
-		</div>
-	<!--fim-->
+        <ps-label-information label="{l s='Video Tutorial' mod='mercadopago'}">
+            <iframe width="100%" style="max-width:560px" height="315" src="https://www.youtube.com/embed/rtXNkdaqUJ8" frameborder="0" allowfullscreen></iframe>
+        </ps-label-information>
 	</div>
 
 	<form action="{$uri|escape:'htmlall':'UTF-8'}" method="post">
@@ -457,7 +268,7 @@
 				<br>
 				<label>{l s='Custom Text:' mod='mercadopago'}</label>
 				<div class="">
-					<input type="text" size="50" name="MERCADOPAGO_CUSTOM_TEXT" value="{$custom_text|escape:'htmlall':'UTF-8'}" />
+					<input type="text" size="50" name="MERCADOPAGO_CUSTOM_TEXT" value="{$custom_text|unescape:'htmlall'}" />
 				</div>
 				<br>
 
@@ -597,14 +408,6 @@
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function (){
-		// hide marketing when settings are updated
-		if ($("#alerts").children().length > 0) {
-			$(".marketing").hide();
-			$("#settings").show();
-			$.scrollTo(0, 0);
-		}
-	})
 
 	window.onload = function() {
 		if (document.getElementById("category")){
@@ -649,15 +452,10 @@
 			document.getElementById("{$payment_method|escape:'htmlall':'UTF-8'}").checked = "{$value|escape:'htmlall':'UTF-8'}";
 		{/foreach}
 
+		console.info("{$custom_text|unescape:'htmlall'}");
+
 	}
 
-	$("#back").click(
-			function() {
-				$(".marketing").show();
-				$("#settings").hide();
-				$("#alerts").remove();
-				$.scrollTo(0, 0);
-		});
 
 	function bloquearEnvios(obj) {
 		$( "#MERCADOENVIOS_ACTIVATE" ).val("false");
@@ -690,19 +488,6 @@
 
 	$(document).ready(function (){
 		bloquearEnvios(document.getElementById("standard_active"));
-
-
-		var cliend_id = "{$client_id|escape:'htmlall':'UTF-8'}";
-		// hide marketing when settings are updated
-		if (cliend_id.length > 0) {
-			$(".marketing").hide();
-			$("#settings").show();
-			$.scrollTo(0, 0);
-		} else {
-			$(".marketing").show();
-			$("#settings").hide();
-			$.scrollTo(0, 0);
-		}
 	});
 
 	function openTab(evt, cityName) {
@@ -724,7 +509,7 @@
 	    // Show the current tab, and add an "active" class to the link that opened the tab
 	    document.getElementById(cityName).style.display = "block";
 	    evt.currentTarget.className += " active";
-	}	
+	}
 	// Get the element with id="defaultOpen" and click on it
 	document.getElementById("defaultOpen").click();
 

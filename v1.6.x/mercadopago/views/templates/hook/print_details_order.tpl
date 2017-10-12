@@ -23,6 +23,27 @@
 *  International Registered Trademark & Property of MercadoPago
 *}
 
+
+{if isset($init_point)}
+<div class="col-xs-12 col-sm-6 box">
+	<div class="row">
+		<div class="col">
+			<img style="text-align: right;" width="40%" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/mercadopago.png">	
+		</div>
+	</div>
+<br>
+	<p><h4> {l s='You can continue your payment here.' mod='mercadopago'}</h4></p>
+	 <ul>
+	 	<li class="page-subheading">
+	 	</li>
+		<li>
+			<a href="{$init_point|escape:'htmlall':'UTF-8'}" class="button btn btn-default button-medium pull-right">
+			<span>{l s='Click here to try pay again.' mod='mercadopago'}<i class="icon-chevron-right right"></i></span></a>
+		</li>
+	</ul>
+</div>
+{/if}
+
 {if isset($boleto_url)}
 <div class="col-xs-12 col-sm-6 box">
 	<div class="row">
