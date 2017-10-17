@@ -1642,10 +1642,6 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				var issuerId = document.querySelector('#id-issuers-options').value;
 				if (issuerId != undefined && issuerId != "-1") {
 					json.issuer_id = issuerId;
-
-					//jsonPaymentMethod = getPaymentMethods();
-					//json.payment_method_id = jsonPaymentMethod.payment_method_id;
-					//json.payment_type_id = jsonPaymentMethod.payment_type_id;
 				}
 			}
 		}

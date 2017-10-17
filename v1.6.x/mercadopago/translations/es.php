@@ -1,5 +1,4 @@
 <?php
-
 global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{mercadopago}prestashop>mercadopago_55d75d0dde853b5b4d22616358f09abb'] = 'El Mercado Pago es el mayor medio de pago de América Latina y ofrece la mayor variedad de medios de pago en el mercado. Sus clientes pueden pagar con tarjeta de crédito, ticket, y saldo de la cuenta Mercado Pago.';
@@ -220,6 +219,12 @@ $_MODULE['<{mercadopago}prestashop>boleto_payment_return_24a4e89cbe1fdf5548035b9
 $_MODULE['<{mercadopago}prestashop>boleto_payment_return_9ba8ddd1e3a3d4605c65c58e26e1e4ce'] = 'Identificación del pago (MercadoPago):';
 $_MODULE['<{mercadopago}prestashop>boleto_payment_return_051b4fc3b5b94694296b17af2f969dfc'] = 'Abrir ticket en otra ventana';
 $_MODULE['<{mercadopago}prestashop>boleto_payment_return_21d104a54fc71a19a325c7305327f1d2'] = 'Cargando...';
+$_MODULE['<{mercadopago}prestashop>calculateinstallments_c6b5abc227f051a7b8c4a38a77ff8a51'] = 'Introduzca los 6 primeros dígitos de su tarjeta';
+$_MODULE['<{mercadopago}prestashop>calculateinstallments_ac83c3b060ae9ac7a70e494ca02e0532'] = 'Nosotros vamos utilizar este numero para calcular las cotas.';
+$_MODULE['<{mercadopago}prestashop>calculateinstallments_93f3117e344e0e7e56d7f2bf4da8df77'] = 'Calcular';
+$_MODULE['<{mercadopago}prestashop>calculateinstallments_c5ddab2a7bb11a7ee8f5a131db40bfae'] = 'Seleccione su banco';
+$_MODULE['<{mercadopago}prestashop>calculateinstallments_0ce9f6d8d66b3ed288c5c3c08762cd9b'] = 'Esto es necesario para calcular las cotas.';
+$_MODULE['<{mercadopago}prestashop>calculateinstallments_961f2247a2070bedff9f9cd8d64e2650'] = 'Elegir';
 $_MODULE['<{mercadopago}prestashop>checkout_21d104a54fc71a19a325c7305327f1d2'] = 'Procesamiento ...';
 $_MODULE['<{mercadopago}prestashop>checkout_c9cc8cce247e49bae79f15173ce97354'] = 'Salvar';
 $_MODULE['<{mercadopago}prestashop>checkout_7979528f7cdbd42b85962010f7c5e059'] = 'Pagamento a vista com desconto via Mercado Pago no cartão de crédito.';
@@ -282,6 +287,8 @@ $_MODULE['<{mercadopago}prestashop>checkout_32dffc4f97fec972c7ffd50a24fa3267'] =
 $_MODULE['<{mercadopago}prestashop>checkout_7c62a37aa03ed3d91eccad8154bb26ca'] = 'Otra tarjeta de crédito';
 $_MODULE['<{mercadopago}prestashop>checkout_0a90b1bc4078f74b6f0d117ec7df65af'] = 'Crédito';
 $_MODULE['<{mercadopago}prestashop>credit_card_form_21d104a54fc71a19a325c7305327f1d2'] = 'Em procedimiento...';
+$_MODULE['<{mercadopago}prestashop>credit_card_form_7a52e36bf4a1caa031c75a742fb9927a'] = 'Processado por';
+$_MODULE['<{mercadopago}prestashop>credit_card_form_c901dcda736a426ad1506d7e71b79b02'] = 'Boleto';
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_eee1be1ba8fc835d1415b887959f8b4f'] = 'Gracias por su compra!';
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_db396895853073f83657c627867c969e'] = 'Su pago fue acreditado.';
 $_MODULE['<{mercadopago}prestashop>creditcard_payment_return_f45555a69528d72f0fb4cfbb2c43b3ba'] = 'Nombre del titular de la tarjeta:';

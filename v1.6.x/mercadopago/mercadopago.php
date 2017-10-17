@@ -347,12 +347,33 @@ class MercadoPago extends PaymentModule
             ||
             !$this->registerHook('displayFooter')
             ||
+
+            !$this->registerHook('displayRightColumnProduct')
+            ||
+
             ! $this->createTables()
             ) {
             return false;
         }
 
         return true;
+    }
+
+    public function hookDisplayRightColumnProduct($params)
+    {
+        if (!$this->active) {
+            return;
+        }
+
+        $settings['totalAmount'] = (double) number_format($params['cart']->getOrderTotal(true, Cart::BOTH), 2, '.', '');
+        $settings['public_key'] = htmlentities(Configuration::get('MERCADOPAGO_PUBLIC_KEY'), ENT_COMPAT, 'UTF-8');
+        $settings['country'] = htmlentities(Configuration::get('MERCADOPAGO_COUNTRY'), ENT_COMPAT, 'UTF-8');
+        $settings['this_path_ssl'] = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
+                            htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__;
+
+        $this->context->smarty->assign($settings);
+
+        return $this->display(__FILE__, 'views/templates/hook/calculateInstallments.tpl');
     }
 
     public function hookDisplayAdminOrderTabOrder($params)
