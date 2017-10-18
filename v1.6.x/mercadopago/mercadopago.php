@@ -351,6 +351,9 @@ class MercadoPago extends PaymentModule
             !$this->registerHook('displayRightColumnProduct')
             ||
 
+            !$this->registerHook('displayShoppingCartFooter')
+            ||
+
             ! $this->createTables()
             ) {
             return false;
@@ -361,19 +364,50 @@ class MercadoPago extends PaymentModule
 
     public function hookDisplayRightColumnProduct($params)
     {
-        if (!$this->active) {
+        if (!$this->active || !Configuration::get('MERCADOPAGO_PRODUCT_CALCULATE')) {
             return;
         }
 
-        $settings['totalAmount'] = (double) number_format($params['cart']->getOrderTotal(true, Cart::BOTH), 2, '.', '');
-        $settings['public_key'] = htmlentities(Configuration::get('MERCADOPAGO_PUBLIC_KEY'), ENT_COMPAT, 'UTF-8');
-        $settings['country'] = htmlentities(Configuration::get('MERCADOPAGO_COUNTRY'), ENT_COMPAT, 'UTF-8');
-        $settings['this_path_ssl'] = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
-                            htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__;
+        $id_product = (int) Tools::getValue('id_product');
+        $product = new Product($id_product, true, $this->context->language->id, $this->context->shop->id);
 
-        $this->context->smarty->assign($settings);
+        $price = $product->price;
+        $tax = $product->tax_rate;
+        $totalProduct = $price * (1 + ($tax / 100));
 
-        return $this->display(__FILE__, 'views/templates/hook/calculateInstallments.tpl');
+        if (Configuration::get('MERCADOPAGO_PUBLIC_KEY')){
+            $settings['totalAmount'] = Tools::ps_round($totalProduct, 2);
+            $settings['isCart'] = "false";
+            $settings['public_key'] = htmlentities(Configuration::get('MERCADOPAGO_PUBLIC_KEY'), ENT_COMPAT, 'UTF-8');
+            $settings['country'] = htmlentities(Configuration::get('MERCADOPAGO_COUNTRY'), ENT_COMPAT, 'UTF-8');
+            $settings['this_path_ssl'] = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
+                                htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__;
+
+            $this->context->smarty->assign($settings);
+            return $this->display(__FILE__, 'views/templates/hook/calculateInstallments.tpl');
+        }
+        return;
+    }
+
+    public function hookDisplayShoppingCartFooter($params) {
+
+        if (!$this->active || !Configuration::get('MERCADOPAGO_CART_CALCULATE')) {
+            return;
+        }
+        error_log("===hookDisplayShoppingCartFooter===");
+
+        if (Configuration::get('MERCADOPAGO_PUBLIC_KEY')){
+            $settings['totalAmount'] = $this->context->cart->getOrderTotal(true, Cart::BOTH_WITHOUT_SHIPPING);
+            $settings['isCart'] = "true";
+            $settings['public_key'] = htmlentities(Configuration::get('MERCADOPAGO_PUBLIC_KEY'), ENT_COMPAT, 'UTF-8');
+            $settings['country'] = htmlentities(Configuration::get('MERCADOPAGO_COUNTRY'), ENT_COMPAT, 'UTF-8');
+            $settings['this_path_ssl'] = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
+                                htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__;
+
+            $this->context->smarty->assign($settings);
+            return $this->display(__FILE__, 'views/templates/hook/calculateInstallments.tpl');
+        }
+        return;
     }
 
     public function hookDisplayAdminOrderTabOrder($params)
@@ -1051,6 +1085,16 @@ class MercadoPago extends PaymentModule
                 Tools::getValue('MERCADOPAGO_CUSTOM_TEXT')
             );
 
+            Configuration::updateValue(
+                'MERCADOPAGO_PRODUCT_CALCULATE',
+                Tools::getValue('MERCADOPAGO_PRODUCT_CALCULATE')
+            );
+
+            Configuration::updateValue(
+                'MERCADOPAGO_CART_CALCULATE',
+                Tools::getValue('MERCADOPAGO_CART_CALCULATE')
+            );
+
             $this->smarty->assign(array(
                 'percent' => Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT'),
                 'active_credicard' => Configuration::get('MERCADOPAGO_ACTIVE_CREDITCARD'),
@@ -1426,6 +1470,9 @@ class MercadoPago extends PaymentModule
                 'UTF-8'
             ),
             'two_cards' => htmlentities(Configuration::get('MERCADOPAGO_TWO_CARDS'), ENT_COMPAT, 'UTF-8'),
+            'MERCADOPAGO_PRODUCT_CALCULATE' => htmlentities(Configuration::get('MERCADOPAGO_PRODUCT_CALCULATE'), ENT_COMPAT, 'UTF-8'),
+            'MERCADOPAGO_CART_CALCULATE' => htmlentities(Configuration::get('MERCADOPAGO_CART_CALCULATE'), ENT_COMPAT, 'UTF-8'),
+
             'public_key' => htmlentities(Configuration::get('MERCADOPAGO_PUBLIC_KEY'), ENT_COMPAT, 'UTF-8'),
             'access_token' => htmlentities(Configuration::get('MERCADOPAGO_ACCESS_TOKEN'), ENT_COMPAT, 'UTF-8'),
             'client_id' => htmlentities(Configuration::get('MERCADOPAGO_CLIENT_ID'), ENT_COMPAT, 'UTF-8'),

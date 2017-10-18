@@ -1,4 +1,5 @@
 <?php
+
 global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{mercadopago}prestashop>mercadopago_55d75d0dde853b5b4d22616358f09abb'] = 'El Mercado Pago es el mayor medio de pago de América Latina y ofrece la mayor variedad de medios de pago en el mercado. Sus clientes pueden pagar con tarjeta de crédito, ticket, y saldo de la cuenta Mercado Pago.';
@@ -163,10 +164,13 @@ $_MODULE['<{mercadopago}prestashop>settings_c751439d0db3883ac1c8e816327adcab'] =
 $_MODULE['<{mercadopago}prestashop>settings_78a32249d180b89d908e00da286cdc3c'] = 'Cupón Mercado Pago';
 $_MODULE['<{mercadopago}prestashop>settings_536ac9adcdb9768a81c39aea862fdcc9'] = 'Opción es válida solamente para tiendas participantes de campañas de descuentos.';
 $_MODULE['<{mercadopago}prestashop>settings_7749c0ed299d98aeffdd7eab8843bedd'] = 'Habilitar el cupón de descuento:';
+$_MODULE['<{mercadopago}prestashop>settings_710db78d32f2e0510b61b5bdf4240520'] = 'Habilitar calculadora de cuotas:';
+$_MODULE['<{mercadopago}prestashop>settings_235e8d1a54ecddcf1d3ff533331ed416'] = 'Pantalla de producto';
+$_MODULE['<{mercadopago}prestashop>settings_468a21d1076328f1b4cd946b72e2d5cd'] = 'Pantalla de carrito';
 $_MODULE['<{mercadopago}prestashop>settings_2add6f4e140bc0631f2584ecedf042ab'] = 'Ajustes - Mercado Pago Standard';
 $_MODULE['<{mercadopago}prestashop>settings_25e02e7fa8a60bc58e3e05349006fcc8'] = 'Activo:';
 $_MODULE['<{mercadopago}prestashop>settings_fef3c05d16ee7d3808b0c2594136ecb5'] = 'Texto personalizado:';
-$_MODULE['<{mercadopago}prestashop>settings_ed06a54a4bd211223627c26dd70bbc68'] = 'Pagamento com dois cartões:';
+$_MODULE['<{mercadopago}prestashop>settings_ed06a54a4bd211223627c26dd70bbc68'] = 'Pagos con duas tarjetas:';
 $_MODULE['<{mercadopago}prestashop>settings_f0a279d8944ba3f4c969d1928dfb6265'] = 'Banner:';
 $_MODULE['<{mercadopago}prestashop>settings_0f3ea650a44b219fc39fd36bb062e6c2'] = 'Checkout ventana:';
 $_MODULE['<{mercadopago}prestashop>settings_f5ab0f82d3c5556baa773b78de397f35'] = 'iFrame';
@@ -220,10 +224,10 @@ $_MODULE['<{mercadopago}prestashop>boleto_payment_return_9ba8ddd1e3a3d4605c65c58
 $_MODULE['<{mercadopago}prestashop>boleto_payment_return_051b4fc3b5b94694296b17af2f969dfc'] = 'Abrir ticket en otra ventana';
 $_MODULE['<{mercadopago}prestashop>boleto_payment_return_21d104a54fc71a19a325c7305327f1d2'] = 'Cargando...';
 $_MODULE['<{mercadopago}prestashop>calculateinstallments_c6b5abc227f051a7b8c4a38a77ff8a51'] = 'Introduzca los 6 primeros dígitos de su tarjeta';
-$_MODULE['<{mercadopago}prestashop>calculateinstallments_ac83c3b060ae9ac7a70e494ca02e0532'] = 'Nosotros vamos utilizar este numero para calcular las cotas.';
+$_MODULE['<{mercadopago}prestashop>calculateinstallments_ac83c3b060ae9ac7a70e494ca02e0532'] = 'Nosotros vamos utilizar este numero para calcular las cuotas.';
 $_MODULE['<{mercadopago}prestashop>calculateinstallments_93f3117e344e0e7e56d7f2bf4da8df77'] = 'Calcular';
 $_MODULE['<{mercadopago}prestashop>calculateinstallments_c5ddab2a7bb11a7ee8f5a131db40bfae'] = 'Seleccione su banco';
-$_MODULE['<{mercadopago}prestashop>calculateinstallments_0ce9f6d8d66b3ed288c5c3c08762cd9b'] = 'Esto es necesario para calcular las cotas.';
+$_MODULE['<{mercadopago}prestashop>calculateinstallments_0ce9f6d8d66b3ed288c5c3c08762cd9b'] = 'Esto es necesario para calcular las cuotas.';
 $_MODULE['<{mercadopago}prestashop>calculateinstallments_961f2247a2070bedff9f9cd8d64e2650'] = 'Elegir';
 $_MODULE['<{mercadopago}prestashop>checkout_21d104a54fc71a19a325c7305327f1d2'] = 'Procesamiento ...';
 $_MODULE['<{mercadopago}prestashop>checkout_c9cc8cce247e49bae79f15173ce97354'] = 'Salvar';

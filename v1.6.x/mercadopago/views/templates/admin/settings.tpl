@@ -249,6 +249,27 @@
 
 				</div>
 				{/if}
+				<br />
+				<hr style="border-top: dotted 1px;"/>
+
+				<h3><p>{l s='Display installments calculator' mod='mercadopago'}:</p></h3>
+
+				<label>{l s='Product Page' mod='mercadopago'}</label>
+				<div class="">
+					<select name="MERCADOPAGO_PRODUCT_CALCULATE" id="MERCADOPAGO_PRODUCT_CALCULATE">
+						<option value="true">{l s='Yes' mod='mercadopago'} </option>
+						<option value="false">{l s='No' mod='mercadopago'} </option>
+					</select>
+				</div>
+				<br />
+				<label>{l s='Cart Page' mod='mercadopago'}</label>
+				<div class="">
+					<select name="MERCADOPAGO_CART_CALCULATE" id="MERCADOPAGO_CART_CALCULATE">
+						<option value="true">{l s='Yes' mod='mercadopago'} </option>
+						<option value="false">{l s='No' mod='mercadopago'} </option>
+					</select>
+
+				</div>
 
 			</fieldset>
 
@@ -421,6 +442,15 @@
 		if (document.getElementById("coupon_active")){
 			document.getElementById("coupon_active").value = "{$coupon_active|escape:'htmlall':'UTF-8'}";
 		}
+
+		if (document.getElementById("MERCADOPAGO_CART_CALCULATE")){
+			document.getElementById("MERCADOPAGO_CART_CALCULATE").value = "{$MERCADOPAGO_CART_CALCULATE|escape:'htmlall':'UTF-8'}";
+		}
+
+		if (document.getElementById("MERCADOPAGO_PRODUCT_CALCULATE")){
+			document.getElementById("MERCADOPAGO_PRODUCT_CALCULATE").value = "{$MERCADOPAGO_PRODUCT_CALCULATE|escape:'htmlall':'UTF-8'}";
+		}
+
 		if (document.getElementById("coupon_ticket_active")){
 			document.getElementById("coupon_ticket_active").value = "{$coupon_ticket_active|escape:'htmlall':'UTF-8'}";
 		}

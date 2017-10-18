@@ -32,6 +32,11 @@
     margin: 0 0 20px 0;
     padding-left: 10px;
     padding-right: 10px;
+
+    {if $isCart == 'true'}
+    width: 50%;
+    {/if}
+
 }
 
 .calculateMP img{
@@ -44,6 +49,14 @@
 	padding-bottom: 20px;
 }
 
+.list-installments {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+    border: 1px solid #ddd;
+}
+
 
 </style>
 <input id="amount" type="hidden" value="{$totalAmount|escape:'htmlall':'UTF-8'}" />
@@ -51,7 +64,7 @@
 
 
 <div class="calculateMP">
-	<img width="40%" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/mercadopago.png">	
+	<img width="150px" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/mercadopago.png">
 	<div class="form-group">
     	<label for="txtCreditCard">{l s='6 first digits of your card' mod='mercadopago'}</label>
     	<input type="email" class="form-control" id="txtCreditCard" maxlength="6" size="8" aria-describedby="cardHelp" placeholder="*******">
@@ -153,7 +166,7 @@
 		var json = {}
 		json.amount = $('#amount').val();
 		json.bin = bin;
-
+		console.info(json);
 		if (country === "MLM" || country === "MLA") {
 			var issuerId = $('#issuersOptions').value;
 			if (issuerId != undefined && issuerId != "-1") {
@@ -170,14 +183,21 @@
 
 	//Mostre as parcelas disponíveis no div 'installmentsOption'
 	function setInstallmentInfo(status, installments) {
+		console.info(status);
+		console.info(installments);
 		var html_options = "";
 		var cList = $('ul.lblInstallments');
 		cList.empty();
 		if (status != 404 && status != 400 && installments.length > 0) {
-			cList.append('<li class="list-group-item"><img src="'+installments[0].issuer.thumbnail+'"/></li>');
+			cList.append('<li class="list-installments"><img src="'+installments[0].issuer.thumbnail+'"/></li>');
 			var installments = installments[0].payer_costs;
 			$.each(installments, function(key, value) {
-		    	cList.append('<li class="list-group-item"><span>'+value.recommended_message+'</span></li>');
+				if (value.installment_rate == 0) {
+					cList.append('<li class="list-installments alert alert-success"><span>'+value.recommended_message+'</span></li>');
+				} else {
+					cList.append('<li class="list-installments"><span>'+value.recommended_message+'</span></li>');
+				}
+		    	
 			});
 		} else {
 			console.error("Installments Not Found.");
