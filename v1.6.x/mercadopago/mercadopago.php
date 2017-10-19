@@ -364,7 +364,7 @@ class MercadoPago extends PaymentModule
 
     public function hookDisplayRightColumnProduct($params)
     {
-        if (!$this->active || !Configuration::get('MERCADOPAGO_PRODUCT_CALCULATE')) {
+        if (!$this->active || Configuration::get('MERCADOPAGO_PRODUCT_CALCULATE') == "false") {
             return;
         }
 
@@ -390,11 +390,9 @@ class MercadoPago extends PaymentModule
     }
 
     public function hookDisplayShoppingCartFooter($params) {
-
-        if (!$this->active || !Configuration::get('MERCADOPAGO_CART_CALCULATE')) {
+        if (!$this->active || Configuration::get('MERCADOPAGO_CART_CALCULATE') == "false") {
             return;
         }
-        error_log("===hookDisplayShoppingCartFooter===");
 
         if (Configuration::get('MERCADOPAGO_PUBLIC_KEY')){
             $settings['totalAmount'] = $this->context->cart->getOrderTotal(true, Cart::BOTH_WITHOUT_SHIPPING);
