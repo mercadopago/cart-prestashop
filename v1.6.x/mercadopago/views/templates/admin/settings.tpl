@@ -168,7 +168,7 @@
 				<br />
 		</fieldset>
 
-		{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV' || $country == 'MPE'}
+		{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV' || $country == 'MPE' || $country == 'MLU'}
 
 			<fieldset id="custom-list">
 				<legend>

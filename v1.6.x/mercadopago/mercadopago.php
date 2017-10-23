@@ -1581,7 +1581,9 @@ class MercadoPago extends PaymentModule
     {
         if ($country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO' ||
              $country == 'MLV' ||
-             $country == 'MPE'
+             $country == 'MPE' ||
+             $country == 'MLU'
+
             ) {
             Configuration::updateValue(
                 'MERCADOPAGO_CREDITCARD_BANNER',

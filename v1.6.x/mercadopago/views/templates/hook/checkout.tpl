@@ -296,7 +296,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 								id="id-docType" value="CPF" />
 						</div>
 					</div>
-					{elseif $country == 'MLM' || $country == 'MLA' || $country == 'MPE'}
+					{elseif $country == 'MLM' || $country == 'MLA' || $country == 'MPE' || $country == 'MLU'}
 					<div class="row">
 						<div class="col">
 							<label class="issuers-options" for="id-issuers-options">{l
@@ -306,7 +306,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 						</div>
 					</div>
 					{/if} {if $country == 'MLA' || $country == 'MCO' || $country ==
-					'MLV'  || $country == 'MPE'}
+					'MLV'  || $country == 'MPE' || $country == 'MLU'}
 					<div class="row">
 						<div class="col">
 							<label for="docType">{l s='Document type: '
@@ -517,7 +517,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	{/if}
 
 	{if $country == 'MLM' || $country == 'MPE' || $country ==
-	'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV'}
+	'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV' || $country == 'MLU'}
 	{foreach from=$offline_payment_settings key=offline_payment item=value}
 	{if $value.active == "true" && $mercadoenvios_activate == 'false'}
 	<div class="row">
@@ -688,7 +688,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			var payment_method = result[0];
 			var amount = returnAmount();
 			var bin = getBin();
-			if (country === "MLM" || country === "MLA" || country === "MPE") {
+			if (country === "MLM" || country === "MLA" || country === "MPE" || country === 'MLU') {
 				// check if the issuer is necessary to pay
 				var issuerMandatory = false, additionalInfo = result[0].additional_info_needed;
 
@@ -857,7 +857,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 	};
 
-	if (country === "MLM" || country === "MLA" || country === "MPE") {
+	if (country === "MLM" || country === "MLA" || country === "MPE" || country === "MLU") {
 		$("#id-issuers-options").change(function() {
 
 			var issuerId = $('#id-issuers-options').val();
@@ -1638,7 +1638,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 			json.amount = returnAmount();
 			json.bin = bin;
 
-			if (country === "MLM" || country === "MLA") {
+			if (country === "MLM" || country === "MLA" || country === "MLU") {
 				var issuerId = document.querySelector('#id-issuers-options').value;
 				if (issuerId != undefined && issuerId != "-1") {
 					json.issuer_id = issuerId;
