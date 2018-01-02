@@ -68,11 +68,6 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                         $installments = (int)$response['installments'];
                     }
                     $id_cart_rule = $mercadopago->applyDiscount($cart, $payment_mode, $installments);
-                    if ($id_cart_rule != null) {
-                        $cartRule = new CartRule($id_cart_rule);
-                        $cartRule->active = false;
-                        $cartRule->save();
-                    }
                 }
                 $customer = new Customer((int)$cart->id_customer);
                 $payment_type_id = $response['payment_type_id'];
@@ -91,6 +86,11 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                     false,
                     $customer->secure_key
                 );
+                if ($id_cart_rule != null) {
+                    $cartRule = new CartRule($id_cart_rule);
+                    $cartRule->active = false;
+                    $cartRule->save();
+                }                
                 error_log("====end validateOrder=====");
                 $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$cart->id.'&id_module='.$mercadopago->id.
                      '&id_order='.$mercadopago->currentOrder.'&key='.$customer->secure_key.'&payment_id='.

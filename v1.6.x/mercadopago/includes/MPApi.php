@@ -640,6 +640,7 @@ class MPApi
             "module" => "PrestaShop",
             "module_version" => MPApi::VERSION,
             "email_admin" => Configuration::get('MERCADOPAGO_EMAIL_ADMIN'),
+            "country_initial" => Language::getIsoById(Configuration::get('PS_LANG_DEFAULT')),
             "url_store" => $_SERVER['HTTP_HOST'],
             "errors" => $errors
         );
