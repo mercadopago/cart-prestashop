@@ -116,7 +116,8 @@
 </form>
 
 <script type="text/javascript">
-	{if $mercadoPagoActive == 1}
+	console.info({$mercadoPagoActive});
+	{if $mercadoPagoActive}
 		$("#MERCADOPAGO_STARDAND_ACTIVE_on").attr("checked", true);
 	{/if}
 </script>

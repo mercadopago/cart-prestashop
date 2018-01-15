@@ -107,3 +107,8 @@ V3.5.7 (17/10/2017)
 
 V1.0.0(04/04/2017)
 Prestashop 1.7
+
+V1.0.9(15/01/2018)
+Fix in save button in admin page
+Fix send email to start started
+Fix in uninstall process

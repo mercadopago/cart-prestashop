@@ -118,7 +118,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = "mercadopago";
         $this->tab = "payments_gateways";
-        $this->version = "1.0.8";
+        $this->version = "1.0.9";
         $this->ps_versions_compliancy = array("min" => "1.7", "max" => _PS_VERSION_);
         $this->author = "Mercado Pago";
         $this->controllers = array("validationstandard", "standardreturn");
@@ -190,14 +190,6 @@ class MercadoPago extends PaymentModule
         );
 
         $this->context->smarty->assign('pos_active', Configuration::get('MERCADOPAGO_POINT'));
-
-        if (Configuration::get('MERCADOPAGO_POINT') == "true" &&
-            $id_order_state == Configuration::get('MERCADOPAGO_STATUS_11')) {
-            $data['pos_options'] = $this->loadPoints();
-            $data['showPoint'] = 'true';
-        } else {
-            $data['showPoint'] = 'false';
-        }
 
         $id_order_carrier = $order->getIdOrderCarrier();
 
@@ -537,7 +529,7 @@ class MercadoPago extends PaymentModule
                     $order_state->shipped = true;
                 }
                 if ($value[2] == 'started') {
-                    // $order_state->send_email = false;
+                    $order_state->send_email = false;
                     $order_state->logable = false;
                     $order_state->invoice = false;
                 }
@@ -566,6 +558,19 @@ class MercadoPago extends PaymentModule
                 Configuration::updateValue('MERCADOPAGO_STATUS_'.$key, $order_state->id);
             }
         }
+
+        error_log('vai veriricar se vai entrar no if');
+        if (!is_null($this->orderStateAvailable(Configuration::get('MERCADOPAGO_STATUS_11')))) {
+            error_log('entrou no if');
+            $update = Db::getInstance()->update(
+                'order_state',
+                array(
+                    'logable' => 0,
+                    'send_email' => 0
+                ),
+                'module_name = "mercadopago" and id_order_state = '.Configuration::get('MERCADOPAGO_STATUS_11')
+            );
+        }        
         return true;
     }
 
@@ -603,21 +608,15 @@ class MercadoPago extends PaymentModule
 
     public function uninstall()
     {
+
         if (!Configuration::deleteByName("MERCADOPAGO_CHECKOUT_DISPLAY")
             || !Configuration::deleteByName("MERCADOPAGO_STARDAND_ACTIVE")
             || !Configuration::deleteByName("MERCADOENVIOS_ACTIVATE")
-            // || !Configuration::deleteByName("MERCADOENVIOS_ACTIVATE")
-            // || !Configuration::deleteByName("MERCADOPAGO_CLIENT_SECRET")
-            // || !Configuration::deleteByName("MERCADOPAGO_CLIENT_ID")
-            // || !Configuration::deleteByName("MERCADOPAGO_INSTALLMENTS")
-            // || !Configuration::deleteByName("MERCADOPAGO_CATEGORY")
 
             || !$this->unregisterHook("paymentOptions")
             || !$this->unregisterHook("displayOrderDetail")
             || !$this->unregisterHook("displayAdminOrder")
-            || !$this->unregisterHook("displayPayment")
             || !$this->unregisterHook("paymentReturn")
-            || !$this->unregisterHook("payment")
             || !$this->unregisterHook("header")
             || !parent::uninstall()) {
                 return false;
