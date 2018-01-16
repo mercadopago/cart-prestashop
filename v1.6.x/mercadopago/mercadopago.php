@@ -253,7 +253,7 @@ class MercadoPago extends PaymentModule
                     $order_state->send_email = $value[3][1];
                 }
                 if ($value[2] == "started") {
-                    $order_state->logable = "false";
+                    $order_state->logable = 0;
                 } else {
                     $order_state->logable = $value[3][4];
                 }
