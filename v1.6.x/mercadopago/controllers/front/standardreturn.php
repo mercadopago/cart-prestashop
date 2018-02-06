@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2015 PrestaShop.
  *
@@ -37,7 +38,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
         $this->placeOrder();
     }
     public function placeOrder()
-    {
+    {   
         $collection_status = Tools::getValue('collection_status');
         $typeReturn = Tools::getValue('typeReturn');
         $mercadopago = $this->module;
