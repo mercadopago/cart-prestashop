@@ -32,7 +32,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
 
     public function initContent()
     {
-        error_log("entrou aqui no MercadoPagoStandardReturnModuleFrontController");
         $this->display_column_left = false;
         parent::initContent();
         $this->placeOrder();
@@ -56,8 +55,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             $data['show_QRCode'] = "false";
             $data['this_path_ssl'] = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
                                      htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__;
-
-            error_log("===init_point===".$preference['response']['init_point']);
 
             if (isset($preference['response']['init_point'])) {
                 $data['show_QRCode'] = "true";

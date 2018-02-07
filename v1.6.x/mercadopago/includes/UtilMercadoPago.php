@@ -110,7 +110,6 @@ class UtilMercadoPago
         }
 
         if (Configuration::get('MERCADOENVIOS_ACTIVATE') == 'true') {
-            error_log("Mercado envios ativado");
             $sql = "SELECT id_product
             FROM "._DB_PREFIX_."product WHERE (width = 0 OR height = 0
             OR depth = 0
@@ -175,8 +174,6 @@ class UtilMercadoPago
         $color  = "";
         $size  = "";
         foreach ($combinations as $value) {
-            error_log('==group_name===' . $value['group_name']);
-            error_log('==attribute_name===' . $value['attribute_name']);
             if ($value['group_name'] == 'Color') {
                 $color = ' Color = ' .$value['attribute_name']. ' ';
                 continue;

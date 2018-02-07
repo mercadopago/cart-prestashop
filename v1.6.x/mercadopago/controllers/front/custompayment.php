@@ -91,7 +91,6 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                     $cartRule->active = false;
                     $cartRule->save();
                 }                
-                error_log("====end validateOrder=====");
                 $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$cart->id.'&id_module='.$mercadopago->id.
                      '&id_order='.$mercadopago->currentOrder.'&key='.$customer->secure_key.'&payment_id='.
                      $response['id'].'&payment_status='.$response['status'];

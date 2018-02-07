@@ -306,8 +306,6 @@ class MPApi
         $payment_ids = array();
         $result = $this->getPaymentByOrder($id_order);
 
-        error_log("==result===".Tools::jsonEncode($result));
-
         if (isset($result ['response']['results'])) {
             foreach ($result ['response']['results'] as $payments) {
                 $payment_ids[] = $payments['id'];

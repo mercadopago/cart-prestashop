@@ -37,8 +37,6 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
 
     public function displayAjax()
     {      
-        error_log("ENTRO NA NOTIFICAÇ˜AO POR IPN " . Tools::getValue('type'));
-        error_log("ENTRO NA NOTIFICAÇ˜AO POR IPN " . Tools::getValue('checkout'));
         if (Tools::getValue('checkout') && Tools::getValue('data_id') || Tools::getValue('id')) {
             $mercadopago = $this->module;
             if (Tools::getValue('checkout') == "custom") {

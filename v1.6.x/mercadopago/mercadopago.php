@@ -130,10 +130,7 @@ class MercadoPago extends PaymentModule
           ""
       );    
  
-      $query = http_build_query($_GET);
-      error_log(print_r($query, true));
-
-      
+        $query = http_build_query($_GET);
         $this->name = 'mercadopago';
         $this->tab = 'payments_gateways';
         $this->version = MPApi::VERSION;
@@ -707,7 +704,6 @@ class MercadoPago extends PaymentModule
             ' DEFAULT CHARSET=utf8  auto_increment=1;';
         try {
             if (! Db::getInstance()->Execute($sql)) {
-                error_log("ocorreu um erro na criação das tabelas de boleto");
                 return false;
             }
         } catch (Exception $e) {
@@ -2716,11 +2712,6 @@ class MercadoPago extends PaymentModule
 
     public function listenIPN($checkout, $topic, $id)
     {
-
-        error_log("MERCADOPAGO.PHP checkout = " . $checkout);
-        error_log("MERCADOPAGO.PHP topic = " . $topic);
-        error_log("MERCADOPAGO.PHP id = " . $id);
-      
         $payment_method_ids = array();
         $payment_ids = array();
         $payment_statuses = array();
@@ -2931,7 +2922,6 @@ class MercadoPago extends PaymentModule
                 $payments[0]->transaction_id = implode(' / ', $payment_ids);
                 $payments[0]->update();
             } catch (Exception $e) {
-                error_log("Occured a error during the process the update order " . $e->getMessage());
                 UtilMercadoPago::logMensagem(
                     'Occured a error during the process the update order, payments is null = '.$id_cart,
                     MPApi::ERROR,
