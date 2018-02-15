@@ -197,7 +197,6 @@
 				} else {
 					cList.append('<li class="list-installments"><span>'+value.recommended_message+'</span></li>');
 				}
-		    	
 			});
 		} else {
 			console.error("Installments Not Found.");

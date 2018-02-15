@@ -111,7 +111,11 @@
 
 		<p><a href="https://www.mercadopago.com.br/developers/pt/solutions/payments/basic-checkout/test/test-payments/" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/credit_card.png" width="20px;" height="20px">{l s='Credit Card for test' mod='mercadopago'}</a></p>
         <ps-label-information label="{l s='Video Tutorial' mod='mercadopago'}">
-            <iframe width="100%" style="max-width:560px" height="315" src="https://www.youtube.com/embed/rtXNkdaqUJ8" frameborder="0" allowfullscreen></iframe>
+			{if $country == 'MLB'}
+				<iframe width="100%" style="max-width:560px" height="315" src="https://www.youtube.com/embed/Rsotj_9paOw" frameborder="0" allowfullscreen></iframe>
+			{else}
+				<iframe width="100%" style="max-width:560px" height="315" src="https://www.youtube.com/embed/rtXNkdaqUJ8" frameborder="0" allowfullscreen></iframe>
+			{/if}
         </ps-label-information>
 	</div>
 

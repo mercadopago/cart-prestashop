@@ -103,7 +103,7 @@ class MPRestCli
         } else {
             if ($response['status'] > 202) {
                 UtilMercadoPago::logMensagem(
-                    "An ocurred error in exec transacions REST ",
+                    "An ocurred error in exec transacions REST " . $uri . "-----" . Tools::jsonEncode($data),
                     MPApi::ERROR,
                     $response['response']['message'],
                     true,

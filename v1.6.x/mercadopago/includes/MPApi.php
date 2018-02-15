@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.5.7';
+    const VERSION = '3.5.8';
 
     /* Info */
     const INFO = 1;
@@ -305,8 +305,6 @@ class MPApi
     public function getPaymentsID($id_order) {
         $payment_ids = array();
         $result = $this->getPaymentByOrder($id_order);
-
-        error_log("==result===".Tools::jsonEncode($result));
 
         if (isset($result ['response']['results'])) {
             foreach ($result ['response']['results'] as $payments) {
@@ -640,6 +638,7 @@ class MPApi
             "module" => "PrestaShop",
             "module_version" => MPApi::VERSION,
             "email_admin" => Configuration::get('MERCADOPAGO_EMAIL_ADMIN'),
+            "country_initial" => Language::getIsoById(Configuration::get('PS_LANG_DEFAULT')),
             "url_store" => $_SERVER['HTTP_HOST'],
             "errors" => $errors
         );
