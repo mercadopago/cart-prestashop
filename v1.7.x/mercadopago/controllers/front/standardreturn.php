@@ -35,6 +35,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
 
         error_log("===listenIPN postProcess checkout====".$checkout);
         error_log("===listenIPN postProcess topic====".$topic);
+        error_log("===listenIPN postProcess id====".$id);
 
 		if ($checkout == 'standard' && $topic == 'merchant_order') {
 	        $this->listenIPN(
@@ -47,9 +48,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
 
     public function listenIPN($checkout, $topic, $id)
     {
-        error_log("===listenIPN====");
-        error_log("entrou aqui no listenIPN ipn.php");
-
         $payment_method_ids = array();
         $payment_ids = array();
         $payment_statuses = array();
@@ -59,7 +57,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
         $cardholders = array();
         $external_reference = '';
         $isMercadoEnvios = 0;
-        error_log("===listenIPN 1====");
         if ($checkout == 'standard' && $topic == 'merchant_order' && $id > 0) {
             $result = $this->mercadopago->getMerchantOrder($id);
             $merchant_order_info = $result['response'];
@@ -86,7 +83,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                                     $payment_info['card']['cardholder']['name'] : '';
                 }
             }
-            error_log("===listenIPN 3====");
             if ($merchant_order_info['total_amount'] == $transaction_amounts) {
                 if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' ||
                     Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
@@ -99,7 +95,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                     ) {
                     $transaction_amounts += $merchant_order_info['shipments'][0]['shipping_option']['cost'];
                 }
-                error_log("===listenIPN 4====");
+
                 $this->updateOrder(
                     $payment_ids,
                     $payment_statuses,
@@ -167,6 +163,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             $id_cart = $external_reference;
             $id_order = $this->getOrderByCartId($id_cart);
             $order = new Order($id_order);
+            $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta[$payment_status]);
             if ($id_order) {
                 if ($this->checkStateExist($id_order, $payment_status)) {
                     return;
@@ -183,7 +180,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 }
             }
             $statusPS = (int)$order->getCurrentState();
-            $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta[$payment_status]);
             if ($payment_status != $statusPS) {
                 $order->setCurrentState($payment_status);
             }

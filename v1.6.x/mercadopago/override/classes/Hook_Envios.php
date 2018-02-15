@@ -29,7 +29,6 @@ class Hook extends HookCore
 {
     public static function getHookModuleExecList($hook_name = null)
     {
-        error_log("Hook OVERRIDE MERCADO ENVIOS");
         $base = HookCore::getHookModuleExecList($hook_name);
         if (Configuration::get('MERCADOPAGO_CARRIER') != null
             && Configuration::get('MERCADOENVIOS_ACTIVATE') == "true") {
@@ -42,7 +41,6 @@ class Hook extends HookCore
                 $cart = Context::getContext()->cart;
                 if (in_array($cart->id_carrier, $mpCarrier)) {
                     foreach ($base as $id => $data) {
-                        error_log('==Hook::module=='.$data['module']);
                         if ($data['module'] != 'mercadopago') {
                             unset($base[$id]);
                         }

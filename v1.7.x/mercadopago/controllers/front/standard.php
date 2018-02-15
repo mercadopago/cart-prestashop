@@ -61,6 +61,7 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
 
         try {
             $result = MPApi::getInstanceMP()->createPreference($postParameters);
+            error_log(print_r($result, true));
             if (array_key_exists('init_point', $result['response'])) {
                 $init_point = $result['response']['init_point'];
                 $data['preferences_url'] = $init_point;
@@ -211,14 +212,11 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
             true
         );
         $shipments = array();
-
         // include shipping cost
         if ((int)Configuration::get('MERCADOENVIOS_ACTIVATE') == 1 &&
             isset($lista_shipping['MP_CARRIER'][$cart->id_carrier])
             ) {
             $dimensions = $mercadopago->getDimensions($products);
-
-            error_log("=====MERCADOENVIOS_ACTIVATE= dimensions...====". Tools::jsonEncode ($dimensions));
 
             $id_mercadoenvios_service_code = $lista_shipping['MP_CARRIER'][$cart->id_carrier];
             $address_delivery = new Address((integer) $cart->id_address_delivery);

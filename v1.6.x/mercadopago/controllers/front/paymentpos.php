@@ -97,15 +97,12 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
     private function deleteTransactionPayment($poi)
     {
         if ($poi_and_type = $this->getPOIAndTypePOS($poi)) {
-            error_log("===result poi_and_type====". Tools::jsonEncode($poi_and_type));
             $data = array(
                 'poi' => $poi_and_type['poi'],
                 'poi_type' => $poi_and_type['poi_type']
             );
             $this->mercadopago = MercadoPagoPaymentPOSModuleFrontController::createMP();
             $result = $this->mercadopago->deletePaymentPoint($data);
-
-            error_log("===result data point====". Tools::jsonEncode($result));
             if ($result['status'] == '200') {
                 $response = array(
                 'status' => '200',
@@ -132,7 +129,6 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
             $this->mercadopago = MercadoPagoPaymentPOSModuleFrontController::createMP();
 
             $result = $this->mercadopago->getPaymentPoint($id_transaction);
-            error_log("====result getPaymentPoint====". Tools::jsonEncode($result));
             if ($result['status'] == '200' &&
                 $result['response']['status'] == 'created') {
                 $response = array(
