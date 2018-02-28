@@ -118,7 +118,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = "mercadopago";
         $this->tab = "payments_gateways";
-        $this->version = "1.0.10";
+        $this->version = "1.0.11";
         $this->ps_versions_compliancy = array("min" => "1.7", "max" => _PS_VERSION_);
         $this->author = "Mercado Pago";
         $this->controllers = array("validationstandard", "standardreturn");
@@ -646,6 +646,12 @@ class MercadoPago extends PaymentModule
 
     public function getContent()
     {
+
+        UtilMercadoPago::log("LOG", "LOG LOG LOG ");
+
+        echo("entrou aqui echo");
+        print_r("entrou aqui");
+        error_log("entrou no getContent");
         $shopDomainSsl = Tools::getShopDomainSsl(true, true);
         $backOfficeCssUrl = $shopDomainSsl.__PS_BASE_URI__."modules/".$this->name."/views/css/backoffice.css";
         $marketingCssUrl = $shopDomainSsl.__PS_BASE_URI__."modules/".$this->name."/views/css/marketing.css";
