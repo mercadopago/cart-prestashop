@@ -114,3 +114,6 @@ V1.0.9(15/01/2018)
 Fix in save button in admin page
 Fix send email to start started
 Fix in uninstall process
+
+V1.0.11(28/02/2018)
+Fix in IPN notification, the payments wasn't changing the states.
