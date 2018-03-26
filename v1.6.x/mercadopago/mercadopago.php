@@ -1075,7 +1075,7 @@ class MercadoPago extends PaymentModule
         $client_secret = Configuration::get('MERCADOPAGO_CLIENT_SECRET');
 
         $this->context->controller->addCss($this->_path.'views/css/settings.css', 'all');
-        $this->context->controller->addCss($this->_path.'views/css/bootstrap.css', 'all');
+//         $this->context->controller->addCss($this->_path.'views/css/bootstrap.css', 'all');
         $this->context->controller->addCss($this->_path.'views/css/style.css', 'all');
 
         $this->smarty->assign(array(
@@ -1218,6 +1218,9 @@ class MercadoPago extends PaymentModule
                             $success = false;
                             Configuration::updateValue('MERCADOPAGO_ACCESS_TOKEN', "");
                         }
+                      Configuration::updateValue('MERCADOPAGO_CUSTOM_ACTIVE', true);
+                    } else {
+                      Configuration::updateValue('MERCADOPAGO_CUSTOM_ACTIVE', false);
                     }
 
                     Configuration::updateValue('MERCADOPAGO_CLIENT_ID', $client_id);
@@ -1250,9 +1253,6 @@ class MercadoPago extends PaymentModule
                         $this->setCarriers();
                         $this->installOverrideMercadoEnvios();
                     }
-                    /*elseif (count(Tools::jsonDecode(Configuration::get('MERCADOPAGO_CARRIER'))) > 0) {
-                        $this->removeMercadoEnvios();
-                    }*/
 
                     Configuration::updateValue('MERCADOENVIOS_ACTIVATE', $mercadoenvios_activate);
 
@@ -1270,9 +1270,9 @@ class MercadoPago extends PaymentModule
                         Configuration::updateValue('MERCADOPAGO_TWO_CARDS', $two_cards);
                     }
 
-                    if ($current_country == 'MLB') {
-                        $this->createTableBoleto();
-                    }
+//                     if ($current_country == 'MLB') {
+//                         $this->createTableBoleto();
+//                     }
                     Configuration::updateValue('MERCADOPAGO_USER_TEST', "true");
                     if (!$this->mercadopago->isTestUser()) {
                         Configuration::updateValue('MERCADOPAGO_USER_TEST', "false");
@@ -1368,7 +1368,6 @@ class MercadoPago extends PaymentModule
                 // current settings
                 $payment_methods_settings[$payment_method['id']] = Configuration::get($pm_variable_name);
             }
-
 
             if (!$exclude_all) {
                 $payment_methods_settings = array();
@@ -1529,6 +1528,7 @@ class MercadoPago extends PaymentModule
 
             'public_key' => htmlentities(Configuration::get('MERCADOPAGO_PUBLIC_KEY'), ENT_COMPAT, 'UTF-8'),
             'access_token' => htmlentities(Configuration::get('MERCADOPAGO_ACCESS_TOKEN'), ENT_COMPAT, 'UTF-8'),
+            'custom_active' => htmlentities(Configuration::get('MERCADOPAGO_CUSTOM_ACTIVE'), ENT_COMPAT, 'UTF-8'),
             'client_id' => htmlentities(Configuration::get('MERCADOPAGO_CLIENT_ID'), ENT_COMPAT, 'UTF-8'),
             'client_secret' => htmlentities(Configuration::get('MERCADOPAGO_CLIENT_SECRET'), ENT_COMPAT, 'UTF-8'),
             'country' => htmlentities(Configuration::get('MERCADOPAGO_COUNTRY'), ENT_COMPAT, 'UTF-8'),
@@ -1583,7 +1583,8 @@ class MercadoPago extends PaymentModule
         $this->context->smarty->assign($settings);
         return $this->display(__file__, '/views/templates/admin/settings.tpl');
     }
-
+  
+  
     private function setDefaultValues($client_id, $client_secret)
     {
         $country = $this->getCountry($client_id, $client_secret);
