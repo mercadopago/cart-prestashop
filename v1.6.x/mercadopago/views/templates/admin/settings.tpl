@@ -22,7 +22,6 @@
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of MercadoPago
 *}
-
 <style>
 .important  {
     color: red;
@@ -34,7 +33,6 @@
 <div class="mp-module">
 	<div>
 		<div id="alerts">
-
 			{if $success eq 'true' and $errors|@count == 0}
 			<div id="alert" class="bootstrap">
 				<div class="alert alert-success">
@@ -64,14 +62,12 @@
 	<br>
 	<br>
 	<br>
-
-
 	<ul class="tab">
-	  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Requisitos')" id="defaultOpen">{l s='Requirements' mod='mercadopago'}</a></li>
-	  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Duvidas')">{l s='Question' mod='mercadopago'}</a></li>
+	  <li><a href="javascript:void(0)" class="tablinksSettings" onclick="openTabSettings(event, 'Requisitos')" id="defaultOpen">{l s='Requirements' mod='mercadopago'}</a></li>
+	  <li><a href="javascript:void(0)" class="tablinksSettings" onclick="openTabSettings(event, 'Duvidas')">{l s='Question' mod='mercadopago'}</a></li>
 	</ul>
 
-	<div id="Requisitos" class="tabcontent">
+	<div id="Requisitos" class="tabcontentSettings">
 	 	<h3>{l s='Requirements' mod='mercadopago'}</h3>
 		<p>
 			<strong>{l s='Installed Curl' mod='mercadopago'}:</strong><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/{$requirements.curl|escape:'htmlall':'UTF-8'}.png" width="20px;" height="20px">
@@ -101,7 +97,7 @@
 
 	</div>
 
-	<div id="Duvidas" class="tabcontent">
+	<div id="Duvidas" class="tabcontentSettings">
 	  	<h3>{l s='Question' mod='mercadopago'}</h3>
 		<p><strong><a href="https://www.youtube.com/playlist?list=PLl8LGzRu2_sXxChIJm1e0xY6dU3Dj_tNi" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/youtube.png" width="20px;" height="20px">YouTube</a> </strong></p>
 		<p><strong><a href="https://www.facebook.com/groups/modulos.mercadopago" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/facebook.png" width="20px;" height="20px">Facebook</a> </strong></p> 
@@ -117,12 +113,82 @@
 				<iframe width="100%" style="max-width:560px" height="315" src="https://www.youtube.com/embed/rtXNkdaqUJ8" frameborder="0" allowfullscreen></iframe>
 			{/if}
         </ps-label-information>
+		
+		<h4>{l s='Notification URL' mod='mercadopago'}</h4>
+		<p> <small>{l s='Notification URL' mod='mercadopago'}: {$notification_url|escape:'htmlall':'UTF-8'}</small> </p>
+		
 	</div>
 
-	<form action="{$uri|escape:'htmlall':'UTF-8'}" method="post">
+	<br>
+			
+	<ul class="tab">
+	  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Global')" id="globalTab">{l s='Global' mod='mercadopago'}</a></li>				
+	  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Basic')">{l s='Basic Checkout' mod='mercadopago'}</a></li>
+	  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Custom')">{l s='Custom Checkout' mod='mercadopago'}</a></li>
+	</ul>		
+		
+	<form action="{$uri|escape:'htmlall':'UTF-8'}" method="post">	
+		<div id="Global" class="tabcontent">
+			
+			<h2>{l s='Status Checkouts' mod='mercadopago'}</h2>
+
+			<p>
+				<label> Checkout Standard:</label>
+				<strong>
+					{if $standard_active}
+						{l s='Enable' mod='mercadopago'}
+					{else}
+						{l s='Disable' mod='mercadopago'}
+					{/if}	
+				</strong>
+			</p>
+			<p>
+				<label> Checkout Custom:</label>
+				<strong>
+					{if $custom_active}
+						{l s='Enable' mod='mercadopago'}
+					{else}
+						{l s='Disable' mod='mercadopago'}
+					{/if}	
+				</strong>
+			</p>
+			
+			<p>
+				{if !empty($country)}
+				<span><label>{l s='Category:' mod='mercadopago'}</label></span>
+				<span><select name="MERCADOPAGO_CATEGORY" id="category">
+					 <option value="art">{l s='Collectibles & Art' mod='mercadopago'}</option>
+					 <option value="baby">{l s='Toys for Baby, Stroller, Stroller Accessories, Car Safety Seats' mod='mercadopago'}</option>
+					 <option value="coupons">{l s='Coupons' mod='mercadopago'}</option>
+					 <option value="donations">{l s='Donations' mod='mercadopago'}</option>
+					 <option value="computing">{l s='Computers & Tablets' mod='mercadopago'}</option>
+					 <option value="cameras">{l s='Cameras & Photography' mod='mercadopago'}</option>
+					 <option value="video_games">{l s='Video Games & Consoles' mod='mercadopago'}</option>
+					 <option value="television">{l s='LCD, LED, Smart TV, Plasmas, TVs' mod='mercadopago'}</option>
+					 <option value="car_electronics">{l s='Car Audio, Car Alarm Systems & Security, Car DVRs, Car Video Players, Car PC' mod='mercadopago'}</option>
+					 <option value="electronics">{l s='Audio & Surveillance, Video & GPS, Others' mod='mercadopago'}</option>
+					 <option value="automotive">{l s='Parts & Accessories' mod='mercadopago'}</option>
+					 <option value="entertainment">{l s='Music, Movies & Series, Books, Magazines & Comics, Board Games & Toys' mod='mercadopago'}</option>
+					 <option value="fashion">{l s='Men\'s, Women\'s, Kids & baby, Handbags & Accessories, Health & Beauty, Shoes, Jewelry & Watches' mod='mercadopago'}</option>
+					 <option value="games"> {l s='Online Games & Credits' mod='mercadopago'}</option>
+					 <option value="home">{l s='Home appliances. Home & Garden' mod='mercadopago'}</option>
+					 <option value="musical">{l s='Instruments & Gear' mod='mercadopago'}</option>
+					 <option value="phones">{l s='Cell Phones & Accessories' mod='mercadopago'}</option>
+					 <option value="services">{l s='General services' mod='mercadopago'}</option>
+					 <option value="learnings" >{l s='Trainings, Conferences, Workshops' mod='mercadopago'}</option>
+					 <option value="tickets">{l s='Tickets for Concerts, Sports, Arts, Theater, Family, Excursions tickets, Events & more' mod='mercadopago'}</option>
+					 <option value="travels">{l s='Plane tickets, Hotel vouchers, Travel vouchers' mod='mercadopago'}</option>
+					 <option value="virtual_goods">{l s='E-books, Music Files, Software, Digital Images,  PDF Files and any item which can be electronically stored in a file, Mobile Recharge, DTH Recharge and any Online Recharge' mod='mercadopago'}</option>
+					 <option value="others" selected="selected">{l s='Other categories' mod='mercadopago'}</option>
+					</select></span>
+				{/if}
+			</p>
+		</div>	
+		<br>
+	<div id="Basic" class="tabcontent">
 		<fieldset>
 			<legend>
-				<img src="../img/admin/contact.gif" />{l s='Settings - General' mod='mercadopago'}
+				<img src="../img/admin/contact.gif" />{l s='Credential' mod='mercadopago'}
 			</legend>
 			<p><i>{l s='Lets to configure your module, so you need to get your client_id and client_secret. Do you need to use the link above of your country.' mod='mercadopago'}</i></p>
 			<br/>
@@ -130,154 +196,14 @@
 			<div class="">
 				<input type="text" size="33" required="true" name="MERCADOPAGO_CLIENT_ID" value="{$client_id|escape:'htmlall':'UTF-8'}" />
 			</div>
-			<br />
+			<br/>
 			<label>{l s='Client Secret:' mod='mercadopago'}</label>
 			<div class="">
 				<input type="text" size="33" required="true" name="MERCADOPAGO_CLIENT_SECRET" value="{$client_secret|escape:'htmlall':'UTF-8'}" />
 			</div>
-			<br />
-			{if !empty($country)}
-			<label>{l s='Category:' mod='mercadopago'}</label>
-				<div class="">
-					<select name="MERCADOPAGO_CATEGORY" id="category">
-						 <option value="art">{l s='Collectibles & Art' mod='mercadopago'}</option>
-						 <option value="baby">{l s='Toys for Baby, Stroller, Stroller Accessories, Car Safety Seats' mod='mercadopago'}</option>
-						 <option value="coupons">{l s='Coupons' mod='mercadopago'}</option>
-						 <option value="donations">{l s='Donations' mod='mercadopago'}</option>
-						 <option value="computing">{l s='Computers & Tablets' mod='mercadopago'}</option>
-						 <option value="cameras">{l s='Cameras & Photography' mod='mercadopago'}</option>
-						 <option value="video_games">{l s='Video Games & Consoles' mod='mercadopago'}</option>
-						 <option value="television">{l s='LCD, LED, Smart TV, Plasmas, TVs' mod='mercadopago'}</option>
-						 <option value="car_electronics">{l s='Car Audio, Car Alarm Systems & Security, Car DVRs, Car Video Players, Car PC' mod='mercadopago'}</option>
-						 <option value="electronics">{l s='Audio & Surveillance, Video & GPS, Others' mod='mercadopago'}</option>
-						 <option value="automotive">{l s='Parts & Accessories' mod='mercadopago'}</option>
-						 <option value="entertainment">{l s='Music, Movies & Series, Books, Magazines & Comics, Board Games & Toys' mod='mercadopago'}</option>
-						 <option value="fashion">{l s='Men\'s, Women\'s, Kids & baby, Handbags & Accessories, Health & Beauty, Shoes, Jewelry & Watches' mod='mercadopago'}</option>
-						 <option value="games"> {l s='Online Games & Credits' mod='mercadopago'}</option>
-						 <option value="home">{l s='Home appliances. Home & Garden' mod='mercadopago'}</option>
-						 <option value="musical">{l s='Instruments & Gear' mod='mercadopago'}</option>
-						 <option value="phones">{l s='Cell Phones & Accessories' mod='mercadopago'}</option>
-						 <option value="services">{l s='General services' mod='mercadopago'}</option>
-						 <option value="learnings" >{l s='Trainings, Conferences, Workshops' mod='mercadopago'}</option>
-						 <option value="tickets">{l s='Tickets for Concerts, Sports, Arts, Theater, Family, Excursions tickets, Events & more' mod='mercadopago'}</option>
-						 <option value="travels">{l s='Plane tickets, Hotel vouchers, Travel vouchers' mod='mercadopago'}</option>
-						 <option value="virtual_goods">{l s='E-books, Music Files, Software, Digital Images,  PDF Files and any item which can be electronically stored in a file, Mobile Recharge, DTH Recharge and any Online Recharge' mod='mercadopago'}</option>
-						 <option value="others" selected="selected">{l s='Other categories' mod='mercadopago'}</option>
-					</select>
-				</div>
-				<br/>
-				<small>{l s='Notification URL' mod='mercadopago'}: {$notification_url|escape:'htmlall':'UTF-8'}</small>
-			{/if}
-
 				<br />
 		</fieldset>
 
-		{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV' || $country == 'MPE' || $country == 'MLU'}
-
-			<fieldset id="custom-list">
-				<legend>
-					<img src="../img/admin/contact.gif" />{l s='Settings - Custom Payments' mod='mercadopago'}
-				</legend>
-				<p><i>{l s='This functionality is for your clients to pay without go to another environment.' mod='mercadopago'}</i> </p>
-				<br/>
-				<label>{l s='Public Key:' mod='mercadopago'}</label>
-				<div class="">
-					<input type="text" size="60" id="MERCADOPAGO_PUBLIC_KEY" name="MERCADOPAGO_PUBLIC_KEY" value="{$public_key|escape:'htmlall':'UTF-8'}" />
-				</div>
-				<br />
-				<label>{l s='Access Token:' mod='mercadopago'}</label>
-				<div class="">
-					<input type="text" size="60" id="MERCADOPAGO_ACCESS_TOKEN" name="MERCADOPAGO_ACCESS_TOKEN" value="{$access_token|escape:'htmlall':'UTF-8'}" />
-				</div>
-				<h3><a href="https://www.mercadopago.com/{$country|lower|escape:'htmlall':'UTF-8'}/account/credentials?type=custom" target="_blank"><u>{l s='To obtain your Public Key and Access Token please click here' mod='mercadopago'}</u></a></h3>
-
-				<h3><p>{l s='Enable or Disable your custom payments' mod='mercadopago'}:</p></h3>
-
-				<div class="">
-					<label>{l s='Credit Card' mod='mercadopago'}:</label>
-					<input type="checkbox" class="options_custom" name="MERCADOPAGO_CREDITCARD_ACTIVE" value="true" id="creditcard_active" 
-
-					{if $creditcard_active == 'true'}
-						checked
-					{/if}
-					/>
-				</div>
-
-<!-- 				{if $country == 'MLB'}
-				<br/>
-				<label>{l s='New Checkout: ' mod='mercadopago'}</label>
-				<div class="">
-					<select name="MERCADOPAGO_CHECKOUT_2" id="checkout_2">
-						<option value="true">{l s='Yes' mod='mercadopago'}</option>
-						<option value="false" selected>{l s='No' mod='mercadopago'} </option>
-					</select>
-				</div>
-				{/if} -->
-				<br />
-				{foreach from=$offline_payment_settings key=offline_payment item=value}
-					<div class="">
-						<label>{$value.name|ucfirst|escape:'htmlall':'UTF-8'}:</label>
-						<input type="checkbox" name="MERCADOPAGO_{$offline_payment|upper|escape:'htmlall':'UTF-8'}_ACTIVE" class="ticket" value="true" id="MERCADOPAGO_{$offline_payment|escape:'htmlall':'UTF-8'}_ACTIVE" 
-						{if $value.active == 'true'}
-							checked
-						{/if} />
-					</div>
-				<br />
-				{/foreach}
-
-				<hr style="border-top: dotted 1px;"/>
-      			<h3><p>{l s='Mercado Pago Discount (Only to payments one installments)' mod='mercadopago'}</p></h3>
-
-				<label>{l s='Discount percent:' mod='mercadopago'}:</label>
-				<div >
-				  <input type="text" name="MERCADOPAGO_DISCOUNT_PERCENT" value="{$percent|escape:'htmlall':'UTF-8'}" />
-				</div><br />
-				<label>{l s='Discount payment methods:' mod='mercadopago'}</label>
-				<div >
-				  <input type="checkbox" name="MERCADOPAGO_ACTIVE_CREDITCARD" {if $active_credicard == 1}checked='checked'{/if} value="1">{l s='Credit card (in cash)' mod='mercadopago'}</input><br />
-				  <input type="checkbox" name="MERCADOPAGO_ACTIVE_BOLETO" {if $active_boleto == 1}checked='checked'{/if} value="1">{l s='Ticket' mod='mercadopago'}</input>
-				</div>
-				<br />
-
-				{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MPE'}
-				<hr style="border-top: dotted 1px;"/>
-				<h3><p>{l s='Coupon MercadoPago' mod='mercadopago'}</p></h3>
-				<p style="text-align: center;" class="important">{l s='* Valid option only for sites participating coupon campaigns.' mod='mercadopago'}</p>
-				<br/>
-				<label>{l s='Enable Coupon of Discount: ' mod='mercadopago'}</label>
-				<div class="">
-					<select name="MERCADOPAGO_COUPON_ACTIVE" id="coupon_active">
-						<option value="true">{l s='Yes' mod='mercadopago'} </option>
-						<option value="false">{l s='No' mod='mercadopago'} </option>
-					</select>
-
-				</div>
-				{/if}
-				<br />
-				<hr style="border-top: dotted 1px;"/>
-
-				<h3><p>{l s='Display installments calculator' mod='mercadopago'}:</p></h3>
-
-				<label>{l s='Product Page' mod='mercadopago'}</label>
-				<div class="">
-					<select name="MERCADOPAGO_PRODUCT_CALCULATE" id="MERCADOPAGO_PRODUCT_CALCULATE">
-						<option value="true">{l s='Yes' mod='mercadopago'} </option>
-						<option value="false">{l s='No' mod='mercadopago'} </option>
-					</select>
-				</div>
-				<br />
-				<label>{l s='Cart Page' mod='mercadopago'}</label>
-				<div class="">
-					<select name="MERCADOPAGO_CART_CALCULATE" id="MERCADOPAGO_CART_CALCULATE">
-						<option value="true">{l s='Yes' mod='mercadopago'} </option>
-						<option value="false">{l s='No' mod='mercadopago'} </option>
-					</select>
-
-				</div>
-
-			</fieldset>
-
-		{/if}
 		{if $country != ''}
 			<fieldset>
 				<legend>
@@ -395,40 +321,113 @@
 								</select>
 							</div>
 						</div>
-					</div>
+					</div>	
 				{/if}
-
 			</fieldset>
-
-			{if $country == 'MLB'}
-			<fieldset>
-				<legend>
-					<img src="../img/admin/contact.gif"/>{l s='Point' mod='mercadopago'}
-				</legend>
-
-				<table>
-					<tr>
-						<td>
-							<label>{l s='Enable payments with POINT: ' mod='mercadopago'}</label>
-							<select name="MERCADOPAGO_POINT" id="point_active">
-								<option value="true">{l s='Yes' mod='mercadopago'} </option>
-								<option value="false">{l s='No' mod='mercadopago'} </option>
-							</select>
-						</td>
-						<td>
-							<img class="logo" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/mercadopago_point_2.jpg" width="100px;">
-						</td>
-					</tr>
-				</table>
-			</fieldset>
-			{/if}
 		{/if}
 		{if empty($country)}
 			<input type="submit" name="login" value="{l s='Login' mod='mercadopago'}" class="ch-btn ch-btn-big"/>
 		{else}
 			<input type="submit" name="submitmercadopago" value="{l s='Save' mod='mercadopago'}" class="ch-btn ch-btn-big"/>
-		{/if}
+		{/if}					
+	</div>
+	<div id="Custom" class="tabcontent">
+		<fieldset id="custom-list">
+			<legend>
+				<img src="../img/admin/contact.gif" />{l s='Settings - Custom Payments' mod='mercadopago'}
+			</legend>
+			<p><i>{l s='This functionality is for your clients to pay without go to another environment.' mod='mercadopago'}</i> </p>		
+			<br/>
+			<label>{l s='Public Key:' mod='mercadopago'}</label>
+			<div class="">
+				<input type="text" size="60" id="MERCADOPAGO_PUBLIC_KEY" name="MERCADOPAGO_PUBLIC_KEY" value="{$public_key|escape:'htmlall':'UTF-8'}" />
+			</div>
+			<br />
+			<label>{l s='Access Token:' mod='mercadopago'}</label>
+			<div class="">
+				<input type="text" size="60" id="MERCADOPAGO_ACCESS_TOKEN" name="MERCADOPAGO_ACCESS_TOKEN" value="{$access_token|escape:'htmlall':'UTF-8'}" />
+			</div>
+			<h3><a href="https://www.mercadopago.com/{$country|lower|escape:'htmlall':'UTF-8'}/account/credentials?type=custom" target="_blank"><u>{l s='To obtain your Public Key and Access Token please click here' mod='mercadopago'}</u></a></h3>
 
+			<h3><p>{l s='Enable or Disable your custom payments' mod='mercadopago'}:</p></h3>
+
+			<div class="">
+				<label>{l s='Credit Card' mod='mercadopago'}:</label>
+				<input type="checkbox" class="options_custom" name="MERCADOPAGO_CREDITCARD_ACTIVE" value="true" id="creditcard_active" 
+
+				{if $creditcard_active == 'true'}
+					checked
+				{/if}
+				/>
+			</div>
+
+			<br />
+			{foreach from=$offline_payment_settings key=offline_payment item=value}
+				<div class="">
+					<label>{$value.name|ucfirst|escape:'htmlall':'UTF-8'}:</label>
+					<input type="checkbox" name="MERCADOPAGO_{$offline_payment|upper|escape:'htmlall':'UTF-8'}_ACTIVE" class="ticket" value="true" id="MERCADOPAGO_{$offline_payment|escape:'htmlall':'UTF-8'}_ACTIVE" 
+					{if $value.active == 'true'}
+						checked
+					{/if} />
+				</div>
+			<br />
+			{/foreach}
+
+			<hr style="border-top: dotted 1px;"/>
+					<h3><p>{l s='Mercado Pago Discount (Only to payments one installments)' mod='mercadopago'}</p></h3>
+
+			<label>{l s='Discount percent:' mod='mercadopago'}:</label>
+			<div >
+				<input type="text" name="MERCADOPAGO_DISCOUNT_PERCENT" value="{$percent|escape:'htmlall':'UTF-8'}" />
+			</div><br />
+			<label>{l s='Discount payment methods:' mod='mercadopago'}</label>
+			<div >
+				<input type="checkbox" name="MERCADOPAGO_ACTIVE_CREDITCARD" {if $active_credicard == 1}checked='checked'{/if} value="1">{l s='Credit card (in cash)' mod='mercadopago'}</input><br />
+				<input type="checkbox" name="MERCADOPAGO_ACTIVE_BOLETO" {if $active_boleto == 1}checked='checked'{/if} value="1">{l s='Ticket' mod='mercadopago'}</input>
+			</div>
+			<br />
+
+			{if $country == 'MLB' || $country == 'MLM' || $country == 'MLA' || $country == 'MPE'}
+			<hr style="border-top: dotted 1px;"/>
+			<h3><p>{l s='Coupon MercadoPago' mod='mercadopago'}</p></h3>
+			<p style="text-align: center;" class="important">{l s='* Valid option only for sites participating coupon campaigns.' mod='mercadopago'}</p>
+			<br/>
+			<label>{l s='Enable Coupon of Discount: ' mod='mercadopago'}</label>
+			<div class="">
+				<select name="MERCADOPAGO_COUPON_ACTIVE" id="coupon_active">
+					<option value="true">{l s='Yes' mod='mercadopago'} </option>
+					<option value="false">{l s='No' mod='mercadopago'} </option>
+				</select>
+
+			</div>
+			{/if}
+			<br />
+			<hr style="border-top: dotted 1px;"/>
+
+			<h3><p>{l s='Display installments calculator' mod='mercadopago'}:</p></h3>
+
+			<label>{l s='Product Page' mod='mercadopago'}</label>
+			<div class="">
+				<select name="MERCADOPAGO_PRODUCT_CALCULATE" id="MERCADOPAGO_PRODUCT_CALCULATE">
+					<option value="true">{l s='Yes' mod='mercadopago'} </option>
+					<option value="false">{l s='No' mod='mercadopago'} </option>
+				</select>
+			</div>
+			<br />
+			<label>{l s='Cart Page' mod='mercadopago'}</label>
+			<div class="">
+				<select name="MERCADOPAGO_CART_CALCULATE" id="MERCADOPAGO_CART_CALCULATE">
+					<option value="true">{l s='Yes' mod='mercadopago'} </option>
+					<option value="false">{l s='No' mod='mercadopago'} </option>
+				</select>
+			</div>
+		</fieldset>
+		{if empty($country)}
+			<input type="submit" name="login" value="{l s='Login' mod='mercadopago'}" class="ch-btn ch-btn-big"/>
+		{else}
+			<input type="submit" name="submitmercadopago" value="{l s='Save' mod='mercadopago'}" class="ch-btn ch-btn-big"/>
+		{/if}
+	</div>	
 	</form>
 </div>
 
@@ -524,6 +523,32 @@
 		bloquearEnvios(document.getElementById("standard_active"));
 	});
 
+	function openTabSettings(evt, cityName) {
+	    // Declare all variables
+	    var i, tabcontent, tablinks;
+
+	    // Get all elements with class="tabcontent" and hide them
+	    tabcontent = document.getElementsByClassName("tabcontentSettings");
+	    for (i = 0; i < tabcontent.length; i++) {
+	        tabcontent[i].style.display = "none";
+	    }
+
+	    // Get all elements with class="tablinks" and remove the class "active"
+	    tablinks = document.getElementsByClassName("tablinksSettings");
+	    for (i = 0; i < tablinks.length; i++) {
+	        tablinks[i].className = tablinks[i].className.replace(" active", "");
+	    }
+
+	    // Show the current tab, and add an "active" class to the link that opened the tab
+	    document.getElementById(cityName).style.display = "block";
+	    evt.currentTarget.className += " active";
+	}
+	// Get the element with id="defaultOpen" and click on it
+	document.getElementById("defaultOpen").click();
+		
+	// Get the element with id="defaultOpen" and click on it
+	document.getElementById("globalTab").click();		
+
 	function openTab(evt, cityName) {
 	    // Declare all variables
 	    var i, tabcontent, tablinks;
@@ -543,10 +568,8 @@
 	    // Show the current tab, and add an "active" class to the link that opened the tab
 	    document.getElementById(cityName).style.display = "block";
 	    evt.currentTarget.className += " active";
-	}
-	// Get the element with id="defaultOpen" and click on it
-	document.getElementById("defaultOpen").click();
-
+	}		
+		
 
 	$('#MERCADOPAGO_PUBLIC_KEY').on("change", function(){
 		loadCustom();

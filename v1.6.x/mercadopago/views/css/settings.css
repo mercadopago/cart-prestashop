@@ -35,6 +35,9 @@
 }
 .mp-module label {
     color: #2D3277 !important; 
+/*     text-align: left;
+    width: auto;
+    float: initial; */
 }
 .mp-module select {
     width: 215px;
@@ -240,7 +243,7 @@ ul.tab li a:hover {background-color: #ddd;}
 ul.tab li a:focus, .active {background-color: #ccc;}
 
 /* Style the tab content */
-.tabcontent {
+.tabcontent, .tabcontentSettings {
     display: none;
     padding: 6px 12px;
     border: 1px solid #ccc;
