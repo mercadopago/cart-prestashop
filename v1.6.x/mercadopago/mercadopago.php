@@ -36,6 +36,8 @@ class MercadoPago extends PaymentModule {
   public static $listShipping;
   public static $appended_text;
   public static $listCache = array();
+  public static $weightUnit = '';
+  public static $dimensionUnit = '';
   public $id_carrier;
   private $site_url = null;
 
