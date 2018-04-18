@@ -672,12 +672,9 @@
       var $form = MPv1.getForm();
 
       document.querySelector(MPv1.selectors.box_loading).style.background = "";
-      console.info("entrou aqui sdkResponseHandler");
       if (status != 200 && status != 201) {
         MPv1.showErrors(response);
-        console.info("entrou aqui showErrors");
       } else {
-        console.info("entrou aqui else");
         var token = document.querySelector(MPv1.selectors.token);
         token.value = response.id;
 

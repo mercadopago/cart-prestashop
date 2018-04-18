@@ -37,7 +37,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
         $this->placeOrder();
     }
     public function placeOrder()
-    {   
+    {
         $collection_status = Tools::getValue('collection_status');
         $typeReturn = Tools::getValue('typeReturn');
         $mercadopago = $this->module;
@@ -94,22 +94,22 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             $collection_ids = explode(',', Tools::getValue('collection_id'));
 
             foreach ($collection_ids as $collection_id) {
-                $result = $mercadopago_sdk->getPaymentStandard($collection_id);
-                $payment_info = $result['response']['collection'];
+                $result = $mercadopago_sdk->getPayment($collection_id);
+                $payment_info = $result['response'];
                 $id_cart = $payment_info['external_reference'];
                 $cart = new Cart($id_cart);
                 $payment_statuses[] = $payment_info['status'];
                 $payment_ids[] = $payment_info['id'];
-                $payment_types[] = $payment_info['payment_type'];
+                $payment_types[] = $payment_info['payment_type_id'];
 
                 if (isset($payment_info['payment_method_id'])) {
                     $payment_method_ids[] = $payment_info['payment_method_id'];
                 }
                 $transaction_amounts += $payment_info['transaction_amount'];
 
-                if (isset($payment_info['payment_type']) &&
-                    $payment_info['payment_type'] == 'credit_card' ||
-                    $payment_info['payment_type'] == 'account_money'
+                if (isset($payment_info['payment_type_id']) &&
+                    $payment_info['payment_type_id'] == 'credit_card' ||
+                    $payment_info['payment_type_id'] == 'account_money'
                     ) {
                     $card_holder_names[] = isset($payment_info['card']['cardholder']['name'])
                     ? $payment_info['card']['cardholder']['name'] : '';
@@ -141,8 +141,8 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             $uri .= '&payment_method_id='.implode(' / ', $payment_method_ids);
             $uri .= '&amount='.$cart->getOrderTotal(true, Cart::BOTH);
 
-            if ($payment_info['payment_type'] == 'credit_card' ||
-                $payment_info['payment_type'] == 'account_money') {
+            if ($payment_info['payment_type_id'] == 'credit_card' ||
+                $payment_info['payment_type_id'] == 'account_money') {
                 $uri .= '&card_holder_name='.implode(' / ', $card_holder_names);
                 $uri .= '&four_digits='.implode(' / ', $four_digits_arr);
                 $uri .= '&statement_descriptor='.$statement_descriptors[0];

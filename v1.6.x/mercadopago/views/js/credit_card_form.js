@@ -924,12 +924,9 @@
               var QJ, rreturn, rtrim;
 
               QJ = function(selector) {
-                console.log("entrou aqui no selector");
                 if (QJ.isDOMElement(selector)) {
-                  console.log("entrou aqui no selector 1");
                   return selector;
                 }
-                console.log("entrou aqui no selector 2");
                 return document.querySelectorAll(selector);
               };
 
@@ -1399,7 +1396,6 @@
         };
 
         Card.prototype.validToggler = function(validatorName) {
-          console.info('entrou aqui == ' + validatorName);
           var isValid;
           if (validatorName === "cardExpiry") {
             isValid = function(val) {
@@ -1414,7 +1410,6 @@
               };
             })(this);
           } else if (validatorName === "cardNumber") {
-            console.info('entrou aqui == 1');
             isValid = function(val) {
               return Payment.fns.validateCardNumber(val);
             };
@@ -1460,7 +1455,6 @@
         };
 
         bindVal = function(el, out, opts) {
-          console.info('entrou aqui == 2');
           var joiner, o, outDefaults;
           if (opts == null) {
             opts = {};
@@ -1702,7 +1696,6 @@
       };
 
       formatCardNumber = function(e) {
-        console.info('entrou aqui == 3 === ');
         var card, digit, length, re, target, upperLength, value;
         digit = String.fromCharCode(e.which);
         if (!/^\d+$/.test(digit)) {
@@ -1737,7 +1730,6 @@
       };
 
       formatBackCardNumber = function(e) {
-        console.info('entrou aqui == formatBackCardNumber === ');
         var target, value;
         target = e.target;
         value = QJ.val(target);
@@ -1845,7 +1837,6 @@
       };
 
       restrictCardNumber = function(e) {
-        console.info('entrou aqui == restrictCardNumber === ');
         var card, digit, target, value;
         target = e.target;
         digit = String.fromCharCode(e.which);
@@ -2049,7 +2040,6 @@
 
         Payment.formatCardNumber = function(el) {
           try {
-            console.info('entrou aqui == formatCardNumber === ');
             Payment.restrictNumeric(el);
             QJ.on(el, 'keypress', restrictCardNumber);
             QJ.on(el, 'keypress', formatCardNumber);

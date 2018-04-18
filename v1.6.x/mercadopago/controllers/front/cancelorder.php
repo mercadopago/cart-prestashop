@@ -47,20 +47,15 @@ class MercadoPagoCancelOrderModuleFrontController extends ModuleFrontController
             $order = new Order(Tools::getValue("id_order"));
             $order_payments =  $order->getOrderPayments();
             foreach ($order_payments as $order_payment) {
-                if ($order_payment->transaction_id > 0) {
-                    $result = $mercadopago_sdk->getPayment($order_payment->transaction_id);
-                    if ($result['status'] == 200) {
-                        $responseCancel = $mercadopago_sdk->cancelPaymentsCustom(
-                            $order_payment->transaction_id
-                        );
-                    } else {
-                        $result = $mercadopago_sdk->getPaymentStandard($order_payment->transaction_id);
-                        $responseCancel = $mercadopago_sdk->cancelPaymentsStandard(
-                            $order_payment->transaction_id
-                        );
-                    }
+              if ($order_payment->transaction_id > 0) {
+                $result = $mercadopago_sdk->getPayment($order_payment->transaction_id);
+                if($result['status'] == 200) {
+                  $responseCancel = $mercadopago_sdk->cancelPaymentsCustom(
+                    $order_payment->transaction_id
+                  );
                 }
-                break;
+              }
+              break;
             }
             if ($responseCancel != null && $responseCancel['status'] == 200) {
                 $mercadopago->updateOrderHistory($order->id, Configuration::get('PS_OS_CANCELED'));

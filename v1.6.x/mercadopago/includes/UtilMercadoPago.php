@@ -119,11 +119,8 @@ class UtilMercadoPago
             AND active =1;";
 
             $dados = Db::getInstance()->executeS($sql);
-            if ($dados) {
-                $requirements['dimensoes'] = 'negative';
-            } else {
-                $requirements['dimensoes'] = 'positive';
-            }
+
+            $requirements['dimensoes'] = $dados ? 'negative' : 'positive';
         }
 
         $requirements['ssl'] = Configuration::get('PS_SSL_ENABLED') == 0 ? "negative" : "positive";
