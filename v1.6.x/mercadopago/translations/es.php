@@ -115,6 +115,9 @@ $_MODULE['<{mercadopago}default-bootstrap>settings_ee44d4191f9157d5869786ab0b5b3
 $_MODULE['<{mercadopago}default-bootstrap>settings_00d23a76e43b46dae9ec7aa9dcbebb32'] = 'Habilitado';
 $_MODULE['<{mercadopago}default-bootstrap>settings_b9f5c797ebbf55adccdd8539a65a0241'] = 'Discapacitado';
 $_MODULE['<{mercadopago}default-bootstrap>settings_56a8a9eb05f9014da51a4f9b57322ac7'] = 'Categoria:';
+$_MODULE['<{mercadopago}default-bootstrap>settings_039b734df5b6ddc164564009b6a444ff'] = 'Activar Crossborder';
+$_MODULE['<{mercadopago}default-bootstrap>settings_93cba07454f06a4a960172bbd6e2a435'] = 'Sí';
+$_MODULE['<{mercadopago}default-bootstrap>settings_bafd7322c6e97d25b6299b5d6fe8920b'] = 'No';
 $_MODULE['<{mercadopago}default-bootstrap>settings_061c6c6c9183b8a7f4b25975c9d08a4f'] = 'Guardar las configuraciones generales';
 $_MODULE['<{mercadopago}default-bootstrap>settings_e95056a32335c3c9c54f787b3e4c80f9'] = 'Credenciales Checkout Básico';
 $_MODULE['<{mercadopago}default-bootstrap>settings_c1394e2d47ca3a725a272918afd86d7f'] = 'Vamos a configurar su módulo, entonces tome las credenciales de client_id y client_secret en lo enlace de su país.';
@@ -131,8 +134,6 @@ $_MODULE['<{mercadopago}default-bootstrap>settings_e95294b730f61c8175550ec244bfc
 $_MODULE['<{mercadopago}default-bootstrap>settings_75497a22409db78dcc52c291e078bc10'] = 'Uruguay';
 $_MODULE['<{mercadopago}default-bootstrap>settings_2add6f4e140bc0631f2584ecedf042ab'] = 'Ajustes - Mercado Pago Standard';
 $_MODULE['<{mercadopago}default-bootstrap>settings_25e02e7fa8a60bc58e3e05349006fcc8'] = 'Activo:';
-$_MODULE['<{mercadopago}default-bootstrap>settings_93cba07454f06a4a960172bbd6e2a435'] = 'Sí';
-$_MODULE['<{mercadopago}default-bootstrap>settings_bafd7322c6e97d25b6299b5d6fe8920b'] = 'No';
 $_MODULE['<{mercadopago}default-bootstrap>settings_fef3c05d16ee7d3808b0c2594136ecb5'] = 'Texto personalizado:';
 $_MODULE['<{mercadopago}default-bootstrap>settings_ed06a54a4bd211223627c26dd70bbc68'] = 'Pagos con duas tarjetas:';
 $_MODULE['<{mercadopago}default-bootstrap>settings_f0a279d8944ba3f4c969d1928dfb6265'] = 'Banner:';

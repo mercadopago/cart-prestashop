@@ -844,6 +844,7 @@ class MercadoPago extends PaymentModule {
     // continue the states
     return ($this->uninstallPaymentSettings() &&
             Configuration::deleteByName('MERCADOPAGO_CATEGORY') &&
+            Configuration::deleteByName('MERCADOPAGO_CROSSBORDER_ACTIVE') &&
             Configuration::deleteByName('MERCADOPAGO_CREDITCARD_BANNER') &&
             Configuration::deleteByName('MERCADOPAGO_CREDITCARD_ACTIVE') &&
             Configuration::deleteByName('MERCADOPAGO_STANDARD_ACTIVE') &&
@@ -937,6 +938,7 @@ class MercadoPago extends PaymentModule {
       $country = $mp->getCountry();
       Configuration::updateValue('MERCADOPAGO_COUNTRY', $country);
       Configuration::updateValue('MERCADOPAGO_CUSTOM_ACTIVE', 'false');
+      Configuration::updateValue('MERCADOPAGO_CROSSBORDER_ACTIVE', 'false');
     }
 
 
@@ -1251,6 +1253,14 @@ class MercadoPago extends PaymentModule {
     $test_user = '';
     $requirements = UtilMercadoPago::checkRequirements();
 
+    if(isset($mp)) {
+      $is_crossborder = $mp->isCrossborder();
+      // If it's not crossborder deactivate crossborder in case that is active previously
+      if(!$is_crossborder) {
+        Configuration::updateValue('MERCADOPAGO_CROSSBORDER_ACTIVE', 'false');
+      }
+    }
+
     $notification_url = $this->link->getModuleLink(
         'mercadopago',
         'notification',
@@ -1328,6 +1338,8 @@ class MercadoPago extends PaymentModule {
            htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__,
       'version' => $this->getPrestashopVersion(),
       'active_tab' => $active_tab,
+      'is_crossborder' => $is_crossborder,
+      'crossborder_active' => htmlentities(Configuration::get('MERCADOPAGO_CROSSBORDER_ACTIVE'), ENT_COMPAT, 'UTF-8'),
     );
 
     if (!Tools::getValue('save_general')) $this->setSettings();
@@ -1345,6 +1357,8 @@ class MercadoPago extends PaymentModule {
     if(Tools::getValue('save_general')) {
       Configuration::updateValue('MERCADOPAGO_CATEGORY',
         Tools::getValue('MERCADOPAGO_CATEGORY'));
+      Configuration::updateValue('MERCADOPAGO_CROSSBORDER_ACTIVE',
+        Tools::getValue('MERCADOPAGO_CROSSBORDER_ACTIVE'));
     }
 
     if (Tools::getValue('login_standard')) {
@@ -1366,6 +1380,7 @@ class MercadoPago extends PaymentModule {
 
     private function setDefaultValues($client_id, $client_secret, $country) {
       Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', 'false');
+      Configuration::updateValue('MERCADOPAGO_CROSSBORDER_ACTIVE', 'false');
       Configuration::updateValue('MERCADOPAGO_CLIENT_ID', $client_id);
       Configuration::updateValue('MERCADOPAGO_CLIENT_SECRET', $client_secret);
       Configuration::updateValue('MERCADOPAGO_COUNTRY', $country);
@@ -2075,7 +2090,9 @@ class MercadoPago extends PaymentModule {
         }
 
         $payment_preference['statement_descriptor'] = 'MERCADOPAGO - '.Configuration::get('PS_SHOP_NAME');
-
+        if(Configuration::get('MERCADOPAGO_CROSSBORDER_ACTIVE') == 'true') {
+          $payment_preference['counter_currency'] = array('currency_id' => 'USD');
+        }
         return $payment_preference;
     }
 
@@ -2294,6 +2311,9 @@ class MercadoPago extends PaymentModule {
         $data['customer']['name'] = $data['customer']['first_name'];
         $data['customer']['surname'] = $data['customer']['last_name'];
         $data['payer'] = $data['customer'];
+        if(Configuration::get('MERCADOPAGO_CROSSBORDER_ACTIVE') == 'true') {
+          $data['counter_currency'] = array('currency_id' => 'USD');
+        }
         unset($data['customer']);
 
         return $data;
@@ -3241,6 +3261,7 @@ class MercadoPago extends PaymentModule {
       Configuration::updateValue('MERCADOPAGO_PRODUCT_CALCULATE', false);
       Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', false);
       Configuration::updateValue('MERCADOPAGO_CUSTOM_ACTIVE', false);
+      Configuration::updateValue('MERCADOPAGO_CROSSBORDER_ACTIVE', false);
 
       Configuration::updateValue('MERCADOPAGO_TWO_CARDS', false);
       Configuration::updateValue('MERCADOPAGO_COUPON_ACTIVE', false);

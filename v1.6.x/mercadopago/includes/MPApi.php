@@ -541,6 +541,16 @@ class MPApi
         return $result;
     }
 
+    public function isCrossborder() {
+      $access_token = $this->getAccessToken();
+      $result = MPRestCli::get('/users/me?access_token=' . $access_token);
+
+      return $result != null &&
+             isset($result['response']) &&
+             isset($result['response']['internal_tags']) &&
+             in_array('cbt_mp', $result['response']['internal_tags']);
+    }
+
     /*
      * Save settings
      */

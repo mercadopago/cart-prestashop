@@ -147,8 +147,8 @@
 					{/if}
 				</strong>
 			</p>
-			<p>
-				{if !empty($country)}
+			{if !empty($country)}
+				<p>
 					<span><label>{l s='Category:' mod='mercadopago'}</label></span>
 					<span>
 						<select name="MERCADOPAGO_CATEGORY" id="category">
@@ -157,8 +157,20 @@
 							{/foreach}
 						</select>
 					</span>
-				{/if}
-			</p>
+				</p>
+				<p>
+					{if $is_crossborder}
+					<label>{l s='Activate Crossborder: ' mod='mercadopago'}</label>
+					<div>
+						<select name="MERCADOPAGO_CROSSBORDER_ACTIVE" id="crossborder_active">
+							<option value="true">{l s='Yes' mod='mercadopago'} </option>
+							<option value="false">{l s='No' mod='mercadopago'} </option>
+						</select>
+					</div>
+					<br>
+					{/if}
+				</p>
+			{/if}
 			<input type="submit"
 						 name="save_general"
 						 value="{l s='Save General Settings' mod='mercadopago'}"
@@ -488,6 +500,10 @@
 
 		if (document.getElementById("standard_active")){
 			document.getElementById("standard_active").value = "{$standard_active|escape:'htmlall':'UTF-8'}";
+		}
+
+		if (document.getElementById("crossborder_active")){
+			document.getElementById("crossborder_active").value = "{$crossborder_active|escape:'htmlall':'UTF-8'}";
 		}
 
 		if (document.getElementById("custom_active")){
