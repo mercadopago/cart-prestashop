@@ -22,7 +22,7 @@ SandBox
 Customer Cards
 Coupon Of Discount
 Improvement - Improved loading SDK MercadoPago
-BUG - Special characters in URL 
+BUG - Special characters in URL
 BUG - Fix sending parameters in different versions of Prestashop
 
 V3.2.1 (18/04/2016)
@@ -105,6 +105,9 @@ V3.5.7 (17/10/2017)
 
 V3.5.8 (06/02/2018)
 - Fix in notification IPN and doubles payments created after payment
+
+V3.6.0
+- Refactoring on Module configuration at admin
 
 
 V1.0.0(04/04/2017)
