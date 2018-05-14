@@ -938,7 +938,6 @@ class MercadoPago extends PaymentModule {
       $country = $mp->getCountry();
       Configuration::updateValue('MERCADOPAGO_COUNTRY', $country);
       Configuration::updateValue('MERCADOPAGO_CUSTOM_ACTIVE', 'false');
-      Configuration::updateValue('MERCADOPAGO_CROSSBORDER_ACTIVE', 'false');
     }
 
 
@@ -1252,14 +1251,8 @@ class MercadoPago extends PaymentModule {
 
     $test_user = '';
     $requirements = UtilMercadoPago::checkRequirements();
-
-    if(isset($mp)) {
-      $is_crossborder = $mp->isCrossborder();
-      // If it's not crossborder deactivate crossborder in case that is active previously
-      if(!$is_crossborder) {
-        Configuration::updateValue('MERCADOPAGO_CROSSBORDER_ACTIVE', 'false');
-      }
-    }
+    if(isset($mp)) { $is_crossborder = $mp->isCrossborder(); }      
+    Configuration::updateValue('MERCADOPAGO_CROSSBORDER_ACTIVE', $is_crossborder);
 
     $notification_url = $this->link->getModuleLink(
         'mercadopago',
@@ -1339,7 +1332,6 @@ class MercadoPago extends PaymentModule {
       'version' => $this->getPrestashopVersion(),
       'active_tab' => $active_tab,
       'is_crossborder' => $is_crossborder,
-      'crossborder_active' => htmlentities(Configuration::get('MERCADOPAGO_CROSSBORDER_ACTIVE'), ENT_COMPAT, 'UTF-8'),
     );
 
     if (!Tools::getValue('save_general')) $this->setSettings();
@@ -1357,8 +1349,6 @@ class MercadoPago extends PaymentModule {
     if(Tools::getValue('save_general')) {
       Configuration::updateValue('MERCADOPAGO_CATEGORY',
         Tools::getValue('MERCADOPAGO_CATEGORY'));
-      Configuration::updateValue('MERCADOPAGO_CROSSBORDER_ACTIVE',
-        Tools::getValue('MERCADOPAGO_CROSSBORDER_ACTIVE'));
     }
 
     if (Tools::getValue('login_standard')) {
@@ -1380,7 +1370,6 @@ class MercadoPago extends PaymentModule {
 
     private function setDefaultValues($client_id, $client_secret, $country) {
       Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', 'false');
-      Configuration::updateValue('MERCADOPAGO_CROSSBORDER_ACTIVE', 'false');
       Configuration::updateValue('MERCADOPAGO_CLIENT_ID', $client_id);
       Configuration::updateValue('MERCADOPAGO_CLIENT_SECRET', $client_secret);
       Configuration::updateValue('MERCADOPAGO_COUNTRY', $country);
@@ -1471,6 +1460,14 @@ class MercadoPago extends PaymentModule {
 
     public function hookPayment($params) {
         if (!$this->active) return;
+      
+        $creditcard_active = Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE');
+        $mercadoenvios_activate = Configuration::get('MERCADOENVIOS_ACTIVATE');
+        $boleto_active = Configuration::get('MERCADOPAGO_CUSTOM_BOLETO');
+
+        $credit_card_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_CREDITCARD');
+        $boleto_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_BOLETO');
+        $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
 
         //calculo desconto parcela a vista
         $cart = $params['cart'];
@@ -1484,14 +1481,6 @@ class MercadoPago extends PaymentModule {
         $orderTotal =  number_format(($product_cost - $discount) + $shipping_cost, 2, ',', '.');
 
         $this->context->smarty->assign(array('orderTotal' => $orderTotal,'active_credit_card' => $active_credit_card));
-
-        $creditcard_active = Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE');
-        $mercadoenvios_activate = Configuration::get('MERCADOENVIOS_ACTIVATE');
-        $boleto_active = Configuration::get('MERCADOPAGO_CUSTOM_BOLETO');
-
-        $credit_card_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_CREDITCARD');
-        $boleto_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_BOLETO');
-        $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
 
         if ($mercadoenvios_activate == 'true') {
             $creditcard_active = 'false';
@@ -2090,9 +2079,10 @@ class MercadoPago extends PaymentModule {
         }
 
         $payment_preference['statement_descriptor'] = 'MERCADOPAGO - '.Configuration::get('PS_SHOP_NAME');
-        if(Configuration::get('MERCADOPAGO_CROSSBORDER_ACTIVE') == 'true') {
+        if(Configuration::get('MERCADOPAGO_CROSSBORDER_ACTIVE')) {
           $payment_preference['counter_currency'] = array('currency_id' => 'USD');
-        }
+        }        
+        UtilMercadoPago::log(json_encode($payment_preference), '');
         return $payment_preference;
     }
 
@@ -2311,7 +2301,7 @@ class MercadoPago extends PaymentModule {
         $data['customer']['name'] = $data['customer']['first_name'];
         $data['customer']['surname'] = $data['customer']['last_name'];
         $data['payer'] = $data['customer'];
-        if(Configuration::get('MERCADOPAGO_CROSSBORDER_ACTIVE') == 'true') {
+        if(Configuration::get('MERCADOPAGO_CROSSBORDER_ACTIVE')) {
           $data['counter_currency'] = array('currency_id' => 'USD');
         }
         unset($data['customer']);
@@ -3262,7 +3252,6 @@ class MercadoPago extends PaymentModule {
       Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', false);
       Configuration::updateValue('MERCADOPAGO_CUSTOM_ACTIVE', false);
       Configuration::updateValue('MERCADOPAGO_CROSSBORDER_ACTIVE', false);
-
       Configuration::updateValue('MERCADOPAGO_TWO_CARDS', false);
       Configuration::updateValue('MERCADOPAGO_COUPON_ACTIVE', false);
       Configuration::updateValue('MERCADOPAGO_POINT', false);

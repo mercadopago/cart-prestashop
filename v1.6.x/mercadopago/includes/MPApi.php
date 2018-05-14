@@ -464,7 +464,7 @@ class MPApi
         if ($customerResponse == null || $customerResponse["status"] != "200") {
             UtilMercadoPago::logMensagem(
                 'MercadoPago::createCustomerCard - '.
-                'Error: Doens\'t possibled to create the Customer',
+                'Error: Not possible to create the Customer',
                 MPApi::ERROR,
                 '',
                 false,

@@ -147,6 +147,12 @@
 					{/if}
 				</strong>
 			</p>
+      {if $is_crossborder}
+        <p>
+          <label>{l s='Crossborder: ' mod='mercadopago'}</label>
+          <strong>{l s='Enabled' mod='mercadopago'}</strong>
+        </p>
+      {/if}
 			{if !empty($country)}
 				<p>
 					<span><label>{l s='Category:' mod='mercadopago'}</label></span>
@@ -157,18 +163,6 @@
 							{/foreach}
 						</select>
 					</span>
-				</p>
-				<p>
-					{if $is_crossborder}
-					<label>{l s='Activate Crossborder: ' mod='mercadopago'}</label>
-					<div>
-						<select name="MERCADOPAGO_CROSSBORDER_ACTIVE" id="crossborder_active">
-							<option value="true">{l s='Yes' mod='mercadopago'} </option>
-							<option value="false">{l s='No' mod='mercadopago'} </option>
-						</select>
-					</div>
-					<br>
-					{/if}
 				</p>
 			{/if}
 			<input type="submit"
