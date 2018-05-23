@@ -1392,9 +1392,10 @@ class MercadoPago extends PaymentModule
     {
         $country = strtoupper(MPApi::getInstanceMP()->getCountry());
         $externalOption = new PaymentOption();
-        $externalOption->setCallToActionText($this->l('Mercado Pago Redirect'))
+        $externalOption->setCallToActionText($this->l(''))
                        ->setAction($this->context->link->getModuleLink($this->name, "standard", array(), true))
                        ->setModuleName($this->name)
+                       ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name."/views/img/mercadopago.png"))
                        ->setInputs([
                             "token" => [
                                 "name" =>"token",
@@ -1402,8 +1403,6 @@ class MercadoPago extends PaymentModule
                                 "value" =>"12345689",
                             ],
                         ]);
-
-// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name."/views/img/".$country."/mercadopago_468X60.jpg")
 
         return $externalOption;
     }

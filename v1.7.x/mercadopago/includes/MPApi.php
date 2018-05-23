@@ -156,35 +156,6 @@ class MPApi
 
         return  $result;
     }
-
-    /*
-     * v0
-     */
-    public function cancelPaymentsStandard($id)
-    {
-        $access_token = $this->getAccessToken();
-        $params = array(
-            "status" => "cancelled"
-        );
-        $result = MPRestCli::put("/collections/" . $id . "?access_token=" . $access_token, $params);
-
-        return  $result;
-    }
-
-    /*
-     * v1
-     */
-    public function cancelPaymentsCustom($id)
-    {
-        $access_token = $this->getAccessTokenV1();
-        $params = array(
-            "status" => "cancelled"
-        );
-        $result = MPRestCli::put("/v1/payments/" . $id . "?access_token=" . $access_token, $params);
-
-        return  $result;
-    }
-
     /**
      * Get information for specific payment
      *
@@ -244,8 +215,9 @@ class MPApi
 
         $uri_prefix = $this->sandbox ? '/sandbox' : '';
         $payment_info = MPRestCli::get(
-            $uri_prefix . '/collections/notifications/' . $id . '?access_token=' . $access_token
+            $uri_prefix . '/v1/notifications/' . $id . '?access_token=' . $access_token
         );
+        error_log("getPaymentStandard". Tools::jsonEncode($payment_inforesult));
         return $payment_info;
     }
 

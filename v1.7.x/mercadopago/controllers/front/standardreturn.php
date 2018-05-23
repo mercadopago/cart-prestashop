@@ -75,6 +75,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 foreach ($payments as $payment) {
                     // get payment info
                     $result = $mercadopago_sdk->getPaymentStandard($payment['id']);
+
                     $payment_info = $result['response']['collection'];
                     // colect payment details
                     $payment_ids[] = $payment_info['id'];

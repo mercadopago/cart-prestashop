@@ -58,6 +58,7 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
 
         $cart = $this->context->cart;
         $postParameters = $this->getPreferencesStandard();
+        error_log("===preferencia====" . Tools::jsonEncode($postParameters));
 
         try {
             $result = MPApi::getInstanceMP()->createPreference($postParameters);
