@@ -129,7 +129,10 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             $payment_status = $payment_info['status'];
             $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta[$payment_status]);
             if ($payment_status != $statusPS) {
+
+                
                 $order->setCurrentState($payment_status);
+
             }
 
             $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$order->id_cart.'&id_module='.
