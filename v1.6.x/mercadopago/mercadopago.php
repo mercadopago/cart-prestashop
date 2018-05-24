@@ -1563,8 +1563,6 @@ class MercadoPago extends PaymentModule {
             }
 
             // send standard configurations only activated
-            error_log("=MERCADOPAGO_STANDARD_ACTIVE=".Configuration::get('MERCADOPAGO_STANDARD_ACTIVE'));
-            error_log("=MERCADOPAGO_STANDARD_BANNER=".Configuration::get('MERCADOPAGO_STANDARD_BANNER'));
             if (Configuration::get('MERCADOPAGO_STANDARD_ACTIVE') == 'true') {
                 $data['custom_text'] = Configuration::get('MERCADOPAGO_CUSTOM_TEXT');
                 $data['standard_banner'] = Configuration::get('MERCADOPAGO_STANDARD_BANNER');
@@ -2382,8 +2380,6 @@ class MercadoPago extends PaymentModule {
     {
         $preferences = $this->getPrestashopPreferencesStandard(null);
 
-        error_log("====preferences====". Tools::jsonEncode($preferences));
-
         return $this->mercadopago->createPreference($preferences);
     }
 
@@ -2453,8 +2449,6 @@ class MercadoPago extends PaymentModule {
                 // get payment info
                 $result = $this->mercadopago->getPayment($payment['id']);
                 $payment_info = $result['response'];
-
-                error_log("==payment_info==".Tools::jsonEncode($payment_info));
 
                 // colect payment details
                 $payment_ids[] = $payment_info['id'];

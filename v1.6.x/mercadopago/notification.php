@@ -9,10 +9,6 @@ ini_set('display_errors', 1);
 include_once(dirname(__FILE__).'/../../config/config.inc.php');
 include_once(dirname(__FILE__).'/mercadopago.php');
 
-
-error_log("entrou aqui na notificação");
-error_log("===external_reference=====".Tools::getValue('external_reference'));
-
 // check value
 $external_reference = Tools::getValue('external_reference');
 $cart = new Cart(Tools::getValue('external_reference'));
@@ -38,13 +34,11 @@ if (!$cart->orderExists()) {
         );
 
         $id_order = Order::getOrderByCartId($external_reference);
-        error_log("==id_order==".$id_order); 
     
     } catch(Exception $e) {
         error_log($e->getMessage());
     }    
 } else {
-    error_log("entrou em listenIPN");
     $mercadopago->listenIPN(
         Tools::getValue('checkout'),
         Tools::getValue('topic'),
