@@ -49,26 +49,7 @@ class MercadoPagoStandardPaymentModuleFrontController extends ModuleFrontControl
                 'init_point'      => pSQL($init_point),
             ));
 
-            $customer = new Customer((int)$cart->id_customer);
-            $displayName = $mercadopago->l('Mercado Pago Redirect');
-            $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta['started']);
-            try {
-                $mercadopago->validateOrder(
-                    $cart->id,
-                    $payment_status,
-                    $cart->getOrderTotal(true, Cart::BOTH),
-                    $displayName,
-                    null,
-                    array(),
-                    (int)$cart->id_currency,
-                    false,
-                    $customer->secure_key
-                );
-                Tools::redirectLink($init_point);
-
-            } catch(Exception $e) {
-                error_log($e->getMessage());
-            }
+            Tools::redirectLink($init_point);
         } else {
             $data = array();
             $data['typeReturn'] = "failure";

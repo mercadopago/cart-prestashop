@@ -509,7 +509,7 @@ class MercadoPago extends PaymentModule {
 
     $token_form = Tools::getAdminToken('AdminOrder'.Tools::getValue('id_order'));
     $data = array(
-      'id_order' => $order_id,
+      'id_order' => $orderId,
       'token_form' => $token_form,
       'statusOrder' => $statusOrder,
       'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
@@ -1365,16 +1365,20 @@ class MercadoPago extends PaymentModule {
 
 
     private function setDefaultValues($client_id, $client_secret, $country) {
-      Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', 'false');
-      Configuration::updateValue('MERCADOPAGO_CLIENT_ID', $client_id);
-      Configuration::updateValue('MERCADOPAGO_CLIENT_SECRET', $client_secret);
-      Configuration::updateValue('MERCADOPAGO_COUNTRY', $country);
-      Configuration::updateValue('MERCADOPAGO_WINDOW_TYPE', 'redirect');
-      Configuration::updateValue('MERCADOPAGO_IFRAME_WIDTH', '725');
-      Configuration::updateValue('MERCADOPAGO_IFRAME_HEIGHT', '570');
-      Configuration::updateValue('MERCADOPAGO_INSTALLMENTS', '12');
-      Configuration::updateValue('MERCADOPAGO_AUTO_RETURN', 'approved');
-      Configuration::updateValue('MERCADOPAGO_CUSTOM_TEXT', 'Pay via MercadoPago and split into up to 24 times');
+        Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', 'false');
+        Configuration::updateValue('MERCADOPAGO_CLIENT_ID', $client_id);
+        Configuration::updateValue('MERCADOPAGO_CLIENT_SECRET', $client_secret);
+        Configuration::updateValue('MERCADOPAGO_COUNTRY', $country);
+        Configuration::updateValue('MERCADOPAGO_WINDOW_TYPE', 'redirect');
+        Configuration::updateValue('MERCADOPAGO_IFRAME_WIDTH', '725');
+        Configuration::updateValue('MERCADOPAGO_IFRAME_HEIGHT', '570');
+        Configuration::updateValue('MERCADOPAGO_INSTALLMENTS', '12');
+        Configuration::updateValue('MERCADOPAGO_AUTO_RETURN', 'approved');
+        Configuration::updateValue('MERCADOPAGO_CUSTOM_TEXT', 'Pay via MercadoPago and split into up to 24 times');
+        Configuration::updateValue('MERCADOPAGO_STANDARD_BANNER',
+            (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
+            htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/mercadopago/views/img/'.$country.'/banner_all_methods.png'
+        );
     }
 
     public function hookDisplayBackOfficeHeader($params)
@@ -1456,7 +1460,7 @@ class MercadoPago extends PaymentModule {
 
     public function hookPayment($params) {
         if (!$this->active) return;
-
+        
         //calculo desconto parcela a vista
         $cart = $params['cart'];
 
@@ -1464,7 +1468,10 @@ class MercadoPago extends PaymentModule {
         $shipping_cost = (double) $cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
         $product_cost = (double) $cart->getOrderTotal(true, Cart::ONLY_PRODUCTS);
 
-        $discount = ($percent / 100) * $product_cost;
+        $discount = 0;
+        if (Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT') > 0) {
+            $discount = ($percent / 100) * $product_cost;
+        }
 
         $orderTotal =  number_format(($product_cost - $discount) + $shipping_cost, 2, ',', '.');
 
@@ -1476,6 +1483,7 @@ class MercadoPago extends PaymentModule {
 
         $credit_card_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_CREDITCARD');
         $boleto_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_BOLETO');
+
         $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
 
         if ($mercadoenvios_activate == 'true') {
@@ -1555,6 +1563,8 @@ class MercadoPago extends PaymentModule {
             }
 
             // send standard configurations only activated
+            error_log("=MERCADOPAGO_STANDARD_ACTIVE=".Configuration::get('MERCADOPAGO_STANDARD_ACTIVE'));
+            error_log("=MERCADOPAGO_STANDARD_BANNER=".Configuration::get('MERCADOPAGO_STANDARD_BANNER'));
             if (Configuration::get('MERCADOPAGO_STANDARD_ACTIVE') == 'true') {
                 $data['custom_text'] = Configuration::get('MERCADOPAGO_CUSTOM_TEXT');
                 $data['standard_banner'] = Configuration::get('MERCADOPAGO_STANDARD_BANNER');
@@ -2288,8 +2298,10 @@ class MercadoPago extends PaymentModule {
         $data['payment_methods']['installments'] = (integer) Configuration::get('MERCADOPAGO_INSTALLMENTS');
 
         $ipn_url = $this->site_url.'modules/'.$this->name.'/notification.php';
+        if (!strrpos($ipn_url, 'localhost')) {
+            $data['notification_url'] =  $ipn_url.'?checkout=standard&';
+        }
 
-        $data['notification_url'] =  $ipn_url.'?checkout=standard&';
         // swap to payer index since customer is only for transparent
         $data['customer']['name'] = $data['customer']['first_name'];
         $data['customer']['surname'] = $data['customer']['last_name'];
@@ -2369,6 +2381,9 @@ class MercadoPago extends PaymentModule {
     public function createStandardCheckoutPreference()
     {
         $preferences = $this->getPrestashopPreferencesStandard(null);
+
+        error_log("====preferences====". Tools::jsonEncode($preferences));
+
         return $this->mercadopago->createPreference($preferences);
     }
 
@@ -2439,12 +2454,14 @@ class MercadoPago extends PaymentModule {
                 $result = $this->mercadopago->getPayment($payment['id']);
                 $payment_info = $result['response'];
 
+                error_log("==payment_info==".Tools::jsonEncode($payment_info));
+
                 // colect payment details
                 $payment_ids[] = $payment_info['id'];
                 $payment_statuses[] = $payment_info['status'];
-                $payment_types[] = $payment_info['payment_type'];
+                $payment_types[] = $payment_info['payment_type_id'];
                 $transaction_amounts += $payment_info['transaction_amount'];
-                if ($payment_info['payment_type'] == 'credit_card') {
+                if ($payment_info['payment_type_id'] == 'credit_card') {
                     $payment_method_ids[] = isset($payment_info['payment_method_id']) ?
                                             $payment_info['payment_method_id'] : '';
                     $credit_cards[] = isset($payment_info['card']['last_four_digits']) ?

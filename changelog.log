@@ -109,6 +109,8 @@ V3.5.8 (06/02/2018)
 V3.6.0
 - Refactoring on Module configuration at admin
 
+V3.6.1
+- Change creation of order, now the order is create before the payment.
 
 V1.0.0(04/04/2017)
 Prestashop 1.7
