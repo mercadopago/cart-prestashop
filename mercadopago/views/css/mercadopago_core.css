@@ -1,0 +1,285 @@
+/**
+* 2007-2015 PrestaShop
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Open Software License (OSL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/osl-3.0.php
+* If you did not receive a copy of the license and are unable to
+* obtain it through the world-wide-web, please send an email
+* to license@prestashop.com so we can send you a copy immediately.
+*
+* DISCLAIMER
+*
+* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+* versions in the future. If you wish to customize PrestaShop for your
+* needs please refer to http://www.prestashop.com for more information.
+*
+*  @author    MercadoPago
+*  @copyright Copyright (c) MercadoPago [http://www.mercadopago.com]
+*  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*  International Registered Trademark & Property of MercadoPago
+*/
+.mp-module .return-div h4 {
+	font-size: 16px;
+}
+.mp-module .return-div h5 {
+	font-size: 12px;
+}
+.mp-module .form-error {
+	outline: rgb(215, 5, 5) solid thin;
+	border: solid 1px rgb(215, 5, 5);
+}
+
+.mp-module .boxshadow-error {
+	box-shadow: 0px 0px 0px 1px rgb(215, 5, 5);
+	border: solid 1px rgb(215, 5, 5);
+}
+
+.mp-module .footer-logo {
+	background: url('../img/payment_method_logo.png') no-repeat;
+	height: 40px;
+	display: block;
+	margin-top: 20px;
+}
+
+.mp-module .boleto-frame {
+	width: 780px;
+	height: 845px;
+}
+
+.mp-module .MLM {
+	width: 670px;
+	height: 670px;
+}
+
+.mp-module p {
+	color: black;
+	font-size: 15px;
+	font-weight: normal;
+}
+
+.mp-module .label-checkout {
+	color: black;
+	font-size: 15px;
+	font-weight: 700;
+
+}
+
+.mp-module .mp-form h4 {
+	font-weight: bold;
+	font-size: 22px;
+	color: #333333;
+	margin-bottom: 25px;
+	margin-top: 3px;
+	margin-left: 28px;
+}
+
+.mp-module .mp-button {
+	width: 200px;
+	margin-left: 15px;
+}
+
+.mp-module .description {
+	font-size: 14px;
+	color: black;
+	display: block;
+	margin-top: 20px;
+	margin-left: 30px;
+}
+
+.mp-module .cvv {
+	width: 45px;
+	height: 25px;
+}
+
+.mp-module .col {
+	float: left;
+	margin-top: 10px;
+}
+
+.mp-module .banner-column {
+	width: 47%;
+}
+
+.mp-module .ch-btn, .mp-module .ch-btn:focus, .mp-module .ch-btn:visited {
+	font-family: 'Lato', sans-serif;
+	font-weight: 400;
+	background-color: #36A1F1;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #36A1F1), color-stop(100%, #0F79C9));
+	background-image: -webkit-linear-gradient(#36A1F1, #0F79C9);
+	background-image: -moz-linear-gradient(#36A1F1, #0F79C9);
+	background-image: -o-linear-gradient(#36A1F1, #0F79C9);
+	background-image: linear-gradient(#36A1F1, #0F79C9);
+	-webkit-box-shadow: inset 0 1px #97DCFF;
+	box-shadow: 0 1px #97DCFF inset;
+	color: #FFF!important;
+	border: 0px solid #0D6FB9;
+	border-radius: 4px 4px 4px 4px;
+	cursor: pointer;
+	display: inline-block;
+}
+.mp-module .ch-btn:hover {
+	background-color: #4CBFF8;
+	background-image: linear-gradient(#4CBFF8, #1699DF);
+	box-shadow: 0 1px #B6EBFF inset;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #4CBFF8), color-stop(100%, #1699DF));
+	background-image: -webkit-linear-gradient(#4CBFF8, #1699DF);
+	background-image: -moz-linear-gradient(#4CBFF8, #1699DF);
+	background-image: -o-linear-gradient(#4CBFF8, #1699DF);
+	background-image: linear-gradient(#4CBFF8, #1699DF);
+	-webkit-box-shadow: inset 0 1px #B6EBFF;
+	border: 0px solid #1890D3;
+	color: #FFF;
+	text-decoration: none;
+	outline: 0
+}
+.mp-module .ch-btn:active {
+	background-color: #1473CD;
+	background-image: linear-gradient(#1473CD, #0B66BC);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1473CD), color-stop(100%, #0B66BC));
+	background-image: -webkit-linear-gradient(#1473CD, #0B66BC);
+	background-image: -moz-linear-gradient(#1473CD, #0B66BC);
+	background-image: -o-linear-gradient(#1473CD, #0B66BC);
+	background-image: linear-gradient(#1473CD, #0B66BC);
+	-webkit-box-shadow: inset 0 1px #0B5BA6;
+	box-shadow: 0 1px #0B5BA6 inset;
+	border: 0px solid #0B5BA6;
+	color: #FFF;
+	text-decoration: none;
+	outline: 0
+}
+
+.mp-module .ch-btn-big, .mp-module .ch-btn-big:focus {
+	font-size: 17px;
+	text-align: left;
+	line-height: 1.25em;
+	padding: 6px 10px;
+	outline: 0;
+	float: left;
+	margin-bottom: 5px;
+}
+
+.mp-module .ch-btn-skin, .mp-module .ch-btn-skin:focus, .mp-module .ch-btn-skin:visited {
+	background-color: #DAF1FC;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #DAF1FC), color-stop(100%, #C2E2F3));
+	background-image: -webkit-linear-gradient(#DAF1FC, #C2E2F3);
+	background-image: -moz-linear-gradient(#DAF1FC, #C2E2F3);
+	background-image: -o-linear-gradient(#DAF1FC, #C2E2F3);
+	background-image: linear-gradient(#DAF1FC, #C2E2F3);
+	border: 0px solid #79B0D9;
+	-webkit-box-shadow: inset 0 1px #EFF7FD;
+	box-shadow: inset 0 1px #EFF7FD;
+	color: #295D8F;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+	outline: 0
+}
+.mp-module .ch-btn-skin:hover {
+	background-color: #EAF7FE;
+	background-image: -webkit-linear-gradient(#EAF7FE, #D9EDF8);
+	background-image: -moz-linear-gradient(#EAF7FE, #D9EDF8);
+	background-image: -o-linear-gradient(#EAF7FE, #D9EDF8);
+	background-image: linear-gradient(#EAF7FE, #D9EDF8);
+	-webkit-box-shadow: inset 0 1px #F7FAFE;
+	box-shadow: inset 0 1px #F7FAFE;
+	outline: 0
+}
+.mp-module .ch-btn-skin:active {
+	background-color: #A9DBF7;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #A9DBF7), color-stop(100%, #A3D0EE));
+	background-image: -webkit-linear-gradient(#A9DBF7, #A3D0EE);
+	background-image: -moz-linear-gradient(#A9DBF7, #A3D0EE);
+	background-image: -o-linear-gradient(#A9DBF7, #A3D0EE);
+	background-image: linear-gradient(#A9DBF7, #A3D0EE);
+	-webkit-box-shadow: inset 0 1px 6px rgba(71, 98, 116, .6);
+	box-shadow: inset 0 1px 6px rgba(71, 98, 116, .6);
+	border-color: #79A8C7;
+	outline: 0
+}
+
+.lightbox {
+	display: none;
+	position: fixed;
+	z-index: 5004;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	color:#333333;
+	margin-top: -2px;
+}
+
+.lightbox:target {
+	display: block;
+	outline: none;
+}
+
+.lightbox .box {
+	width: 100%;
+	height: 100%;
+	padding: 20px;
+	box-shadow: 0px 1px 26px -6px #777777;
+	background: rgba(0, 0, 0, 0.498039);
+	border-radius: 4px;
+}
+
+
+.lightbox .content {
+	display: block;
+	font-size: 18px;
+	line-height: 22px;
+	width: 300px;
+	height: 300px;
+	background-size: 36px 36px;
+	background: white url('../img/spinner.gif') 50% 50% no-repeat;
+	position: fixed;
+	top: calc(50% - 150px);
+	left: calc(50% - 150px);
+	border-radius: 10px;
+}
+
+.lightbox .processing {
+	color: black;
+	height: 40px;
+	padding-top: 8px;
+	position: relative;
+	top: 60%;
+	left: calc(50% - 40px);
+	font: 600 14px/18px "Open Sans", sans-serif;
+	font-weight: 100;
+}
+
+.lightbox .logo {
+	height: 23px;
+	width: 90px;
+	position: relative;
+	top: -550%;
+	left: 3%;
+}
+
+.mp-module .alert.alert-danger:before {
+	display: none;
+}
+
+
+
+
+/*
+* Taxes - MLA
+*/
+.mp-text-cft{
+	font-size: 22px;
+	line-height: 30px;
+	font-family: Lato,sans-serif;
+	display: none;
+}
+
+.mp-text-tea{
+	font-size: 9px;
+	width: 235px;
+	text-align: right;
+	font-family: Lato,sans-serif;
+	display: none;
+}
