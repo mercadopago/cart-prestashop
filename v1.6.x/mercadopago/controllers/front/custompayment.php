@@ -39,7 +39,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
         $mercadopago = $this->module;
         $cart = Context::getContext()->cart;
         $response = $mercadopago->execPayment($_POST);
-
+        error_log("retorno " . Tools::jsonEncode($response));
         if (!isset($response['error'])) {
             $displayName = 'Mercado Pago';
             $total = $cart->getOrderTotal(true, Cart::BOTH);

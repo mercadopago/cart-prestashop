@@ -27,6 +27,17 @@
 class UtilMercadoPago
 {
 
+    public static $DEFAULT_SPONSOR_ID = array(
+        'MLB' => 178326379,
+        'MLM' => 187899553,
+        'MLA' => 187899872,
+        'MCO' => 187900060,
+        'MLV' => 187900246,
+        'MLC' => 187900485,
+        'MPE' => 217182014,
+        'MLU' => 241730009,
+    );
+
     public static $statusMercadoPagoPresta = array(
                                                 'in_process' => 'MERCADOPAGO_STATUS_0',
                                                 'approved' => 'MERCADOPAGO_STATUS_1',

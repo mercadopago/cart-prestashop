@@ -119,14 +119,6 @@ class MercadoPago extends PaymentModule {
   );
 
   public function __construct() {
-    UtilMercadoPago::logMensagem(
-      "debug",
-      MPApi::INFO,
-      "CHECKOUT mercadopago construct " . Tools::getValue('checkout') . " " .  Tools::getValue('topic'),
-      false,
-      null,
-      ""
-    );
 
     $query = http_build_query($_GET);
     $this->name = 'mercadopago';
@@ -939,7 +931,8 @@ class MercadoPago extends PaymentModule {
       Configuration::updateValue('MERCADOPAGO_CUSTOM_ACTIVE', 'false');
     }
 
-
+    $this->setSponsorId($country);
+    
     return $this->renderSettings($errors, $success, 'Custom');
   }
 
@@ -1055,6 +1048,9 @@ class MercadoPago extends PaymentModule {
         array('message_error' => $e->getMessage(),
               'version' => $this->getPrestashopVersion(),)
       );
+
+      $this->setSponsorId($country);
+
       return $this->display(__file__, '/views/templates/front/error_admin.tpl');
     }
 
@@ -1128,21 +1124,21 @@ class MercadoPago extends PaymentModule {
   }
 
   private function setSponsorId($current_country) {
-    $sponsor_ids = array(
-      'MLB' => 178326379,
-      'MLM' => 187899553,
-      'MLA' => 187899872,
-      'MCO' => 187900060,
-      'MLV' => 187900246,
-      'MLC' => 187900485,
-      'MPE' => 217182014,
-      'MLU' => 241730009,
-    );
+    error_log("===setSponsorId===");
+    $sponsorID =  UtilMercadoPago::getString(Configuration::get("SPONSOR_ID"));
+    error_log("===sponsorID===".$sponsorID);
     $test_user = $this->mercadopago->isTestUser();
-    Configuration::updateValue('MERCADOPAGO_USER_TEST', $test_user);
+    Configuration::updateValue('MERCADOPAGO_USER_TEST', $test_user);    
     if (!$test_user) {
-      Configuration::updateValue('MERCADOPAGO_SPONSOR_ID', $sponsor_ids[$current_country]);
+        if($sponsorID  == "") {
+            Configuration::updateValue('MERCADOPAGO_SPONSOR_ID', UtilMercadoPago::$DEFAULT_SPONSOR_ID[$current_country]);
+        } else {
+            Configuration::updateValue('MERCADOPAGO_SPONSOR_ID', $sponsorID);
+        }
     }
+    
+    error_log("===DEFAULT_SPONSOR_ID===".UtilMercadoPago::$DEFAULT_SPONSOR_ID[$current_country]);
+    error_log("===MERCADOPAGO_SPONSOR_ID===".Configuration::get('MERCADOPAGO_SPONSOR_ID'));
   }
 
   private function getCategories() {
@@ -1273,7 +1269,7 @@ class MercadoPago extends PaymentModule {
       'two_cards' => htmlentities(Configuration::get('MERCADOPAGO_TWO_CARDS'), ENT_COMPAT, 'UTF-8'),
       'MERCADOPAGO_PRODUCT_CALCULATE' => htmlentities(Configuration::get('MERCADOPAGO_PRODUCT_CALCULATE'), ENT_COMPAT, 'UTF-8'),
       'MERCADOPAGO_CART_CALCULATE' => htmlentities(Configuration::get('MERCADOPAGO_CART_CALCULATE'), ENT_COMPAT, 'UTF-8'),
-
+      'sponsor_id' => htmlentities(Configuration::get('SPONSOR_ID'), ENT_COMPAT, 'UTF-8'),
       'public_key' => htmlentities(Configuration::get('MERCADOPAGO_PUBLIC_KEY'), ENT_COMPAT, 'UTF-8'),
       'access_token' => htmlentities(Configuration::get('MERCADOPAGO_ACCESS_TOKEN'), ENT_COMPAT, 'UTF-8'),
       'custom_active' => htmlentities(Configuration::get('MERCADOPAGO_CUSTOM_ACTIVE'), ENT_COMPAT, 'UTF-8'),
@@ -1345,6 +1341,15 @@ class MercadoPago extends PaymentModule {
     if(Tools::getValue('save_general')) {
       Configuration::updateValue('MERCADOPAGO_CATEGORY',
         Tools::getValue('MERCADOPAGO_CATEGORY'));
+
+        $country = UtilMercadoPago::getString(Configuration::get('MERCADOPAGO_COUNTRY'));
+        
+        if ($country != "") {
+            $sponsorID =  UtilMercadoPago::getString(Tools::getValue('SPONSOR_ID'));
+            error_log("===sponsorID===".$sponsorID);
+            Configuration::updateValue('SPONSOR_ID', $sponsorID);
+            $this->setSponsorId($country);
+        }
     }
 
     if (Tools::getValue('login_standard')) {
@@ -1358,11 +1363,10 @@ class MercadoPago extends PaymentModule {
     } else {
       $settings = $this->renderSettings();
     }
-
+    $settings["log"] = $this->_path . "/logs/mercadopago.log";
     $this->context->smarty->assign($settings);
     return $this->display(__file__, '/views/templates/admin/settings.tpl');
   }
-
 
     private function setDefaultValues($client_id, $client_secret, $country) {
         Configuration::updateValue('MERCADOPAGO_STANDARD_ACTIVE', 'false');
@@ -1459,6 +1463,7 @@ class MercadoPago extends PaymentModule {
     }
 
     public function hookPayment($params) {
+        echo "entrou no pagamento";
         if (!$this->active) return;
         
         //calculo desconto parcela a vista
@@ -1594,7 +1599,6 @@ class MercadoPago extends PaymentModule {
             }
             // send offline settings
             $offline_methods_payments = $this->mercadopago->getOfflinePaymentMethods();
-
             $offline_payment_settings = array();
             foreach ($offline_methods_payments as $offline_payment) {
                 $op_banner_variable = 'MERCADOPAGO_'.Tools::strtoupper($offline_payment['id'].'_BANNER');
@@ -1633,6 +1637,16 @@ class MercadoPago extends PaymentModule {
             //$this->context->smarty->assign($this->setPreModuleAnalytics());
 
             return $this->display(__file__, $pageReturn);
+        } else {
+            echo "====OCORREU UM ERRO====";
+            UtilMercadoPago::logMensagem(
+                'OCORREU UM ERRO DURANTE A INSTALAção, credenciais não foram carregadas'.$cart->id,
+                MPApi::ERROR,
+                $result['message'],
+                true,
+                null,
+                'MercadoPago->hookPayment'
+            );            
         }
     }
 
@@ -1747,10 +1761,24 @@ class MercadoPago extends PaymentModule {
     public function execPayment($post)
     {
         $preferences = $this->getPreferencesCustom($post);
-        try {
-            //$conciliation = new Conciliation();
-            //$conciliation->insertMercadoPagoOrder();
+        try { 
+            UtilMercadoPago::logMensagem(
+                "Json preferences custom ",
+                MPApi::INFO,
+                Tools::jsonEncode($preferences),
+                false,
+                null,
+                "mercadopago->execPayment"
+            );            
             $result = $this->mercadopago->createCustomPayment($preferences);
+            UtilMercadoPago::logMensagem(
+                "Json result custom ",
+                MPApi::INFO,
+                Tools::jsonEncode($result),
+                false,
+                null,
+                "mercadopago->execPayment"
+            );              
         } catch (Exception $e) {
             UtilMercadoPago::logMensagem(
                 'Occured a error during the process custom payment.',
@@ -1853,6 +1881,10 @@ class MercadoPago extends PaymentModule {
         $items = array();
         $summary = '';
 
+        if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' || Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
+            $round = true;
+        }
+
         foreach ($products as $key => $product) {
             $image = Image::getCover($product['id_product']);
             $product_image = new Product($product['id_product'], false, Context::getContext()->language->id);
@@ -1870,8 +1902,9 @@ class MercadoPago extends PaymentModule {
                 'picture_url' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').$imagePath,
                 'category_id' => Configuration::get('MERCADOPAGO_CATEGORY'),
                 'quantity' => $product['quantity'],
-                'unit_price' => $product['price_wt'],
+                'unit_price' => $round ? (int)Tools::ps_round($product['price_wt'], 0) : (float)$product['price_wt'],
             );
+
             if ($key == 0) {
                 $summary .= $product['name'];
             } else {
@@ -1889,9 +1922,8 @@ class MercadoPago extends PaymentModule {
                 'description' => 'Shipping service used by store',
                 'quantity' => 1,
                 'category_id' => Configuration::get('MERCADOPAGO_CATEGORY'),
-                'unit_price' => $shipping_cost,
+                'unit_price' => $round ? (int)Tools::ps_round($shipping_cost, 0) : (float)$shipping_cost,
             );
-
             $items[] = $item;
         }
 
@@ -1903,9 +1935,8 @@ class MercadoPago extends PaymentModule {
                 'description' => 'Wrapping service used by store',
                 'quantity' => 1,
                 'category_id' => Configuration::get('MERCADOPAGO_CATEGORY'),
-                'unit_price' => $wrapping_cost,
+                'unit_price' =>  $round ? (int)Tools::ps_round($wrapping_cost, 0) : (float)$wrapping_cost,
             );
-
             $items[] = $item;
         }
 
@@ -1917,9 +1948,8 @@ class MercadoPago extends PaymentModule {
                 'description' => 'Discount provided by store',
                 'quantity' => 1,
                 'category_id' => Configuration::get('MERCADOPAGO_CATEGORY'),
-                'unit_price' => -$discounts,
+                'unit_price' => $round ? (int)Tools::ps_round(-$discounts, 0) : (float)-$discounts,
             );
-
             $items[] = $item;
         }
 
@@ -2001,7 +2031,8 @@ class MercadoPago extends PaymentModule {
         );
 
         if ($post['payment_method_id'] == "webpay") {
-            $payment_preference['callback_url'] = $this->link->getModuleLink(
+
+            $callback_url = $this->link->getModuleLink(
                 'mercadopago',
                 'standardreturn',
                 array(),
@@ -2010,14 +2041,15 @@ class MercadoPago extends PaymentModule {
                 null,
                 false
             );
-            $payment_preference['transaction_details']['financial_institution'] = 1234;
-            $ip = getenv('HTTP_CLIENT_IP') ? "" :
-            getenv('HTTP_X_FORWARDED_FOR') ? "":
-            getenv('HTTP_X_FORWARDED') ? "" :
-            getenv('HTTP_FORWARDED_FOR') ? "":
-            getenv('HTTP_FORWARDED') ? "" :
-            getenv('REMOTE_ADDR');
-            $payment_preference['additional_info']['ip_address'] = $ip;
+            
+            $payment_preference['callback_url'] = $callback_url;
+      
+            $payment_preference['transaction_details']['financial_institution'] = "1234";
+            $payment_preference['additional_info']['ip_address'] = "127.0.0.1";
+
+            $payment_preference['payer']['identification']['type'] = "RUT";
+            $payment_preference['payer']['identification']['number'] = "0";
+            $payment_preference['payer']['entity_type'] = "individual";
         }
 
         if ($post['payment_method_id'] == 'bolbradesco') {
@@ -2162,6 +2194,7 @@ class MercadoPago extends PaymentModule {
             } else {
                 $unit_price = $product['price_wt'];
             }
+
             $item = array(
                 'id' => $product['id_product'],
                 'title' => $product['name'],
