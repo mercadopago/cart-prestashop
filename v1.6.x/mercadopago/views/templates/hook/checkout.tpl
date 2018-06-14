@@ -148,7 +148,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	</div>
 
 	{/if}
-{if $mercadoenvios_activate == 'false' && $creditcard_active == 'true'}
+{if $mercadoenvios_activate == 'false' && !$creditcard_disable}
 	<div class="card row">
 		<div class="mp-form">
 			<div class="row">
@@ -521,7 +521,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	{if $country == 'MLM' || $country == 'MPE' || $country ==
 	'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV' || $country == 'MLU'}
 	{foreach from=$offline_payment_settings key=offline_payment item=value}
-	{if $value.active == "true" && $mercadoenvios_activate == 'false'}
+	{if $value.disabled  != "true" && $mercadoenvios_activate == "false"}
 	<div class="row">
 		<div class="col-xs-12 col-md-6">
 			<a href="javascript:void(0);"

@@ -146,7 +146,7 @@ class UtilMercadoPago
         }
         return $value;
     }
-
+    
     public static function getString($value)
     {
         if (is_null($value) || empty($value)) {
