@@ -118,7 +118,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = "mercadopago";
         $this->tab = "payments_gateways";
-        $this->version = "1.0.11";
+        $this->version = MPApi::VERSION;
         $this->ps_versions_compliancy = array("min" => "1.7", "max" => _PS_VERSION_);
         $this->author = "Mercado Pago";
         $this->controllers = array("validationstandard", "standardreturn");
@@ -558,10 +558,7 @@ class MercadoPago extends PaymentModule
                 Configuration::updateValue('MERCADOPAGO_STATUS_'.$key, $order_state->id);
             }
         }
-
-        error_log('vai veriricar se vai entrar no if');
         if (!is_null($this->orderStateAvailable(Configuration::get('MERCADOPAGO_STATUS_11')))) {
-            error_log('entrou no if');
             $update = Db::getInstance()->update(
                 'order_state',
                 array(
@@ -646,12 +643,7 @@ class MercadoPago extends PaymentModule
 
     public function getContent()
     {
-
         UtilMercadoPago::log("LOG", "LOG LOG LOG ");
-
-        echo("entrou aqui echo");
-        print_r("entrou aqui");
-        error_log("entrou no getContent");
         $shopDomainSsl = Tools::getShopDomainSsl(true, true);
         $backOfficeCssUrl = $shopDomainSsl.__PS_BASE_URI__."modules/".$this->name."/views/css/backoffice.css";
         $marketingCssUrl = $shopDomainSsl.__PS_BASE_URI__."modules/".$this->name."/views/css/marketing.css";
@@ -1885,23 +1877,6 @@ class MercadoPago extends PaymentModule
             }
         }
         return $mensagem;
-    }
-    /**
-     * Get an order by its cart id.
-     *
-     * @param int $id_cart Cart id
-     *
-     * @return array Order details
-     */
-    public static function getOrderByCartId($id_cart)
-    {
-        $sql = 'SELECT `id_order`
-            FROM `'._DB_PREFIX_.'orders`
-            WHERE `id_cart` = '.(int) $id_cart
-            .Shop::addSqlRestriction().' order by id_order desc';
-        $result = Db::getInstance()->getRow($sql);
-
-        return isset($result['id_order']) ? $result['id_order'] : false;
     }
     /**
      * Check, if SSL is enabled during current connection

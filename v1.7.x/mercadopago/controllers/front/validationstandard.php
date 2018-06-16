@@ -23,13 +23,17 @@
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of MercadoPago
  */
+
 class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontController
 {
     protected $orderConfirmationUrl = 'index.php?controller=order-confirmation';
 
     public function initContent()
     {
+
+
         parent::initContent();
+    
 
         if (Tools::getValue('typeReturn') == 'failure') {
             $this->redirectError();
@@ -51,15 +55,18 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
 
             $mercadopago = $this->module;
             $mercadopago_sdk = MPApi::getInstanceMP();
-            error_log("entrou aqui 2 ");
             foreach ($collection_ids as $collection_id) {
                 $result = $mercadopago_sdk->getPaymentStandard($collection_id);
-                $payment_info = $result['response']['collection'];
+                if ($result['status'] != 200) {
+                    continue;
+                }
+
+                $payment_info = $result['response'];
                 $id_cart = $payment_info['external_reference'];
                 $cart = new Cart($id_cart);
                 $payment_statuses[] = $payment_info['status'];
                 $payment_ids[] = $payment_info['id'];
-                $payment_types[] = $payment_info['payment_type'];
+                $payment_types[] = $payment_info['payment_type_id'];
 
                 if (isset($payment_info['payment_method_id'])) {
                     $payment_method_ids[] = $payment_info['payment_method_id'];
@@ -67,7 +74,7 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
 
                 $transaction_amounts += $payment_info['transaction_amount'];
 
-                if (isset($payment_info['payment_type']) && $payment_info['payment_type'] == 'credit_card') {
+                if (isset($payment_info['payment_type_id']) && $payment_info['payment_type_id'] == 'credit_card') {
                     $card_holder_names[] = isset($payment_info['card']['cardholder']['name'])
                     ? $payment_info['card']['cardholder']['name'] : '';
                     if (isset($payment_info['card']['last_four_digits'])) {
@@ -94,7 +101,7 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
                         break;
                 }
 
-                $order_id = $mercadopago->getOrderByCartId($cart->id);
+                $order_id = UtilMercadoPago::getOrderByCartId($cart->id);
                 $order = new Order($order_id);
                 if ($order_status != null) {
                     $statusPS = (int)$order->getCurrentState();
@@ -105,13 +112,10 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
                     }
 
                     try {
-                        error_log('vai atualizar');
                         $payments = $order->getOrderPaymentCollection();
                         $payments[0]->transaction_id = implode(' / ', $payment_ids);
                         $payments[0]->update();
-                        error_log('vai atualizar');
                     } catch (Exception $e) {
-                        error_log('Occured a error during the process the update order, payments is null = '.$id_cart);
                         UtilMercadoPago::logMensagem(
                             'Occured a error during the process the update order, payments is null = '.$id_cart,
                             MPApi::ERROR,
@@ -130,7 +134,7 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
                     $uri .= '&payment_type='.implode(' / ', $payment_types);
                     $uri .= '&payment_method_id='.implode(' / ', $payment_method_ids);
                     $uri .= '&amount='.$total;
-                    if ($payment_info['payment_type'] == 'credit_card') {
+                    if ($payment_info['payment_type_id'] == 'credit_card') {
                         $uri .= '&card_holder_name='.implode(' / ', $card_holder_names);
                         $uri .= '&four_digits='.implode(' / ', $four_digits_arr);
                         $uri .= '&statement_descriptor='.$statement_descriptors[0];
@@ -150,8 +154,6 @@ class MercadoPagoValidationStandardModuleFrontController extends ModuleFrontCont
 
     protected function redirectError()
     {
-        error_log("Entrou no redirectError ===== " . $this->context->link->getPageLink('order', true, null, array(
-            'step' => '3')));
         $this->errors[] = $this->module->getMappingError("ERROR_PENDING");
         $this->redirectWithNotifications($this->context->link->getPageLink('order', true, null, array(
             'step' => '3')));

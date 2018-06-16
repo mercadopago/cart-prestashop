@@ -65,7 +65,7 @@ class UtilMercadoPago
     {
         $date = date('d.m.Y h:i:s');
         $log = "Date:  ".$date."  | ".$msg.
-        "|  Exception:  " . $exceptionMessage . "\n";
+        "|  " . $exceptionMessage . "\n";
         error_log($log, 3, _PS_ROOT_DIR_ . '/modules/mercadopago/logs/mercadopago.log');
     }    
 
@@ -161,11 +161,29 @@ class UtilMercadoPago
 
     public static function getOrderTotalMLC_MCO($value)
     {
-        error_log("entrou no util");
         if (is_null($value) || empty($value)) {
-            error_log("=== entrou no if  util====" . $value);
             return 0;
         }
         return strpos($value,".") ? (double)substr($value, 0, strpos($value,".")) : $value;
     }
+
+
+    /**
+     * Get an order by its cart id.
+     *
+     * @param int $id_cart Cart id
+     *
+     * @return array Order details
+     */
+    public static function getOrderByCartId($id_cart)
+    {
+        $sql = 'SELECT `id_order`
+            FROM `'._DB_PREFIX_.'orders`
+            WHERE `id_cart` = '.(int) $id_cart
+            .Shop::addSqlRestriction().' order by id_order desc';
+        $result = Db::getInstance()->getRow($sql);
+
+        return isset($result['id_order']) ? $result['id_order'] : false;
+    }
+
 }
