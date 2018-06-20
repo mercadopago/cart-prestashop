@@ -694,12 +694,6 @@ class MercadoPago extends PaymentModule
         //     "content" => $this->getPresentationTemplate()
         // );
 
-        /*$tabs[] = array(
-            "id" => "requirements",
-            "title" => $tabsLocale["requirements"],
-            "content" => $this->getPageRequirements()
-        );*/
-
         $tabs[] = array(
             "id" => "general_setting",
             "title" => $tabsLocale["settings"],
@@ -710,6 +704,12 @@ class MercadoPago extends PaymentModule
             "id" => "payment_configuration",
             "title" => $tabsLocale["paymentsConfig"],
             "content" => $this->getPaymentConfigurationTemplate()
+        );
+
+        $tabs[] = array(
+            "id" => "requirements",
+            "title" => $tabsLocale["requirements"],
+            "content" => $this->getPageRequirements()
         );
 
         return $tabs;
@@ -919,18 +919,18 @@ class MercadoPago extends PaymentModule
     protected function getPageRequirements()
     {
         $tplVars = array(
-            "thisPath" => $this->_path
+            "thisPath" => $this->_path,
+            "log" => $this->_path . "/logs/mercadopago.log"
         );
         $this->context->smarty->assign($tplVars);
         return $this->display(__FILE__, "views/templates/admin/requirements.tpl");
     }
 
-
     protected function getTabsLocale()
     {
         $locale = array();
         $locale["presentation"] = $this->l("Presentation");
-        $locale["requirements"] = $this->l("Requirement");
+        $locale["requirements"] = $this->l("Help");
         $locale["settings"] = $this->l("Basic Settings");
         $locale["paymentsConfig"] = $this->l("Payment Settings");
 
@@ -1024,7 +1024,7 @@ class MercadoPago extends PaymentModule
                     $this->getTextForm("CLIENT_SECRET", $locale["client_secret"], true),
                     $this->getTextForm("INSTALLMENTS", $locale["checkout_installments"], true),
                     $this->getSelectForm("CHECKOUT_DISPLAY", $locale["checkout_display"], $getDisplayList),
-                    $this->getSelectForm("CATEGORY", $locale["checkout_display_category"], $getDisplayCategoryList),
+                    $this->getSelectForm("CATEGORY", $locale["checkout_display_category"], $getDisplayCategoryList)
                 ),
                 "submit" => array(
                     "title" => $locale["save"]
@@ -1198,9 +1198,11 @@ class MercadoPago extends PaymentModule
     {
         $locale = array();
         $locale["setting"]["label"] = $this->l("Configuration");
-
+        
         $locale["client_id"]["label"] = "Client ID";
         $locale["client_secret"]["label"] = "Client Secret";
+
+        $locale["log"]["label"] = "Log";
 
         $locale["checkout_display"]["label"] = $this->l("Visualization mode");
         $locale["checkout_display"]["label"] = "Display";
@@ -1210,6 +1212,8 @@ class MercadoPago extends PaymentModule
         $locale["checkout_display"]["desc"] =
                 $this->l("iFrame – We enable within your checkout an area with enviroment of Mercado Mercado,
                 Redirect – The client will be redirect to Mercadopago environment (Recommended).");
+
+        $locale["log"]["desc"] = "View the log of module";
 
         //descrições
         $locale["client_id"]["desc"] =

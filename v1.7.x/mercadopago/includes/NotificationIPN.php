@@ -39,10 +39,11 @@ class NotificationIPN
         $external_reference = '';
         $isMercadoEnvios = 0;
         try {
+            UtilMercadoPago::log("====NotificationIPN====", "");
             if ($checkout == 'standard' && $topic == 'merchant_order' && $id > 0) {
                 $mercadopago_sdk = MPApi::getInstanceMP();
                 $result = $mercadopago_sdk->getMerchantOrder($id);
-                UtilMercadoPago::log("LOG", Tools::jsonEncode($result));
+                UtilMercadoPago::log("LOG notification IPN  ". $id . ' = ', Tools::jsonEncode($result));
                 $merchant_order_info = $result['response'];
                 // check value
                 $cart = new Cart($merchant_order_info['external_reference']);

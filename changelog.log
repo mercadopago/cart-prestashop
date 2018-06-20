@@ -129,3 +129,6 @@ Fix in IPN notification, the payments wasn't changing the states.
 V1.0.12(15/06/2018)
 Fix in IPN notification, the order now is create only after the payment.
 Fix return payment in standard checkout
+
+V1.0.13(20/06/2018)
+Fix in IPN notification
