@@ -36,7 +36,14 @@ if (!$cart->orderExists()) {
         $id_order = Order::getOrderByCartId($external_reference);
     
     } catch(Exception $e) {
-        error_log($e->getMessage());
+        UtilMercadoPago::logMensagem(
+            "There is a problem with notification id ". $cart->id,
+            MPApi::ERROR,
+            $e->getMessage(),
+            true,
+            null,
+            "notification.php"
+          );        
     }    
 } else {
     $mercadopago->listenIPN(

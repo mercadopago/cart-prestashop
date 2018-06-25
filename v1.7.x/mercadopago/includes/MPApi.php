@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.4.1';
+    const VERSION = '1.0.13';
 
     /* Info */
     const INFO = 1;
@@ -215,9 +215,11 @@ class MPApi
 
         $uri_prefix = $this->sandbox ? '/sandbox' : '';
         $payment_info = MPRestCli::get(
-            $uri_prefix . '/v1/notifications/' . $id . '?access_token=' . $access_token
+            $uri_prefix . '/v1/payments/' . $id . '?access_token=' . $access_token
         );
-        error_log("getPaymentStandard". Tools::jsonEncode($payment_inforesult));
+
+        
+
         return $payment_info;
     }
 
@@ -402,9 +404,6 @@ class MPApi
     {
         $access_token = $this->getAccessTokenV1();
         $uri = "/settings?access_token=".$access_token;
-
-        error_log("======url======".$uri);
-
         $result = MPRestCli::getConfig($uri);
         return $result;
     }
@@ -416,13 +415,11 @@ class MPApi
     public function setEnableDisableTwoCard($params)
     {
         $access_token = $this->getAccessTokenV1();
-        error_log("=====params two cards=====".$params);
 
         $params = array(
             "two_cards" => $params
         );
         $result = MPRestCli::putConfig("/settings?access_token=" . $access_token, $params);
-        error_log("=====result two cards=====".Tools::jsonEncode($result));
         return  $result;
     }
 
@@ -430,11 +427,7 @@ class MPApi
     {
         $access_token = $this->getAccessToken();
         $uri = "/users/test_user?access_token=" . $access_token;
-        error_log("====uri=====".$uri);
         $result = MPRestCli::post($uri, $siteID);
-
-        error_log("=====getTestUser======".Tools::jsonEncode($result));
-
         return $result;
     }
 

@@ -103,7 +103,9 @@
 
 		<h4>{l s='Notification URL' mod='mercadopago'}</h4>
 		<p> <small>{l s='Notification URL' mod='mercadopago'}: {$notification_url|escape:'htmlall':'UTF-8'}</small> </p>
-
+		<p>
+			<a href="{$log|escape:'htmlall':'UTF-8'}" target="_blank" >{l s="View file log" mod='mercadopago'}</a>
+		</p>
 	</div>
 
 	<br>
@@ -159,6 +161,14 @@
 					</span>
 				{/if}
 			</p>
+			<p>
+				{if !empty($country)}
+					<span><label>{l s='Sponsor ID:' mod='mercadopago'}</label></span>
+					<span>
+						<input type="number" size="33" name="SPONSOR_ID" value="{$sponsor_id|escape:'htmlall':'UTF-8'}" />
+					</span>
+				{/if}
+			</p>			
 			<input type="submit"
 						 name="save_general"
 						 value="{l s='Save General Settings' mod='mercadopago'}"
@@ -368,11 +378,10 @@
 						</select>
 					</div>
 					<br>
-
-					<h3><p>{l s='Enable or Disable your custom payments' mod='mercadopago'}:</p></h3>
+					<h3><p>{l s='Exclude payment methods:' mod='mercadopago'}</p></h3>
 					<div class="">
 						<label>{l s='Credit Card' mod='mercadopago'}:</label>
-						<input type="checkbox" class="options_custom" name="MERCADOPAGO_CREDITCARD_ACTIVE" value="true" id="creditcard_active"
+						<input type="checkbox" class="options_custom" name="MERCADOPAGO_CREDITCARD_ACTIVE" value="false" id="creditcard_active"
 
 						{if $creditcard_active == 'true'}
 							checked
@@ -385,7 +394,7 @@
 						<div class="">
 							<label>{$value.name|ucfirst|escape:'htmlall':'UTF-8'}:</label>
 							<input type="checkbox" name="MERCADOPAGO_{$offline_payment|upper|escape:'htmlall':'UTF-8'}_ACTIVE" class="ticket" value="true" id="MERCADOPAGO_{$offline_payment|escape:'htmlall':'UTF-8'}_ACTIVE"
-							{if $value.active == 'true'}
+							{if $value.disabled == 'true'}
 								checked
 							{/if} />
 						</div>
@@ -456,10 +465,6 @@
 	window.onload = function() {
 		if (document.getElementById("category")){
 			document.getElementById("category").value = "{$category|escape:'htmlall':'UTF-8'}";
-		}
-
-		if (document.getElementById("checkout_2")){
-			document.getElementById("checkout_2").value = "{$checkout_2|escape:'htmlall':'UTF-8'}";
 		}
 
 		if (document.getElementById("coupon_active")){

@@ -25,30 +25,9 @@
  *  International Registered Trademark & Property of MercadoPago
  */
 
-include dirname(__FILE__)."/includes/MPApi.php";
-
-class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontController
+class NotificationIPN
 {
-    public function postProcess()
-    {
-        parent::initContent();
-		$checkout = Tools::getValue('checkout');
-		$topic = Tools::getValue('topic');
-
-        UtilMercadoPago::log("LOG", "===listenIPN postProcess checkout====".$checkout);
-        UtilMercadoPago::log("LOG", "===listenIPN postProcess id====".Tools::getValue('id'));
-        UtilMercadoPago::log("LOG", "===listenIPN postProcess topic====".$topic) ;
-        
-		if ($checkout == 'standard' && $topic == 'merchant_order') {
-	        $this->listenIPN(
-	            $checkout,
-	            $topic,
-	            Tools::getValue('id')
-	        );
-   		}
-    }
-
-    public function listenIPN($checkout, $topic, $id)
+    public function listenIPN($checkout, $topic, $id) 
     {
         $payment_method_ids = array();
         $payment_ids = array();
@@ -59,14 +38,12 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
         $cardholders = array();
         $external_reference = '';
         $isMercadoEnvios = 0;
-
         try {
+            UtilMercadoPago::log("====NotificationIPN====", "");
             if ($checkout == 'standard' && $topic == 'merchant_order' && $id > 0) {
                 $mercadopago_sdk = MPApi::getInstanceMP();
-                $mercadopago = $this->module;
-
                 $result = $mercadopago_sdk->getMerchantOrder($id);
-                UtilMercadoPago::log("LOG", Tools::jsonEncode($result));
+                UtilMercadoPago::log("LOG notification IPN  ". $id . ' = ', Tools::jsonEncode($result));
                 $merchant_order_info = $result['response'];
                 // check value
                 $cart = new Cart($merchant_order_info['external_reference']);
@@ -75,14 +52,13 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                 foreach ($payments as $payment) {
                     // get payment info
                     $result = $mercadopago_sdk->getPaymentStandard($payment['id']);
-
-                    $payment_info = $result['response']['collection'];
+                    $payment_info = $result['response'];
                     // colect payment details
                     $payment_ids[] = $payment_info['id'];
                     $payment_statuses[] = $payment_info['status'];
-                    $payment_types[] = $payment_info['payment_type'];
+                    $payment_types[] = $payment_info['payment_type_id'];
                     $transaction_amounts += $payment_info['transaction_amount'];
-                    if ($payment_info['payment_type'] == 'credit_card') {
+                    if ($payment_info['payment_type_id'] == 'credit_card') {
                         $payment_method_ids[] = isset($payment_info['payment_method_id']) ?
                                                 $payment_info['payment_method_id'] : '';
                         $credit_cards[] = isset($payment_info['card']['last_four_digits']) ?
@@ -113,7 +89,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
                     );
                 }
                 // check the module
-                $id_order = $mercadopago->getOrderByCartId($merchant_order_info['external_reference']);
+                $id_order = UtilMercadoPago::getOrderByCartId($merchant_order_info['external_reference']);
                 $order = new Order($id_order);
                 $status_shipment = null;
                 if (isset($merchant_order_info['shipments'][0]) &&
@@ -147,9 +123,10 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             }
         }catch(Exception $e){
             UtilMercadoPago::log("LOG exception", "===listenIPN postProcess checkout====". $e->getMessage());
-        }        
+            var_dump(http_response_code(500));   
+        }
     }
-
+    
     private function updateOrder(
         $payment_ids,
         $payment_statuses,
@@ -159,50 +136,48 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
         $checkout
     ) {
         $order = null;
-        // if has two creditcard validate whether payment has same status in order to continue validating order
-        if (count($payment_statuses) == 1 ||
-            (count($payment_statuses) == 2 &&
-            $payment_statuses[0] == $payment_statuses[1])
-        ) {
-            $order = null;
-            $payment_status = $payment_statuses[0];
-            $payment_type = $payment_types[0];
-            $mercadopago = $this->module;
-            // just change if there is an order status
-            $id_cart = $external_reference;
-            $id_order = $mercadopago->getOrderByCartId($id_cart);
-            $order = new Order($id_order);
-            $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta[$payment_status]);
-            if ($id_order) {
-                if ($this->checkStateExist($id_order, $payment_status)) {
-                    return;
-                }
-            }
-            if ($payment_status == 'cancelled' || $payment_status == 'rejected') {
-                if ($order->module == "mercadopago" || $checkout == 'pos') {
-                    $retorno = $this->getOrderStateApproved($id_order);
-                    if ($retorno) {
+        try {        
+            // if has two creditcard validate whether payment has same status in order to continue validating order
+            if (count($payment_statuses) == 1 ||
+                (count($payment_statuses) == 2 &&
+                $payment_statuses[0] == $payment_statuses[1])
+            ) {
+                $order = null;
+                $payment_status = $payment_statuses[0];
+                $payment_type = $payment_types[0];
+                // just change if there is an order status
+                $id_cart = $external_reference;
+                $id_order = UtilMercadoPago::getOrderByCartId($id_cart);
+                $order = new Order($id_order);
+                $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta[$payment_status]);
+                if ($id_order) {
+                    if ($this->checkStateExist($id_order, $payment_status)) {
                         return;
                     }
-                } else {
-                    return;
                 }
-            }
-            $statusPS = (int)$order->getCurrentState();
-            if ($payment_status != $statusPS) {
-                $order->setCurrentState($payment_status);
-            }
-            
-            try {
+                if ($payment_status == 'cancelled' || $payment_status == 'rejected') {
+                    if ($order->module == "mercadopago" || $checkout == 'pos') {
+                        $retorno = $this->getOrderStateApproved($id_order);
+                        if ($retorno) {
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
+                }
+                $statusPS = (int)$order->getCurrentState();
+                if ($payment_status != $statusPS) {
+                    $order->setCurrentState($payment_status);
+                }
                 $payments = $order->getOrderPaymentCollection();
                 $payments[0]->transaction_id = implode(' / ', $payment_ids);
                 $payments[0]->update();
-            } catch (Exception $e) {
-                UtilMercadoPago::log("Exception", "vai atualizar " . $e->getMessage());
             }
+        } catch (Exception $e) {
+            UtilMercadoPago::log("Exception", "vai atualizar " . $e->getMessage());
         }
     }
-
+    
     public function updateOrderHistory($id_order, $status, $mail = true)
     {
         // Change order state and send email
@@ -214,7 +189,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             $history->addWithemail(true, $extra_vars);
         }
     }
-
+    
     /**
      * Verify if there is state approved for order.
      */
@@ -229,7 +204,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             (int) Configuration::get('MERCADOPAGO_STATUS_1')
         );
     }
-
+    
     /**
      * Verify if there is state approved for order.
      */
@@ -244,4 +219,13 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             (int) $id_order_state
         );
     }
+
+    public static function getPriceTotalByIdCart($idCart)
+    {
+
+    error_log('SELECT total_paid_real FROM '._DB_PREFIX_.'orders WHERE id_cart = '.(int)$idCart);
+
+    return Db::getInstance()->getValue('SELECT total_paid_real FROM '._DB_PREFIX_.'orders WHERE id_cart = '.(int)$idCart);
+}    
+
 }

@@ -118,7 +118,7 @@ class MercadoPago extends PaymentModule
     {
         $this->name = "mercadopago";
         $this->tab = "payments_gateways";
-        $this->version = "1.0.11";
+        $this->version = MPApi::VERSION;
         $this->ps_versions_compliancy = array("min" => "1.7", "max" => _PS_VERSION_);
         $this->author = "Mercado Pago";
         $this->controllers = array("validationstandard", "standardreturn");
@@ -558,10 +558,7 @@ class MercadoPago extends PaymentModule
                 Configuration::updateValue('MERCADOPAGO_STATUS_'.$key, $order_state->id);
             }
         }
-
-        error_log('vai veriricar se vai entrar no if');
         if (!is_null($this->orderStateAvailable(Configuration::get('MERCADOPAGO_STATUS_11')))) {
-            error_log('entrou no if');
             $update = Db::getInstance()->update(
                 'order_state',
                 array(
@@ -646,12 +643,7 @@ class MercadoPago extends PaymentModule
 
     public function getContent()
     {
-
         UtilMercadoPago::log("LOG", "LOG LOG LOG ");
-
-        echo("entrou aqui echo");
-        print_r("entrou aqui");
-        error_log("entrou no getContent");
         $shopDomainSsl = Tools::getShopDomainSsl(true, true);
         $backOfficeCssUrl = $shopDomainSsl.__PS_BASE_URI__."modules/".$this->name."/views/css/backoffice.css";
         $marketingCssUrl = $shopDomainSsl.__PS_BASE_URI__."modules/".$this->name."/views/css/marketing.css";
@@ -702,12 +694,6 @@ class MercadoPago extends PaymentModule
         //     "content" => $this->getPresentationTemplate()
         // );
 
-        /*$tabs[] = array(
-            "id" => "requirements",
-            "title" => $tabsLocale["requirements"],
-            "content" => $this->getPageRequirements()
-        );*/
-
         $tabs[] = array(
             "id" => "general_setting",
             "title" => $tabsLocale["settings"],
@@ -718,6 +704,12 @@ class MercadoPago extends PaymentModule
             "id" => "payment_configuration",
             "title" => $tabsLocale["paymentsConfig"],
             "content" => $this->getPaymentConfigurationTemplate()
+        );
+
+        $tabs[] = array(
+            "id" => "requirements",
+            "title" => $tabsLocale["requirements"],
+            "content" => $this->getPageRequirements()
         );
 
         return $tabs;
@@ -927,18 +919,18 @@ class MercadoPago extends PaymentModule
     protected function getPageRequirements()
     {
         $tplVars = array(
-            "thisPath" => $this->_path
+            "thisPath" => $this->_path,
+            "log" => $this->_path . "/logs/mercadopago.log"
         );
         $this->context->smarty->assign($tplVars);
         return $this->display(__FILE__, "views/templates/admin/requirements.tpl");
     }
 
-
     protected function getTabsLocale()
     {
         $locale = array();
         $locale["presentation"] = $this->l("Presentation");
-        $locale["requirements"] = $this->l("Requirement");
+        $locale["requirements"] = $this->l("Help");
         $locale["settings"] = $this->l("Basic Settings");
         $locale["paymentsConfig"] = $this->l("Payment Settings");
 
@@ -1032,7 +1024,7 @@ class MercadoPago extends PaymentModule
                     $this->getTextForm("CLIENT_SECRET", $locale["client_secret"], true),
                     $this->getTextForm("INSTALLMENTS", $locale["checkout_installments"], true),
                     $this->getSelectForm("CHECKOUT_DISPLAY", $locale["checkout_display"], $getDisplayList),
-                    $this->getSelectForm("CATEGORY", $locale["checkout_display_category"], $getDisplayCategoryList),
+                    $this->getSelectForm("CATEGORY", $locale["checkout_display_category"], $getDisplayCategoryList)
                 ),
                 "submit" => array(
                     "title" => $locale["save"]
@@ -1206,9 +1198,11 @@ class MercadoPago extends PaymentModule
     {
         $locale = array();
         $locale["setting"]["label"] = $this->l("Configuration");
-
+        
         $locale["client_id"]["label"] = "Client ID";
         $locale["client_secret"]["label"] = "Client Secret";
+
+        $locale["log"]["label"] = "Log";
 
         $locale["checkout_display"]["label"] = $this->l("Visualization mode");
         $locale["checkout_display"]["label"] = "Display";
@@ -1218,6 +1212,8 @@ class MercadoPago extends PaymentModule
         $locale["checkout_display"]["desc"] =
                 $this->l("iFrame – We enable within your checkout an area with enviroment of Mercado Mercado,
                 Redirect – The client will be redirect to Mercadopago environment (Recommended).");
+
+        $locale["log"]["desc"] = "View the log of module";
 
         //descrições
         $locale["client_id"]["desc"] =
@@ -1885,23 +1881,6 @@ class MercadoPago extends PaymentModule
             }
         }
         return $mensagem;
-    }
-    /**
-     * Get an order by its cart id.
-     *
-     * @param int $id_cart Cart id
-     *
-     * @return array Order details
-     */
-    public static function getOrderByCartId($id_cart)
-    {
-        $sql = 'SELECT `id_order`
-            FROM `'._DB_PREFIX_.'orders`
-            WHERE `id_cart` = '.(int) $id_cart
-            .Shop::addSqlRestriction().' order by id_order desc';
-        $result = Db::getInstance()->getRow($sql);
-
-        return isset($result['id_order']) ? $result['id_order'] : false;
     }
     /**
      * Check, if SSL is enabled during current connection

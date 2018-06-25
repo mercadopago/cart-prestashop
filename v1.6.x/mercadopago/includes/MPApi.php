@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.6.1';
+    const VERSION = '3.6.2';
 
     /* Info */
     const INFO = 1;
@@ -53,11 +53,16 @@ class MPApi
 
     private $sandbox = false;
 
-    public function __construct($client_id, $client_secret)
+    public function __construct()
+    {
+
+    }
+
+    public function setCredentialsStandard($client_id, $client_secret)
     {
         $this->client_id = $client_id;
         $this->client_secret = $client_secret;
-    }
+    }    
 
     /*
      * getPaymentByOrder
@@ -523,6 +528,15 @@ class MPApi
         $access_token = $this->getAccessToken();
         $uri = "/users/test_user?access_token=" . $access_token;
         $result = MPRestCli::post($uri, $siteID);
+
+        return $result;
+    }
+
+    public function getUserInfo($id)
+    {
+        $access_token = $this->getAccessToken();
+        $uri = "/users/".$id."?access_token=" . $access_token;
+        $result = MPRestCli::get($uri);
 
         return $result;
     }

@@ -31,7 +31,8 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
     public $ssl = true;
     public $display_column_left = false;
     private $settings = null;
-
+    private $site_url = null;
+    
     /**
      * @see FrontController::postProcess()
      */
@@ -58,14 +59,12 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
 
         $cart = $this->context->cart;
         $postParameters = $this->getPreferencesStandard();
-        error_log("===preferencia====" . Tools::jsonEncode($postParameters));
 
         try {
             $result = MPApi::getInstanceMP()->createPreference($postParameters);
-            error_log(print_r($result, true));
             if (array_key_exists('init_point', $result['response'])) {
                 $init_point = $result['response']['init_point'];
-                $data['preferences_url'] = $init_point;
+                Tools::redirectLink($init_point);
             } else {
                 $data['preferences_url'] = null;
                 PrestaShopLogger::addLog(
@@ -78,28 +77,6 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         } catch (Exception $e) {
             PrestaShopLogger::addLog('Mercado Pago - prefence not created', 3, null, 'Cart', $cart->id, true);
             $this->redirectError('ERROR_GENERAL_REDIRECT');
-        }
-
-        $customer = new Customer((int)$cart->id_customer);
-        $displayName = $mercadopago->l('Mercado Pago Redirect');
-        $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta['started']);
-
-        try {
-            $mercadopago->validateOrder(
-                $cart->id,
-                $payment_status,
-                $cart->getOrderTotal(true, Cart::BOTH),
-                $displayName,
-                null,
-                array(),
-                (int)$cart->id_currency,
-                false,
-                $customer->secure_key
-            );
-            Tools::redirectLink($init_point);
-
-        } catch(Exception $e) {
-            error_log($e->getMessage());
         }
     }
 
@@ -294,30 +271,24 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
         $data['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentMethods();
         $data['payment_methods']['excluded_payment_types'] = array();
         $data['payment_methods']['installments'] = (integer) $mercadopagoSettings['installments'];
-
-        // $ipn = $this->getURLSite().
-        // 'index.php?fc=module&module=mercadopago&controller=standardreturn&notification=ipn&cart_id='.$cart->id;
-
-        // error_log("==ipnURL==".$ipn);
-
-        $data['notification_url'] = $this->context->link->getModuleLink(
-            'mercadopago',
-            'standardreturn',
-            array('checkout' => 'standard',
-            'cart_id' => $cart->id,
-            'notification' => "ipn"),
-            $this->module->isSSLEnabled()
-        );
-        // $data['notification_url'] = $ipn;
+        
+        $ipn_url = $this->getURLSite().'modules/'.$mercadopago->name.'/notification.php';
+        if (!strrpos($ipn_url, 'localhost')) {
+            $data['notification_url'] = $this->context->link->getModuleLink(
+                'mercadopago',
+                'notification',
+                array('checkout' => 'standard',
+                'cart_id' => $cart->id,
+                'notification' => "ipn"),
+                $this->module->isSSLEnabled()
+            );          
+        }
 
         // swap to payer index since customer is only for transparent
         $data['customer']['name'] = $data['customer']['first_name'];
         $data['customer']['surname'] = $data['customer']['last_name'];
         $data['payer'] = $data['customer'];
         unset($data['customer']);
-
-        error_log(print_r($data, true));
-
         return $data;
     }
 
@@ -342,8 +313,6 @@ class MercadoPagoStandardModuleFrontController extends ModuleFrontController
             ((bool)Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
             .$_SERVER['HTTP_HOST'].__PS_BASE_URI__
         );
-        error_log($url);
-
         return $url;
     }
 
