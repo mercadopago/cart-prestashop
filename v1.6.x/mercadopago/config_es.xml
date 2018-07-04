@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>mercadopago</name>
+	<displayName><![CDATA[Mercado Pago]]></displayName>
+	<version><![CDATA[3.6.2]]></version>
+	<description><![CDATA[El Mercado Pago es el mayor medio de pago de Am&eacute;rica Latina y ofrece la mayor variedad de medios de pago en el mercado. Sus clientes pueden pagar con tarjeta de cr&eacute;dito, ticket, y saldo de la cuenta Mercado Pago.]]></description>
+	<author><![CDATA[MERCADOPAGO.COM Representa&ccedil;&otilde;es LTDA.]]></author>
+	<tab><![CDATA[payments_gateways]]></tab>
+	<confirmUninstall><![CDATA[¿Está seguro de que desea desinstalar MercadoPago]]></confirmUninstall>
+	<is_configurable>1</is_configurable>
+	<need_instance>0</need_instance>
+	<limited_countries></limited_countries>
+</module>

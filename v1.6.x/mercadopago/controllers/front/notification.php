@@ -32,30 +32,55 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
     public function initContent()
     {
         parent::initContent();
-        $this->displayAjax();
-    }
+        $cart = new Cart(Tools::getValue('cart_id'));    
+        $total = (float)($cart->getOrderTotal(true, Cart::BOTH));
+        UtilMercadoPago::log("====id cart====",  $cart->id);  
 
-    public function displayAjax()
-    {      
-        if (Tools::getValue('checkout') && Tools::getValue('data_id') || Tools::getValue('id')) {
-            $mercadopago = $this->module;
-            if (Tools::getValue('checkout') == "custom") {
-                $message = "Notification Custom is come with id " . Tools::getValue('data_id');
-                UtilMercadoPago::logMensagem($message, MPApi::INFO, "", false, null, "notification->displayAjax");              
-                $mercadopago->listenIPN(
-                    Tools::getValue('checkout'),
-                    Tools::getValue('type'),
-                    Tools::getValue('data_id')
-                );
+        $checkout = Tools::getValue('checkout');
+        $topic = Tools::getValue('topic');
+        UtilMercadoPago::log("====checkout====", $checkout);
+        UtilMercadoPago::log("====topic====", $topic);
+
+        if ($checkout == 'standard' && $topic == 'merchant_order') {
+            $id_order = Order::getOrderByCartId(Tools::getValue('cart_id'));    
+            if (!$cart->orderExists()) {
+                UtilMercadoPago::log("====orderExists====", "Necessário criar a order");    
+                var_dump(http_response_code(500)); 
+                $mercadopago = new MercadoPago();
+                $customer = new Customer((int)$cart->id_customer);
+                $displayName = $mercadopago->l('Mercado Pago Redirect');
+                $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta['started']);               
+                try {
+                    $mercadopago->validateOrder(
+                        $cart->id,
+                        $payment_status,
+                        $total,
+                        $displayName,
+                        null,
+                        array(),
+                        (int)$cart->id_currency,
+                        false,
+                        $customer->secure_key
+                    );
+                    $id_order = Order::getOrderByCartId(Tools::getValue('cart_id'));  
+                    UtilMercadoPago::log("====id_order criado====".$id_order, $id_order);      
+                } catch(Exception $e) {
+                    UtilMercadoPago::log(
+                        "There is a problem with notification id ". $cart->id,
+                        $e->getMessage()
+                    );     
+                }    
             } else {
-                $message = "Notification Standard is come with id " . Tools::getValue('id');
-                UtilMercadoPago::logMensagem($message, MPApi::INFO, "", false, null, "notification->displayAjax = " . Tools::getValue('id'));
                 $mercadopago->listenIPN(
-                    Tools::getValue('checkout'),
-                    Tools::getValue('topic'),
+                    $checkout,
+                    $topic,
                     Tools::getValue('id')
                 );
+                var_dump(http_response_code(201));
             }
+        } else {
+            var_dump(http_response_code(500));
         }
+        die();
     }
 }

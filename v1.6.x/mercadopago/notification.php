@@ -14,6 +14,7 @@ $external_reference = Tools::getValue('external_reference');
 $cart = new Cart(Tools::getValue('external_reference'));
 $mercadopago = new MercadoPago();
 
+UtilMercadoPago::log("===notification ipn==", "1");
 if (!$cart->orderExists()) {
     var_dump(http_response_code(500)); 
 
@@ -21,6 +22,7 @@ if (!$cart->orderExists()) {
     $displayName = $mercadopago->l('Mercado Pago Redirect');
     $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta['started']);
     try {
+        UtilMercadoPago::log("===notification ipn==", "2");
         $mercadopago->validateOrder(
             $cart->id,
             $payment_status,
@@ -36,6 +38,7 @@ if (!$cart->orderExists()) {
         $id_order = Order::getOrderByCartId($external_reference);
     
     } catch(Exception $e) {
+        UtilMercadoPago::log("===notification erro ipn==", "1");
         UtilMercadoPago::logMensagem(
             "There is a problem with notification id ". $cart->id,
             MPApi::ERROR,

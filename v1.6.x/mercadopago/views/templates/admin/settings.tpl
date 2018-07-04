@@ -88,11 +88,9 @@
 	  	<h3>{l s='Question' mod='mercadopago'}</h3>
 		<p><strong><a href="https://www.youtube.com/playlist?list=PLl8LGzRu2_sXxChIJm1e0xY6dU3Dj_tNi" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/youtube.png" width="20px;" height="20px">YouTube</a> </strong></p>
 		<p><strong><a href="https://www.facebook.com/groups/modulos.mercadopago" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/facebook.png" width="20px;" height="20px">Facebook</a> </strong></p>
-
-
-		<p><a href="mailto:modulos@mercadopago.com.br?subject=Suport - Prestashop"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/email.png" width="20px;" height="20px">modulos@mercadopago.com.br</a> </p>
-
 		<p><a href="https://www.mercadopago.com.br/developers/pt/solutions/payments/basic-checkout/test/test-payments/" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/credit_card.png" width="20px;" height="20px">{l s='Credit Card for test' mod='mercadopago'}</a></p>
+		<p><a href="https://www.mercadopago.com.br/developers/en/support" target="_blank"><img class="logoCheck" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/douts.png" width="20px;" height="20px">{l s='Suporte Mercado Pago' mod='mercadopago'}</a></p>		
+
         <ps-label-information label="{l s='Video Tutorial' mod='mercadopago'}">
 			{if $country == 'MLB'}
 				<iframe width="100%" style="max-width:560px" height="315" src="https://www.youtube.com/embed/Rsotj_9paOw" frameborder="0" allowfullscreen></iframe>
@@ -100,14 +98,14 @@
 				<iframe width="100%" style="max-width:560px" height="315" src="https://www.youtube.com/embed/rtXNkdaqUJ8" frameborder="0" allowfullscreen></iframe>
 			{/if}
         </ps-label-information>
-
+		
 		<h4>{l s='Notification URL' mod='mercadopago'}</h4>
-		<p> <small>{l s='Notification URL' mod='mercadopago'}: {$notification_url|escape:'htmlall':'UTF-8'}</small> </p>
+		<p><li>{l s='Notification URL' mod='mercadopago'}: {$notification_url|escape:'htmlall':'UTF-8'}</li> </p>
+		<h4>{l s='Mercado Pago Log' mod='mercadopago'}</h4>
 		<p>
-			<a href="{$log|escape:'htmlall':'UTF-8'}" target="_blank" >{l s="View file log" mod='mercadopago'}</a>
+			<li><a href="{$log|escape:'htmlall':'UTF-8'}" download>{l s="Download" mod='mercadopago'}</a></li>
 		</p>
 	</div>
-
 	<br>
 
 	<ul class="tab">

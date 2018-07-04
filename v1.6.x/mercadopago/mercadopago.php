@@ -1145,15 +1145,13 @@ class MercadoPago extends PaymentModule {
   }
 
   private function getAPI() {
-    $mp = null;
+    $mp = new MPApi();
     $client_id = Configuration::get('MERCADOPAGO_CLIENT_ID');
     $client_secret = Configuration::get('MERCADOPAGO_CLIENT_SECRET');
     $access_token = Configuration::get('MERCADOPAGO_ACCESS_TOKEN');
     $public_key = Configuration::get('MERCADOPAGO_PUBLIC_KEY');
 
-    if(!empty($access_token) && !empty($public_key)){
-        $mp = new MPApi();
-    } else if(!empty($client_id) && !empty($client_secret)){
+    if(!empty($client_id) && !empty($client_secret)){
         $mp = new MPApi();
         $mp->setCredentialsStandard($client_id, $client_secret);    
     }
@@ -1493,9 +1491,10 @@ class MercadoPago extends PaymentModule {
     }
 
     public function hookPayment($params) {
-        echo "entrou no pagamento";
         if (!$this->active) return;
         
+        UtilMercadoPago::log("hookPayment", "hookPayment");
+
         //calculo desconto parcela a vista
         $cart = $params['cart'];
 
@@ -1529,6 +1528,7 @@ class MercadoPago extends PaymentModule {
         }
 
         if ($this->hasCredential()) {
+            UtilMercadoPago::log("hasCredential", "hasCredential");
             $this_path_ssl = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').
                  htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__;
             $data = array(
@@ -1662,6 +1662,9 @@ class MercadoPago extends PaymentModule {
             }
 
             $pageReturn = '/views/templates/hook/checkout.tpl';
+
+            UtilMercadoPago::log("data checkout", Tools::jsonEncode($data));
+
             $this->context->smarty->assign($data);
             //$this->context->smarty->assign($this->setPreModuleAnalytics());
 
@@ -2012,15 +2015,15 @@ class MercadoPago extends PaymentModule {
             ),
         );
 
-        $notification_url = $this->link->getModuleLink(
+        $notification_url = $this->context->link->getModuleLink(
             'mercadopago',
             'notification',
-            array(),
+            array('checkout' => 'custom', 'cart_id' => $cart->id, 'notification' => "ipn"),
             Configuration::get('PS_SSL_ENABLED'),
             null,
             null,
-            false
-        );
+            false                
+        );            
 
         $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
 
@@ -2094,6 +2097,7 @@ class MercadoPago extends PaymentModule {
 
         if (!strrpos($notification_url, 'localhost')) {
             $payment_preference['notification_url'] = $notification_url.'?checkout=custom&';
+            UtilMercadoPago::log("===notification_url==", $payment_preference['notification_url']);
         }
 
         $payment_preference['description'] = $summary;
@@ -2354,9 +2358,17 @@ class MercadoPago extends PaymentModule {
         $data['payment_methods']['excluded_payment_types'] = array();
         $data['payment_methods']['installments'] = (integer) Configuration::get('MERCADOPAGO_INSTALLMENTS');
 
-        $ipn_url = $this->site_url.'modules/'.$this->name.'/notification.php';
         if (!strrpos($ipn_url, 'localhost')) {
-            $data['notification_url'] =  $ipn_url.'?checkout=standard&';
+            $data['notification_url'] = $this->context->link->getModuleLink(
+                'mercadopago',
+                'notification',
+                array('checkout' => 'standard', 'cart_id' => $cart->id, 'notification' => "ipn"),
+                Configuration::get('PS_SSL_ENABLED'),
+                null,
+                null,
+                false                
+            );   
+            UtilMercadoPago::log("===notification_url==", $data['notification_url']);
         }
 
         // swap to payer index since customer is only for transparent
@@ -3487,4 +3499,19 @@ class MercadoPago extends PaymentModule {
 
         return $version;
     }
+    /**
+     * Check, if SSL is enabled during current connection
+     * @return boolean
+     */
+    public function isSSLEnabled()
+    {
+        if (isset($_SERVER['HTTPS'])) {
+            if (Tools::strtolower($_SERVER['HTTPS']) == 'on' || $_SERVER['HTTPS'] == '1') {
+                return true;
+            }
+        } elseif (isset($_SERVER['SERVER_PORT']) && ($_SERVER['SERVER_PORT'] === '443')) {
+            return true;
+        }
+        return false;
+    }    
 }

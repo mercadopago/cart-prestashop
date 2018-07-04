@@ -382,8 +382,6 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 	{if $country == 'MLB'}
 		{foreach from=$offline_payment_settings key=offline_payment item=value}
-		<label>{$value.active}</label>
-		
 			{if $value.active == "true" && $mercadoenvios_activate == 'false' && $offline_payment != 'pec'}
 			<form action="{$custom_action_url|escape:'htmlall':'UTF-8'}" method="post"
 							id="form-{$offline_payment|escape:'htmlall':'UTF-8'}" class="formTicket" onsubmit="return submitBoletoFebraban();">
@@ -521,6 +519,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	{if $country == 'MLM' || $country == 'MPE' || $country ==
 	'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV' || $country == 'MLU'}
 	{foreach from=$offline_payment_settings key=offline_payment item=value}
+	<label>{$value.disabled}</label>
 	{if $value.disabled  != "true" && $mercadoenvios_activate == "false"}
 	<div class="row">
 		<div class="col-xs-12 col-md-6">

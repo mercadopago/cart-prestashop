@@ -562,9 +562,7 @@ class MPApi
     {
         $access_token = $this->getAccessToken();
         $uri = "/modules/tracking/settings?access_token=" . $access_token;
-
         $result_response = MPRestCli::post($uri, $params);
-
         return $result_response;
     }
 
