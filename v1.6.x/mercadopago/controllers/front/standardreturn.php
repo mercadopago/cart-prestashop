@@ -44,7 +44,6 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
         $mercadopago_sdk = $mercadopago->mercadopago;
 
         $preference = $mercadopago_sdk->getPreference(Tools::getValue('preference_id'));
-
         if ($typeReturn == 'failure') {
             $data = array();
 
@@ -65,7 +64,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             return;
         }
 
-        $id_cart = (int)Tools::getValue('external_reference');
+        $id_cart = (int)Tools::getValue('cart_id');
         $cart = new Cart($id_cart);
         if ($collection_status == 'null' ||
             is_null($collection_status) ||

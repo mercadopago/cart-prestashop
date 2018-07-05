@@ -34,7 +34,6 @@ class MercadoPagoStandardPaymentModuleFrontController extends ModuleFrontControl
         $this->placeOrder();
     }
 
-
     private function placeOrder()
     {
         $mercadopago = $this->module;
@@ -43,8 +42,8 @@ class MercadoPagoStandardPaymentModuleFrontController extends ModuleFrontControl
         UtilMercadoPago::log("response createStandardCheckoutPreference", Tools::jsonEncode($result));
         if (array_key_exists('init_point', $result['response'])) {
             $init_point = $result['response']['init_point'];
-
-            Tools::redirectLink($init_point);
+            header("Location: $init_point");
+            die();
         } else {
             $data = array();
             $data['typeReturn'] = "failure";

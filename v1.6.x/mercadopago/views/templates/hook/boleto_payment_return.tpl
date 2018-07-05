@@ -62,10 +62,3 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	</div>
 </div>
 
-<!-- <script type="text/javascript">
-  ModuleAnalytics.setPublicKey("TEST-a603f517-310f-4956-a00d-93519fc17647")
-  ModuleAnalytics.setPaymentId("123456")
-  ModuleAnalytics.setPaymentType("credit_card")
-  ModuleAnalytics.setCheckoutType("basic")
-  ModuleAnalytics.put()
-</script> -->

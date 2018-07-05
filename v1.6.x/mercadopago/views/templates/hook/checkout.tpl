@@ -148,7 +148,8 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	</div>
 
 	{/if}
-{if $mercadoenvios_activate == 'false' && !$creditcard_disable}
+
+{if $mercadoenvios_activate == 'false' && $creditcard_disable == ""}
 	<div class="card row">
 		<div class="mp-form">
 			<div class="row">
@@ -683,7 +684,6 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 	// Estabeleça a informação do meio de pagamento obtido
 	function setPaymentMethodInfo(status, result) {
-		//alert("setPaymentMethodInfo");
 		if (status != 404 && status != 400 && result != undefined) {
 			//adiciona a imagem do meio de pagamento
 			var payment_method = result[0];
@@ -1923,7 +1923,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 </script>
 
-{if $creditcard_active == 'true' && $public_key != ''}
+{if $creditcard_disable == '' && $public_key != ''}
 	<script type="text/javascript">
 		if (window.Mercadopago === undefined) {
 			$.getScript("https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js")

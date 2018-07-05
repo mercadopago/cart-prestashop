@@ -40,15 +40,27 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
         $topic = Tools::getValue('topic');
         UtilMercadoPago::log("====checkout====", $checkout);
         UtilMercadoPago::log("====topic====", $topic);
-
-        if ($checkout == 'standard' && $topic == 'merchant_order') {
-            $id_order = Order::getOrderByCartId(Tools::getValue('cart_id'));    
+        UtilMercadoPago::log("====cart_id====", Tools::getValue('cart_id'));
+      
+        $mercadopago = $this->module;
+        $id_order = Order::getOrderByCartId(Tools::getValue('cart_id'));          
+      
+        if ($topic == 'merchant_order') {
+            $api = $mercadopago->getAPI();
+            $result = $api->getMerchantOrder(Tools::getValue('id'));
+            UtilMercadoPago::log("====result getMerchantOrder====",  Tools::jsonEncode($result));                
+            if ($result['response']['status'] == "opened") {
+                var_dump(http_response_code(200)); 
+                die();
+            }
+        }
+        if ($checkout == 'standard' || $checkout == 'custom') {
+            UtilMercadoPago::log("====checkout====", $topic);
             if (!$cart->orderExists()) {
                 UtilMercadoPago::log("====orderExists====", "Necessário criar a order");    
                 var_dump(http_response_code(500)); 
-                $mercadopago = new MercadoPago();
                 $customer = new Customer((int)$cart->id_customer);
-                $displayName = $mercadopago->l('Mercado Pago Redirect');
+                $displayName = $mercadopago->l('Mercado Pago '.$checkout);
                 $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta['started']);               
                 try {
                     $mercadopago->validateOrder(
@@ -71,6 +83,10 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
                     );     
                 }    
             } else {
+                UtilMercadoPago::log("====listenIPN==topic==", $topic . "==id==".Tools::getValue('id'));
+                if (Tools::getValue('id') == "") {
+                    var_dump(http_response_code(500)); 
+                }
                 $mercadopago->listenIPN(
                     $checkout,
                     $topic,
