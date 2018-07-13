@@ -34,22 +34,16 @@ class MercadoPagoStandardPaymentModuleFrontController extends ModuleFrontControl
         $this->placeOrder();
     }
 
-
     private function placeOrder()
     {
         $mercadopago = $this->module;
         $cart = Context::getContext()->cart;
         $result = $mercadopago->createStandardCheckoutPreference();
-        UtilMercadoPago::log(json_encode($result), '');
+        UtilMercadoPago::log("response createStandardCheckoutPreference", Tools::jsonEncode($result));
         if (array_key_exists('init_point', $result['response'])) {
             $init_point = $result['response']['init_point'];
-
-            Db::getInstance()->insert('mercadopago_orders_initpoint', array(
-                'cart_id' => (int)$cart->id,
-                'init_point'      => pSQL($init_point),
-            ));
-
-            Tools::redirectLink($init_point);
+            header("Location: $init_point");
+            die();
         } else {
             $data = array();
             $data['typeReturn'] = "failure";

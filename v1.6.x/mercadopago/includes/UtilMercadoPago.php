@@ -27,6 +27,17 @@
 class UtilMercadoPago
 {
 
+    public static $DEFAULT_BANNER = array(
+        'MLB' => "https://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/PSJ/575x40_banner_psj_6x.jpg",
+        'MLM' => "https://imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_575X40_new.jpg",
+        'MLA' => "https://imgmp.mlstatic.com/org-img/banners/ar/medios/575X40.jpg",
+        'MCO' => "https://secure.mlstatic.com/developers/site/cloud/banners/co/575x40_Todos-los-medios-de-pago.jpg",
+        'MLV' => "https://imgmp.mlstatic.com/org-img/banners/ve/medios/575X40.jpg",
+        'MLC' => "https://www.mercadopago.cl/banner/575x40_banner.jpg",
+        'MPE' => "",
+        'MLU' => ""
+    );
+
     public static $DEFAULT_SPONSOR_ID = array(
         'MLB' => 178326379,
         'MLM' => 187899553,
@@ -75,7 +86,7 @@ class UtilMercadoPago
     {
         $date = date('d.m.Y h:i:s');
         $log = "Date:  ".$date."  | ".$msg.
-        "|  Exception:  " . $exceptionMessage . "\n";
+        "| " . $exceptionMessage . "\n";
         error_log($log, 3, _PS_ROOT_DIR_ . '/modules/mercadopago/logs/mercadopago.log');
     }
 

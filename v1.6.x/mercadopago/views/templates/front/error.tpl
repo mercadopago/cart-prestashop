@@ -139,10 +139,6 @@
 	});
 
 	$(document).ready(function(){ 
-		if ("{$version|escape:'htmlall':'UTF-8'}" == 5) {
-			$(".error").css("width", "739px");
-			$("#center_column").css("width", "758px");
-		}
 		{if $show_QRCode == 'true'}
 			$('#output').qrcode("{$init_point|escape:'htmlall':'UTF-8'}");
 		{/if}

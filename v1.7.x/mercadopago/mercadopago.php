@@ -562,7 +562,7 @@ class MercadoPago extends PaymentModule
             $update = Db::getInstance()->update(
                 'order_state',
                 array(
-                    'logable' => 0,
+                    'logable' => 1,
                     'send_email' => 0
                 ),
                 'module_name = "mercadopago" and id_order_state = '.Configuration::get('MERCADOPAGO_STATUS_11')
@@ -1387,11 +1387,18 @@ class MercadoPago extends PaymentModule
     public function getExternalPaymentOption()
     {
         $country = strtoupper(MPApi::getInstanceMP()->getCountry());
+      
+        UtilMercadoPago::log("country", $country);
+        UtilMercadoPago::log("banner getExternalPaymentOption", UtilMercadoPago::$DEFAULT_BANNER[$country]);
+      
         $externalOption = new PaymentOption();
+        // Media::getMediaPath(_PS_MODULE_DIR_.$this->name."/views/img/mercadopago.png")
         $externalOption->setCallToActionText($this->l(''))
                        ->setAction($this->context->link->getModuleLink($this->name, "standard", array(), true))
                        ->setModuleName($this->name)
-                       ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name."/views/img/mercadopago.png"))
+                       ->setLogo(empty(UtilMercadoPago::$DEFAULT_BANNER[$country]) ?
+                          Media::getMediaPath(_PS_MODULE_DIR_.$this->name."/views/img/mercadopago.png")
+                          : UtilMercadoPago::$DEFAULT_BANNER[$country])
                        ->setInputs([
                             "token" => [
                                 "name" =>"token",
@@ -1400,6 +1407,7 @@ class MercadoPago extends PaymentModule
                             ],
                         ]);
 
+        UtilMercadoPago::log("getExternalPaymentOption", "pagamento");
         return $externalOption;
     }
 

@@ -39,8 +39,9 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
         $mercadopago = $this->module;
         $cart = Context::getContext()->cart;
         $response = $mercadopago->execPayment($_POST);
+        UtilMercadoPago::log("response execPayment", Tools::jsonEncode($response));
         if (!isset($response['error'])) {
-            $displayName = 'Mercado Pago';
+            $displayName = 'Mercado Pago Custom';
             $total = $cart->getOrderTotal(true, Cart::BOTH);
             $order_status = null;
             if (array_key_exists('status', $response)) {
@@ -73,7 +74,6 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 $displayName = $mercadopago->setNamePaymentType($payment_type_id);
 
                 $extra_vars = array('transaction_id' => $response['id']);
-
                 $mercadopago->validateOrder(
                     $cart->id,
                     Configuration::get($order_status),
@@ -89,7 +89,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                     $cartRule = new CartRule($id_cart_rule);
                     $cartRule->active = false;
                     $cartRule->save();
-                }                
+                }         
                 $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$cart->id.'&id_module='.$mercadopago->id.
                      '&id_order='.$mercadopago->currentOrder.'&key='.$customer->secure_key.'&payment_id='.
                      $response['id'].'&payment_status='.$response['status'];
@@ -112,7 +112,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 // $payments = $order->getOrderPaymentCollection();
                 // $payments[0]->transaction_id = $response['id'];
                 // $payments[0]->update();
-                Tools::redirectLink($uri);
+                Tools::redirectLink($uri);          
             }
         }
 

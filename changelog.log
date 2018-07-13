@@ -115,6 +115,12 @@ V3.6.1
 V3.6.2
 - Enable custom payments in admin.
 
+V3.6.3
+- Fix for MCO custom and fix in translate and notification.
+
+V3.6.4
+- Fix bug in page admin and implements logs and ignore ipn states opened.
+
 V1.0.0(04/04/2017)
 Prestashop 1.7
 
@@ -132,3 +138,6 @@ Fix return payment in standard checkout
 
 V1.0.13(20/06/2018)
 Fix in IPN notification
+
+V1.0.14(20/06/2018)
+Fix in IPN notification with states opened 

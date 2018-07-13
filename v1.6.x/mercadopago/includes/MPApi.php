@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.6.2';
+    const VERSION = '3.6.4';
 
     /* Info */
     const INFO = 1;
@@ -160,6 +160,7 @@ class MPApi
     public function isValidAccessToken($access_token)
     {
         $result = MPRestCli::get('/users/me?access_token=' . $access_token);
+        UtilMercadoPago::log("=/users/me=", Tools::jsonEncode($result));
         if ($result != null && isset($result['status'])) {
             if ($result['status'] > 202) {
                 return false;
@@ -562,9 +563,7 @@ class MPApi
     {
         $access_token = $this->getAccessToken();
         $uri = "/modules/tracking/settings?access_token=" . $access_token;
-
         $result_response = MPRestCli::post($uri, $params);
-
         return $result_response;
     }
 
