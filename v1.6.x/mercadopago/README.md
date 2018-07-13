@@ -11,7 +11,7 @@
 * [Social](#social)
 
 <a name="features"></a>
-##Features##
+## Features
 
 Checkout options right for your business:
 We offer two checkout methods that make it easy to securely accept payments from anyone, anywhere.
@@ -42,7 +42,7 @@ Great for merchants who want to get going quickly and easily.
 *Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru, Uruguay and Venezuela*
 
 <a name="requirements"></a>
-##Requirements##
+## Requirements
 Basically, the requirements of this plugin are same as you need to run Prestashop. Your machine should have:
 
 **Platforms**
@@ -62,7 +62,7 @@ During the sandbox mode tests, you can operate over HTTP, but for homologation y
 
 
 <a name="available_versions"></a>
-##Available versions##
+## Available versions
 <table>
   <thead>
     <tr>
@@ -86,14 +86,14 @@ During the sandbox mode tests, you can operate over HTTP, but for homologation y
 </table>
 
 <a name="installation"></a>
-##Installation##
+## Installation
 
 1. Download Prestashop: https://www.prestashop.com/es/versiones-para-programadores#previous-version
     * Prestashop v1.6.x
     * Prestashop v1.7.x
 
 <a name="setup"></a>
-##Setup##
+## Setup
 
 1. Copy **mercadopago** folder to **modules** folder.
 
@@ -159,7 +159,7 @@ Your store will automatically sync with Mercado Pago. The notification URL will 
 ![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Coupon.jpg)
 
 <a name="social"></a>
-##Social##
+## Social
 
 Follow our facebook group and watch our videos
 <ul>
