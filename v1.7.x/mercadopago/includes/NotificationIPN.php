@@ -222,10 +222,7 @@ class NotificationIPN
 
     public static function getPriceTotalByIdCart($idCart)
     {
-
-    error_log('SELECT total_paid_real FROM '._DB_PREFIX_.'orders WHERE id_cart = '.(int)$idCart);
-
-    return Db::getInstance()->getValue('SELECT total_paid_real FROM '._DB_PREFIX_.'orders WHERE id_cart = '.(int)$idCart);
-}    
+        return Db::getInstance()->getValue('SELECT total_paid_real FROM '._DB_PREFIX_.'orders WHERE id_cart = '.(int)$idCart);
+    }    
 
 }

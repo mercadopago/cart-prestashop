@@ -282,10 +282,11 @@
 							<option value="false">{l s='No' mod='mercadopago'} </option>
 						</select>
 					</div>
+      
 					{if in_array($country, array('MLB', 'MLM', 'MLA', 'MLC', 'MCO', 'MLV'))}
 					<br/>
 						<hr style="border-top: dotted 1px;"/>
-						<h3>{l s='Settings Mercado Envios' mod='mercadopago'}</p>
+						<h3>{l s='Settings Mercado Envios' mod='mercadopago'}</p></h3>
 							<ul>
 								<li><p>{l s='Mercado Envios works only with Checkout Standard' mod='mercadopago'}</p>
 								{if $country == 'MLA'}

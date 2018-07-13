@@ -25,6 +25,7 @@
  */
 
 include_once dirname(__FILE__).'/../../includes/NotificationIPN.php';
+include_once dirname(__FILE__).'/../../includes/MPApi.php';
 
 class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
 {
@@ -33,20 +34,25 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
         parent::initContent();
         $cart = new Cart(Tools::getValue('cart_id'));    
         $total = (float)($cart->getOrderTotal(true, Cart::BOTH));
-        UtilMercadoPago::log("====id cart====",  $cart->id);  
         $notification = new NotificationIPN();
 
         $checkout = Tools::getValue('checkout');
         $topic = Tools::getValue('topic');
-        UtilMercadoPago::log("====checkout====", $checkout);
-        UtilMercadoPago::log("====topic====", $topic);
-
+        $mercadopago = $this->module;
+        if ($topic == 'merchant_order') {
+            $mercadopago_sdk = MPApi::getInstanceMP();
+            $result = $mercadopago_sdk->getMerchantOrder(Tools::getValue('id'));
+            if ($result['response']['status'] == "opened") {
+                var_dump(http_response_code(200)); 
+                die();
+            }
+        }      
+      
         if ($checkout == 'standard' && $topic == 'merchant_order') {
             $id_order = Order::getOrderByCartId(Tools::getValue('cart_id'));    
             if (!$cart->orderExists()) {
-                UtilMercadoPago::log("====orderExists====", "Necessário criar a order");    
+                UtilMercadoPago::log("====orderExists====", "create a order");    
                 var_dump(http_response_code(500)); 
-                $mercadopago = new MercadoPago();
                 $customer = new Customer((int)$cart->id_customer);
                 $displayName = $mercadopago->l('Mercado Pago Redirect');
                 $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta['started']);               
@@ -63,7 +69,7 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
                         $customer->secure_key
                     );
                     $id_order = Order::getOrderByCartId(Tools::getValue('cart_id'));  
-                    UtilMercadoPago::log("====id_order criado====".$id_order, $id_order);      
+                    UtilMercadoPago::log("====the id_order is created====".$id_order, $id_order);      
                 } catch(Exception $e) {
                     UtilMercadoPago::log(
                         "There is a problem with notification id ". $cart->id,

@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.6.3';
+    const VERSION = '3.6.4';
 
     /* Info */
     const INFO = 1;
@@ -115,8 +115,6 @@ class MPApi
      */
     public function getAccessTokenResponse()
     {
-        UtilMercadoPago::log("getAccessTokenResponse client_id", $this->client_id);
-        UtilMercadoPago::log("getAccessTokenResponse client_secret", $this->client_secret);
         $app_client_values = $this->buildQuery(
             array(
                 'client_id' => $this->client_id,
