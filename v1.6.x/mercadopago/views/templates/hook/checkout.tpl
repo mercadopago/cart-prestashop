@@ -148,8 +148,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	</div>
 
 	{/if}
-
-{if $mercadoenvios_activate == 'false' && $creditcard_disable == ""}
+{if $mercadoenvios_activate == 'false' && $creditcard_disable}
 	<div class="card row">
 		<div class="mp-form">
 			<div class="row">
@@ -1923,7 +1922,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 </script>
 
-{if $creditcard_disable == '' && $public_key != ''}
+{if $creditcard_disable && $public_key != ''}
 	<script type="text/javascript">
 		if (window.Mercadopago === undefined) {
 			$.getScript("https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js")

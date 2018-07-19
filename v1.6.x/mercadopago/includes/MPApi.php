@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.6.4';
+    const VERSION = '3.6.5';
 
     /* Info */
     const INFO = 1;
@@ -227,10 +227,16 @@ class MPApi
      * @param int $id
      * @return array(json)
      */
-    public function getPayment($id)
+    public function getPayment($id, $type)
     {
-        $access_token = $this->getAccessToken();
+        if ($type == "custom") {
+            $access_token = $this->getAccessTokenV1();          
+        } else {
+            $access_token = $this->getAccessToken();          
+        }
+
         $uri_prefix = $this->sandbox ? '/sandbox' : '';
+      
         $payment_info = MPRestCli::get($uri_prefix . '/v1/payments/' . $id . '?access_token=' . $access_token);
         return $payment_info;
     }

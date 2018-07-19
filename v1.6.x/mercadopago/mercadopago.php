@@ -304,7 +304,7 @@ class MercadoPago extends PaymentModule {
       $update = Db::getInstance()->update(
         'order_state',
         array(
-          'logable' => 0,
+          'logable' => 1,
           'send_email' => 0
         ),
         'module_name = "mercadopago" and id_order_state = '.Configuration::get('MERCADOPAGO_STATUS_12')
@@ -543,7 +543,11 @@ class MercadoPago extends PaymentModule {
     if ($id_mercadoenvios_service_code > 0) {
       $order_payments = $order->getOrderPayments();
       foreach ($order_payments as $order_payment) {
-        $result = $this->mercadopago->getPayment($order_payment->transaction_id);
+        
+        $result = $this->mercadopago->getPayment($order_payment->transaction_id, "custom");
+        if ($result['status'] == '404') {
+            $result = $this->mercadopago->getPayment($order_payment->transaction_id, "standard");        
+        }
         if ($result['status'] == '200') {
           $payment_info = $result['response'];
           if (isset($payment_info)) {
@@ -648,8 +652,11 @@ class MercadoPago extends PaymentModule {
       } else {
         $order_payments = $order->getOrderPayments();
         foreach ($order_payments as $order_payment) {
-          $result = $this->mercadopago->getPayment($order_payment->transaction_id);
-
+          $result = $this->mercadopago->getPayment($order_payment->transaction_id, "custom");
+    
+          if ($result['status'] == '404') {
+              $result = $this->mercadopago->getPayment($order_payment->transaction_id, "standard");        
+          }
           if ($result['status'] == 200) {
             $payment_info = $result['response'];
             $id_mercadoenvios_service_code = $this->isMercadoEnvios($order->id_carrier);
@@ -692,8 +699,10 @@ class MercadoPago extends PaymentModule {
     $settings = null;
     $order_payments = $order->getOrderPayments();
     foreach ($order_payments as $order_payment) {
-      $result = $this->mercadopago->getPayment($order_payment->transaction_id);
-
+      $result = $this->mercadopago->getPayment($order_payment->transaction_id, "custom");
+      if ($result['status'] == '404') {
+          $result = $this->mercadopago->getPayment($order_payment->transaction_id, "standard");        
+      }
       if ($result['status'] == 200) {
         $payment_info = $result['response'];
         $payment_type_id = $payment_info['payment_type_id'];
@@ -1081,7 +1090,7 @@ class MercadoPago extends PaymentModule {
       'MERCADOPAGO_PRODUCT_CALCULATE', 'MERCADOPAGO_CART_CALCULATE',
       'MERCADOPAGO_CUSTOM_ACTIVE'
     );
-
+    UtilMercadoPago::log("MERCADOPAGO_ACTIVE_CREDITCARD", Tools::getValue('MERCADOPAGO_ACTIVE_CREDITCARD'));
     Configuration::updateValue('MERCADOPAGO_DISCOUNT_PERCENT',
       (float) Tools::getValue('MERCADOPAGO_DISCOUNT_PERCENT'));
 
@@ -1502,7 +1511,8 @@ class MercadoPago extends PaymentModule {
 
         $this->context->smarty->assign(array('orderTotal' => $orderTotal,'active_credit_card' => $active_credit_card));
 
-        $creditcard_disable = Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE');
+        $creditcard_disable = Configuration::get('MERCADOPAGO_CUSTOM_ACTIVE');
+      
         $mercadoenvios_activate = Configuration::get('MERCADOENVIOS_ACTIVATE');
         $boleto_active = Configuration::get('MERCADOPAGO_CUSTOM_BOLETO');
 
@@ -1565,7 +1575,7 @@ class MercadoPago extends PaymentModule {
                 'country' => Configuration::get('MERCADOPAGO_COUNTRY'),
             );
             // send credit card configurations only activated
-            if ($creditcard_disable == '' &&
+            if ($creditcard_disable &&
                 Configuration::get('MERCADOPAGO_PUBLIC_KEY') != "" &&
                 Configuration::get('MERCADOPAGO_ACCESS_TOKEN') != "") {
                 $data['public_key'] = Configuration::get('MERCADOPAGO_PUBLIC_KEY');
@@ -1897,7 +1907,7 @@ class MercadoPago extends PaymentModule {
         $products = $cart->getProducts();
         $items = array();
         $summary = '';
-
+        $round = false;
         if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' || Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
             $round = true;
         }
@@ -2488,6 +2498,7 @@ class MercadoPago extends PaymentModule {
 
     public function listenIPN($checkout, $topic, $id)
     {
+    
         $payment_method_ids = array();
         $payment_ids = array();
         $payment_statuses = array();
@@ -2509,7 +2520,7 @@ class MercadoPago extends PaymentModule {
             $external_reference = $merchant_order_info['external_reference'];
             foreach ($payments as $payment) {
                 // get payment info
-                $result = $this->mercadopago->getPayment($payment['id']);
+                $result = $this->mercadopago->getPayment($payment['id'], "standard");
                 UtilMercadoPago::log("====result payment====",  Tools::jsonEncode($result));  
                 $payment_info = $result['response'];
 
@@ -2527,7 +2538,6 @@ class MercadoPago extends PaymentModule {
                                     $payment_info['card']['cardholder']['name'] : '';
                 }
             }
-
             if (round($transaction_amounts, 2) >= round($merchant_order_info['total_amount'], 2)) {
                 if (Configuration::get('MERCADOPAGO_COUNTRY') == 'MCO' ||
                     Configuration::get('MERCADOPAGO_COUNTRY') == 'MLC') {
@@ -2585,9 +2595,8 @@ class MercadoPago extends PaymentModule {
                 }
             }
         } elseif (($checkout == 'custom' || $checkout == 'pos') && $topic == 'payment' && $id > 0) {
-            $result = $this->mercadopago->getPayment($id);
+            $result = $this->mercadopago->getPayment($id, "custom");
             $payment_info = $result['response'];
-
             if (! isset($result['error'])) {
                 $external_reference = $payment_info['external_reference'];
 
@@ -2603,7 +2612,7 @@ class MercadoPago extends PaymentModule {
                     $payment_method_ids[] = $payment_info['payment_method_id'];
                     $credit_cards[] = '**** **** **** '.$payment_info['card']['last_four_digits'];
                     $cardholders[] = $payment_info['card']['cardholder']['name'];
-                }
+                }            
                 $this->updateOrder(
                     $payment_ids,
                     $payment_statuses,
@@ -2655,7 +2664,6 @@ class MercadoPago extends PaymentModule {
         $checkout
     ) {
         $order = null;
-
         // if has two creditcard validate whether payment has same status in order to continue validating order
         if (count($payment_statuses) == 1 ||
             (count($payment_statuses) == 2 &&
@@ -2695,7 +2703,7 @@ class MercadoPago extends PaymentModule {
             if ($payment_status != $statusPS) {
                 $order->setCurrentState($payment_status);
             }
-
+            
             try {
                 $payments = $order->getOrderPaymentCollection();
                 $payments[0]->transaction_id = implode(' / ', $payment_ids);
