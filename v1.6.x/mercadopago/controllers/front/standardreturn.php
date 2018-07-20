@@ -79,7 +79,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             Tools::redirect('index.php?controller=cart');
             return;
         }
-
+  
         if (Tools::getIsset('collection_id') && Tools::getValue('collection_id') != 'null') {
             $payment_statuses = array();
             $payment_ids = array();
@@ -93,7 +93,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             $collection_ids = explode(',', Tools::getValue('collection_id'));
 
             foreach ($collection_ids as $collection_id) {
-                $result = $mercadopago_sdk->getPayment($collection_id);
+                $result = $mercadopago_sdk->getPayment($collection_id, "standard");
                 $payment_info = $result['response'];
                 $id_cart = $payment_info['external_reference'];
                 $cart = new Cart($id_cart);
@@ -154,10 +154,10 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             Tools::redirectLink($uri);
         } else {
             UtilMercadoPago::logMensagem(
-                'MercadoPagoStandardReturnModuleFrontController::initContent = '.
-                'External reference is not set. Order placement has failed.',
-                MPApi::ERROR
+                'MercadoPagoStandardReturnModuleFrontController::initContent',
+                'External reference is not set. Order placement has failed.'
             );
+            $this->setTemplate('error.tpl');
         }
     }
 }

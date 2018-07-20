@@ -42,6 +42,10 @@ class MercadoPagoStandardPaymentModuleFrontController extends ModuleFrontControl
         UtilMercadoPago::log("response createStandardCheckoutPreference", Tools::jsonEncode($result));
         if (array_key_exists('init_point', $result['response'])) {
             $init_point = $result['response']['init_point'];
+            Db::getInstance()->insert('mercadopago_orders_initpoint', array(
+                'cart_id' => (int)$cart->id,
+                'init_point'      => pSQL($init_point),
+            ));          
             header("Location: $init_point");
             die();
         } else {

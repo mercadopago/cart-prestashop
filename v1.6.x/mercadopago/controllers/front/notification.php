@@ -35,19 +35,40 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
         $cart = new Cart(Tools::getValue('cart_id'));    
         $total = (float)($cart->getOrderTotal(true, Cart::BOTH));
         $checkout = Tools::getValue('checkout');
-        $topic = Tools::getValue('topic');
+        $topic = null;
+        $id = null;
       
         $mercadopago = $this->module;
         $id_order = Order::getOrderByCartId(Tools::getValue('cart_id'));          
+       
+        (print_r($_GET, true)); 
+      
+        if (empty(Tools::getValue('topic'))) {
+           $topic = Tools::getValue('type');
+           $id = Tools::getValue('data_id');              
+        } else {
+           $topic = Tools::getValue('topic');
+           $id = Tools::getValue('id');
+        }
+        if ($checkout == 'custom') {        
+          
+            $status = $this->getStatusCustom();
+            if ($status == 'rejected') {
+                UtilMercadoPago::log("Notification", "The notification came, but the status is rejected ". Tools::getValue('data_id'));
+                var_dump(http_response_code(500)); 
+                die();                
+            }   
+         }
       
         if ($topic == 'merchant_order') {
             $api = $mercadopago->getAPI();
-            $result = $api->getMerchantOrder(Tools::getValue('id'));
+            $result = $api->getMerchantOrder($id);
             if ($result['response']['status'] == "opened") {
                 var_dump(http_response_code(200)); 
                 die();
             }
         }
+      
         if ($checkout == 'standard' || $checkout == 'custom') {
             if (!$cart->orderExists()) {
                 var_dump(http_response_code(500)); 
@@ -74,14 +95,12 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
                     );     
                 }    
             } else {
-                if (Tools::getValue('id') == "") {
-                    var_dump(http_response_code(500)); 
-                }
                 $mercadopago->listenIPN(
                     $checkout,
                     $topic,
-                    Tools::getValue('id')
+                    $id
                 );
+                UtilMercadoPago::log("Notification", "The notification return 201, the card is updated  ". Tools::getValue('cart_id'));              
                 var_dump(http_response_code(201));
             }
         } else {
@@ -89,4 +108,13 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
         }
         die();
     }
+  
+    public function getStatusCustom()
+    {
+        $api = $this->module->getAPI();
+        $result = $api->getPayment(Tools::getValue('data_id'), "custom");  
+        $payment_info = $result['response'];   
+        return $payment_info['status'];
+    }  
+  
 }
