@@ -522,13 +522,12 @@ class MercadoPago extends PaymentModule {
         false
       ),
     );
-
     if (Configuration::get('MERCADOPAGO_POINT') == "true" &&
         $id_order_state == Configuration::get('MERCADOPAGO_STATUS_11')) {
       $data['pos_options'] = $this->loadPoints();
-      $data['showPoint'] = 'true';
+      $data['showPoint'] = true;
     } else {
-      $data['showPoint'] = 'false';
+      $data['showPoint'] = false;
     }
     $this->context->smarty->assign($data);
   }
@@ -653,7 +652,6 @@ class MercadoPago extends PaymentModule {
         $order_payments = $order->getOrderPayments();
         foreach ($order_payments as $order_payment) {
           $result = $this->mercadopago->getPayment($order_payment->transaction_id, "custom");
-    
           if ($result['status'] == '404') {
               $result = $this->mercadopago->getPayment($order_payment->transaction_id, "standard");        
           }
@@ -1094,15 +1092,15 @@ class MercadoPago extends PaymentModule {
     Configuration::updateValue('MERCADOPAGO_DISCOUNT_PERCENT',
       (float) Tools::getValue('MERCADOPAGO_DISCOUNT_PERCENT'));
 
-    Configuration::updateValue('MERCADOPAGO_ACTIVE_CREDITCARD',
-      (int) Tools::getValue('MERCADOPAGO_ACTIVE_CREDITCARD'));
-
-    Configuration::updateValue('MERCADOPAGO_ACTIVE_BOLETO',
-      (int) Tools::getValue('MERCADOPAGO_ACTIVE_BOLETO'));
+    Configuration::updateValue('MERCADOPAGO_ACTIVE_DISCOUNT_CREDITCARD',
+      (int) Tools::getValue('MERCADOPAGO_ACTIVE_DISCOUNT_CREDITCARD'));
+    
+    Configuration::updateValue('MERCADOPAGO_ACTIVE_DISCOUNT_BOLETO',
+      (int) Tools::getValue('MERCADOPAGO_ACTIVE_DISCOUNT_BOLETO'));
 
     Configuration::updateValue('MERCADOPAGO_COUPON_TICKET_ACTIVE',
       Tools::getValue('MERCADOPAGO_COUPON_TICKET_ACTIVE'));
-
+      
     foreach($configs as $config) {
       Configuration::updateValue($config, Tools::getValue($config));
     }
@@ -1247,7 +1245,6 @@ class MercadoPago extends PaymentModule {
                     Configuration::updateValue($op_active_variable, $op_active);
                 }
             }
-
             $offline_payment_settings[$offline_payment['id']] = array(
                 'name' => $offline_payment['name'],
                 'disabled' => Configuration::get($op_active_variable),
@@ -1272,7 +1269,6 @@ class MercadoPago extends PaymentModule {
         null,
         false
     );
-
     $settings = array(
       'test_user' => $test_user,
       'requirements' => $requirements,
@@ -1320,8 +1316,8 @@ class MercadoPago extends PaymentModule {
           'UTF-8'
       ),
       'percent' => htmlentities(Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT'), ENT_COMPAT, 'UTF-8'),
-      'active_credicard' => htmlentities(Configuration::get('MERCADOPAGO_ACTIVE_CREDITCARD'), ENT_COMPAT, 'UTF-8'),
-      'active_boleto' => htmlentities(Configuration::get('MERCADOPAGO_ACTIVE_BOLETO'), ENT_COMPAT, 'UTF-8'),
+      'active_credicard_discount' => htmlentities(Configuration::get('MERCADOPAGO_ACTIVE_DISCOUNT_CREDITCARD'), ENT_COMPAT, 'UTF-8'),
+      'active_boleto_discount' => htmlentities(Configuration::get('MERCADOPAGO_ACTIVE_DISCOUNT_BOLETO'), ENT_COMPAT, 'UTF-8'),
 
       'standard_banner' => htmlentities(Configuration::get('MERCADOPAGO_STANDARD_BANNER'), ENT_COMPAT, 'UTF-8'),
       'window_type' => htmlentities(Configuration::get('MERCADOPAGO_WINDOW_TYPE'), ENT_COMPAT, 'UTF-8'),
@@ -1499,9 +1495,11 @@ class MercadoPago extends PaymentModule {
         $cart = $params['cart'];
 
         $active_credit_card = (int) Configuration::get('MERCADOPAGO_ACTIVE_CREDITCARD');
+        $credit_card_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_DISCOUNT_CREDITCARD');
         $shipping_cost = (double) $cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
         $product_cost = (double) $cart->getOrderTotal(true, Cart::ONLY_PRODUCTS);
-
+        $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
+      
         $discount = 0;
         if (Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT') > 0) {
             $discount = ($percent / 100) * $product_cost;
@@ -1509,20 +1507,17 @@ class MercadoPago extends PaymentModule {
 
         $orderTotal =  number_format(($product_cost - $discount) + $shipping_cost, 2, ',', '.');
 
-        $this->context->smarty->assign(array('orderTotal' => $orderTotal,'active_credit_card' => $active_credit_card));
-
-        $creditcard_disable = Configuration::get('MERCADOPAGO_CUSTOM_ACTIVE');
+        $this->context->smarty->assign(array('orderTotal' => $orderTotal,'credit_card_discount' => $credit_card_discount));
       
+        $creditcard_enable = Configuration::get('MERCADOPAGO_CREDITCARD_ACTIVE');
+    
         $mercadoenvios_activate = Configuration::get('MERCADOENVIOS_ACTIVATE');
         $boleto_active = Configuration::get('MERCADOPAGO_CUSTOM_BOLETO');
-
-        $credit_card_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_CREDITCARD');
-        $boleto_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_BOLETO');
-
-        $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
+      
+        $boleto_discount = (int) Configuration::get('MERCADOPAGO_ACTIVE_DISCOUNT_BOLETO');
 
         if ($mercadoenvios_activate == 'true') {
-            $creditcard_disable = 'false';
+            $creditcard_enable = 'false';
             $boleto_active = 'false';
         } else {
             $mercadoenvios_activate = 'false';
@@ -1540,7 +1535,7 @@ class MercadoPago extends PaymentModule {
                 'this_path_ssl' => $this_path_ssl,
                 'mercadoenvios_activate' => $mercadoenvios_activate,
                 'boleto_active' => $boleto_active,
-                'creditcard_disable' => $creditcard_disable,
+                'creditcard_enable' => $creditcard_enable,
                 'coupon_active' => Configuration::get('MERCADOPAGO_COUPON_ACTIVE'),
                 'coupon_ticket_active' => Configuration::get('MERCADOPAGO_COUPON_TICKET_ACTIVE'),
 
@@ -1575,9 +1570,10 @@ class MercadoPago extends PaymentModule {
                 'country' => Configuration::get('MERCADOPAGO_COUNTRY'),
             );
             // send credit card configurations only activated
-            if ($creditcard_disable &&
+            if (Configuration::get('MERCADOPAGO_CUSTOM_ACTIVE') &&
                 Configuration::get('MERCADOPAGO_PUBLIC_KEY') != "" &&
                 Configuration::get('MERCADOPAGO_ACCESS_TOKEN') != "") {
+              
                 $data['public_key'] = Configuration::get('MERCADOPAGO_PUBLIC_KEY');
                 $data['creditcard_banner'] = Configuration::get('MERCADOPAGO_CREDITCARD_BANNER');
                 $data['amount'] = (double) number_format($params['cart']->getOrderTotal(true, Cart::BOTH), 2, '.', '');
@@ -1643,11 +1639,12 @@ class MercadoPago extends PaymentModule {
                 $offline_payment_settings[$offline_payment['id']] = array(
                     'name' => $offline_payment['name'],
                     'banner' => Configuration::get($op_banner_variable),
-                    'disabled' => Configuration::get($op_active_variable),
+                    'active' => Configuration::get($op_active_variable),
                     'thumbnail' => $thumbnail,
                 );
             }
             $data['offline_payment_settings'] = $offline_payment_settings;
+          
             if ($boleto_active == "true" && Configuration::get('MERCADOPAGO_COUNTRY') == 'MLB') {
                 $data['ticket'] = $this->getInfomationsForTicket($cart->id_address_invoice);
             }
@@ -2550,7 +2547,6 @@ class MercadoPago extends PaymentModule {
                     ) {
                     $transaction_amounts += $merchant_order_info['shipments'][0]['shipping_option']['cost'];
                 }
-
                 $this->updateOrder(
                     $payment_ids,
                     $payment_statuses,
@@ -2558,7 +2554,7 @@ class MercadoPago extends PaymentModule {
                     $external_reference,
                     $result,
                     $checkout
-                );
+                );          
             }
             // check the module
             $id_order = $this->getOrderByCartId($merchant_order_info['external_reference']);
@@ -2698,12 +2694,10 @@ class MercadoPago extends PaymentModule {
                 }
             }
             $statusPS = (int)$order->getCurrentState();
-
             $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta[$payment_status]);
             if ($payment_status != $statusPS) {
                 $order->setCurrentState($payment_status);
             }
-            
             try {
                 $payments = $order->getOrderPaymentCollection();
                 $payments[0]->transaction_id = implode(' / ', $payment_ids);
@@ -3276,8 +3270,8 @@ class MercadoPago extends PaymentModule {
     {
         $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
 
-        $credit_card = (int) Configuration::get('MERCADOPAGO_ACTIVE_CREDITCARD');
-        $boleto = (int) Configuration::get('MERCADOPAGO_ACTIVE_BOLETO');
+        $credit_card = (int) Configuration::get('MERCADOPAGO_ACTIVE_DISCOUNT_CREDITCARD');
+        $boleto = (int) Configuration::get('MERCADOPAGO_ACTIVE_DISCOUNT_BOLETO');
 
         $rules = $cart->getCartRules();
         $discount_name = 'Desconto Mercado Pago Cart-ID=' . $cart->id;
@@ -3320,6 +3314,10 @@ class MercadoPago extends PaymentModule {
 
 
     public function uninstallModule() {
+      
+      Configuration::updateValue('MERCADOPAGO_ACTIVE_DISCOUNT_CREDITCARD', false);
+      Configuration::updateValue('MERCADOPAGO_ACTIVE_DISCOUNT_BOLETO', false);    
+      
       Configuration::updateValue('MERCADOPAGO_CREDITCARD_ACTIVE', false);
       Configuration::updateValue('MERCADOPAGO_CUSTOM_BOLETO', false);
       Configuration::updateValue('MERCADOPAGO_PEC_ACTIVE', false);

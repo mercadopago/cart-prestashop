@@ -148,7 +148,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	</div>
 
 	{/if}
-{if $mercadoenvios_activate == 'false' && $creditcard_disable}
+{if $mercadoenvios_activate == 'false' && $creditcard_enable}
 	<div class="card row">
 		<div class="mp-form">
 			<div class="row">
@@ -598,7 +598,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 <script type="text/javascript">
 
-	var active_credit_card = "{$active_credit_card|escape:'javascript':'UTF-8'}";
+	var credit_card_discount = "{$credit_card_discount|escape:'javascript':'UTF-8'}";
 	var orderTotal = "{$orderTotal|escape:'javascript':'UTF-8'}";
 
 	var country = "{$country|escape:'javascript':'UTF-8'}";
@@ -793,7 +793,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 				}
 
 
-				if(value.installments == 1 && active_credit_card == 1){
+				if(value.installments == 1 && credit_card_discount == 1){
 					html_options += "<option value='"+ value.installments + "' "+ dataInput +">"+ value.installments +" parcela de R$ "+ orderTotal +" ("+ orderTotal +") </option>";
 				}else{
 					html_options += "<option value='"+ value.installments + "' "+ dataInput +">"
@@ -1922,7 +1922,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 </script>
 
-{if $creditcard_disable && $public_key != ''}
+{if $creditcard_enable && $public_key != ''}
 	<script type="text/javascript">
 		if (window.Mercadopago === undefined) {
 			$.getScript("https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js")

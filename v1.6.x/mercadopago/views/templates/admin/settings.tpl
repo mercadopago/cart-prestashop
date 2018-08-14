@@ -380,7 +380,7 @@
 					<h3><p>{l s='Exclude payment methods:' mod='mercadopago'}</p></h3>
 					<div class="">
 						<label>{l s='Credit Card' mod='mercadopago'}:</label>
-						<input type="checkbox" class="options_custom" name="MERCADOPAGO_CREDITCARD_ACTIVE" value="false" id="creditcard_active"
+						<input type="checkbox" class="options_custom" name="MERCADOPAGO_CREDITCARD_ACTIVE" value="true" id="creditcard_active"
 
 						{if $creditcard_active == 'true'}
 							checked
@@ -403,14 +403,15 @@
 					<hr style="border-top: dotted 1px;"/>
 							<h3><p>{l s='Mercado Pago Discount (Only to payments one installments)' mod='mercadopago'}</p></h3>
 
-					<label>{l s='Discount percent:' mod='mercadopago'}:</label>
+					<label>{l s='Discount percent:' mod='mercadopago'}</label>
 					<div >
 						<input type="text" name="MERCADOPAGO_DISCOUNT_PERCENT" value="{$percent|escape:'htmlall':'UTF-8'}" />
 					</div><br />
 					<label>{l s='Discount payment methods:' mod='mercadopago'}</label>
+          
 					<div >
-						<input type="checkbox" name="MERCADOPAGO_ACTIVE_CREDITCARD" {if $active_credicard == 1}checked='checked'{/if} value="1">{l s='Credit card (in cash)' mod='mercadopago'}</input><br />
-						<input type="checkbox" name="MERCADOPAGO_ACTIVE_BOLETO" {if $active_boleto == 1}checked='checked'{/if} value="1">{l s='Ticket' mod='mercadopago'}</input>
+						<input type="checkbox" name="MERCADOPAGO_ACTIVE_DISCOUNT_CREDITCARD" {if $active_credicard_discount == 1}checked='checked'{/if} value="1">{l s='Credit card (in cash)' mod='mercadopago'}</input><br />
+						<input type="checkbox" name="MERCADOPAGO_ACTIVE_DISCOUNT_BOLETO" {if $active_boleto_discount == 1}checked='checked'{/if} value="1">{l s='Ticket' mod='mercadopago'}</input>
 					</div>
 					<br />
 					{if in_array($country, array('MLB', 'MLM', 'MLA', 'MPE'))}
@@ -522,7 +523,7 @@
 
 	function bloquearEnvios(obj) {
 		$( "#MERCADOENVIOS_ACTIVATE" ).val("false");
-		if (obj.value == "true") {
+		if (obj != null && obj.value == "true") {
 			$( "#MERCADOENVIOS_ACTIVATE" ).prop("disabled", false);
 		} else {
 			$( "#MERCADOENVIOS_ACTIVATE" ).prop("disabled", true);
@@ -601,15 +602,15 @@
 	}
 
 
-	$('#MERCADOPAGO_PUBLIC_KEY').on("change", function(){
-		loadCustom();
-	});
+// 	$('#MERCADOPAGO_PUBLIC_KEY').on("change", function(){
+// 		loadCustom();
+// 	});
 
-	$('#MERCADOPAGO_ACCESS_TOKEN').on("change", function(){
-		loadCustom();
-	});
-
-	function loadCustom() {
+// 	$('#MERCADOPAGO_ACCESS_TOKEN').on("change", function(){
+// 		loadCustom();
+// 	});
+/*
+function loadCustom() {
 		if($('#MERCADOPAGO_ACCESS_TOKEN').val() == ""
 			|| $('#MERCADOPAGO_PUBLIC_KEY').val() == "") {
 
@@ -626,23 +627,23 @@
 				$(".ticket").attr('disabled', false);
 		}
 	}
-	loadCustom();
+	loadCustom();*/
 
-    $('.ticket').change(function() {
-        if($(this).is(":checked")) {
-            $(this).val('true');
-        } else {
-        	$(this).val('false');
-        }
-    });
+//     $('.ticket').change(function() {
+//         if($(this).is(":checked")) {
+//             $(this).val('true');
+//         } else {
+//         	$(this).val('false');
+//         }
+//     });
 
-    $('#creditcard_active').change(function() {
-        if($(this).is(":checked")) {
-            $(this).val('true');
-        } else {
-        	$(this).val('false');
-        }
-    });
+//     $('#creditcard_active').change(function() {
+//         if($(this).is(":checked")) {
+//             $(this).val('true');
+//         } else {
+//         	$(this).val('false');
+//         }
+//     });
 
 
 </script>

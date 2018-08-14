@@ -32,6 +32,7 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
     public function initContent()
     {
         parent::initContent();
+      
         $cart = new Cart(Tools::getValue('cart_id'));    
         $total = (float)($cart->getOrderTotal(true, Cart::BOTH));
         $checkout = Tools::getValue('checkout');
@@ -41,8 +42,6 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
         $mercadopago = $this->module;
         $id_order = Order::getOrderByCartId(Tools::getValue('cart_id'));          
        
-        (print_r($_GET, true)); 
-      
         if (empty(Tools::getValue('topic'))) {
            $topic = Tools::getValue('type');
            $id = Tools::getValue('data_id');              
@@ -50,6 +49,7 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
            $topic = Tools::getValue('topic');
            $id = Tools::getValue('id');
         }
+         
         if ($checkout == 'custom') {        
           
             $status = $this->getStatusCustom();

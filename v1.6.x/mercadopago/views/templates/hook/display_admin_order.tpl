@@ -25,7 +25,7 @@
 	<script defer type="text/javascript"
 	src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/js/jquery.dd.js"></script>
 	<div class="panel">
-			{if $statusOrder == "Pendente" || $showPoint == "true" || isset($status)}
+			{if $statusOrder == "Pendente" || (isset($showPoint) && $showPoint) || isset($status)}
 			<div class="row">
 				<img class="logo_cupom" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/payment_method_logo.png">
 			</div>
@@ -60,7 +60,7 @@
 				</form>
 			</div>
 			{/if}
-			{if $showPoint == "true"}
+			{if isset($showPoint) && $showPoint}
 			<div class="col-sm-2 form-group">
 			    <label for="exampleInputEmail1">Point Mercado Pago</label>
 				<select name="pos_id" id="pos_id" class="form-control">
