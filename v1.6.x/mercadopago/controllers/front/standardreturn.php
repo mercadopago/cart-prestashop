@@ -79,7 +79,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             Tools::redirect('index.php?controller=cart');
             return;
         }
-  
+
         if (Tools::getIsset('collection_id') && Tools::getValue('collection_id') != 'null') {
             $payment_statuses = array();
             $payment_ids = array();

@@ -31,7 +31,7 @@ include_once 'MPRestCli.php';
 
 class MPApi
 {
-    const VERSION = '3.6.5';
+    const VERSION = '3.6.6';
 
     /* Info */
     const INFO = 1;
@@ -236,7 +236,6 @@ class MPApi
         }
 
         $uri_prefix = $this->sandbox ? '/sandbox' : '';
-      
         $payment_info = MPRestCli::get($uri_prefix . '/v1/payments/' . $id . '?access_token=' . $access_token);
         return $payment_info;
     }

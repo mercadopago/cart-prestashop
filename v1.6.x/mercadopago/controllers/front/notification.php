@@ -32,6 +32,9 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
     public function initContent()
     {
         parent::initContent();
+      
+        error_log("entrou na notificação");       
+      
         $cart = new Cart(Tools::getValue('cart_id'));    
         $total = (float)($cart->getOrderTotal(true, Cart::BOTH));
         $checkout = Tools::getValue('checkout');
@@ -41,7 +44,7 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
         $mercadopago = $this->module;
         $id_order = Order::getOrderByCartId(Tools::getValue('cart_id'));          
        
-        (print_r($_GET, true)); 
+        error_log(print_r($_GET, true)); 
       
         if (empty(Tools::getValue('topic'))) {
            $topic = Tools::getValue('type');
@@ -50,6 +53,9 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
            $topic = Tools::getValue('topic');
            $id = Tools::getValue('id');
         }
+      
+        error_log("===topic===". $topic );
+        error_log("===id===". $id);      
         if ($checkout == 'custom') {        
           
             $status = $this->getStatusCustom();
@@ -71,6 +77,7 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
       
         if ($checkout == 'standard' || $checkout == 'custom') {
             if (!$cart->orderExists()) {
+                error_log("vai criar a ordem *****");
                 var_dump(http_response_code(500)); 
                 $customer = new Customer((int)$cart->id_customer);
                 $displayName = $mercadopago->l('Mercado Pago '.$checkout);
@@ -88,6 +95,7 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
                         $customer->secure_key
                     );
                     $id_order = Order::getOrderByCartId(Tools::getValue('cart_id'));  
+                    error_log(" ordem  criada *****".$id_order);
                 } catch(Exception $e) {
                     UtilMercadoPago::log(
                         "There is a problem with notification id ". $cart->id,
@@ -95,6 +103,7 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
                     );     
                 }    
             } else {
+                error_log(" ordem  existe *****".$id);
                 $mercadopago->listenIPN(
                     $checkout,
                     $topic,
@@ -112,8 +121,11 @@ class MercadoPagoNotificationModuleFrontController extends ModuleFrontController
     public function getStatusCustom()
     {
         $api = $this->module->getAPI();
+        error_log("==data_id===". Tools::getValue('data_id'));      
         $result = $api->getPayment(Tools::getValue('data_id'), "custom");  
+        error_log(Tools::jsonEncode($result));      
         $payment_info = $result['response'];   
+        error_log("==status==".$payment_info['status']);
         return $payment_info['status'];
     }  
   
