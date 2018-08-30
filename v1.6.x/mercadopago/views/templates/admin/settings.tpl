@@ -100,10 +100,10 @@
         </ps-label-information>
 		
 		<h4>{l s='Notification URL' mod='mercadopago'}</h4>
-		<p><li>{l s='Notification URL' mod='mercadopago'}: {$notification_url|escape:'htmlall':'UTF-8'}</li> </p>
+		<p><li>{l s='Notification URL' mod='mercadopago'}: "{$notification_url|escape:'htmlall':'UTF-8'}"</li> </p>
 		<h4>{l s='Mercado Pago Log' mod='mercadopago'}</h4>
 		<p>
-			<li><a href="{$log|escape:'htmlall':'UTF-8'}" download>{l s="Download" mod='mercadopago'}</a></li>
+			<li><a href="{$log|escape:'htmlall':'UTF-8'}" download>"{l s='Download' mod='mercadopago'}"</a></li>
 		</p>
 	</div>
 	<br>
@@ -112,11 +112,11 @@
 		{foreach from=array('Global', 'Basic', 'Custom') item=tab}
 			<li>
 				{if $active_tab == $tab}
-					<a href="javascript:void(0)" class="tablinks" onclick="openTab(event, '{$tab}')" id="defaultTab">
+					<a href="javascript:void(0)" class="tablinks" onclick="openTab(event, '{$tab|escape:'htmlall':'UTF-8'}')" id="defaultTab">
 						{l s="`$tab` Checkout" mod='mercadopago'}
 					</a>
 				{else}
-					<a href="javascript:void(0)" class="tablinks" onclick="openTab(event, '{$tab}')">
+					<a href="javascript:void(0)" class="tablinks" onclick="openTab(event, '{$tab|escape:'htmlall':'UTF-8'}')">
 						{l s="`$tab` Checkout" mod='mercadopago'}
 					</a>
 				{/if}
@@ -153,7 +153,7 @@
 					<span>
 						<select name="MERCADOPAGO_CATEGORY" id="category">
 							{foreach from=$categories key=value item=name}
-								<option value="{$value}">{l s=$name mod='mercadopago'}</option>
+								<option value="{$value|escape:'htmlall':'UTF-8'}">{l s=$name mod='mercadopago'}</option>
 							{/foreach}
 						</select>
 					</span>
@@ -220,7 +220,7 @@
 					<br>
 					<label>{l s='Custom Text:' mod='mercadopago'}</label>
 					<div class="">
-						<input type="text" size="50" name="MERCADOPAGO_CUSTOM_TEXT" value="{$custom_text|unescape:'htmlall'}" />
+						<input type="text" size="50" name="MERCADOPAGO_CUSTOM_TEXT" value="{$custom_text|escape:'htmlall'}" />
 					</div>
 					<br>
 					{if $country == 'MLA'}
@@ -431,7 +431,7 @@
 					<br />
 					<hr style="border-top: dotted 1px;"/>
 
-					<h3><p>{l s='Display installments calculator' mod='mercadopago'}:</p></h3>
+					<h3><p>{l s='Display installments calculator' mod='mercadopago'}</p></h3>
 
 					<label>{l s='Product Page' mod='mercadopago'}</label>
 					<div class="">
@@ -515,8 +515,6 @@
 		{foreach from=$payment_methods_settings key=payment_method item=value}
 			document.getElementById("{$payment_method|escape:'htmlall':'UTF-8'}").checked = "{$value|escape:'htmlall':'UTF-8'}";
 		{/foreach}
-
-		console.info("{$custom_text|unescape:'htmlall'}");
 
 	}
 

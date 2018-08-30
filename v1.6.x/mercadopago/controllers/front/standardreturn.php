@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2007-2015 PrestaShop.
  *
@@ -29,7 +28,6 @@ include_once dirname(__FILE__).'/../../mercadopago.php';
 include_once dirname(__FILE__).'/../../includes/MPApi.php';
 class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontController
 {
-
     public function initContent()
     {
         $this->display_column_left = false;
@@ -128,10 +126,7 @@ class MercadoPagoStandardReturnModuleFrontController extends ModuleFrontControll
             $payment_status = $payment_info['status'];
             $payment_status = Configuration::get(UtilMercadoPago::$statusMercadoPagoPresta[$payment_status]);
             if ($payment_status != $statusPS) {
-
-                
                 $order->setCurrentState($payment_status);
-
             }
 
             $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$order->id_cart.'&id_module='.

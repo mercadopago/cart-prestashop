@@ -148,7 +148,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	</div>
 
 	{/if}
-{if $mercadoenvios_activate == 'false' && $creditcard_enable}
+{if $mercadoenvios_activate == 'false' && $creditcard_disable == 'false'}
 	<div class="card row">
 		<div class="mp-form">
 			<div class="row">
@@ -382,7 +382,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 	{if $country == 'MLB'}
 		{foreach from=$offline_payment_settings key=offline_payment item=value}
-			{if $value.active == "true" && $mercadoenvios_activate == 'false' && $offline_payment != 'pec'}
+			{if $boleto_disable == "false"  && $mercadoenvios_activate == 'false' && $offline_payment != 'pec'}
 			<form action="{$custom_action_url|escape:'htmlall':'UTF-8'}" method="post"
 							id="form-{$offline_payment|escape:'htmlall':'UTF-8'}" class="formTicket" onsubmit="return submitBoletoFebraban();">
 				<input name="email" type="hidden" value="{$ticket.email|escape:'htmlall':'UTF-8'}"/> 
@@ -519,7 +519,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	{if $country == 'MLM' || $country == 'MPE' || $country ==
 	'MLA' || $country == 'MLC' || $country == 'MCO' || $country == 'MLV' || $country == 'MLU'}
 	{foreach from=$offline_payment_settings key=offline_payment item=value}
-	<label>{$value.disabled}</label>
+	<label>"{$value.disabled|escape:'htmlall':'UTF-8'}"</label>
 	{if $value.disabled  != "true" && $mercadoenvios_activate == "false"}
 	<div class="row">
 		<div class="col-xs-12 col-md-6">
@@ -573,7 +573,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 								id="id-standard-logo"> <img
 								src="{$standard_banner|escape:'htmlall':'UTF-8'}"
 								class="mp-standard-banner" /> <span
-								class="payment-label standard"><h5> {$custom_text|unescape:'htmlall'}</h5> </span>
+								class="payment-label standard"><h5> {$custom_text|escape:'htmlall'}</h5> </span>
 						</div>
 					</div>
 				</div>
@@ -740,8 +740,6 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 	}
 	function setInstallmentsByIssuerId(status, response) {
-		console.info("status" + status);
-		console.info("response" + response);
 		var amount = returnAmount();
 
 		var opcaoPagamento = $("#opcaoPagamentoCreditCard").val();
@@ -1922,7 +1920,7 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 
 </script>
 
-{if $creditcard_enable && $public_key != ''}
+{if !$creditcard_disable && $public_key != ''}
 	<script type="text/javascript">
 		if (window.Mercadopago === undefined) {
 			$.getScript("https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js")
