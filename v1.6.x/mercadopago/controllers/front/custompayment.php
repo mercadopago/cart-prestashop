@@ -56,7 +56,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                     break;
             }
         }
-        UtilMercadoPago::log("custom payment order_status", $order_status);      
+        UtilMercadoPago::log("custom payment order_status", $order_status);
         if ($order_status != null) {
             $percent = (float) Configuration::get('MERCADOPAGO_DISCOUNT_PERCENT');
             $id_cart_rule = null;
@@ -89,7 +89,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                 $cartRule = new CartRule($id_cart_rule);
                 $cartRule->active = false;
                 $cartRule->save();
-            }     
+            }
          
             $uri = __PS_BASE_URI__.'order-confirmation.php?id_cart='.$cart->id.'&id_module='.$mercadopago->id.
                  '&id_order='.$mercadopago->currentOrder.'&key='.$customer->secure_key.'&payment_id='.
@@ -110,7 +110,7 @@ class MercadoPagoCustomPaymentModuleFrontController extends ModuleFrontControlle
                      urlencode($response['transaction_details']['external_resource_url']);
             }
           
-            Tools::redirectLink($uri);          
+            Tools::redirectLink($uri);
         }
 
         $data = $this->getError($mercadopago, $response, $cart->id);

@@ -45,9 +45,9 @@ class MercadoPagoStandardPaymentModuleFrontController extends ModuleFrontControl
             Db::getInstance()->insert('mercadopago_orders_initpoint', array(
                 'cart_id' => (int)$cart->id,
                 'init_point'      => pSQL($init_point),
-            ));          
-            header("Location: $init_point");
-            die();
+            ));
+            Tools::redirect($init_point);
+            return;
         } else {
             $data = array();
             $data['typeReturn'] = "failure";

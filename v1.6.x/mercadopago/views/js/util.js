@@ -1,3 +1,15 @@
+/**
+*  @author    Mercado pago <modulos@mercadolivre.com>
+*  @copyright modulos 2017
+*  @license   GNU General Public License version 2
+*  @version   1.1
+
+*  www.mercadopago.com.br
+*
+* Languages: EN, PT
+* PS version: 1.6
+*
+**/
 function cpfCnpj(v){
 
     //Remove tudo o que não é dígito

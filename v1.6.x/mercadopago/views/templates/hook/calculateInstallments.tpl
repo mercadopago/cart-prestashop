@@ -61,14 +61,12 @@
 </style>
 <input id="amount" type="hidden" value="{$totalAmount|escape:'htmlall':'UTF-8'}" />
 
-
-
 <div class="calculateMP">
 	<img width="150px" src="{$this_path_ssl|escape:'htmlall':'UTF-8'}modules/mercadopago/views/img/mercadopago.png">
 	<div class="form-group">
-    	<label for="txtCreditCard">{l s='6 first digits of your card' mod='mercadopago'}</label>
+    	<label for="txtCreditCard">"{l s='6 first digits of your card' mod='mercadopago'}"</label>
     	<input type="email" class="form-control" id="txtCreditCard" maxlength="6" size="8" aria-describedby="cardHelp" placeholder="*******">
-    	<small id="cardHelp" class="form-text text-muted">{l s="We'll use this number to calculate the installments." mod='mercadopago'}</small>
+    	<small id="cardHelp" class="form-text text-muted">"{l s='We use this number to calculate the installments.' mod= 'mercadopago'}"</small>
   	</div>
 	<div class="row">
 		<div class="col-md-12">

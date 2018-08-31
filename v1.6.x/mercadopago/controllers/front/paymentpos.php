@@ -37,7 +37,10 @@ class MercadoPagoPaymentPOSModuleFrontController extends ModuleFrontController
     public static function createMP()
     {
         $mp = new MPApi();
-        $mp->setCredentialsStandard(Configuration::get('MERCADOPAGO_CLIENT_ID'), Configuration::get('MERCADOPAGO_CLIENT_SECRET'));
+        $mp->setCredentialsStandard(
+            Configuration::get('MERCADOPAGO_CLIENT_ID'),
+            Configuration::get('MERCADOPAGO_CLIENT_SECRET')
+        );
     }
 
     public function paymentPOS()

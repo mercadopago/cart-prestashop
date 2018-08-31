@@ -71,7 +71,7 @@ class UtilMercadoPago
 
         if ($logApi) {
             $errors = array(
-                "endpoint" => $methodOrUri,
+            "endpoint" => $methodOrUri,
                 "message" => $message,
                 "payloads" => $data
             );
