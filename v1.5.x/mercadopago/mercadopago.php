@@ -1172,11 +1172,9 @@ class MercadoPago extends PaymentModule
         foreach ($products as $key => $product) {
             $image_url = '';
             // get image URL
-            if (! empty($product['id_image'])) {
-                $image = new Image($product['id_image']);
-                $image_url = _PS_BASE_URL_ . _THEME_PROD_DIR_ . $image->getExistingImgPath() . '.' .
-                     $image->image_format;
-            }
+            if (! empty($product['id_image']))
+                $image_url = $this->context->link->getImageLink($product['link_rewrite'], $product['id_image']);
+            
             $item = array(
                 'id' => $product['id_product'],
                 'title' => $product['name'],
