@@ -1917,10 +1917,9 @@ http://opensource.org/licenses/osl-3.0.php Open Software License (OSL
 	console.info(html_options);
 	$("#credit_option").html(html_options);
 
-
 </script>
 
-{if !$creditcard_disable && $public_key != ''}
+{if $creditcard_disable == "false" && $public_key != ''}
 	<script type="text/javascript">
 		if (window.Mercadopago === undefined) {
 			$.getScript("https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js")
