@@ -1,6 +1,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a3efc709ca5a444807b9/maintainability)](https://codeclimate.com/github/mercadopago/cart-prestashop/maintainability)
 
-# Prestashop - Mercado Pago Module (v1.3.6 - 1.4.7.3x, 1.5.x, 1.6.x, 1.7.x)
+# Prestashop - Mercado Pago Module (1.6.x, 1.7.x)
 ---
 
 * [Features](#features)
@@ -10,10 +10,12 @@
 * [Setup](#setup)
 * [Notifications](#notifications)
 * [Example features](#pictures_features)
+* [Suport](#suport)
 * [Social](#social)
 
+
 <a name="features"></a>
-##Features##
+## Features ##
 
 Checkout options right for your business:
 We offer two checkout methods that make it easy to securely accept payments from anyone, anywhere.
@@ -44,7 +46,7 @@ Great for merchants who want to get going quickly and easily.
 *Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru, Uruguay and Venezuela*
 
 <a name="requirements"></a>
-##Requirements##
+## Requirements ##
 Basically, the requirements of this plugin are same as you need to run WooCommerce. Your machine should have:
 
 **Platforms**
@@ -64,7 +66,7 @@ During the sandbox mode tests, you can operate over HTTP, but for homologation y
 
 
 <a name="available_versions"></a>
-##Available versions##
+## Available versions ##
 <table>
   <thead>
     <tr>
@@ -75,22 +77,12 @@ During the sandbox mode tests, you can operate over HTTP, but for homologation y
   <thead>
   <tbody>
     <tr>
-      <td><a href="https://github.com/mercadopago/cart-prestashop/tree/master/v1.3.6%20-%201.4.7.3x">v1.3.6 - 1.4.7.3x</a></td>
-      <td>Deprecated (Old Version)</td>
-      <td>Prestashop v1.3.6 - 1.4.7.3x</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/mercadopago/cart-prestashop/tree/master/v1.5.x/mercadopago">v1.5.x</a></td>
-      <td>Deprecated (Old Version)</td>
-      <td>Prestashop v1.5.x</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/mercadopago/cart-prestashop/tree/master/v1.6.x">v1.6.x</a></td>
+      <td><a href="https://github.com/mercadopago/cart-prestashop-6/releases">v1.6.x</a></td>
       <td>Stable (Current Version)</td>
       <td>Prestashop v1.6.x</td>
      </tr>
     <tr>
-      <td><a href="https://github.com/mercadopago/cart-prestashop/tree/master/v1.7.x">v1.7.x</a></td>
+      <td><a href="https://github.com/mercadopago/cart-prestashop-7/releases">v1.7.x</a></td>
       <td>Stable (Current Version)</td>
       <td>Prestashop v1.7.x</td>
      </tr>
@@ -98,16 +90,14 @@ During the sandbox mode tests, you can operate over HTTP, but for homologation y
 </table>
 
 <a name="installation"></a>
-##Installation##
+## Installation ##
 
 1. Download Prestashop: https://www.prestashop.com/es/versiones-para-programadores#previous-version
-    * Prestashop v1.3.6 - 1.4.7.3x
-    * Prestashop v1.5.x
     * Prestashop v1.6.x
     * Prestashop v1.7.x
 
 <a name="setup"></a>
-##Setup##
+## Setup ##
 
 1. Copy **mercadopago** folder to **modules** folder.
 
@@ -172,8 +162,15 @@ Your store will automatically sync with Mercado Pago. The notification URL will 
 <br/>
 ![pictures_features](https://raw.github.com/mercadopago/cart-prestashop/master/README.img/Coupon.jpg)
 
+
+<a name="suport"></a>
+## Suport ##
+
+If you have some problem, [click here](https://www.mercadopago.com.br/developers/suporte).
+
+
 <a name="social"></a>
-##Social##
+## Social ##
 
 Follow our facebook group and watch our videos
 <ul>
