@@ -1,23 +1,30 @@
-# Prestashop - Mercado Pago Module (1.6.x, 1.7.x)
+#  Mercado Pago plugin for Prestashop (1.6.x and 1.7.x)
 ---	---
 
-## Installation ##
+The Mercado Pago plugin for Prestashop allows you to expand the functionalities of your online store and offer a unique payment experience for your customers.
 
+## Download Prestashop
 
-1. Download Prestashop: https://www.prestashop.com/es/versiones-para-programadores#previous-version	
-    * Prestashop v1.6.x
-    * Prestashop v1.7.x	
+You can download Prestashop by clicking on the link:
+https://www.prestashop.com/en/previous-versions
 
+## Download Mercado Pago on Prestashop Addons
 
-## Available versions ##	## Available versions ##
-<table>
-      <td>Stable (Current Version)</td>
-      <td>Prestashop v1.6.x</td>
-     </tr>
-    <tr>	
-      <td><a href="https://github.com/mercadopago/cart-prestashop-7/releases">v1.7.x</a></td>	
-      <td>Stable (Current Version)</td>	
-      <td>Prestashop v1.7.x</td>	
-     </tr>	
-  </tbody>
-</table>   
+You can download Mercado Pago plugin on Prestashop Addons (for Prestashop 1.6.x or 1.7.x) by clicking on the link:
+https://addons.prestashop.com/en/payment-card-wallet/23962-mercado-pago.html?ab=1#overview
+
+## Download Mercado Pago plugin by Github
+
+You can see our plugin for Prestashop 1.6.x by clicking on the link:
+ 
+ * Repository: https://github.com/mercadopago/cart-prestashop-6
+ * Download .zip: https://github.com/mercadopago/cart-prestashop-6/raw/master/mercadopago.zip
+ 
+You can see our plugin for Prestashop 1.7.x by clicking on the link:
+ 
+ * Repository: https://github.com/mercadopago/cart-prestashop-7
+ * Download .zip: https://github.com/mercadopago/cart-prestashop-7/raw/master/mercadopago.zip
+
+## Support
+
+Something's wrong? [Get in touch with our support](https://www.mercadopago.com.ar/developers/en/support)
