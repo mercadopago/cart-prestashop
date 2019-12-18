@@ -3,8 +3,7 @@
 
 ## Installation ##
 
-1. Download Prestashop: https://www.prestashop.com/es/versiones-para-programadores#previous-version
-    * Prestashop v1.6.x
+1. Download Prestashop 1.6: https://www.prestashop.com/es/versiones-para-programadores#previous-version
     
 ## Available versions ##
 <table>
@@ -26,10 +25,3 @@
   
 ## Suport ##
 If you have some problem, [click here](https://www.mercadopago.com.br/developers/suporte).
-
-## Social ##
-
-Follow our facebook group and watch our videos
-<ul>
-  <li><a href="https://www.youtube.com/playlist?list=PLl8LGzRu2_sXxChIJm1e0xY6dU3Dj_tNi" target="_blank">YOUTUBE</a></li>
-</ul>
