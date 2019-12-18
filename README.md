@@ -15,12 +15,12 @@ https://addons.prestashop.com/en/payment-card-wallet/23962-mercado-pago.html?ab=
 
 ## Download Mercado Pago plugin by Github
 
-You can see our plugin for Prestashop 1.6.x by clicking on the link:
+You can see our plugin for **Prestashop 1.6.x** by clicking on the link:
  
  * Repository: https://github.com/mercadopago/cart-prestashop-6
  * Download .zip: https://github.com/mercadopago/cart-prestashop-6/raw/master/mercadopago.zip
  
-You can see our plugin for Prestashop 1.7.x by clicking on the link:
+You can see our plugin for **Prestashop 1.7.x** by clicking on the link:
  
  * Repository: https://github.com/mercadopago/cart-prestashop-7
  * Download .zip: https://github.com/mercadopago/cart-prestashop-7/raw/master/mercadopago.zip
